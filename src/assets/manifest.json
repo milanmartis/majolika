@@ -1,0 +1,37 @@
+{
+    "background_color": "#3d45a1",
+    "description": "leagme-chat-tool",
+    "dir": "ltr",
+    "display": "standalone",
+    "name": "majolika.sk",
+    "orientation": "portrait",
+    "scope": "/",
+    "short_name": "majolika",
+    "start_url": "/",
+    "theme_color": "#3d45a1",
+    "categories": [
+      "entertainment"
+    ],
+    "screenshots": [],
+    "icons": [
+      {
+        "src": "/assets/img/mobile.jpg",
+        "type": "image/png",
+        "sizes": "192x192",
+        "purpose": "maskable"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "majolika.sk",
+        "url": "/",
+        "description": "Zachovávame kultúrne dedičstvo"
+      }
+    ],
+    "id": "leagme-chat-tool",
+    "edge_side_panel": {
+      "preferred_width": 100
+    },
+    "prefer_related_applications": true
+  }
+  

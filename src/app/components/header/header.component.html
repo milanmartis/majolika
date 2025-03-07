@@ -1,0 +1,45 @@
+<header class="header">
+  <div class="container d-flex justify-content-between align-items-center">
+
+<!-- 🏗️ Hamburger tlačidlo -->
+<button class="btn2 btn-secondary mobile-menu" (click)="toggleSidebar()">
+  <i class="fas fa-bars"></i> <!-- 🍔 Ikona troch čiar -->
+</button>
+
+<!-- 📂 Bočný panel (menu) -->
+<div class="sidebar" [ngClass]="{ 'open': isSidebarOpen }">
+  <button class="close-btn" (click)="toggleSidebar()">&times;</button> <!-- ❌ Zatváracie tlačidlo -->
+
+  <ul class="sidebar-menu">
+    <li *ngFor="let category of categories">
+      <a class="sidebar-item" [routerLink]="category.link" (click)="toggleSidebar()">{{ category.name | translate }}</a>
+    </li>
+    <img src="/assets/img/back_dekor_white.svg" alt="dekor" width="104" style="transform: rotate(0deg);">
+  </ul>
+
+</div>
+
+<!-- Overlay pre zatvorenie pri kliknutí mimo -->
+<div class="overlay" *ngIf="isSidebarOpen" (click)="toggleSidebar()"></div>
+
+
+    <!-- 📌 Text v strede -->
+    <div class="header-text">
+      <a class="header-link" (click)="toggleSidebar()">{{ 'HOME.WELCOME' | translate }}</a>
+
+    
+    </div>
+
+    <!-- 🌍 Prepínač jazykov -->
+    <div class="language-switch">
+      <button 
+        class="btn"
+        *ngFor="let lang of ['sk', 'en', 'de']"
+        (click)="switchLanguage(lang)"
+        [ngClass]="{ 'active-lang': isActive(lang) }">
+        {{ lang.toUpperCase() }}
+      </button>
+    </div>
+  </div>
+</header>
+

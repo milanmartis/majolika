@@ -1,0 +1,339 @@
+<div class="dashboard-container" [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode }">
+  
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <!-- <nav class="sidebar" [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode }">
+      <div class="sidebar-header p-3">
+        <h3>Menu</h3>
+      </div>
+      <ul class="list-unstyled components p-2">
+        <li>
+          <a href="#"><i class="fas fa-home"></i> Domov</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-chart-line"></i> Dashboard</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-cogs"></i> Nastavenia</a>
+        </li>
+      </ul>
+    </nav> -->
+
+    <!-- Main Content -->
+    <div class="main-content flex-grow-1 p-3">
+      <header class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="title" style="font-weight:700;">Mäsovýroba Gašparík | DASHBOARD 1.0</h1>
+        <div class="date-picker-container" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <!-- Od: Výber mesiaca a roku -->
+          <div class="datepickset">
+            <div class="form-group">
+              <select id="monthStart" [(ngModel)]="selectedMonth_start" class="custom-select">
+                <option *ngFor="let m of availableMonthsByYear[+selectedYear_start]" [value]="m">{{ m }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <select id="yearStart" [(ngModel)]="selectedYear_start" class="custom-select year-select">
+                <option *ngFor="let y of availableYears" [value]="y">{{ y }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Do: Výber mesiaca a roku -->
+          
+          <div class="datepickset">
+          <div class="form-group">
+            <select id="monthEnd" [(ngModel)]="selectedMonth_end" class="custom-select">
+              <option *ngFor="let m of availableMonthsByYear[+selectedYear_end]" [value]="m">{{ m }}</option>
+            </select>
+          </div>
+          <div class="form-group" style="display: flex; align-items: center;">
+            <select id="yearEnd" [(ngModel)]="selectedYear_end" class="custom-select year-select">
+              <option *ngFor="let y of availableYears" [value]="y">{{ y }}</option>
+            </select>
+          </div>
+          </div>
+   
+
+
+          <button (click)="filterSalesByMonthYear()" class="btn btn-outline-custom">
+            <h2 class="fas">
+              <i *ngIf="!isLoadingFilter" class="fas fa-play"></i>
+              <i *ngIf="isLoadingFilter" class="fas fa-spinner fa-spin"></i>
+            </h2> 
+          </button>
+        </div>
+        
+        <button (click)="toggleMetric()" class="btn btn-outline-custom ">
+          <h2 class="fas">
+           <i>
+             {{ selectedMetric === 'EUR' ? 'kg' : '€' }}
+           </i> 
+          </h2> 
+         </button>
+        
+        
+        <button (click)="toggleTheme()" class="btn btn-outline-custom">
+          <i class="fas" [ngClass]="{'fa-sun': darkMode, 'fa-moon': !darkMode}" title="{{ darkMode ? ' Light Mode' : ' Dark Mode' }}"></i>
+        </button>
+      </header>
+
+      <div *ngIf="loading" class="loading-container text-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Načítavam údaje...</span>
+        </div>
+        <p>Načítavam údaje...</p>
+      </div>
+
+     
+
+
+
+      <div class="charts" *ngIf="!loading">
+        <div class="grid-container">
+          <div class="grid-container"> 
+            <div height="400" class="card" #cardElement [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode, 'full-screen': isFullScreen }">
+              <a (click)="toggleFullScreen(cardElement)" class="btn-fullscreen">
+                <i class="fas" [ngClass]="{'fa-expand': !isFullScreen, 'fa-compress': isFullScreen}"></i>
+              </a>
+              <!-- Váš obsah karty -->
+              <h2>Top 20 produktov {{ selectedMetric === 'EUR' ? ' (v EUR)' : ' ( v kg)' }}</h2>
+              <!-- <a [routerLink]="['/chart-detail']" [queryParams]="{ title: 'Top 20 produktov', series: 'topProducts' }" class="btn btn-outline-custom">
+                <i class="fas fa-external-link-alt"></i>
+              </a> -->
+              <apx-chart
+                [series]="topProducts"
+                [chart]="barChartOptions"
+                [xaxis]="xaxis"
+                [yaxis]="yaxis"
+                [grid]="grid"
+                [fill]="fill"
+                [plotOptions]="plotOptions"
+                [tooltip]="tooltip"
+                [dataLabels]="dataLabels">
+              </apx-chart>
+            </div>
+
+
+          <!-- <div class="grid-container"> 
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">Novi zákazníci</h2>
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="new-customers-info">
+                  <div class="count" style="font-size: 2rem; font-weight: bold;">
+                    {{ newCustomersCount }}
+                  </div>
+                  <div class="change" style="font-size: 1rem;">
+                    <span [ngClass]="{'text-success': percentageChange > 0, 'text-danger': percentageChange < 0}">
+                      {{ percentageChange }}%
+                    </span>
+                    od minulého mesiaca
+                  </div>
+                </div>
+                <div class="chart" style="width: 200px; height: 100px;">
+                  <apx-chart 
+                    *ngIf="smallChartOptions"
+                    [chart]="smallChartOptions"
+                    [series]="newCustomersSeries"
+                    [xaxis]="smallChartXAxis"
+                    [tooltip]="tooltip">
+                  </apx-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">Novi zákazníci</h2>
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="new-customers-info">
+                  <div class="count" style="font-size: 2rem; font-weight: bold;">
+                    {{ newCustomersCount }}
+                  </div>
+                  <div class="change" style="font-size: 1rem;">
+                    <span [ngClass]="{'text-success': percentageChange > 0, 'text-danger': percentageChange < 0}">
+                      {{ percentageChange }}%
+                    </span>
+                    od minulého mesiaca
+                  </div>
+                </div>
+                <div class="chart" style="width: 200px; height: 100px;">
+                  <apx-chart 
+                    *ngIf="smallChartOptions"
+                    [chart]="smallChartOptions"
+                    [series]="newCustomersSeries"
+                    [xaxis]="smallChartXAxis"
+                    [tooltip]="tooltip">
+                  </apx-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">Novi zákazníci</h2>
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="new-customers-info">
+                  <div class="count" style="font-size: 2rem; font-weight: bold;">
+                    {{ newCustomersCount }}
+                  </div>
+                  <div class="change" style="font-size: 1rem;">
+                    <span [ngClass]="{'text-success': percentageChange > 0, 'text-danger': percentageChange < 0}">
+                      {{ percentageChange }}%
+                    </span>
+                    od minulého mesiaca
+                  </div>
+                </div>
+                <div class="chart" style="width: 200px; height: 100px;">
+                  <apx-chart 
+                    *ngIf="smallChartOptions"
+                    [chart]="smallChartOptions"
+                    [series]="newCustomersSeries"
+                    [xaxis]="smallChartXAxis"
+                    [tooltip]="tooltip">
+                  </apx-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>-->
+
+</div> 
+
+
+          <div class="grid-container">
+            <div class="card" #cardElement_product [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode }">
+              <a (click)="toggleFullScreen(cardElement_product)" class="btn-fullscreen">
+                <i class="fas" [ngClass]="{'fa-expand': !isFullScreen, 'fa-compress': isFullScreen}"></i>
+              </a>
+              <h2>{{ selectedProduct }} {{ selectedMetric === 'EUR' ? ' (v EUR)' : ' ( v kg)' }}</h2>
+              <select (change)="onSelectProduct($event)" class="form-select mb-2">
+                <option *ngFor="let product of productList_all" [value]="product.x">
+                  {{ product.x }}
+                </option>
+              </select>
+
+              <apx-chart
+                [series]="productSalesByMonth"
+                [chart]="chartOptions"
+                [xaxis]="xaxis"
+                [yaxis]="yaxis"
+                [grid]="grid"
+                [stroke]="stroke"
+                [tooltip]="tooltip">
+              </apx-chart>
+            </div>
+
+            <div class="card" #cardElement_product2 [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode }">
+              <a (click)="toggleFullScreen(cardElement_product2)" class="btn-fullscreen">
+                <i class="fas" [ngClass]="{'fa-expand': !isFullScreen, 'fa-compress': isFullScreen}"></i>
+              </a>
+              <h2>{{ selectedProduct2 }} {{ selectedMetric === 'EUR' ? ' (v EUR)' : ' ( v kg)' }}
+              </h2>
+<!-- 🔍 Input + Datalist na vyhľadávanie -->
+<input list="products" [(ngModel)]="searchTerm" (input)="filterProductList()"
+       class="form-control mb-2" placeholder="Hľadať produkt..." (change)="onSelectProduct2($event)">
+
+<!-- 🛒 Dynamický zoznam produktov -->
+<datalist id="products">
+  <option *ngFor="let product of filteredProductList" [value]="product.x">
+  </option>
+</datalist>
+
+              <apx-chart
+                [series]="productSalesByMonth2"
+                [chart]="chartOptions"
+                [xaxis]="xaxis"
+                [yaxis]="yaxis"
+                [grid]="grid"
+                [stroke]="stroke"
+                [tooltip]="tooltip">
+              </apx-chart>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-container">
+          <div class="card" #cardElement_customers [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode }">
+            <a (click)="toggleFullScreen(cardElement_customers)" class="btn-fullscreen">
+              <i class="fas" [ngClass]="{'fa-expand': !isFullScreen, 'fa-compress': isFullScreen}"></i>
+            </a>
+            <h2>Top 10 odberateľov {{ selectedMetric === 'EUR' ? ' (v EUR)' : ' ( v kg)' }}</h2>
+  
+            <apx-chart
+              [series]="topCustomers"
+              [chart]="barChartOptions"
+              [xaxis]="xaxis"
+              [yaxis]="yaxis"
+              [grid]="grid"
+              [fill]="fill"
+              [plotOptions]="plotOptions2"
+              [tooltip]="tooltip"
+              [dataLabels]="dataLabels2">
+            </apx-chart>
+          </div>
+
+          <div class="card" #cardElement_pj [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode }">
+            <a (click)="toggleFullScreen(cardElement_pj)" class="btn-fullscreen">
+              <i class="fas" [ngClass]="{'fa-expand': !isFullScreen, 'fa-compress': isFullScreen}"></i>
+            </a>
+            <h2>Top 10 predajní {{ selectedMetric === 'EUR' ? ' (v EUR)' : ' ( v kg)' }}</h2>
+            <apx-chart
+              [series]="topCustomers_pj"
+              [chart]="barChartOptions"
+              [xaxis]="xaxis"
+              [yaxis]="yaxis"
+              [grid]="grid"
+              [fill]="fill"
+              [plotOptions]="plotOptions2"
+              [tooltip]="tooltip"
+              [dataLabels]="dataLabels2">
+            </apx-chart>
+          </div>
+
+          <div class="card" #cardElement_total [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode, 'full-screen': isFullScreen }">
+            <a (click)="toggleFullScreen(cardElement_total)" class="btn-fullscreen">
+              <i class="fas" [ngClass]="{'fa-expand': !isFullScreen, 'fa-compress': isFullScreen}"></i>
+            </a>
+            <!-- 🏷 Výber zákazníka -->
+<select id="customerSelect" (change)="onSelectCustomer($event)" class="form-select mb-2">
+  <option *ngFor="let customer of customersList" [value]="customer">
+    {{ customer === 'ALL' ? 'Všetci zákazníci' : customer }}
+  </option>
+</select>
+<p>Celkovo: <strong>{{ totalRevenueSum | number:'1.0-2' }} {{ selectedMetric === 'EUR' ? ' (v EUR)' : ' ( v kg)' }}</strong></p>
+<!-- <h3>Obrat rok dozadu: <strong>{{ totalRevenuePrevious | number:'1.0-2' }} {{ selectedMetric === 'EUR' ? ' (v EUR)' : ' ( v kg)' }}</strong></h3>
+
+<span [ngClass]="{ 'text-success': percentageChangeRevenue > 0, 'text-danger': percentageChangeRevenue < 0 }">
+  <strong>{{ percentageChangeRevenue | number:'1.0-2' }} %</strong>
+</span> -->
+<!-- Graf pre celkový obrat (aktualizuje sa podľa zákazníka) -->
+<apx-chart
+  [series]="totalRevenueByMonth"
+  [chart]="chartOptions"
+  [xaxis]="xaxis"
+  [yaxis]="yaxis"
+  [grid]="grid"
+  [stroke]="stroke"
+  [tooltip]="tooltip">
+</apx-chart>
+          </div>
+
+          <!-- <div class="card" [ngClass]="{ 'light-mode': !darkMode, 'dark-mode': darkMode }">
+            <h2>Kategórie podľa prvého čísla product_id</h2>
+            <apx-chart
+            [series]="pieChartSeries"
+            [chart]="pieChartOptions.chart"
+            [plotOptions]="pieChartOptions.plotOptions"
+            [stroke]="pieChartOptions.stroke"
+            [colors]="pieChartOptions.colors"
+            [labels]="pieChartOptions.labels"
+            [legend]="pieChartOptions.legend"
+            [tooltip]="pieChartOptions.tooltip">
+          </apx-chart>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,102 @@
+<div class="hero">
+  <!-- <div class="language-switch">
+    <button 
+      class="btn3"
+      *ngFor="let lang of ['sk', 'en', 'de']"
+      (click)="switchLanguage(lang)"
+      [ngClass]="{ 'active-lang': isActive(lang) }">
+      {{ lang.toUpperCase() }}
+    </button>
+  </div> -->
+  
+  <video id="bgVideo" autoplay loop muted playsinline class="background-video">
+    <source src="assets/video/majolica.mp4" type="video/mp4">
+</video>
+
+  <div class="overlay">
+    
+    <!-- <img class="main_logo" src="assets/img/tanier_slm.png" 
+    [@fadeInOut]="imgState"> -->
+
+
+    <div id="container">
+    <div id="icon-container">
+      <!-- <a href="#"  routerLink="/gallery"> -->
+        <img
+        *ngFor="let icon of iconFiles; let i = index"
+        [src]="'/assets/img/' + icon"
+        class="filter-green-sports-icon"
+        [class.visible]="i === currentIndex"
+      />
+    <!-- </a> -->
+  </div>
+</div>
+
+
+  <h1 style="text-align:center;margin-top:166px; margin-bottom:33px; width:100%;">
+    {{ 'HOME.WELCOME' | translate }}
+  </h1>
+  <p style="font-size:82%;font-weight:400;text-align:center;margin-top:-49px; margin-bottom:13px; width:100%;">
+    {{ 'HOME.PEREX' | translate }}
+  </p>
+    <!-- <h1>{{ 'HOME.WELCOME' | translate }}</h1> -->
+
+    
+    <img src="/assets/img/{{ 'IMG.NAME' | translate }}.png" width="222">
+
+    <div id="container2">
+      <div class="gallery-container">
+        <!-- 📌 Kategórie na prepínanie -->
+        <div class="category-buttons">
+          <button *ngFor="let category of categories"
+                  (click)="selectCategory(category.id)"
+                  [class.active]="activeCategory === category.id">
+            {{ category.name | translate }}
+          </button>
+        </div>
+      
+        <!-- 🎨 Dynamická galéria podľa aktívnej kategórie -->
+        <div class="gallery-grid mb-4">
+          <div class="grid-item" *ngFor="let image of getCategoryImages(activeCategory); let i = index"
+               (click)="openFullscreen(i, $event)"
+               (mouseover)="showInfo(i)"
+               (mouseleave)="hideInfo(i)">
+            <a routerLink="/eshop"><img [src]="image.src" alt="Gallery Image"></a>
+            <div class="image-info" [class.visible]="image.showInfo">
+              <h3>{{ image.name }}</h3>
+              <i>{{ image.price }}</i>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+    <!--     
+    <img src="assets/img/salka.png" style="margin-top:20px;max-width:280px;"
+    [@fadeInOut]="imgState">
+     -->
+     <p style="max-width:633px">
+      {{ 'HOME.FIRST_TEXT' | translate }}
+      <br>  
+      <br>  
+      
+      <img src="assets/img/logo-SLM.gif" style="width:150px;height:150px;"
+      [@fadeInOut]="imgState">
+      
+      <br>
+      <br>      
+      Šúrska 32 B, 900 01 Modra<br>
+      <a href="https://majolika.sk">www.majolika.sk</a><br>
+      <a href="mailto:info@majolikamodra.sk">info&#64;majolikamodra.sk</a><br>
+      +421 905 336 101
+    </p>
+   
+<br>
+<br>
+<br>
+<br>
+
+  </div>
+
+  
+
+</div>

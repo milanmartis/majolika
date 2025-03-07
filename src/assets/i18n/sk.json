@@ -1,0 +1,53 @@
+{
+    "BASE": "Úvod",
+    "HOME": {
+      "WELCOME": "Slovenská ľudová majolika",
+      "PEREX": "Modranská majolika a majoliková ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska.",
+      "FIRST_TEXT": "V Slovenskej ľudovej majolike už 140 rokov majstri remesla rozvíjajú zdedené tradície, rukami a srdcom tvoria keramickú dušu regiónu. Všetky výrobky sú ručne vyrobené a maľované. Každý kus je jedinečné dielo. Modranská majolika a majoliková ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska.",
+      "TRADICIA": "Tradícia",
+      "ESHOP": "Produkty",
+      "DIELNE": "Dielne"
+    },
+    "ESHOP": { 
+      "WELCOME": "E-SHOP",
+      "FIRST_TEXT": "Slovenská ľudová majolika patrí k nositeľom tradície modranskej majoliky a majolikovej ornamentiky a  zároveň je priestorom pre realizáciu kreativity a  inovatívnych postupov vo výrobe modranskej keramiky. Cieľom podpory z projektu je rozvoj kreatívneho talentu a  inovácií v  oblasti tradičného remesla formou záchrany, zachovania a obnovy významnej časti kultúrneho dedičstva Slovenska. "
+    },
+    "DIELNE": { 
+      "WELCOME": "Prehliadky a tvorivé dielne",
+      "FIRST_TEXT": "Objavte dávnu krásu tradičného ľudového remesla. Ponúkame vám výnimočnú príležitosť nazrieť do zákulisia najväčších remeselných dielní s najdlhšou tradíciou na Slovensku. Modranská majolika a majoliková ornamentika je zapísaná v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska."
+    },
+    "TRADICIA": { 
+      "WELCOME": "140 ROKOV SLOVENSKEJ ĽUDOVEJ MAJOLIKY",
+      "FIRST_TEXT": "V roku 1883 bolo v Modre založené Keramicko-priemyselné učilište (Agyagipar Tanműhely Modor). Založenie keramického učilišťa dalo základ pre vznik budúceho prosperujúceho podniku Slovenskej keramiky a neskôr Slovenskej ľudovej majoliky, ktorý kontinuálne pokračuje vo výrobe až do súčasnosti.Učilište založilo mesto Modra s uhorským ministerstvom priemyslu a obchodu. Prvým správcom sa stal Jozef Mička, keramikár z Moravy. Učni sa učili najdôležitejšie dielenské práce, točenie, maľovanie a pálenie."
+    },
+    
+      "CATEGORIES": {
+        "HOME": "Úvod",
+        "PRODUCTS": "Produkty",
+        "WORKSHOPS": "Prehliadky/Dielne",
+        "TRADITION": "Tradícia",
+        "ABOUT": "O nás",
+        "KONTAKTY": "Kontakt"
+
+      },
+      
+      
+        "CATEGORIES2": {
+          "TRADITIONAL": "Tradičná",
+          "MODERN": "Moderná",
+          "LIMITED": "Limitované edície"
+        },
+      
+        "IMG":{
+          "NAME":"nasa-ponuka"
+        },
+
+        "KOMPLET":{
+          "PONUKA":"Kompletná ponuka"
+        }
+       
+
+
+  }
+
+  

@@ -1,0 +1,59 @@
+
+    <div class="overlay_2">
+
+        <div class="logo-header mb-8" >
+            <a href=""  routerLink="/"><img src="assets/img/logo-SLM.gif" style="width:200px;height:200px;margin:auto;position:relative;padding-bottom:0px;"
+                 [@fadeInOut]="imgState"></a>
+          </div>
+          <div style="position:relative; top:-30px;margin-top:-30px;margin-bottom:-60px;">
+            <img src="/assets/img/back_dekor_white.svg" alt="dekor" width="104" style="transform: rotate(90deg);">
+          </div>
+        <h1>{{ 'DIELNE.WELCOME' | translate }}</h1>
+    
+        <p>
+            {{ 'DIELNE.FIRST_TEXT' | translate }}
+        </p>
+        
+        <!-- 📌 Galéria -->
+        <div class="gallery-container">
+          <div class="media-grid">
+            <div *ngFor="let item of media; let i = index" (click)="openFullscreen(i)">
+              <!-- Ak je to obrázok -->
+              <img *ngIf="item.type === 'image'" [src]="item.src" alt="Obrázok" class="thumbnail" />
+          
+              <!-- Ak je to video -->
+              <video *ngIf="item.type === 'video'" [poster]="item.poster" class="thumbnail">
+                <source [src]="item.src" type="video/mp4">
+                Váš prehliadač nepodporuje video.
+              </video>
+            </div>
+          </div>
+
+          <!-- 📌 Fullscreen mód s animáciou -->
+          <div class="fullscreen-container" *ngIf="isFullscreen" [@fadeSlideInOut]>
+            <button class="close-btn" (click)="closeFullscreen()">×</button>
+            <button class="prev" (click)="prevMedia()">❮</button>
+            
+            <img *ngIf="currentMedia?.type === 'image'" [src]="currentMedia?.src" class="fullscreen-img">
+            <video *ngIf="currentMedia?.type === 'video'" [src]="currentMedia?.src" controls autoplay class="fullscreen-video"></video>
+            
+            <button class="next" (click)="nextMedia()">❯</button>
+          </div>
+        </div>
+
+                
+        
+        
+        
+        <div style="position:relative; top:0px;margin-top:0px;margin-bottom:0px;">
+            <img src="/assets/img/back_dekor_white.svg" alt="dekor" width="104" style="transform: rotate(90deg);">
+          </div>
+    
+          <div style="position:relative; top:0px;" class="buttons2 mb-4">
+            <a class="btn" routerLink="/eshop">{{ 'HOME.ESHOP' | translate }}</a>
+            <a class="btn" routerLink="/dielne">{{ 'HOME.DIELNE' | translate }}</a>
+            <a class="btn" routerLink="/tradicia">{{ 'HOME.TRADICIA' | translate }}</a>
+          </div>
+        
+    </div>
+

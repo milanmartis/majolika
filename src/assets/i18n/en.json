@@ -1,0 +1,41 @@
+{
+  "BASE": "Home",
+  "HOME": {
+    "WELCOME": "Slovak Folk Majolica",
+    "PEREX": "Modra majolica and majolica ornamentation are inscribed in the Representative List of the Intangible Cultural Heritage of Slovakia.",
+    "FIRST_TEXT": "For 140 years, masters of the craft in Slovak Folk Majolica have been developing inherited traditions, creating the ceramic soul of the region with their hands and hearts. All products are handmade and hand-painted. Each piece is a unique work of art. Modra Majolica and Majolica ornamentation are listed in the Representative List of Intangible Cultural Heritage of Slovakia.",
+    "TRADICIA": "Tradition",
+    "ESHOP": "Products",
+    "DIELNE": "Workshop"
+  },
+  "ESHOP": { 
+    "WELCOME": "Shop with our production",
+    "FIRST_TEXT": "Slovak Folk Majolica is a bearer of the tradition of Modra Majolica and Majolica ornamentation, while also being a space for creativity and innovative approaches in the production of Modra ceramics. The goal of project support is to develop creative talent and innovations in the field of traditional crafts by preserving, maintaining, and restoring a significant part of Slovakia’s cultural heritage."
+  },
+  "DIELNE": { 
+    "WELCOME": "Tours and creative workshops",
+    "FIRST_TEXT": "Discover the ancient beauty of traditional folk craftsmanship. We offer you a unique opportunity to peek behind the scenes of the largest craft workshops with the longest tradition in Slovakia. Modra Majolica and Majolica ornamentation are listed in the Representative List of Intangible Cultural Heritage of Slovakia."
+  },
+  "TRADICIA": { 
+    "WELCOME": "140 YEARS OF SLOVAK FOLK MAJOLICA",
+    "FIRST_TEXT": "In 1883, the Ceramic Industrial School (Agyagipar Tanműhely Modor) was founded in Modra. The establishment of this school laid the foundation for the future prosperous Slovak Ceramics company and later the Slovak Folk Majolica, which has continuously operated up to the present day. The school was founded by the town of Modra in cooperation with the Hungarian Ministry of Industry and Trade. The first director was Jozef Mička, a ceramist from Moravia. Apprentices learned the most important workshop skills, such as pottery, painting, and firing."
+  },
+    "CATEGORIES": {
+      "HOME": "Home",
+      "PRODUCTS": "Products",
+      "WORKSHOPS": "Workshops",
+      "TRADITION": "Tradition",
+      "ABOUT": "About",
+      "KONTAKTY": "Contact"
+    },
+   "CATEGORIES2": {
+        "TRADITIONAL": "Traditional",
+        "MODERN": "Modern",
+        "LIMITED": "Limited Editions"
+      },
+      "IMG": {
+  "NAME": "our-offer"
+}
+    
+    
+}

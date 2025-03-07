@@ -1,0 +1,49 @@
+    <div class="overlay_2">
+  
+        <div class="logo-header mb-8" >
+            <a href=""  routerLink="/"><img src="assets/img/logo-SLM-modre.gif" style="width:200px;height:200px;margin:auto;position:relative;padding-bottom:0px;"
+                 [@fadeInOut]="imgState"></a>
+          </div>
+      
+          <div style="position:relative; top:-30px;margin-top:-10px;margin-bottom:-60px;">
+            <img src="/assets/img/back_dekor_black2.png" alt="dekor" width="80" style="transform: rotate(90deg);">
+          </div>
+
+        <h1 class="mt-3">{{ 'TRADICIA.WELCOME' | translate }}</h1>
+    
+        <p>
+            {{ 'TRADICIA.FIRST_TEXT' | translate }}
+        </p>
+
+        <div class="gallery-grid">
+            <div class="grid-item" *ngFor="let image of images; let i = index" (click)="openFullscreen(i)">
+                <img [src]="image" alt="Gallery Image">
+            </div>
+        </div>
+      
+            
+            
+            <!-- Fullscreen prehliadač -->
+            <div class="fullscreen" *ngIf="isFullscreen" [@slideFullscreen]>
+              <button class="close-btn" (click)="closeFullscreen()">✖</button>
+              
+              <div class="image-wrapper" (swipeleft)="onSwipeLeft()" (swiperight)="onSwipeRight()">
+                <img [src]="images[currentIndex]" alt="Full Image">
+              </div>
+              
+              <button class="prev" (click)="prevImage()">❮</button>
+              <button class="next" (click)="nextImage()">❯</button>
+            </div>
+        
+        
+        <div style="position:relative; top:0px;margin-top:0px;margin-bottom:0px;">
+          <img src="/assets/img/back_dekor_black2.png" alt="dekor" width="74" style="transform: rotate(90deg);">
+        </div>
+  
+        <div style="position:relative; top:0px;" class="buttons2 mb-4">
+          <a class="btn" routerLink="/eshop">{{ 'HOME.ESHOP' | translate }}</a>
+          <a class="btn" routerLink="/dielne">{{ 'HOME.DIELNE' | translate }}</a>
+          <a class="btn" routerLink="/tradicia">{{ 'HOME.TRADICIA' | translate }}</a>
+        </div>
+        
+    </div>

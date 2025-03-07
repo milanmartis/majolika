@@ -1,0 +1,272 @@
+/* 🌙 DARK MODE (predvolený) */
+:root {
+  --bg-color: #070d19;
+  --text-color: #d9d9d9;
+  --card-bg: #0c1427;
+  --border-color: #172340;
+  --shadow-color: #060b15;
+  --highlight-hover: #0c2252;
+}
+.dark-mode {
+  --bg-color: #070d19;
+  --text-color: #d9d9d9;
+  --card-bg: #0c1427;
+  --border-color: #172340;
+  --shadow-color: #060b15;
+  --highlight-hover: #0c2252;
+}
+
+/* 🌞 LIGHT MODE */
+.light-mode {
+  --bg-color: #f8f9fa;
+  --text-color: #333;
+  --card-bg: #ffffff;
+  --border-color: #d1d1d1;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --highlight-hover: #e0e0e0;
+}
+
+.dashboard-container {
+  background-color: var(--bg-color);
+  padding: 20px;
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+.charts {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+button{
+  cursor: pointer;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 3px 0 10px 0 var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+h2 {
+  color: var(--text-color);
+  text-align: center;
+  font-size: 19px;
+  opacity: 0.7;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-color);
+}
+
+input{
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  font-size: 80%;
+  padding-left: 8px;
+}
+
+input:focus{
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  font-size: 80%;
+  padding-left: 8px;
+}
+
+
+select {
+  background-color: var(--card-bg);
+  border: none;
+  color: var(--text-color);
+  padding: 5px;
+  font-size: 12px;
+}
+
+select option {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+select option:hover,
+select option:focus {
+  background-color: var(--highlight-hover) !important;
+  color: var(--text-color) !important;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--text-color);
+  font-size: 18px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--text-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🌙🌞 Tlačidlo na prepínanie režimov */
+.theme-toggle {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.theme-toggle:hover {
+  background-color: var(--highlight-hover);
+}
+
+
+.btn-outline-custom{
+  background-color: rgba(74, 86, 218, 0.9);
+  color: #ffffff;
+}
+
+.apexcharts-canvas .apexcharts-donut-slice {
+  stroke: none !important;
+}
+
+i{
+  color: #d9d9d9;
+  text-decoration: none;
+  font-style: normal;
+}
+
+.datepickset {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 3px 0 10px 0 var(--shadow-color);
+  border: 1px solid var(--border-color);
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  gap: 10px;
+  height: 35px;
+}
+
+.datepickset .custom-select {
+  cursor: pointer;
+
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: none;
+  font-size: 0.9em;
+  margin-top: 18px;
+  /* Nastavte maximálnu šírku podľa potreby */
+  max-width: 80px;
+}
+
+.datepickset .year-select {
+  cursor: pointer;
+  max-width: 100px;
+  border: 0px;
+  padding: 4px;
+
+}
+
+.datepickset option {
+  background-color: transparent;
+  color: var(--text-color);
+  padding: 4px;
+  border-right: 1px solid var(--border-color);
+}
+
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+  display: none;
+}
+
+
+
+.progress {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  height: 20px;
+  margin-bottom: 15px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  text-align: center;
+  color: white;
+  line-height: 20px;
+  transition: width 0.3s ease;
+}
+
+.btn-toggle-metric {
+  position:relative;
+  top:0px;
+  right: 88px;
+  width: 42px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 13px;
+  font-size: 80%;
+
+}
+
+
+.full-screen apx-chart {
+  height: 100%; /* Graf zaberie celú výšku rodičovského elementu */
+}
+
+.product-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  background: white;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+}
+
+.product-list li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.product-list li:hover {
+  background: #f0f0f0;
+}

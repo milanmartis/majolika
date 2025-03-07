@@ -1,0 +1,41 @@
+{
+  "BASE": "Startseite",
+  "HOME": {
+    "WELCOME": "Slowakische Volksmajolika",
+    "PEREX": "Die Modra-Majolika und die Majolika-Ornamentik sind in die Repräsentative Liste des immateriellen Kulturerbes der Slowakei eingetragen.",
+    "FIRST_TEXT": "Seit 140 Jahren entwickeln Meister ihres Fachs in der Slowakischen Volksmajolika die geerbten Traditionen weiter und erschaffen mit ihren Händen und Herzen die keramische Seele der Region. Alle Produkte sind handgefertigt und handbemalt. Jedes Stück ist ein einzigartiges Kunstwerk. Die Modra Majolika und die Majolika-Ornamentik sind in der Repräsentativen Liste des immateriellen Kulturerbes der Slowakei eingetragen.",
+    "TRADICIA": "Tradition",
+    "ESHOP": "Produkte",
+    "DIELNE": "Werkstatt"
+  },
+  "ESHOP": { 
+    "WELCOME": "Shop mit unserer Produktion",
+    "FIRST_TEXT": "Die Slowakische Volksmajolika ist ein Träger der Tradition der Modra Majolika und der Majolika-Ornamentik und gleichzeitig ein Raum für Kreativität und innovative Verfahren in der Herstellung der Modra-Keramik. Ziel der Projektförderung ist die Entwicklung kreativer Talente und Innovationen im Bereich des traditionellen Handwerks durch die Bewahrung, den Erhalt und die Wiederherstellung eines bedeutenden Teils des slowakischen Kulturerbes."
+  },
+  "DIELNE": { 
+    "WELCOME": "Führungen und kreative Werkstätten",
+    "FIRST_TEXT": "Entdecken Sie die uralte Schönheit des traditionellen Volkskunsthandwerks. Wir bieten Ihnen eine einzigartige Gelegenheit, einen Blick hinter die Kulissen der größten Handwerkswerkstätten mit der längsten Tradition in der Slowakei zu werfen. Die Modra Majolika und die Majolika-Ornamentik sind in der Repräsentativen Liste des immateriellen Kulturerbes der Slowakei eingetragen."
+  },
+  "TRADICIA": { 
+    "WELCOME": "140 JAHRE SLOWAKISCHE VOLKSMAJOLIKA",
+    "FIRST_TEXT": "Im Jahr 1883 wurde in Modra die Keramische Industrieschule (Agyagipar Tanműhely Modor) gegründet. Die Gründung dieser Schule legte den Grundstein für das zukünftige erfolgreiche Unternehmen Slowakische Keramik und später die Slowakische Volksmajolika, die bis heute kontinuierlich in Betrieb ist. Die Schule wurde von der Stadt Modra in Zusammenarbeit mit dem ungarischen Ministerium für Industrie und Handel gegründet. Der erste Leiter war Jozef Mička, ein Keramiker aus Mähren. Die Lehrlinge erlernten die wichtigsten Werkstattfertigkeiten wie Töpferei, Malerei und Brennen."
+  },
+    "CATEGORIES": {
+      "HOME": "Startseite",
+      "PRODUCTS": "Produkte",
+      "WORKSHOPS": "Werkstätten",
+      "TRADITION": "Tradition",
+      "ABOUT": "Uber uns",
+      "KONTAKTY": "Kontakt"
+    },
+      
+    "CATEGORIES2": {
+      "TRADITIONAL": "Traditionell",
+      "MODERN": "Modern",
+      "LIMITED": "Limitierte Editionen"
+    },
+      "IMG": {
+  "NAME": "unser-angebot"
+}
+   
+  }
