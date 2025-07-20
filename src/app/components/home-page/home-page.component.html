@@ -1,0 +1,78 @@
+<!-- src/app/landing-page/landing-page.component.html -->
+<div class="landing-container">
+
+
+  <!-- ---------- DVE KARTY ---------- -->
+  <div class="choice-grid" [@fadeInStagger]="animationState">
+    <div class="choice-card">
+      <a routerLink="/onas">
+      <div class="image-wrapper">
+        <!-- <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_home_majolika_1_3815377127.jpg" alt="E-shop" /> -->
+        <img src="/assets/img/eshop/e/16.jpg" alt="E-shop" />
+      </div>
+      <button class="choice-button">E-SHOP</button>
+    </a>
+    </div>
+
+    <div class="choice-card">
+      <a routerLink="/dielne">
+        <div class="image-wrapper">
+          <video
+            #bgVideo
+            autoplay
+            muted
+            loop
+            playsinline
+            class="video-bg"
+            poster="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_placeholder_6982996b8f.jpg"
+          >
+            <source src="/assets/video/majolica555.mp4" type="video/mp4" />
+            Tvoje zariadenie nepodporuje prehrávanie videa.
+          </video>
+        </div>
+        <button class="choice-button">{{ 'CALENDAR.TITLE' | translate }}</button>
+      </a>
+    </div>
+  </div>
+
+ 
+  <!-- -------  DEKOR + ODKAZY ------- -->
+  <div style="position: relative; top: -90px;margin:0px;padding:0px;margin-bottom:-90px;">
+    <img
+      src="/assets/img/back_dekor_black2.png"
+      alt="dekor"
+      width="104"
+      style="transform: rotate(90deg)"
+    />
+  </div>
+  <h4 style="max-width:600px;width:100%; text-align: center;padding-bottom: 40px;padding-left:18px;padding-right:18px;">
+    {{ 'ESHOP.FIRST_TEXT' | translate }}
+  </h4>
+
+
+  <div
+    class="buttons2 mb-4"
+    style="position: relative; display: flex; top: 0"
+  >
+    <a
+      routerLink="/eshop"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.ESHOP' | translate }}</a
+    >
+    <a
+      routerLink="/dielne"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.DIELNE' | translate }}</a
+    >
+    <a
+      routerLink="/tradicia"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.TRADICIA' | translate }}</a
+    >
+  </div>
+
+
+</div>
+
+<!-- <img src="./assets/img/corner6.png" alt="corner" class="corner-img-animated" /> -->
+<app-footer style="z-index:99;"></app-footer>

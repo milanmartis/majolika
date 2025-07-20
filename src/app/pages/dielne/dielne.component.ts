@@ -3,27 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { FooterComponent } from 'app/components/footer/footer.component';
 
 @Component({
   selector: 'app-dielne',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, FooterComponent],
   templateUrl: `./dielne.component.html`,
-  styleUrls: ['./dielne.component.css'],
-  animations: [
-    trigger('fadeSlideInOut', [
-      state('void', style({ opacity: 0, transform: 'translateY(20px)' })),
-      state('*', style({ opacity: 1, transform: 'translateY(0)' })),
-      transition('void => *', animate('400ms ease-out')),
-      transition('* => void', animate('300ms ease-in'))
-    ]),
-    trigger('fadeInOut', [
-      state('hidden', style({ opacity: 0 })),
-      state('visible', style({ opacity: 1 })),
-      transition('hidden => visible', animate('500ms ease-in')),
-      transition('visible => hidden', animate('500ms ease-out'))
-    ])
-  ]
+  styleUrls: ['./dielne.component.css']
+  
 })
 export class DielneComponent {
   media: { type: 'image' | 'video'; src: string; poster?: string }[] = [

@@ -1,0 +1,35 @@
+  <nav class="categories-tree" [class.show]="showProductCategories">
+    <ul class="cat-list">
+      <!-- Spustíme rekurzívny template s top-level categories -->
+      <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: filteredCategories }"></ng-container>
+    </ul>
+  </nav>
+  
+  <!-- Rekurzívny template -->
+  <ng-template #recursiveList let-cats>
+    <li *ngFor="let cat of cats" class="cat-item">
+      <div class="cat-header" (click)="onCategorySelect(cat.category_slug)">
+        <!-- Toggle button iba ak má deti -->
+        <a *ngIf="cat.children?.length"
+           class="toggle-btn"
+           (click)="toggleCategory(cat.category_slug); $event.stopPropagation()"
+           [attr.aria-expanded]="isExpanded(cat.category_slug)">
+          {{ cat.category_name | translate }}
+          <span class="icon">{{ isExpanded(cat.category_slug) ? '-' : '+' }}</span>
+        </a>
+        <!-- Link, keď nemá children (prípadne vždy, podľa UX) -->
+        <a *ngIf="!cat.children?.length"
+           class="cat-link"
+           (click)="onCategorySelect(cat.category_slug)">
+          {{ cat.category_name | translate }}
+        </a>
+      </div>
+  
+      <!-- Podstrom sa vykreslí len ak je rozbalený -->
+      <ul class="subcat-list"
+          [class.expanded]="isExpanded(cat.category_slug)">
+        <!-- rekurzia – vložíme rovnaký template s context.children -->
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: cat.children }"></ng-container>
+      </ul>
+    </li>
+  </ng-template>

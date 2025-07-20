@@ -9,7 +9,7 @@ export class LanguageService {
 
   constructor(private translate: TranslateService) {
     // Nastavíme predvolený jazyk pri inicializácii
-    this.currentLang = localStorage.getItem('language') || 'en';
+    this.currentLang = localStorage.getItem('language') || 'sk';
     this.translate.use(this.currentLang);
   }
 

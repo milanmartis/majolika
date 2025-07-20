@@ -22,8 +22,13 @@
               <img *ngIf="item.type === 'image'" [src]="item.src" alt="Obrázok" class="thumbnail" />
           
               <!-- Ak je to video -->
-              <video *ngIf="item.type === 'video'" [poster]="item.poster" class="thumbnail">
-                <source [src]="item.src" type="video/mp4">
+              <video *ngIf="item.type === 'video'" 
+              autoplay
+              [muted]="true"
+              loop
+              playsinline
+              [poster]="item.poster" class="thumbnail">
+                <source [src]="item.src"  type="video/mp4">
                 Váš prehliadač nepodporuje video.
               </video>
             </div>
@@ -57,3 +62,4 @@
         
     </div>
 
+    <app-footer></app-footer>

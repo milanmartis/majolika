@@ -1,0 +1,279 @@
+<!-- src/app/pages/eshop/product-detail.component.html -->
+<!-- © 2025 – Slovenská ľudová majolika -->
+
+
+
+<!-- ========= FULLSCREEN PREVIEW ========== -->
+<div *ngIf="isFullscreen" class="overlay" (click)="closeFullscreen()" [@slideFullscreen]>
+  <button class="close-btn" (click)="closeFullscreen()">✖</button>
+
+  <img
+    [src]="fullscreenImage"
+    [alt]="product?.name"
+    class="overlay-img fullscreen-image"
+    (click)="$event.stopPropagation()"
+  />
+
+  <!-- Nový footer pod obrázkem -->
+  <div class="nav-footer" (click)="$event.stopPropagation()">
+    <button *ngIf="largeImages.length > 1" class="nav-btn prev" (click)="prev($event)">‹</button>
+    <span class="counter">{{ currentIndex + 1 }}/{{ largeImages.length }}</span>
+    <button *ngIf="largeImages.length > 1" class="nav-btn next" (click)="next($event)">›</button>
+  </div>
+</div>
+
+<!-- ========= PAGE CONTENT ================ -->
+<div *ngIf="product" class="detail-wrapper" [@fadeSlideInOut]>
+  <div class="detail-grid">
+    <!-- GALÉRIA -->
+    <div class="gallery">
+      <!-- hlavný obrázok s shimmer wrapperom -->
+      <div class="main-image-wrapper" [class.loading]="loadingMap[currentImage]">
+        <img
+          [src]="currentImage"
+          [alt]="product.name"
+          class="main-image"
+          (click)="openFullscreen(currentImage)" [@slideUp]="fullscreenState"
+          (load)="onImageLoad(currentImage)"
+          (error)="onImageError(currentImage)"
+          appZoomPan 
+        />
+      </div>
+
+      <!-- miniatúry (bez primárneho) -->
+      <div *ngIf="otherImages.length" class="thumbs">
+        <div
+          *ngFor="let url of otherImages"
+          class="thumb-wrapper img-wrapper"
+          [class.loading]="loadingMap[url]"
+        >
+          <img
+            [src]="url"
+            [alt]="product.name"
+            class="thumb"
+            [class.active-thumb]="url === currentImage"
+            (click)="openFullscreen(url)" [@slideUp]="fullscreenState"
+            (load)="onImageLoad(url)"
+            (error)="onImageError(url)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== INFO ========== -->
+    <div class="info" [@fadeInOut]="'visible'">
+
+      <!-- ========= BREADCRUMB (unikátne parent→child) ========== -->
+<ng-container *ngIf="uniqueCategories.length; else noCats">
+  <div class="category-breadcrumb">
+    <ng-container *ngFor="let cat of uniqueCategories; let isLast = last">
+      <ng-container *ngIf="cat.parent">
+        <a
+          [routerLink]="['/eshop']"
+          [queryParams]="{ category: cat.parent.category_slug }"
+          class="category-link"
+        >
+          {{ cat.parent.category_name }}
+        </a>
+        &nbsp;>&nbsp;
+      </ng-container>
+
+      <a
+        [routerLink]="['/eshop']"
+        [queryParams]="{ category: cat.category_slug }"
+        class="category-link"
+      >
+        {{ cat.category_name }}
+      </a>
+
+      <span *ngIf="!isLast">,&nbsp;</span>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-template #noCats></ng-template>
+<br>
+      <h1>{{ product.name }}</h1>
+
+
+
+      <div class="cart-row">
+        <div *ngIf="product.variations?.length" class="variant-group-wrapper">
+          <div class="variant-group" role="radiogroup" aria-label="variant">
+            <ng-container *ngFor="let v of product.variations; let i = index">
+              <input
+                type="radio"
+                [id]="'variant-' + i"
+                name="variant"
+                [value]="v"
+                [checked]="v === selectedVariation"
+                (change)="onVariationChange(v)"
+                class="variant-radio"
+              />
+              <label [for]="'variant-' + i" class="variant-button">
+                {{ getVariationLabel(v.name) }}
+              </label>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="price">
+        <div *ngIf="IfProductInSale">
+          <span>€{{ displayPriceSaleFormatted }} </span>
+          <span class="in-sale"> €{{ animatedTotalPrice | number:'1.2-2' }}</span>
+        </div>
+        <div *ngIf="!IfProductInSale" class="price-sale">
+          <span>{{ animatedTotalPrice | number:'1.2-2' }} €</span>
+        </div>
+      </div>
+      
+      <div class="cart-row">
+        <div class="qty-control">
+          <button
+          class="qty-btn"
+          (click)="decQuantity()"
+          [disabled]="quantity <= 1"
+          aria-label="–"
+          >
+          <svg viewBox="0 0 30 3" xmlns="http://www.w3.org/2000/svg">
+              <path d="M28.003 0H1.5a1.5 1.5 0 100 3h26.503a1.5 1.5 0 100-3z" fill="currentColor"/>
+            </svg>
+          </button>
+
+          <span class="qty">{{ quantity }}</span>
+          
+          <button
+          class="qty-btn"
+          (click)="incQuantity()"
+          [disabled]="quantity >= 99"
+            aria-label="+"
+            >
+            <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+              <path
+              d="M28.5 14h-12v-12a1.5 1.5 0 10-3 0v12h-12a1.5 1.5 0 100 3h12v12a1.5 1.5 0 103 0v-12h12a1.5 1.5 0 100-3z"
+              fill="currentColor"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <button class="addtocart" (click)="addToCart()">
+          {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
+        </button>
+      </div>
+      <div class="cart-row">
+
+        <button
+        class="favourite"
+        (click)="onToggleFavorite()"
+        [disabled]="loadingFavorite"
+      >
+      
+        {{ isFavorite ? 'Odstrániť z obľúbených' : 'Pridať do obľúbených' }}
+      </button>
+      </div>
+      <!-- popis s ošetrením span & \n -->
+      <div class="description-wrapper">
+        <div class="accordion">
+          <!-- Description panel -->
+          <div *ngIf="sanitizedDescription" class="accordion__item" [class.is-open]="openSection === 'description'">
+            <button class="accordion__header" (click)="toggle_accordion('description')">
+              <span>{{ 'ESHOP.DESCRIPTION_TEXT' | translate }}</span>
+              <span class="accordion__icon">
+                {{ openSection === 'description' ? '−' : '+' }}
+              </span>
+            </button>
+            <div class="accordion__content">
+              <div [innerHTML]="sanitizedDescription"></div>
+            </div>
+          </div>
+        
+          <!-- Short panel -->
+          <div *ngIf="sanitizedShort" class="accordion__item" [class.is-open]="openSection === 'short'">
+            <button class="accordion__header" (click)="toggle_accordion('short')">
+              <span>{{ 'ESHOP.SIZES_TEXT' | translate }}</span>
+              <span class="accordion__icon">
+                {{ openSection === 'short' ? '−' : '+' }}
+              </span>
+            </button>
+            <div class="accordion__content">
+              <div [innerHTML]="sanitizedShort"></div>
+            </div>
+          </div>
+        
+          <!-- Size panel -->
+          <!-- <div class="accordion__item" [class.is-open]="openSection === 'size'">
+            <button class="accordion__header" (click)="toggle_accordion('size')">
+              <span>Size</span>
+              <span class="accordion__icon">
+                {{ openSection === 'size' ? '−' : '+' }}
+              </span>
+            </button>
+            <div class="accordion__content">
+              <div [innerHTML]="sanitizedSize"></div>
+            </div>
+          </div> -->
+        </div>
+      
+
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="error_404" *ngIf="!loading && !product" [@fadeSlideInOut]>
+  <h3>{{ 'ESHOP.ERROR_404' | translate }}</h3>
+</div>
+<div *ngIf="loading"  class="loading-message-wrapper">
+  <span class="loading-message">{{ loadingText }}</span>
+  </div>
+<!-- <div *ngIf="loading">
+    {{ 'ESHOP.LOADING_PRODUCTS' | translate }}
+  </div> -->
+  
+<div class="bottom_detail"></div>
+
+<!-- ---------- FEATURED PRODUKTY ---------- -->
+<section *ngIf="featured.length" class="sale-section featured" style="position: relative;">
+  <h2 style="text-align:center;color:#2944ba;">{{ 'ESHOP.FEATURED' | translate }}</h2>
+
+  <!-- Left arrow -->
+  <button (click)="scrollLeft()" class="scroll-arrow left-arrow">&#10094;</button>
+
+  <!-- Scrollable area -->
+  <div   #scrollContainer
+  class="scroll-x"
+  (mouseenter)="stopAutoSlide()"
+  (mouseleave)="startAutoSlide()">
+    <a
+      class="card"
+      style="border:0px"
+      *ngFor="let p of featured"
+      [routerLink]="['/eshop', p.slug]"
+    >
+      <img
+        [src]="p.primaryImageUrl"
+        [alt]="p.name"
+        loading="lazy"
+        (load)="onImageLoad(p.slug)"
+        (error)="onImageError(p.slug)"
+      />
+      <span class="card-label">{{ p.name }}</span>
+    </a>
+  </div>
+
+  <!-- Right arrow -->
+  <button (click)="scrollRight()" class="scroll-arrow right-arrow">&#10095;</button>
+</section>
+
+<!-- ---------- RECOMMENDED ------------------------------------ -->
+<section *ngIf="recommended.length" style="display:none;" class="recommended"  [@fadeSlideInOut]>
+  <h2>{{ 'ESHOP.RECOMMENDED' | translate }}</h2>
+  <div class="scroll-x">
+    <a *ngFor="let p of recommended" [routerLink]="['/eshop', p.slug]" class="card">
+      <img [src]="p.primaryImageUrl" [alt]="p.name" loading="lazy" />
+      <span>{{ p.name }}</span>
+    </a>
+  </div>
+</section>

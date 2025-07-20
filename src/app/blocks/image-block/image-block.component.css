@@ -1,0 +1,20 @@
+.image-wrapper {
+    width: 100%;           /* zaberie šírku svojho grid‑itemu */
+    height: 280px;         /* alebo akúkoľvek jednotnú výšku */
+    overflow: hidden;
+  }
+  
+  .image-cover {
+    cursor: pointer;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;     /* dôležité: orezáva, ale zachová ratio */
+      transition: transform 0.35s ease, opacity 0.3s ease;
+    }
+    .image-cover:hover {
+
+transform: scale(1.1); 
+
+    }
+
+  

@@ -1,17 +1,31 @@
-<div class="hero">
-    <div class="overlay">
-        <h1>{{ 'KONTAKT.WELCOME' | translate }}</h1>
-        <div class="buttons">
-          <a class="btn" routerLink="/eshop">{{ 'HOME.ESHOP' | translate }}</a>
-          <a class="btn" routerLink="/tradicia">{{ 'HOME.TRADICIA' | translate }}</a>
-          <a class="btn" routerLink="/kontakt">{{ 'HOME.KONTAKT' | translate }}</a>
-          <a class="btn" routerLink="/">{{ 'BASE' | translate }}</a>
-        </div>
-        
-        <p>
-            {{ 'HOME.FIRST_TEXT' | translate }}
-        </p>
-      
+<section class="contact-grid">
+    <!-- Mapa -->
+    <div
+      class="map"
+      style="height: 400px; width: 600px;"
+      leaflet
+      [leafletOptions]="options"
+      [leafletLayers]="layers">
     </div>
-</div>
+  
+    <!-- Formulár -->
+    <!-- <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <label>
+        Meno
+        <input formControlName="name" placeholder="Vaše meno" />
+      </label>
+  
+      <label>
+        Email
+        <input formControlName="email" placeholder="váš@email.sk" />
+      </label>
+  
+      <label class="full">
+        Správa
+        <textarea formControlName="message" rows="6"></textarea>
+      </label>
+  
+      <button type="submit" [disabled]="form.invalid">Odoslať</button>
+    </form> -->
+  </section>
   

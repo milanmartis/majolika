@@ -1,0 +1,50 @@
+.auth-form {
+    max-width: 400px;
+    margin: 5rem auto;
+    padding: 1rem;
+    border: 0px solid #ddd;
+    border-radius: 0.5rem;
+    height: 100%;
+    min-height: 555px;
+  }
+  .auth-form h2 {
+    text-align: center;
+    margin-bottom: 0.71rem;
+  }
+  .auth-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .auth-form input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    box-sizing: border-box;
+  }
+  .auth-form .error {
+    color: red;
+    margin-top: 0.5rem;
+  }
+  .auth-form button {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border-radius: 16px;
+    color: #ddd;
+  }
+  
+  .auth-card {
+    max-width: 400px;
+    margin: 8rem auto;
+    padding: 1rem;
+    height: 100%;
+    min-height: 555px;
+  }
+  .full-width {
+    width: 100%;
+  }
+  .error-msg {
+    color: #f44336;
+    margin-top: 0.5rem;
+  }
+  

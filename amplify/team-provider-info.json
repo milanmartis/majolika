@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-majolika-dev-b8123-authRole",
+      "UnauthRoleArn": "arn:aws:iam::597088055843:role/amplify-majolika-dev-b8123-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::597088055843:role/amplify-majolika-dev-b8123-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-majolika-dev-b8123-deployment",
+      "UnauthRoleName": "amplify-majolika-dev-b8123-unauthRole",
+      "StackName": "amplify-majolika-dev-b8123",
+      "StackId": "arn:aws:cloudformation:us-east-1:597088055843:stack/amplify-majolika-dev-b8123/11c0afd0-46de-11f0-a10c-0ec9fa0c1285",
+      "AmplifyAppId": "d2y68xwoabt006"
+    },
+    "categories": {
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
+    }
+  }
+}

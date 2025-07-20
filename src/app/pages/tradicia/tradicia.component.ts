@@ -6,11 +6,12 @@ import { LanguageService } from 'app/services/language.service';
 import { HammerModule } from '@angular/platform-browser';
 import { slideFullscreenAnimation } from 'app/animations/route.animations';
 import { fadeInOutAnimation } from 'app/animations/route.animations';
+import { FooterComponent } from 'app/components/footer/footer.component';
 
 @Component({
   selector: 'app-tradicia',
   standalone: true,  // ✅ Dôležité!
-  imports: [CommonModule, RouterModule, TranslateModule], // ✅ Uisti sa, že je tu `TranslateModule`
+  imports: [CommonModule, RouterModule, TranslateModule, FooterComponent], // ✅ Uisti sa, že je tu `TranslateModule`
   templateUrl: `./tradicia.component.html`,
   styleUrls: ['./tradicia.component.css'],
   animations: [slideFullscreenAnimation, fadeInOutAnimation]

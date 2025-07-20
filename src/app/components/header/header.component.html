@@ -1,45 +1,288 @@
-<header class="header">
-  <div class="container d-flex justify-content-between align-items-center">
-
-<!-- 🏗️ Hamburger tlačidlo -->
-<button class="btn2 btn-secondary mobile-menu" (click)="toggleSidebar()">
-  <i class="fas fa-bars"></i> <!-- 🍔 Ikona troch čiar -->
-</button>
-
-<!-- 📂 Bočný panel (menu) -->
-<div class="sidebar" [ngClass]="{ 'open': isSidebarOpen }">
-  <button class="close-btn" (click)="toggleSidebar()">&times;</button> <!-- ❌ Zatváracie tlačidlo -->
-
-  <ul class="sidebar-menu">
-    <li *ngFor="let category of categories">
-      <a class="sidebar-item" [routerLink]="category.link" (click)="toggleSidebar()">{{ category.name | translate }}</a>
-    </li>
-    <img src="/assets/img/back_dekor_white.svg" alt="dekor" width="104" style="transform: rotate(0deg);">
-  </ul>
-
+<div class="promo-bar" *ngIf="showPromo">
+  <div class="promo-content">
+    <span>Letná zľava 20 % na všetky prehliadky</span>
+    <button class="promo-close">×</button>
+  </div>
 </div>
+<header
+  [class.at-top]="isAtTop && !hidden"
+  [class.scrolled]="!isAtTop && !hidden"
+  [class.hidden]="hidden"
+>
+  <div class="container d-flex justify-content-between align-items-center">
+    <!-- 🖼️ Logo -->
+    <a class="logo-link" routerLink="/">
+      <img src="assets/img/logo-SLM-modre.gif" alt="Logo" class="logo-image" />
+    </a>
 
-<!-- Overlay pre zatvorenie pri kliknutí mimo -->
-<div class="overlay" *ngIf="isSidebarOpen" (click)="toggleSidebar()"></div>
+    <!-- ===== DESKTOP MENU (≥ 992 px) ===== -->
+    <nav class="desktop-menu" (mouseenter)="cancelMegaTimeout()">
+      <ul class="desktop-menu-list d-flex align-items-center">
+        <li *ngFor="let item of categories2" class="desktop-menu-item">
+          <ng-container *ngIf="item.link === '/eshop'; else normalDesk">
+            <a
+              class="desktop-menu-link"
+              [routerLink]="item.link"
+              (mouseenter)="openMegaNav()"
+              (click)="toggleMegaNav()"
+            >
+              {{ item.name | translate }}
+            </a>
+          </ng-container>
+          <ng-template #normalDesk>
+            <a
+              class="desktop-menu-link"
+              [routerLink]="item.link"
+              (click)="closeMegaNav2()"
+            >
+              {{ item.name | translate }}
+            </a>
+          </ng-template>
+        </li>
+      </ul>
+    </nav>
 
+    <!-- <div class="deskImage"><img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/thumbnail_2_f5e2e3a292.jpg"></div> -->
 
-    <!-- 📌 Text v strede -->
+    <!-- ===== MOBILE OVERLAY MENU (≤ 599 px) ===== -->
+    <!-- Hamburger toggle -->
+    <button
+      class="subnavigation__toggle d-lg-none"
+      aria-controls="subnav-overlay"
+      [attr.aria-expanded]="isMobileNavOpen"
+      (click)="toggleMobileNav()"
+    >
+      ☰
+    </button>
     <div class="header-text">
-      <a class="header-link" (click)="toggleSidebar()">{{ 'HOME.WELCOME' | translate }}</a>
+      <!-- <a class="header-link" routerLink="/">{{ 'HOME.WELCOME' | translate }}</a> -->
+      <a class="header-link" routerLink="/">
+        <img src="assets/img/logo-SLM-modre.gif" alt="Logo" class="logo-image" />
+      </a>
+    </div>
+    <!-- Full‑screen overlay nav -->
+    <nav
+      class="subnavigation-overlay d-lg-none"
+      id="subnav-overlay"
+      [ngClass]="{ open: isMobileNavOpen }"
+    >
+      <!-- close btn -->
+      <button
+        class="subnavigation__close"
+        aria-label="Close menu"
+        (click)="onCloseMobileNav()"
+      >
+        ×
+      </button>
+
+      <!-- Root links (Home, Produkty …) -->
+      <ul class="overlay-root-list">
+        <li *ngFor="let item of categories2" class="overlay-root-item">
+          <!-- Produkty /eshop obsahuje strom kategórií -->
+          <ng-container *ngIf="item.link === '/eshop'; else simpleRoot">
+            <button
+              class="overlay-root-btn"
+              [attr.aria-expanded]="isExpanded('eshop')"
+              (click)="toggleCategory('eshop')"
+            >
+              {{ item.name | translate }}
+            </button>
+            <!-- Strom kategórií (root → sub) -->
+            <ul class="overlay-cat-tree" *ngIf="isExpanded('eshop')">
+              <li *ngFor="let rc of categories" class="overlay-cat-item">
+                <!-- má deti → zobrazí sa tlačidlo s +/– a podkategórie -->
+                <ng-container *ngIf="rc.children?.length; else leafCategory">
+                  <button
+                    class="overlay-cat-btn"
+                    [attr.aria-expanded]="isExpanded(rc.category_slug)"
+                    (click)="toggleCategory(rc.category_slug)"
+                  >
+                    {{ rc.category_name | translate }}
+                  </button>
+                  <ul
+                    class="overlay-subcat-list"
+                    *ngIf="isExpanded(rc.category_slug)"
+                  >
+                    <li *ngFor="let sub of rc.children">
+                      <a
+                        class="overlay-subcat-link"
+                        (click)="onCategorySelect(sub.category_slug); onCloseMobileNav()"
+                      >
+                        {{ sub.category_name | translate }}
+                      </a>
+                    </li>
+                  </ul>
+                </ng-container>
+            
+                <!-- nemá deti → hneď link na slug -->
+                <ng-template #leafCategory>
+               <button
+                    class="overlay-cat-btn2"
+                    (click)="onCategorySelect(rc.category_slug); onCloseMobileNav()"
+                  >
+                    {{ rc.category_name | translate }}
+                  </button>
+                </ng-template>
+              </li>
+            </ul>
+          </ng-container>
+
+          <!-- Jednoduchý link (bez podmenu) -->
+          <ng-template #simpleRoot>
+            <a
+              class="overlay-root-link"
+              [routerLink]="item.link"
+              (click)="onCloseMobileNav()"
+            >
+              {{ item.name | translate }}
+            </a>
+          </ng-template>
+        </li>
+      </ul>
+
+      <div class="language-switch-mobile">
+
+
+        <select
+        #langSelect
+        [(ngModel)]="currentLang"
+          (ngModelChange)="switchLanguage($event)"
+        >
+          <option *ngFor="let lang of ['sk','en','de']" [value]="lang">
+            {{ lang.toUpperCase() }}
+          </option>
+        </select>
+      </div>
+      <app-search></app-search>
+    </nav>
+
+    <!-- ===== SIDEBAR (600–991 px) ===== -->
+    <!-- <button
+      class="btn2 btn-secondary mobile-menu d-lg-none d-sm-inline-block d-none"
+      (click)="toggleSidebar()"
+    >
+      <i class="fas fa-bars"></i>
+    </button> -->
+    <!-- <div class="overlay" *ngIf="isSidebarOpen" (click)="toggleSidebar()"></div> -->
+
+    <!-- TOPBAR (search · user · cart) -->
+
+<!-- header.component.html -->
 
     
-    </div>
+    <div class="d-flex align-items-center topbar-group ms-auto" style="display:inline;">
+      <div class="language-switch nomobile">
 
-    <!-- 🌍 Prepínač jazykov -->
-    <div class="language-switch">
-      <button 
-        class="btn"
-        *ngFor="let lang of ['sk', 'en', 'de']"
-        (click)="switchLanguage(lang)"
-        [ngClass]="{ 'active-lang': isActive(lang) }">
-        {{ lang.toUpperCase() }}
-      </button>
+
+        <select
+        #langSelect
+        [(ngModel)]="currentLang"
+          (ngModelChange)="switchLanguage($event)"
+        >
+          <option *ngFor="let lang of ['sk','en','de']" [value]="lang">
+            {{ lang.toUpperCase() }}
+          </option>
+        </select>
+      </div>
+      <app-search class="nomobile"></app-search>
+      
+
+      <a class="cart-link position-relative ms-2" (click)="onCartIconClick()">
+        <span class="icon" id="cart_image"></span>
+        <span *ngIf="(count$ | async) as c" class="badge" [class.empty]="!c">{{ c }}</span>
+      </a>
     </div>
   </div>
-</header>
+  <!-- ===== MEGA NAV (≥ 992 px) ===== -->
+  <nav
+  class="mega-nav"
+  *ngIf="isMegaOpen"
+  @dropdown
+  (mouseleave)="closeMegaNav2()"
+  (click)="closeMegaNav2()"
+  >
+  <!-- <a class="logo-link" routerLink="/">
+    <img src="assets/img/logo-SLM-modre.gif" alt="Logo" class="logo-image" />
+  </a> -->
+  <div class="flex" style="text-align:center;margin:auto; padding:16px 0px 0px 14px; float:left;margin-right:10px;">
 
+    <div class="product-card" >
+      <i style="padding-bottom:10px;">
+        {{ 'ESHOP.DEKOR' | translate }}
+
+      </i>
+    </div>
+    <div class="product-card" >
+      <a [routerLink]="['/eshop']"
+      [queryParams]="{ category: null,  decor: 'habansky-dekor' }"
+      queryParamsHandling="merge"><img width="75" src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/pestry_c66dc15903.png" alt=""></a>
+      <div class="card-content" style="padding: 5px; flex-grow: 1;">
+        <!-- <h3 class="card-title">{{ 'Habánsky vzor' }}</h3> -->
+      </div>
+    </div>
+    <div class="product-card" >
+      <a [routerLink]="['/eshop']"
+      [queryParams]="{ category: null,  decor: 'modry-dekor' }"
+      queryParamsHandling=""><img width="75" src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/modry_3d97dda614.png" alt=""></a>
+    <div class="card-content" style="padding: 5px; flex-grow: 1;">
+      <!-- <h3 class="card-title" >{{ 'Modrý vzor' }}</h3> -->
+    </div>
+  </div>
+  <div class="product-card">
+    <a [routerLink]="['/eshop']"
+    [queryParams]="{ category: null,  decor: 'pestry-dekor' }"
+    queryParamsHandling=""><img width="75" src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/habansky_d991e83517.png" alt=""></a>
+    <div class="card-content" style="padding: 5px; flex-grow: 1;">
+      <!-- <h3 class="card-title">{{ 'Pestrý vzor' }}</h3> -->
+    </div>
+  </div>
+  <div class="product-card">
+    <a [routerLink]="['/eshop']"
+    [queryParams]="{ category: null,  decor: 'zeleny-dekor' }"
+    queryParamsHandling=""><img width="75" src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/zeleny_e59e86cc20.png" alt=""></a>
+    <div class="card-content" style="padding: 5px; flex-grow: 1;">
+      <!-- <h3 class="card-title">{{ 'Zelený vzor' }}</h3> -->
+  </div>
+  </div>
+  </div>
+
+
+  <div class="flex" style="text-align:center; margin:auto; padding:16px 0px 0px 14px; float:left; margin-right:10px;">
+    <div class="product-card">
+      <i style="padding-bottom:10px;">Forma</i>
+    </div>
+  
+    <div class="product-card" *ngFor="let icon of icons">
+      <a [routerLink]="['/eshop']" 
+      class="icon-link"
+      [queryParams]="{ category: null,  decor: null , shape: icon}"
+      >
+        <img
+          class="icon"
+          width="42"
+          height="42"
+          [alt]="icon"
+          src="assets/img/icons/{{ icon }}.svg"
+          >
+
+      </a>
+    </div>
+  </div>
+
+
+    <ul class="mega-nav__list">
+      <li *ngFor="let c of categories" class="mega-nav__item">
+        <a class="mega-nav__link" (click)="onCategorySelect(c.category_slug)">
+          {{ 'CATEGORIES.'+c.category_slug | translate }}
+        </a>
+        <ul class="mega-nav__sublist">
+          <li *ngFor="let sub of c.children">
+            <a (click)="onCategorySelect(sub.category_slug)">
+              {{ 'CATEGORIES.'+sub.category_slug | translate }}
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>

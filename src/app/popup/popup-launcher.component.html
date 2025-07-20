@@ -1,0 +1,44 @@
+<!-- full-screen backdrop -->
+<div
+  class="popup-backdrop"
+  *ngIf="popup && isOpen"
+  (click)="close()"
+></div>
+
+<!-- sliding popup panel with background cover -->
+<div
+  *ngIf="popup && isOpen"
+  class="popup-panel"
+  [@slideIn]
+  [ngStyle]="{ 'background-image': 'url(' + firstImageUrl() + ')' }"
+>
+  <!-- close button -->
+  <button class="close-btn" (click)="close()">✕</button>
+
+
+
+  <!-- radial overlay under text -->
+  <div class="overlay"></div>
+
+  <!-- footer with header and button -->
+  <div class="footer">
+    <h1>{{ popup.header }}</h1>
+        <ng-container *ngFor="let block of popup.text">
+          <ng-container *ngIf="block.type === 'paragraph'">
+            <ng-container *ngFor="let child of block.children">
+              <p *ngIf="child.text">{{ child.text }}</p>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      <!-- text blocks container -->
+      <button
+        class="btn"
+        *ngIf="popup.url_link"
+        (click)="goToLink()"
+      >
+        
+          {{ 'GO' }}
+    </button>
+      </div>
+
+</div>

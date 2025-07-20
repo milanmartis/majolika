@@ -1,11 +1,94 @@
-/* You can add global styles to this file, and also import other style files */
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+@import url("https://use.typekit.net/gpz7sjg.css");
 
-html, body { height: 100%; overflow: auto; background-color: #3d45a1;}
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;  }
+
+:root {
+  --color-primary: #f0f0f0;   /* predvolená farba */
+  --theme-accent:  #2ecc71;
+  --corners: 0px;
+  --padding: 0px;
+  --base-blue: #0e29a0;
+  --base-blue-thin: #1d285823;
+  --base-blue-thin2: #1d285809;
+  --base-blue-hover: #081a69;
+  /* prípadne ďalšie premené */
+}
 
 
-  
+
+html, body {     background: var(--color-primary);
+}
+
+
+body {
+  margin: 0;
+  font-family: "alegreya", serif;
+  background-image: url("/assets/img/corner6.png");
+  background-size: auto;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size:40rem;
+
+  animation: slideUpImage 1.2s ease-out forwards;
+}
+
+
+
+i.fas{
+  color:var(--base-blue);
+}
+i.fas:hover{
+  color:var(--base-blue-hover);
+}
+i{
+  color: var(--base-blue);
+}
+
+@media (max-width: 1000px) {
+  body{
+    background-image: url("/assets/img/corner7.png");
+    background-size:22rem;
+
+
+  }
+/* 1b2d6f */
+
+}
+
+
+
+button{
+  margin:10px;
+  border: 0px;
+  background-color: var(--base-blue);
+  border-radius: var(--corners);
+  padding: 2px 16px 2px 16px;
+}
+
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+select{
+  margin: 10px;
+  border-radius: var(--corners);
+  border: 2px solid var(--base-blue);
+  background-color: transparent;
+}
    
+option{
+  font-size: 0.77rem;
+  cursor: pointer;
+} 
+
+label{
+color: var(--base-blue);
+}
+
+img{
+  border-radius: var(--corners);
+}
   
   .hero video {
     position: absolute;
@@ -13,7 +96,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;  }
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
-    height: 100vh;
     object-fit: cover;
   }
   
@@ -23,9 +105,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;  }
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
     background: rgba(27, 33, 100, 0.7);
-    overflow: auto;
 
     flex-direction: column;
     align-items: center;
@@ -44,13 +124,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;  }
     background-size: cover;
     background-repeat: no-repeat;
      background-position: center; 
-     background-position: center; 
      margin: 10px;
      padding: 32px 10px 30px 10px;
      width: 80px;
      height: 80px;
      text-align: center;
-     border-radius: 10px;
+     border-radius: var(--corners);
      text-decoration: none;
      font-size: 0.56rem;
      letter-spacing: 0.05rem;
@@ -68,7 +147,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;  }
 
 background-color:#3d45a1;
     color: #fff;
-    border: 2px solid #ddd;
+    border: 0px solid #ddd;
   }
   
   @media (min-width: 768px) {
@@ -91,7 +170,7 @@ background-color:#3d45a1;
 
   }
 
-  @media (min-width: 768px) {
+  /* @media (min-width: 768px) {
 
   body.tradicia-mode .mobile-menu {
     font-size: 26px;
@@ -117,13 +196,26 @@ body.tradicia-mode .btn.active-lang {
     color: #ddd;
   }
 
-body.tradicia-mode .header-text {
+body.tradicia-mode .header-text a{
     color: #3d45a1;
+
 
   }
 
-}
+} */
 
+
+h5{
+
+
+      list-style: none;
+      margin: 1px 1px 4px 0px; padding: 2px;
+      font-size: 0.79rem;
+      font-weight: 400;
+     line-height: 139%;
+        color: #6d7581;
+        cursor: pointer;
+    }
 
 
 
@@ -142,7 +234,6 @@ body.tradicia-mode .header-text {
     width: 80px;
     height: 80px;
     text-align: center;
-    border-radius: 10px;
     text-decoration: none;
     font-size: 0.56rem;
     letter-spacing: 0.05rem;
@@ -176,13 +267,16 @@ background-color:#fff;
 
 
 
+/* 
+  h1, h2, h3, h4, p, a {
+        font-family: 'Roboto';
+  } */
 
   h1{
-    font-family: 'inter';
     font-size: 240%;;
     text-transform: uppercase;
     font-weight: 900;
-    padding: 3px 33px 3px 33px;
+    padding: 0px;
   }
 
 a{
@@ -221,16 +315,68 @@ a:hover{
 
 
 p{
+  font-size: 0.72rem;
+
   max-width: 566px;
   margin: auto;
   margin-bottom: 44px;;
+  
 }
 
 
-i{
-  font-style: normal;
-  font-weight: 400;
-  font-size: 111%;
+.desc, i{    font-style: normal; font-size: 0.89rem; margin-bottom:1.5rem; color:#4a5568; line-height:1.5; }
+.desc br + br{ display:block; margin-top:0.75rem; }
+
+
+.favorite {
+  line-height: 1;
+  vertical-align: middle;
+}
+.fa-solid {
+  font-size: 1.5rem;
+  font-weight: 200;
+  margin: -4px 16px 0px 6px;
+    line-height: 1;
+    vertical-align: middle;
+    transition: all 0.6s ease;
+    color: var(--base-blue);
+  }
+ .addtofavorite:hover .fa-solid {
+  color: #ddd;
 }
 
 
+.card{
+  background-color: transparent;
+}
+
+br{
+  line-height: 60%;
+}
+
+
+/* globálny styles.css */
+#video-detach-button {
+  display: none !important;
+}
+
+/* cieľ: samotný mat-dialog-container */
+.mat-dialog-container.transparent-dialog {
+  background-color: blue;
+  box-shadow: none             !important;
+  padding: 0                   !important;
+}
+
+
+.moja-backdrop{
+  background: red;
+  /* background-size:contain */
+
+}
+
+/* zacielené na samotný panel vo vloženej overlay vrstve */
+.cdk-overlay-container .cdk-overlay-pane .mat-dialog-container.transparent-dialog {
+  background-color: transparent !important;
+  box-shadow: none               !important;
+  padding: 0                     !important;
+}

@@ -1,0 +1,232 @@
+<section
+  #productList
+  class="product-list"
+  [@fadeIn]="'visible'"
+  [@slideUp]="'visible'"
+>
+  <!-- Kategória nadpis -->
+  <div style="padding-top:33px;max-width:1000px;width:100%;margin:auto;" *ngIf="selectedCategoryName">
+    <h2>
+      <strong>
+        {{ 'CATEGORIES.'+selectedCategorySlug | translate }}
+        <button
+          (click)="resetCategory()"
+          class="reset-button"
+          title="Zobraziť všetky hlavné kategórie"
+        >
+          ×
+        </button>
+      </strong>
+    </h2>
+    <h5>{{ selectedCategoryText }}</h5>
+
+  </div>
+
+  <!-- Výzva na výber kategórie -->
+  <div
+    *ngIf="!selectedCategory"
+    class="status"
+  >
+    <h2>{{ 'ESHOP.SELECT_CATEGORY' | translate }}</h2>
+  </div>
+
+<!-- Subkategórie ako buttony -->
+<div
+ 
+  class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
+>
+  <div class="child-buttons">
+    <button
+      *ngFor="let child of childCategories"
+      (click)="onCategorySelect(child.category_slug)"
+      class="child-button"
+      [class.active]="selectedCategory === child.category_slug"
+    >
+      {{ 'CATEGORIES.'+child.category_slug | translate }}
+    </button>
+  </div>
+</div>
+
+
+
+  <!-- Root kategórie -->
+  <div
+  *ngIf="rootCategories && rootCategories.length > 0"
+  class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
+  [style.display]="!selectedCategory ? 'block' : 'none'"
+>
+    <div class="child-buttons">
+      <button
+        *ngFor="let root of rootCategories"
+        (click)="onCategorySelect(root.category_slug)"
+        class="child-button"
+      >
+        {{ 'CATEGORIES.'+root.category_slug | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Chyba / prázdny výpis -->
+  <div *ngIf="error" class="status error">
+    {{ 'ESHOP.ERROR_LOADING_PRODUCTS' | translate }}
+  </div>
+  <div
+    *ngIf="selectedCategory && !isLoading && !error && products.length === 0"
+    class="status"
+  >
+   <h3 class="status-text">
+     {{ 'ESHOP.NO_PRODUCTS_IN_CATEGORY' | translate }}
+   </h3> 
+  </div>
+
+  <!-- *** SORTOVANIE *** -->
+  <div
+    class="sort-wrapper"
+    *ngIf="!error && products.length > 0"
+  >
+    <label for="sortSelect"><p>{{ 'ESHOP.SORT_BY' | translate }}: </p></label>
+    <select
+      id="sortSelect"
+      class="sort-select"
+      [(ngModel)]="selectedSort"
+      (ngModelChange)="onSortChange($event)"
+    >
+      <option *ngFor="let opt of sortOptions" [value]="opt.value">
+        <p>
+          {{ opt.label }}
+        </p>
+      </option>
+    </select>
+  </div>
+
+<!-- Dekory -->
+ <div class="flex">
+
+   <div class="filter-decor">
+     <label *ngFor="let opt of decorOptions">
+       <input
+       #cbDec type="checkbox"
+       [checked]="selectedDecors.includes(opt.slug)"
+       (change)="onDecorToggle(opt.slug, cbDec.checked)"
+       />
+       {{ opt.label }}
+      </label>
+    </div>
+    
+    <!-- Tvary -->
+    <div class="filter-shape">
+      <label *ngFor="let opt of shapeOptions">
+    <input
+    #cbSh type="checkbox"
+    [checked]="selectedShapes.includes(opt.slug)"
+    (change)="onShapeToggle(opt.slug, cbSh.checked)"
+    />
+    {{ opt.label }}
+  </label>
+  <div class="filter-actions">
+    <button
+    *ngIf="selectedDecors.length || selectedShapes.length"
+    class="btn-clear-filters"
+    (click)="clearAllDecorFilters()"
+    >
+    {{ 'ESHOP.CANCEL_ALL_DECORS' | translate }}
+  </button>
+  </div>
+</div>
+</div>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="loading-message-wrapper">
+    <span class="loading-message">{{ loadingText }}</span>
+  </div>
+  <!-- <div *ngIf="isLoading" class="grid">
+    <div class="grid-item shimmer" *ngFor="let _ of loadingPlaceholders"></div>
+  </div> -->
+
+
+  <!-- <div class="grid" *ngIf="!isLoading && !error && products.length > 0"> -->
+    <div class="products-wrapper" [class.loading]="isLoading">
+      <div class="grid">
+    <ng-container *ngFor="let p of paginatedProducts">
+      <a
+        [routerLink]="['/eshop', p.slug]"
+        class="grid-item"
+
+      >
+        <div class="img-wrapper" [class.loading]="loadingMap[p.slug]">
+          <button
+          class="btn-heart"
+
+        >   
+
+        <i class="fa fa-heart"></i>
+        </button>
+          <img
+
+            [src]="p.primaryImageUrl || '/assets/img/gall/placeholder.jpg'"
+            alt="{{ p.name }}"
+            (load)="onImageLoad(p.slug)"
+            (error)="onImageError(p.slug)"
+          />
+        </div>
+  
+        <div class="info">
+          <div class="small-decor-info" *ngIf="getDecorFromName(p.name)">
+            {{ getDecorFromName(p.name) }}
+          </div>
+        
+          <h3>{{ getWithoutDecorFromName(p.name) }}</h3>
+        
+          <p *ngIf="p.price !== null; else noPrice">
+            {{ p.price }} €
+          </p>
+          <ng-template #noPrice>
+            <p>{{ 'ESHOP.PRICE_NOT_SET' | translate }}</p>
+          </ng-template>
+        </div>
+
+        
+        <!-- Add to cart button full-width pod produktom -->
+        <button
+        class="btn-cart"
+        (click)="addProductToCart(p); $event.stopPropagation(); $event.preventDefault()"
+      >
+        <span class="icon" id="cart_image"></span>
+        {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
+      </button>
+        </a>
+    </ng-container>
+  </div>
+    <!-- overlay so spinnerom počas načítania -->
+ <div class="loading-overlay" *ngIf="isLoading">
+      <div class="spinner"></div>
+    </div>
+  </div>
+  
+
+<!-- Paginácia -->
+<div class="pagination" *ngIf="totalPages > 1 && !isLoading">
+  <button *ngIf="!isLoading">#{{ totalCount }}</button>
+  <button
+    [disabled]="currentPage === 1"
+    (click)="changePage(currentPage - 1)"
+  >
+    «
+  </button>
+  <button
+    *ngFor="let page of pagesToDisplay"
+    [disabled]="page === -1"
+    (click)="page !== -1 && changePage(page)"
+    [class.active]="page === currentPage"
+  >
+    <span *ngIf="page === -1">…</span>
+    <span *ngIf="page !== -1">{{ page }}</span>
+  </button>
+  <button
+    [disabled]="currentPage === totalPages"
+    (click)="changePage(currentPage + 1)"
+  >
+    »
+  </button>
+</div>
+</section>

@@ -5,12 +5,56 @@
     "PEREX": "Modra majolica and majolica ornamentation are inscribed in the Representative List of the Intangible Cultural Heritage of Slovakia.",
     "FIRST_TEXT": "For 140 years, masters of the craft in Slovak Folk Majolica have been developing inherited traditions, creating the ceramic soul of the region with their hands and hearts. All products are handmade and hand-painted. Each piece is a unique work of art. Modra Majolica and Majolica ornamentation are listed in the Representative List of Intangible Cultural Heritage of Slovakia.",
     "TRADICIA": "Tradition",
-    "ESHOP": "Products",
+    "ESHOP": "E-shop",
     "DIELNE": "Workshop"
   },
+
+  "ONAS": { 
+    "CO_ROBIME": "What we do",
+    "KTO_SME": "Who we are",
+    "HISTORIA": "History",
+    "INFO": "Information"
+    },
+
+
+
+    "SLIDE":{
+      "VIAC_INFO":"More informations"
+    },
+
+
   "ESHOP": { 
     "WELCOME": "Shop with our production",
-    "FIRST_TEXT": "Slovak Folk Majolica is a bearer of the tradition of Modra Majolica and Majolica ornamentation, while also being a space for creativity and innovative approaches in the production of Modra ceramics. The goal of project support is to develop creative talent and innovations in the field of traditional crafts by preserving, maintaining, and restoring a significant part of Slovakia’s cultural heritage."
+    "FIRST_TEXT": "Slovak Folk Majolica is a bearer of the tradition of Modra Majolica and Majolica ornamentation, while also being a space for creativity and innovative approaches in the production of Modra ceramics. The goal of project support is to develop creative talent and innovations in the field of traditional crafts by preserving, maintaining, and restoring a significant part of Slovakia’s cultural heritage.",
+    "MNOZSTVO": "Quantity",
+    "VARIANTY": "Variants",
+    "VLOZ_DO_KOSIKA": "Add to Cart",
+    "CELKOVA_CENA": "Total Price",
+    "FEATURED":"Recommended for you",
+    "NO_PRODUCTS_IN_CATEGORY": "There are no products in this category",
+    "LOADING_PRODUCTS": "Loading products",
+    "ERROR_LOADING_PRODUCTS": "Error loading products",
+    "ERROR_404": "The product was unfortunately not found",
+    "CART":"Cart",
+    "DO_POKLADNE":"Checkout",
+    "SUM_TOTAL":"Total",
+    "CART_IS_EMPTY": "The cart is empty",
+    "SELECT_CATEGORY": "Please select a category",
+    "SORT_BY": "Sort by",
+    "FILTER_BY": "Filter",
+    "POKRACOVAT_SHOPPING": "Continue Shopping",
+    "SIZES_TEXT": "Specifications",
+    "DESCRIPTION_TEXT": "Description",
+    "DEKOR":"Decor",
+    "CANCEL_ALL_DECORS": "Cancel All Filters",
+    "BUTTON": "Discover Now"
+
+
+
+
+
+
+
   },
   "DIELNE": { 
     "WELCOME": "Tours and creative workshops",
@@ -22,12 +66,99 @@
   },
     "CATEGORIES": {
       "HOME": "Home",
-      "PRODUCTS": "Products",
+      "PRODUCTS": "E-shop",
       "WORKSHOPS": "Workshops",
       "TRADITION": "Tradition",
       "ABOUT": "About",
-      "KONTAKTY": "Contact"
-    },
+      "KONTAKTY": "Contact",
+    "dekoracie-a-svietidla": "Decorations and Lighting",
+    "hodiny": "Clocks",
+    "kosiky": "Baskets",
+    "plakety-a-figurky": "Plaques and Figurines",
+    "pokladnicky": "Piggy Banks",
+    "sakralna-tematika": "Sacred Themes",
+    "svietniky-a-lustre": "Candlesticks and Chandeliers",
+    "cutory": "Flasks",
+    "drobnosti-na-pamiatku": "Keepsakes",
+    "korkove-stuple-drobnosti-na-pamiatku": "Cork Stoppers",
+    "magnetky": "Magnets",
+    "minikeramika": "Mini Ceramics",
+    "odznaky": "Badges",
+    "zvonceky-a-podkovicky": "Bells and Horseshoes",
+    "knihy-a-publikacie": "Books and Publications",
+    "kolekcie": "Collections",
+    "bordovy-listok": "Burgundy Ticket",
+    "bajny-jednorozec": "Legendary Unicorn",
+    "fialovy-klas": "Purple Spike",
+    "figuralna-tematika": "Figural Themes",
+    "kruhy": "Circles",
+    "linky": "Lines",
+    "modra-glazura": "Blue Glaze",
+    "modre-hrozno": "Blue Grape",
+    "modre-pierko": "Blue Feather",
+    "modry-listok-jahody": "Blue Strawberry Ticket",
+    "odfarbena-tradicia": "Faded Tradition",
+    "panabeka": "Panabeka",
+    "skratky": "Shortcuts",
+    "slavnostna-kolekcia-s-pravym-zlatom-svadba": "Festive Collection with Real Gold – Wedding",
+    "slavnostna-kolekcia-s-pravvym-zlatom-vianoce": "Festive Collection with Real Gold – Christmas",
+    "starinky": "Antiques",
+    "vlocky": "Flakes",
+    "sipky": "Rose Hips",
+    "milovnikom-vina": "For Wine Lovers",
+    "doplnky-ku-vinu": "Wine Accessories",
+    "dzbany-milovnikom-vina": "Jugs",
+    "taniere-milovnikom-vina": "Plates",
+    "vinove-pohare": "Wine Glasses",
+    "kalichy": "Goblets",
+    "na-kvety-a-male-tajomstva": "For Flowers and Small Secrets",
+    "dozy": "Jars",
+    "kvetinace": "Flower Pots",
+    "vazy": "Vases",
+    "na-stol": "For the Table",
+    "doplnky-ku-stolovaniu": "Tableware Accessories",
+    "dzbany": "Jugs",
+    "misy_a_misky": "Bowls and Dishes",
+    "podnosy": "Trays",
+    "pohare": "Glasses",
+    "popolniky": "Ashtrays",
+    "taniere": "Plates",
+    "cajniky": "Teapots",
+    "salky-a-hrnceky": "Cups and Mugs",
+    "obkladacky": "Tiles",
+    "vinohradnickycyklus": "Viticulture Cycle",
+    "ludovy-motiv": "Folk Motif",
+    "supravy": "Practical Gift Sets",
+    "pre-najkrajsie-chvile-roka": "For the Most Beautiful Moments",
+    "velka-noc": "Easter",
+    "vianoce": "Christmas",
+    "vianocne-ozdobky-sperky": "Christmas Ornaments/Jewelry",
+    "sklo": "Glass",
+    "tvorenie-na-doma": "Home Crafting",
+    "vystavne-kusky": "Exhibition Pieces",
+    "zazitky": "Experiences",
+    "darcekove-poukazy": "Gift Vouchers",
+    "prehliadky-a-tvorive-dielne": "Tours and Creative Workshops",
+    "sperky-a-odevy": "Jewelry and Clothing",
+    "fusakle-x-majolika": "Fusakle x Majolika",
+    "ine_doplnky": "Other Accessories",
+    "nausnice": "Earrings",
+    "odevy": "Clothing",
+    "prstene": "Rings",
+    "tasky": "Bags"
+  },
+
+
+
+
+
+
+
+
+
+
+
+
    "CATEGORIES2": {
         "TRADITIONAL": "Traditional",
         "MODERN": "Modern",
@@ -35,7 +166,22 @@
       },
       "IMG": {
   "NAME": "our-offer"
-}
+},
+
+"CALENDAR": {
+  "TITLE": "Exhibitions & workshops",
+  "REGISTER_TITLE": "Register for",
+  "NAME": "Name",
+  "EMAIL": "Email",
+  "SUBMIT": "Submit",
+  "CANCEL": "Cancel"
+},
     
+"PREHLIADKY2": {
+  "INFO": "Information",
+  "MAJOLIKA_NA_AKCII": "Majolica at the event",
+  "DIELNE2": "Workshops",
+  "PREHLIADKY": "Tours"
+}
     
 }

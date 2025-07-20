@@ -5,12 +5,50 @@
     "PEREX": "Die Modra-Majolika und die Majolika-Ornamentik sind in die Repräsentative Liste des immateriellen Kulturerbes der Slowakei eingetragen.",
     "FIRST_TEXT": "Seit 140 Jahren entwickeln Meister ihres Fachs in der Slowakischen Volksmajolika die geerbten Traditionen weiter und erschaffen mit ihren Händen und Herzen die keramische Seele der Region. Alle Produkte sind handgefertigt und handbemalt. Jedes Stück ist ein einzigartiges Kunstwerk. Die Modra Majolika und die Majolika-Ornamentik sind in der Repräsentativen Liste des immateriellen Kulturerbes der Slowakei eingetragen.",
     "TRADICIA": "Tradition",
-    "ESHOP": "Produkte",
+    "ESHOP": "E-shop",
     "DIELNE": "Werkstatt"
   },
+
+  "ONAS": { 
+    "CO_ROBIME": "Was wir tun",
+    "KTO_SME": "Wer wir sind",
+    "HISTORIA": "Geschichte",
+    "INFO": "Informationen"
+    },
+    
+
+    "SLIDE":{
+      "VIAC_INFO": "Weitere Informationen"
+    },
+
   "ESHOP": { 
     "WELCOME": "Shop mit unserer Produktion",
-    "FIRST_TEXT": "Die Slowakische Volksmajolika ist ein Träger der Tradition der Modra Majolika und der Majolika-Ornamentik und gleichzeitig ein Raum für Kreativität und innovative Verfahren in der Herstellung der Modra-Keramik. Ziel der Projektförderung ist die Entwicklung kreativer Talente und Innovationen im Bereich des traditionellen Handwerks durch die Bewahrung, den Erhalt und die Wiederherstellung eines bedeutenden Teils des slowakischen Kulturerbes."
+    "FIRST_TEXT": "Die Slowakische Volksmajolika ist ein Träger der Tradition der Modra Majolika und der Majolika-Ornamentik und gleichzeitig ein Raum für Kreativität und innovative Verfahren in der Herstellung der Modra-Keramik. Ziel der Projektförderung ist die Entwicklung kreativer Talente und Innovationen im Bereich des traditionellen Handwerks durch die Bewahrung, den Erhalt und die Wiederherstellung eines bedeutenden Teils des slowakischen Kulturerbes.",
+    "MNOZSTVO": "Menge",
+    "VARIANTY": "Varianten",
+    "VLOZ_DO_KOSIKA": "In den Warenkorb",
+    "CELKOVA_CENA": "Gesamtpreis" ,
+    "FEATURED":"Für Sie empfohlen",
+    "NO_PRODUCTS_IN_CATEGORY": "In dieser Kategorie gibt es keine Produkte",
+    "LOADING_PRODUCTS": "Produkte werden geladen",
+    "ERROR_LOADING_PRODUCTS": "Fehler beim Laden der Produkte",
+    "ERROR_404": "Das Produkt wurde leider nicht gefunden",
+    "CART":"Warenkorb",
+    "DO_POKLADNE":"Zur Kasse",
+    "SUM_TOTAL":"Gesamtsumme",
+    "CART_IS_EMPTY": "Der Warenkorb ist leer",
+    "SELECT_CATEGORY": "Bitte wählen Sie eine Kategorie aus",
+    "SORT_BY": "Aussortieren",
+    "FILTER_BY": "Filter",
+    "POKRACOVAT_SHOPPING": "Weiter einkaufen",
+    "SIZES_TEXT": "Spezifikationen",
+    "DESCRIPTION_TEXT": "Beschreibung",
+    "DEKOR":"Dekor",
+    "CANCEL_ALL_DECORS": "Alle Filter entfernen",
+    "BUTTON": "Jetzt entdecken"
+
+
+
   },
   "DIELNE": { 
     "WELCOME": "Führungen und kreative Werkstätten",
@@ -22,12 +60,95 @@
   },
     "CATEGORIES": {
       "HOME": "Startseite",
-      "PRODUCTS": "Produkte",
+      "PRODUCTS": "E-shop",
       "WORKSHOPS": "Werkstätten",
       "TRADITION": "Tradition",
       "ABOUT": "Uber uns",
-      "KONTAKTY": "Kontakt"
+      "KONTAKTY": "Kontakt",
+    "dekoracie-a-svietidla": "Dekorationen und Beleuchtung",
+    "hodiny": "Uhren",
+    "kosiky": "Körbe",
+    "plakety-a-figurky": "Plaketten und Figuren",
+    "pokladnicky": "Sparschweine",
+    "sakralna-tematika": "Sakrale Themen",
+    "svietniky-a-lustre": "Kerzenhalter und Kronleuchter",
+    "cutory": "Flachmänner",
+    "drobnosti-na-pamiatku": "Andenken",
+    "korkove-stuple-drobnosti-na-pamiatku": "Korkverschlüsse",
+    "magnetky": "Magneten",
+    "minikeramika": "Mini-Keramik",
+    "odznaky": "Anstecknadeln",
+    "zvonceky-a-podkovicky": "Glocken und Hufeisen",
+    "knihy-a-publikacie": "Bücher und Publikationen",
+    "kolekcie": "Kollektionen",
+    "bordovy-listok": "Bordeaux-Schein",
+    "bajny-jednorozec": "Legendäres Einhorn",
+    "fialovy-klas": "Violetter Ähren",
+    "figuralna-tematika": "Figuralthemen",
+    "kruhy": "Kreise",
+    "linky": "Linien",
+    "modra-glazura": "Blaue Glasur",
+    "modre-hrozno": "Blaue Trauben",
+    "modre-pierko": "Blaue Feder",
+    "modry-listok-jahody": "Blaues Erdbeerblatt",
+    "odfarbena-tradicia": "Verblassende Tradition",
+    "panabeka": "Panabeka",
+    "skratky": "Abkürzungen",
+    "slavnostna-kolekcia-s-pravym-zlatom-svadba": "Festkollektion mit echtem Gold – Hochzeit",
+    "slavnostna-kolekcia-s-pravvym-zlatom-vianoce": "Festkollektion mit echtem Gold – Weihnachten",
+    "starinky": "Antiquitäten",
+    "vlocky": "Flocken",
+    "sipky": "Hagebutten",
+    "milovnikom-vina": "Weinliebhabern",
+    "doplnky-ku-vinu": "Weinzubehör",
+    "dzbany-milovnikom-vina": "Krüge",
+    "taniere-milovnikom-vina": "Teller",
+    "vinove-pohare": "Weingläser",
+    "kalichy": "Kelche",
+    "na-kvety-a-male-tajomstva": "Für Blumen und kleine Geheimnisse",
+    "dozy": "Dosen",
+    "kvetinace": "Blumentöpfe",
+    "vazy": "Vasen",
+    "na-stol": "Für den Tisch",
+    "doplnky-ku-stolovaniu": "Tischzubehör",
+    "dzbany": "Krüge",
+    "misy_a_misky": "Schalen und Schälchen",
+    "podnosy": "Tabletts",
+    "pohare": "Gläser",
+    "popolniky": "Aschenbecher",
+    "taniere": "Teller",
+    "cajniky": "Teekannen",
+    "salky-a-hrnceky": "Tassen und Becher",
+    "obkladacky": "Fliesen",
+    "vinohradnickycyklus": "Weinbauzyklus",
+    "ludovy-motiv": "Volksmotiv",
+    "supravy": "Praktische Geschenksets",
+    "pre-najkrajsie-chvile-roka": "Für die schönsten Momente",
+    "velka-noc": "Ostern",
+    "vianoce": "Weihnachten",
+    "vianocne-ozdobky-sperky": "Weihnachtsschmuck/Schmuck",
+    "sklo": "Glas",
+    "tvorenie-na-doma": "Heimwerken",
+    "vystavne-kusky": "Ausstellungsstücke",
+    "zazitky": "Erlebnisse",
+    "darcekove-poukazy": "Geschenkgutscheine",
+    "prehliadky-a-tvorive-dielne": "Führungen und Kreativ-Workshops",
+    "sperky-a-odevy": "Schmuck und Bekleidung",
+    "fusakle-x-majolika": "Fusakle x Majolika",
+    "ine_doplnky": "Andere Accessoires",
+    "nausnice": "Ohrringe",
+    "odevy": "Bekleidung",
+    "prstene": "Ringe",
+    "tasky": "Taschen"
+  
     },
+
+
+
+
+
+
+
       
     "CATEGORIES2": {
       "TRADITIONAL": "Traditionell",
@@ -36,6 +157,22 @@
     },
       "IMG": {
   "NAME": "unser-angebot"
+},
+
+"CALENDAR": {
+  "TITLE": "Ausstellungen & Workshops",
+  "REGISTER_TITLE": "Anmeldung für",
+  "NAME": "Name",
+  "EMAIL": "E-Mail",
+  "SUBMIT": "Absenden",
+  "CANCEL": "Abbrechen"
+},
+"PREHLIADKY2": {
+  "INFO": "Information",
+  "MAJOLIKA_NA_AKCII": "Majolica at the event",
+  "DIELNE2": "Workshops",
+  "PREHLIADKY": "Tours"
 }
+
    
   }

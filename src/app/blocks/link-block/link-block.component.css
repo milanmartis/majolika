@@ -1,0 +1,37 @@
+/* src/app/blocks/link-block/link-block.component.css */
+
+.art-button {
+    margin: 1rem;
+  }
+  
+  .art-button p {
+      padding-top: 0.4rem;
+      font-size: 1.2rem;
+      color: var(--base-color);
+
+  }
+  .art-button a {
+    display: inline-block;
+    width: 290px;
+    height: 60px;
+    text-align: center;
+    border: none;
+
+    background: transparent url('/assets/img/back2.webp') no-repeat center/cover;
+    /* background-color: var(--base-blue);     */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--base-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    font-size: 2rem;
+  }
+  
+  .art-button a:hover {
+    /* background-color: var(--base-blue-dark);  */
+    color: var(--base-blue-thin);
+    background: transparent url('/assets/img/back.webp') no-repeat center/cover;
+  }
+  

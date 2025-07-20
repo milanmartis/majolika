@@ -1,0 +1,435 @@
+
+
+<!-- src/app/landing-page/landing-page.component.html -->
+
+<div class="landing-container">
+  <!-- ---------- SLIDER ---------- -->
+
+<div *ngIf="slides.length">
+  <div class="slider-wrapper">
+    <button class="nav prev" (click)="prevSlide()">&#10094;</button>
+
+    <div
+      class="slider-scroll"
+      #sliderScroll
+      (mouseenter)="pauseAuto()"
+      (mouseleave)="resumeAuto()"
+    >
+      <div
+        class="slide" @fadeIn
+        *ngFor="let s of slides; let i = index"
+        [class.active-slide]="i === currentSlideIndex"
+      >
+        <!-- externé video -->
+        <ng-container *ngIf="s.externalVideo; else localMedia">
+          <iframe
+            class="slide-media"
+            [src]="s.externalVideo | safeUrl"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </ng-container>
+
+        <!-- interné video / obrázok -->
+        <ng-template #localMedia>
+          <ng-container *ngIf="s.videos?.length; else imgTpl">
+            <video
+              class="slide-media"
+              [src]="s.videos[0]"
+              autoplay
+              muted
+              loop
+              playsinline
+            ></video>
+          </ng-container>
+          <ng-template #imgTpl>
+            <img
+              class="slide-media"
+              [src]="s.images[0] || '/assets/img/gall/placeholder.jpg'"
+              alt="{{ s.title || 'Slide image' }}"
+            />
+          </ng-template>
+        </ng-template>
+
+        <div class="slide-overlay"  [@overlayAnimation]="i">
+          <h2 *ngIf="s.title">{{ s.title }}</h2>
+          <p *ngIf="s.subtitle">{{ s.subtitle }}</p>
+          <button
+            type="button"
+            class="slider-button"
+            (click)="goToLink(s.url)"
+          >
+          <span class="slider-button__text">
+            {{ 'ESHOP.BUTTON' | translate }}
+          </span>            
+        </button>
+        </div>
+      </div>
+    </div>
+
+    <button class="nav next" (click)="nextSlide()">&#10095;</button>
+
+    <!-- SWIPER-LIKE PAGINATION BULLETS -->
+    <div class="swiper-pagination">
+      <span
+        class="swiper-pagination-bullet"
+        *ngFor="let _ of slides; let i = index"
+        [class.swiper-pagination-bullet-active]="i === currentSlideIndex"
+        (click)="goToSlide(i)"
+      ></span>
+    </div>
+  </div>
+</div>
+
+
+<div style="position: relative; top: -90px;margin:0px;padding:0px;margin-bottom:-90px;">
+  <img
+    src="/assets/img/back_dekor_black2.png"
+    alt="dekor"
+    width="104"
+    style="transform: rotate(90deg)"
+  />
+</div>
+
+  <!-- ---------- 4 KARTY ---------- -->
+  <div class="choice-grid" [@fadeInStagger]="animationState">
+    <div class="choice-card">
+      <a routerLink="/article/kto-sme">
+      <div class="image-wrapper">
+        <img 
+       
+        [src]="imageSrc"
+        alt="E-shop"
+        (mouseenter)="onHover(true)"
+        (mouseleave)="onHover(false)"
+        />
+      </div>
+      <button class="choice-button">{{ 'ONAS.KTO_SME' | translate }}</button>
+    </a>
+    </div>
+
+    <div class="choice-card">
+      <a routerLink="/article/co-robime">
+      <div class="image-wrapper">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_2_f5e2e3a292.jpg"
+          alt="Prehliadky/dielne"
+        />
+      </div>
+      <button class="choice-button">{{ 'ONAS.CO_ROBIME' | translate }}</button>
+      
+    </a>
+    </div>
+  </div>
+
+
+
+
+  <div class="choice-grid" [@fadeInStagger]="animationState">
+    <div class="choice-card">
+      <a routerLink="/article/historia-majoliky">
+      <div class="image-wrapper">
+        <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_historia5_81a4f93d4a.jpg" alt="E-shop" />
+      </div>
+      <button class="choice-button">{{ 'ONAS.HISTORIA' | translate }}</button>
+    </a>
+    </div>
+
+    <div class="choice-card">
+      <a routerLink="/article/informacie">
+      <div class="image-wrapper">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_info_majolika_18fd542a5c.jpg"
+          alt="Prehliadky/dielne"
+        />
+      </div>
+      <button class="choice-button">{{ 'ONAS.INFO' | translate }}</button>
+    </a>
+    </div>
+  </div>
+
+
+  <section
+  class="lp-hero"
+  
+  [@fadeInStagger]="animationState"
+  >
+  <div class="lp-hero__image">
+    <img
+      src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
+      alt="Majolika váza"
+    />
+  </div>
+  <div class="lp-hero__content">
+    <h2 class="lp-hero__title">Majolika u vás doma</h2>
+    <p class="lp-hero__text">
+      Slovenská ľudová majolika patrí k nositeľom tradície modranskej majoliky a majolikovej ornamentiky 
+      a zároveň je priestorom pre realizáciu kreativity a inovatívnych postupov vo výrobe modranskej keramiky. 
+      Cieľom podpory z projektu je rozvoj kreatívneho talentu a inovácií v oblasti tradičného remesla formou záchrany, 
+      zachovania a obnovy významnej časti kultúrneho dedičstva Slovenska. 
+
+      <br>
+      <br>
+
+      Objavte unikátne ručne maľované vázy z dielne Majolika. Perfektný doplnok do
+      vášho interiéru.
+    </p>
+    <button (click)="goToLink('eshop')" class="lp-hero__cta">
+      Prezrieť ponuku
+    </button>
+  </div>
+</section>
+
+
+
+
+
+
+
+  <section
+    *ngIf="featured.length"
+    class="mt-4 sale-section featured"
+    style="position: relative;"
+  >
+<h2
+style="text-align:center;margin:auto;padding-top:20px;padding-bottom:33px;"
+>Kategórie výrobkov
+<!-- {{ 'E-shop' | translate }} -->
+</h2>
+  <!-- ---------- ESHOP KATEGORIE ---------- -->
+
+
+  <div class="choice-grid" [@fadeInStagger]="animationState">
+    <div class="choice-card2">
+      <a [routerLink]="['/eshop']" [queryParams]="{ category: 'na-stol' }">
+      <div class="image-wrapper2">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_Na_stol_c395252997.jpg"
+          alt="{{'CATEGORIES.na-stol' | translate }}"
+        />
+      </div>
+      <button
+      type="button"
+      class="slider-button2"
+    >
+    <span class="slider-button2__text">
+      {{ 'CATEGORIES.na-stol' | translate }}
+    </span>  
+    </button>
+    </a>
+    </div>
+
+    <div class="choice-card2">
+      <a [routerLink]="['/eshop']" [queryParams]="{ category: 'milovnikom-vina' }">     
+      <div class="image-wrapper2">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_Milovnikom_vina_57d547658c.jpg"
+          alt="Prehliadky/dielne"
+        />
+      </div>
+      <button
+      type="button"
+      class="slider-button2"
+    >
+    <span class="slider-button2__text">
+      {{ 'CATEGORIES.milovnikom-vina' | translate }}
+    </span>  
+    </button>    </a>
+    </div>
+
+    <div class="choice-card2">
+      <a [routerLink]="['/eshop']" [queryParams]="{ category: 'dekoracie-a-svietidla' }">
+        <div class="image-wrapper2">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_Svietidla_a_dekoracie_4335f089ae.jpg"
+          alt="Prehliadky/dielne"
+        />
+      </div>
+      <button
+      type="button"
+      class="slider-button2"
+    >
+    <span class="slider-button2__text">
+      {{ 'CATEGORIES.dekoracie-a-svietidla' | translate }}
+    </span>  
+    </button>     </a>
+    </div>
+  </div>
+
+
+
+
+  <div class="choice-grid" [@fadeInStagger]="animationState">
+    <div class="choice-card2">
+      <a [routerLink]="['/eshop']" [queryParams]="{ category: 'na-kvety-a-male-tajomstva' }">
+      <div class="image-wrapper2">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_Na_kvety_a_male_tajomstva_7b5255ac6f.jpg"
+          alt="{{'CATEGORIES.na-stol' | translate }}"
+        />
+      </div>
+      <button
+      type="button"
+      class="slider-button2"
+    >
+    <span class="slider-button2__text">
+      {{ 'CATEGORIES.na-kvety-a-male-tajomstva' | translate }}
+    </span>  
+    </button>     </a>
+    </div>
+
+    <div class="choice-card2">
+      <a [routerLink]="['/eshop']" [queryParams]="{ category: 'sperky-a-odevy'}">     
+      <div class="image-wrapper2">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_Sperky_a_odevy_93e68a0555.jpg"
+          alt="{{ 'CATEGORIES.sperky-a-odevy' | translate }}"
+        />
+      </div>
+      <button
+      type="button"
+      class="slider-button2"
+    >
+    <span class="slider-button2__text">
+      {{ 'CATEGORIES.sperky-a-odevy' | translate }}
+    </span>  
+    </button>      </a>
+    </div>
+
+    <div class="choice-card2">
+      <a [routerLink]="['/eshop']" [queryParams]="{ category: 'drobnosti-na-pamiatku' }">
+        <div class="image-wrapper2">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_Drobnosti_na_pamiatku_5cb41b541a.jpg"
+          alt="{{ 'CATEGORIES.drobnosti-na-pamiatku' | translate }}"
+        />
+      </div>
+      <button
+      type="button"
+      class="slider-button2"
+    >
+    <span class="slider-button2__text">
+      {{ 'CATEGORIES.drobnosti-na-pamiatku' | translate }}
+    </span>  
+    </button>     </a>
+    </div>
+  </div>
+
+
+
+
+<br>
+<br>
+<h2
+style="opacity: 0.6;text-align:center;margin:auto;padding-top:20px;padding-bottom:33px;"
+>Všetky kategórie
+<!-- {{ 'E-shop' | translate }} -->
+</h2>
+    <!-- Root kategórie -->
+    <div class="child-categories" *ngIf="categories.length" style="max-width:600px;width:100%;text-align:center;margin: auto;">
+      <div class="child-buttons">
+        <button
+          *ngFor="let cat of categories"
+          class="child-button"
+          (click)="goToCategory(cat.category_slug)"
+        >
+          {{ cat.category_name | translate }} 
+        </button>
+      </div>
+    </div>
+<!-- 
+
+
+
+  <div class="choice-grid" [@fadeInStagger]="animationState">
+    
+    
+    <app-gallery></app-gallery>
+  </div> -->
+
+
+</section>
+
+  <!-- ---------- FEATURED eshopY ---------- -->
+  <section
+    *ngIf="featured.length"
+    class="sale-section featured"
+    style="position: relative;"
+  >
+    <h2
+      style="text-align:center;margin:auto;padding-top:20px;padding-bottom:33px;"
+    >
+      {{ 'ESHOP.FEATURED' | translate }}
+    </h2>
+
+    <button (click)="scrollLeft()" class="scroll-arrow left-arrow">
+      &#10094;
+    </button>
+
+    <div
+      #scrollContainer
+      class="scroll-x"
+
+    >
+      <a
+        class="card"
+        *ngFor="let p of featured"
+        [routerLink]="['/eshop', p.slug]"
+      >
+        <img
+          [src]="p.primaryImageUrl"
+          [alt]="p.name"
+          loading="lazy"
+          (load)="onImageLoad(p.slug)"
+          (error)="onImageError(p.slug)"
+        />
+        <span class="card-label">{{ p.name }}</span>
+      </a>
+    </div>
+
+    <button (click)="scrollRight()" class="scroll-arrow right-arrow">
+      &#10095;
+    </button>
+  </section>
+
+
+
+  <!-- -------  DEKOR + ODKAZY ------- -->
+  <div style="position: relative; top: 0">
+    <img
+      src="/assets/img/back_dekor_black2.png"
+      alt="dekor"
+      width="104"
+      style="transform: rotate(90deg)"
+    />
+  </div>
+
+  <div
+    class="buttons2 mb-4"
+    style="position: relative; display: flex; top: 0"
+  >
+    <a
+      routerLink="/eshop"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.ESHOP' | translate }}</a
+    >
+    <a
+      routerLink="/dielne"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.DIELNE' | translate }}</a
+    >
+    <a
+      routerLink="/tradicia"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.TRADICIA' | translate }}</a
+    >
+  </div>
+
+  <p class="mt-4" style="text-align: center">
+    {{ 'ESHOP.FIRST_TEXT' | translate }}
+  </p>
+</div>
+
+
+
+<app-footer></app-footer>

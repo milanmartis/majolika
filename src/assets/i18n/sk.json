@@ -5,12 +5,51 @@
       "PEREX": "Modranská majolika a majoliková ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska.",
       "FIRST_TEXT": "V Slovenskej ľudovej majolike už 140 rokov majstri remesla rozvíjajú zdedené tradície, rukami a srdcom tvoria keramickú dušu regiónu. Všetky výrobky sú ručne vyrobené a maľované. Každý kus je jedinečné dielo. Modranská majolika a majoliková ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska.",
       "TRADICIA": "Tradícia",
-      "ESHOP": "Produkty",
+      "ESHOP": "E-shop",
       "DIELNE": "Dielne"
     },
+
+    
+      "ONAS": { 
+      "CO_ROBIME": "Čo robíme",
+      "KTO_SME": "Kto sme",
+      "HISTORIA": "História",
+      "INFO": "Informácie"
+    
+    },
+
+"SLIDE":{
+  "VIAC_INFO":"Viac informácií"
+},
+
     "ESHOP": { 
       "WELCOME": "E-SHOP",
-      "FIRST_TEXT": "Slovenská ľudová majolika patrí k nositeľom tradície modranskej majoliky a majolikovej ornamentiky a  zároveň je priestorom pre realizáciu kreativity a  inovatívnych postupov vo výrobe modranskej keramiky. Cieľom podpory z projektu je rozvoj kreatívneho talentu a  inovácií v  oblasti tradičného remesla formou záchrany, zachovania a obnovy významnej časti kultúrneho dedičstva Slovenska. "
+      "FIRST_TEXT": "Slovenská ľudová majolika patrí k nositeľom tradície modranskej majoliky a majolikovej ornamentiky a  zároveň je priestorom pre realizáciu kreativity a  inovatívnych postupov vo výrobe modranskej keramiky. Cieľom podpory z projektu je rozvoj kreatívneho talentu a  inovácií v  oblasti tradičného remesla formou záchrany, zachovania a obnovy významnej časti kultúrneho dedičstva Slovenska. ",
+      "MNOZSTVO": "Množstvo",
+      "VARIANTY": "Varianty",
+      "VLOZ_DO_KOSIKA":"Vlož do košíka",
+      "CELKOVA_CENA":"Celková cena",
+      "FEATURED":"Odporúčame pre vás",
+      "NO_PRODUCTS_IN_CATEGORY": "V tejto kategórii nie sú žiadne produkty",
+      "LOADING_PRODUCTS": "Načítavajú sa produkty",
+      "ERROR_LOADING_PRODUCTS": "Chyba pri načítavaní produktov",
+      "PRICE_NOT_SET": "Viac info",
+      "VLOZ_DO_OBLUBENE": "Vlož medzi obľúbené",
+      "ERROR_404": "Produkt sa žiaľ nenašiel",
+      "CART":"Košík",
+      "DO_POKLADNE":"Do pokladne",
+      "SUM_TOTAL":"Spolu",
+      "CART_IS_EMPTY": "Košík je prázdny",
+      "SELECT_CATEGORY": "Vyberte si z kategórií",
+      "SORT_BY": "Zoradiť",
+      "FILTER_BY": "Filtrovať",
+      "POKRACOVAT_SHOPPING": "Pokračovať v nákupe",
+      "SIZES_TEXT": "Špecifikácie",
+      "DESCRIPTION_TEXT": "Popis",
+      "DEKOR":"Dekór",
+      "CANCEL_ALL_DECORS": "Zrušiť všetky filtre",
+      "BUTTON": "Objavte teraz"
+
     },
     "DIELNE": { 
       "WELCOME": "Prehliadky a tvorivé dielne",
@@ -23,14 +62,97 @@
     
       "CATEGORIES": {
         "HOME": "Úvod",
-        "PRODUCTS": "Produkty",
+        "PRODUCTS": "E-shop",
         "WORKSHOPS": "Prehliadky/Dielne",
         "TRADITION": "Tradícia",
         "ABOUT": "O nás",
-        "KONTAKTY": "Kontakt"
+        "KONTAKTY": "Kontakt",
+        
 
-      },
-      
+
+    "dekoracie-a-svietidla": "Dekorácie a svietidlá",
+    "hodiny": "Hodiny",
+    "kosiky": "Košíky",
+    "plakety-a-figurky": "Plakety a figúrky",
+    "pokladnicky": "Pokladničky",
+    "sakralna-tematika": "Sakrálna tématika",
+    "svietniky-a-lustre": "Svietniky a lustre",
+    "cutory": "Čutory",
+    "drobnosti-na-pamiatku": "Drobnosti na pamiatku",
+    "korkove-stuple-drobnosti-na-pamiatku": "Korkové štuple",
+    "magnetky": "Magnetky",
+    "minikeramika": "Minikeramika",
+    "odznaky": "Odznaky",
+    "zvonceky-a-podkovicky": "Zvončeky a podkovičky",
+    "knihy-a-publikacie": "Knihy a publikácie",
+    "kolekcie": "Kolekcie",
+    "bordovy-listok": "Bordový lístok",
+    "bajny-jednorozec": "Bájny jednorožec",
+    "fialovy-klas": "Fialový klas",
+    "figuralna-tematika": "Figurálna tématika",
+    "kruhy": "Kruhy",
+    "linky": "Linky",
+    "modra-glazura": "Modrá glazúra",
+    "modre-hrozno": "Modré hrozno",
+    "modre-pierko": "Modré pierko",
+    "modry-listok-jahody": "Modrý lístok jahody",
+    "odfarbena-tradicia": "Odfarbená tradícia",
+    "panabeka": "Pánabeka",
+    "skratky": "Skratky",
+    "slavnostna-kolekcia-s-pravym-zlatom-svadba": "Slávnostná kolekcia s pravým zlatom – Svadba",
+    "slavnostna-kolekcia-s-pravvym-zlatom-vianoce": "Slávnostná kolekcia s pravým zlatom – Vianoce",
+    
+    "starinky": "Starinky",
+    "vlocky": "Vločky",
+    "sipky": "Šípky",
+    "milovnikom-vina": "Milovníkom vína",
+    "doplnky-ku-vinu": "Doplnky ku vínu",
+    "dzbany-milovnikom-vina": "Džbány",
+    "taniere-milovnikom-vina": "Taniere",
+    "vinove-pohare": "Vínové poháre",
+    "kalichy": "Kalichy",
+    "na-kvety-a-male-tajomstva": "Na kvety a malé tajomstvá",
+    "dozy": "Dózy",
+    "kvetinace": "Kvetináče",
+    "vazy": "Vázy",
+    "na-stol": "Na stôl",
+    "doplnky-ku-stolovaniu": "Doplnky ku stolovaniu",
+    "dzbany": "Džbány",
+    "misy_a_misky": "Misy a misky",
+    "podnosy": "Podnosy",
+    "pohare": "Poháre",
+    "popolniky": "Popolníky",
+    "taniere": "Taniere",
+    "cajniky": "Čajníky",
+    "salky-a-hrnceky": "Šálky a hrnčeky",
+    "obkladacky": "Obkladačky",
+    "dzbany_s_figuralnu_tematikou": "Džbány s figúrálna tématikou",
+    "taniere_s_figuralnu_tematikou": "Taniere s figúrálna tématikou",
+    "vinohradnickycyklus": "Vinohradnícky cyklus",
+    "ludovy-motiv": "Ľudový motív",
+    "supravy": "Praktické darčekové súpravy",
+    "pre-najkrajsie-chvile-roka": "Pre najkrajšie chvíle",
+    "velka-noc": "Veľká Noc",
+    "vianoce": "Vianoce",
+    "vianocne-ozdobky-sperky": "Vianočné ozdôbky/šperky",
+    "sklo": "Sklo",
+    "tvorenie-na-doma": "Tvorenie na doma",
+    "vystavne-kusky": "Výstavné kúsky",
+    "zazitky": "Zážitky",
+    "darcekove-poukazy": "Darčekové poukazy",
+    "prehliadky-a-tvorive-dielne": "Prehliadky a tvorivé dielne",
+    "sperky-a-odevy": "Šperky a odevy",
+    "fusakle-x-majolika": "Fusakle x Majolika",
+    "ine_doplnky": "Iné doplnky",
+    "nausnice": "Náušnice",
+    "odevy": "Odevy",
+    "prstene": "Prstene",
+    "tasky": "Tašky"
+  },
+
+
+
+
       
         "CATEGORIES2": {
           "TRADITIONAL": "Tradičná",
@@ -44,10 +166,27 @@
 
         "KOMPLET":{
           "PONUKA":"Kompletná ponuka"
-        }
+        },
        
+        
+          "CALENDAR": {
+            "TITLE": "Prehliadky & dielne",
+            "REGISTER_TITLE": "Registrácia na",
+            "NAME": "Meno",
+            "EMAIL": "Email",
+            "SUBMIT": "Odoslať",
+            "CANCEL": "Zrušiť"
+          },
 
-
+          
+            "PREHLIADKY2": {
+              "INFO": "Informácie",
+              "MAJOLIKA_NA_AKCII": "Majolika na akcii",
+              "DIELNE2": "Dielne",
+              "PREHLIADKY": "Prehliadky"
+            }
+          
+        
   }
 
   

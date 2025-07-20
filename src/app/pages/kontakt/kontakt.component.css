@@ -1,0 +1,45 @@
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    align-items: start;
+  
+    .map { border-radius: 8px; overflow: hidden; }
+  
+    form {
+      display: grid;
+      gap: 1rem;
+  
+      label {
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+  
+        input,
+        textarea {
+          margin-top: .25rem;
+          padding: .6rem .8rem;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          font-size: 1rem;
+        }
+      }
+  
+      .full { grid-column: 1 / -1; }
+  
+      button {
+        justify-self: start;
+        padding: .6rem 1.2rem;
+        border: none;
+        border-radius: 6px;
+        background: #3f51b5;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: opacity .2s;
+  
+        &:disabled { opacity: .5; cursor: not-allowed; }
+      }
+    }
+  }
+  

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Sale {
   customer_id: string;
@@ -21,7 +22,9 @@ export interface Sale {
   providedIn: 'root'
 })
 export class DatabaseService {
-  private apiUrl = 'http://localhost:5000'; // ✅ API URL pre backend
+  private readonly api = environment.apiUrl.replace(/\/\/+$/, '');
+
+  // private apiUrl = 'http://localhost:5000'; // ✅ API URL pre backend
 
   constructor(private http: HttpClient) {}
 
@@ -35,7 +38,7 @@ export class DatabaseService {
         params = params.set('endDate', endDate);
       }
       const sales = await firstValueFrom(
-        this.http.get<Sale[]>(`${this.apiUrl}/sales`, { params })
+        this.http.get<Sale[]>(`${this.api}/sales`, { params })
       );
       console.log("✅ Načítané všetky dáta zo servera:", sales);
       return sales;

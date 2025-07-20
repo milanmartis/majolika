@@ -2,7 +2,10 @@ import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FooterComponent } from 'app/components/footer/footer.component';
+
+
 // import { HammerModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 
 // import { HammerGestureConfig } from '@angular/platform-browser';
@@ -18,19 +21,10 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 @Component({
   selector: 'app-eshop',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, FooterComponent],
   templateUrl: `./eshop.component.html`,
   styleUrls: ['./eshop.component.css'],
-  animations: [
-    trigger('fadeIn', [
-      state('visible', style({ opacity: 1 })),
-      transition('void => visible', [style({ opacity: 0 }), animate('0.5s ease-in')])
-    ]),
-    trigger('slideUp', [
-      state('visible', style({ transform: 'translateY(0)', opacity: 1 })),
-      transition('void => visible', [style({ transform: 'translateY(100%)', opacity: 0 }), animate('0.4s ease-out')])
-    ])
-  ],
+
   // providers: [
   //   { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig }
   // ]

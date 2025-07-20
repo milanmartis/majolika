@@ -1,0 +1,33 @@
+<mat-card class="auth-card">
+    <mat-card-title>Prihlásenie</mat-card-title>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>E-mail alebo používateľské meno</mat-label>
+        <input matInput formControlName="identifier" />
+        <mat-error *ngIf="identifierControl?.hasError('required')">
+          Toto pole je povinné.
+        </mat-error>
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Heslo</mat-label>
+        <input matInput type="password" formControlName="password" />
+        <mat-error *ngIf="passwordControl?.hasError('required')">
+          Toto pole je povinné.
+        </mat-error>
+        <mat-error *ngIf="passwordControl?.hasError('minlength')">
+          Heslo musí mať aspoň {{ passwordMinLength }} znakov.
+        </mat-error>
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" class="full-width" [disabled]="form.invalid">
+        Prihlásiť sa
+      </button>
+  
+      <div *ngIf="error" class="error-msg">{{ error }}</div>
+    </form>
+    <mat-card-actions>
+      <a mat-button [routerLink]="['/register']">Nemáte účet? Registrácia</a>
+    </mat-card-actions>
+  </mat-card>
+  

@@ -1,0 +1,288 @@
+<div class="landing-container">
+<!-- src/app/landing-page/landing-page.component.html -->
+<!-- ---------- SLIDER ---------- -->
+<div *ngIf="slides.length">
+  <div class="slider-wrapper">
+    <button class="nav prev" (click)="prevSlide()">&#10094;</button>
+
+    <div
+      class="slider-scroll"
+      #sliderScroll
+      (mouseenter)="pauseAuto()"
+      (mouseleave)="resumeAuto()"
+    >
+      <div
+        class="slide"
+        *ngFor="let s of slides; let i = index"
+        [class.active-slide]="i === currentSlideIndex"
+      >
+      <ng-container *ngIf="externalVideo; else localMedia">
+        <div class="video-container">
+          <iframe
+          [src]="safeUrl"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+        </div>
+      </ng-container>
+
+        <!-- interné video / obrázok -->
+        <ng-template #localMedia>
+          <ng-container *ngIf="s.videos?.length; else imgTpl">
+            <video
+              class="slide-media"
+              [src]="s.videos[0]"
+              autoplay
+              muted
+              loop
+              playsinline
+            ></video>
+          </ng-container>
+          <ng-template #imgTpl>
+            <img
+              class="slide-media"
+              [src]="s.images[0] || '/assets/img/gall/placeholder.jpg'"
+              alt="{{ s.title || 'Slide image' }}"
+            />
+          </ng-template>
+        </ng-template>
+
+        <div class="slide-overlay"  [@overlayAnimation]="i">
+          <h2 *ngIf="s.title">{{ s.title }}</h2>
+          <p *ngIf="s.subtitle">{{ s.subtitle }}</p>
+          <button
+            type="button"
+            class="slider-button"
+            (click)="goToLink(s.url)"
+          >
+          <span class="slider-button__text">
+            {{ 'ESHOP.BUTTON' | translate }}
+          </span>            </button>
+        </div>
+      </div>
+    </div>
+
+    <button class="nav next" (click)="nextSlide()">&#10095;</button>
+
+    <!-- SWIPER-LIKE PAGINATION BULLETS -->
+    <div class="swiper-pagination">
+      <span
+        class="swiper-pagination-bullet"
+        *ngFor="let _ of slides; let i = index"
+        [class.swiper-pagination-bullet-active]="i === currentSlideIndex"
+        (click)="goToSlide(i)"
+      ></span>
+    </div>
+  </div>
+</div>
+
+<div style="position: relative; top: -90px;margin:0px;padding:0px;margin-bottom:-90px;">
+  <img
+    src="/assets/img/back_dekor_black2.png"
+    alt="dekor"
+    width="104"
+    style="transform: rotate(90deg)"
+  />
+</div>
+
+  <!-- ---------- DVE KARTY ---------- -->
+  <div class="choice-grid">
+    <div class="choice-card">
+      <a routerLink="/article/prehliadky">
+
+      <div class="image-wrapper">
+        <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_prehliadky_7be0195e2e.webp" alt="E-shop" />
+      </div>
+      <button class="choice-button">{{ 'PREHLIADKY2.PREHLIADKY' | translate }}</button>
+      </a>
+    </div>
+
+    <div class="choice-card" >
+      <a routerLink="/article/dielne">
+
+      <div class="image-wrapper">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_info_majolika_18fd542a5c.jpg"
+          alt="Prehliadky/dielne"
+        />
+      </div>
+      <button class="choice-button">{{ 'PREHLIADKY2.DIELNE2' | translate }}</button>
+</a>
+      <!-- <button class="choice-button">{{ 'CALENDAR.TITLE' | translate }}</button> -->
+    </div>
+    </div>
+
+
+
+
+      <div class="choice-grid" [@fadeInStagger]="animationState">
+        <div class="choice-card">
+          <a routerLink="/article/majolika-na-akcii">
+          <div class="image-wrapper">
+
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_Bannery_lennaskok_sk_960x540_keramika_6996533b29.png"
+          alt="Prehliadky/dielne"
+        />
+          </div>
+      <button class="choice-button">{{ 'PREHLIADKY2.MAJOLIKA_NA_AKCII' | translate }}</button>
+
+      <!-- <button class="choice-button">{{ 'CALENDAR.TITLE' | translate }}</button> -->
+    </a>
+    </div>
+
+    <div class="choice-card" (click)="onSelect('optionB')">
+      <a routerLink="/article/informacie">
+
+      <div class="image-wrapper">
+        <img
+          src="/assets/img/gall/slovenska_ludova_majolika_2.webp"
+          alt="Prehliadky/dielne"
+        />
+      </div>
+      <button class="choice-button">{{ 'PREHLIADKY2.INFO' | translate }}</button>
+      <!-- <button class="choice-button">{{ 'CALENDAR.TITLE' | translate }}</button> -->
+       </a>
+    </div>
+  </div>
+
+
+  <!-- ---------- KALENDÁR & PRAVÝ STĹPEC ---------- -->
+  <section
+    class="calendar-section"
+    [@fadeIn]="'visible'"
+    [@slideUp]="'visible'"
+    style="margin-top:34px;"
+  >
+    <h2
+      style="text-align:center;font-weight:600; font-size:2.8rem; color:#2943ba59;"
+    >
+      {{ 'CALENDAR.TITLE' | translate }}
+    </h2>
+
+    <div class="month-navigation">
+      <button class="month-btn" (click)="prevMonth()">&larr;</button>
+      <span class="month-label">
+        {{ currentMonth | date: 'LLLL yyyy':'':'en' }}
+      </span>
+      <button class="month-btn" (click)="nextMonth()">&rarr;</button>
+    </div>
+
+    <div class="calendar-container">
+      <div class="calendar-left">
+        <div class="calendar-grid calendar-header">
+          <div class="calendar-cell header-cell" *ngFor="let wd of weekDays">
+            {{ wd }}
+          </div>
+        </div>
+        <div class="calendar-grid">
+          <div
+            class="calendar-cell"
+            *ngFor="let day of calendarDays"
+            [class.not-current-month]="!day.isInCurrentMonth"
+            [class.today]="day.isToday"
+            [class.occupied]="day.isOccupied"
+            [class.selectable]="day.isSelectable"
+            (click)="selectDay(day)"
+          >
+            {{ day.dayOfMonth }}
+          </div>
+        </div>
+      </div>
+
+      <div class="calendar-right" #formCard>
+        <ng-container *ngIf="selectedDay; else expTpl">
+          <div class="form-card">
+            <h3>
+              {{ 'CALENDAR.REGISTER_TITLE' | translate }}<br />
+              {{ selectedDay.date | date: 'd. MMMM yyyy':'':'en' }}
+            </h3>
+
+            <form (ngSubmit)="submitRegistration()" #regForm="ngForm">
+              <label for="name">{{ 'CALENDAR.NAME' | translate }}</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                [(ngModel)]="registration.name"
+                required
+              />
+
+              <label for="email">{{ 'CALENDAR.EMAIL' | translate }}</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                [(ngModel)]="registration.email"
+                required
+              />
+
+              <button type="submit" [disabled]="!regForm.form.valid">
+                {{ 'CALENDAR.SUBMIT' | translate }}
+              </button>
+              <button
+                type="button"
+                class="cancel-btn"
+                (click)="selectedDay = null"
+              >
+                {{ 'CALENDAR.CANCEL' | translate }}
+              </button>
+            </form>
+          </div>
+        </ng-container>
+
+        <ng-template #expTpl>
+          <div class="experience-list" *ngIf="experiences.length">
+            <a
+              class="experience-card"
+              *ngFor="let p of experiences"
+              [routerLink]="['/eshop', p.slug]"
+            >
+              <img [src]="p.primaryImageUrl" [alt]="p.name" />
+              <span>{{ p.name }}</span>
+            </a>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </section>
+
+  <!-- -------  DEKOR + ODKAZY ------- -->
+  <div style="position: relative; top: 0">
+    <img
+      src="/assets/img/back_dekor_black2.png"
+      alt="dekor"
+      width="104"
+      style="transform: rotate(90deg)"
+    />
+  </div>
+
+  <div
+    class="buttons2 mb-4"
+    style="position: relative; display: flex; top: 0"
+  >
+    <a
+      routerLink="/eshop"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.ESHOP' | translate }}</a
+    >
+    <a
+      routerLink="/dielne"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.DIELNE' | translate }}</a
+    >
+    <a
+      routerLink="/tradicia"
+      style="display:block; width:100px;height:100px;"
+      >{{ 'HOME.TRADICIA' | translate }}</a
+    >
+  </div>
+
+  <p class="mt-4" style="text-align: center">
+    {{ 'ESHOP.FIRST_TEXT' | translate }}
+  </p>
+</div>
+
+<app-footer></app-footer>

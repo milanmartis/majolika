@@ -1,35 +1,21 @@
+<br>
+<br>
+<br>
+<br>
 <div class="hero_2">
   <div class="overlay_2">
-
-      <div class="logo-header mb-8" >
-          <a href=""  routerLink="/"><img src="assets/img/logo-SLM.gif" style="width:200px;height:200px;margin:auto;position:relative;padding-bottom:0px;"
+      <!-- <div class="logo-header mb-8" >
+          <a href=""  routerLink="/"><img src="assets/img/logo-SLM-modre.gif" style="width:160px;height:160px;margin:auto;position:relative;padding-bottom:0px;"
                ></a>
         </div>
         <div style="position:relative; top:-30px;margin-top:-10px;margin-bottom:-60px;">
-          <img src="/assets/img/back_dekor_white.svg" alt="dekor" width="80" style="transform: rotate(90deg);">
-        </div>
-<br>
-      <h1>{{ 'ESHOP.WELCOME' | translate }}</h1>
-  
-      <p >
-          {{ 'ESHOP.FIRST_TEXT' | translate }}
-      </p>
-      <div class="gallery-grid mb-4">
-        <div class="grid-item"
-             *ngFor="let image of images; let i = index"
-             (click)="openFullscreen(i, $event)"
-             (mouseover)="showInfo(i)"
-             (mouseleave)="hideInfo(i)">
+          <img src="/assets/img/back_dekor_black2.png" alt="dekor" width="80" style="transform: rotate(90deg);">
+        </div> -->
+
+        <!-- <div [@routeAnimations]="o.activatedRouteData['animation']"> -->
+        <router-outlet #o="outlet"></router-outlet>
+      <!-- </div> -->
       
-          <img [src]="image.src" alt="Gallery Image">
-      
-          <!-- Slide-in info box -->
-          <div class="image-info" [class.visible]="image.showInfo">
-            <h3>{{ image.name }}</h3>
-            <i>{{ image.price }}</i>
-          </div>
-        </div>
-      </div>
       
       <!-- Fullscreen režim -->
       <div class="fullscreen" *ngIf="isFullscreen" (click)="closeFullscreen($event)" [@slideUp]="fullscreenState">
@@ -46,15 +32,17 @@
       
       
       <div style="position:relative; top:0px;margin-top:0px;margin-bottom:0px;">
-        <img src="/assets/img/back_dekor_white.svg" alt="dekor" width="104" style="transform: rotate(90deg);">
+        <img src="/assets/img/back_dekor_black2.png" alt="dekor" width="104" style="transform: rotate(90deg);">
       </div>
 
-      <div style="position:relative; top:0px;" class="buttons2">
+      <div style="position:relative; top:-40px;" class="buttons2">
         <a class="btn" routerLink="/eshop">{{ 'HOME.ESHOP' | translate }}</a>
         <a class="btn" routerLink="/dielne">{{ 'HOME.DIELNE' | translate }}</a>
         <a class="btn" routerLink="/tradicia">{{ 'HOME.TRADICIA' | translate }}</a>
       </div>
-      
-  </div>
+   <br>
+<p >{{ 'ESHOP.FIRST_TEXT' | translate }}</p> 
+ </div>
 
 </div>
+<app-footer></app-footer>

@@ -1,0 +1,48 @@
+<main *ngIf="article$ | async as article" class="article mx-auto p-6">
+  <h1 class="text-4xl font-bold mb-6 text-center">{{ article.title }}</h1>
+
+  <div class="blocks-grid"  @listAnimation>
+    <ng-container *ngFor="let block of article.content; trackBy: trackByIndex">
+      <div class="block-item" [class.full-width]="isFullWidth(block)">
+
+        <app-heading-block
+          *ngIf="isHeading(block)"
+          [block]="$any(block)">
+        </app-heading-block>
+
+        <app-text-block
+          *ngIf="isText(block)"
+          [block]="$any(block)">
+        </app-text-block>
+
+        <app-image-block
+          *ngIf="isImage(block)"
+          [block]="$any(block)"
+          class="cursor-pointer"
+          (click)="openGallery($any(block).largeUrl)">
+        </app-image-block>
+<!-- Caption for image -->
+<div *ngIf="isImage(block) && $any(block).caption" class="image-caption mt-2 text-sm text-gray-600 text-center">
+  {{$any(block).caption}}
+</div>
+        <app-link-block
+          *ngIf="isLink(block)"
+          [block]="$any(block)">
+        </app-link-block>
+
+        <app-video-block
+          *ngIf="isVideo(block)"
+          [block]="$any(block)">
+        </app-video-block>
+      </div>
+    </ng-container>
+  </div>
+
+  <app-footer class="mt-8"></app-footer>
+  <app-gallery
+    *ngIf="galleryOpen"
+    [images]="imageUrls"
+    [index]="galleryIndex"
+    (close)="closeGallery()">
+  </app-gallery>
+</main>

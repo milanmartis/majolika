@@ -207,7 +207,7 @@ font-weight: 200;
   font-weight: 900;
 
   background-color: transparent;
-  border: 0px solid #2944ba;
+  border: 0px solid var(--base-blue);
   color: #fff;
   padding: 4px 16px;
   margin: 5px;
