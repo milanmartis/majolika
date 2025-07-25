@@ -139,6 +139,18 @@
           </ng-template>
         </li>
       </ul>
+      <br>
+    <ng-container *ngIf="(auth.currentUser$ | async) as u; else loginLink">
+      <a [routerLink]="['/account']" class="acc-link" (click)="onCloseMobileNav()">{{ u.username }}</a>
+    </ng-container>
+    <ng-template #loginLink>
+      <h5>
+        <a [routerLink]="['/login']" (click)="onCloseMobileNav()">{{ 'ACCOUNT.LOGIN' | translate }}</a> /
+      </h5>
+      <h5>
+        <a [routerLink]="['/register']" (click)="onCloseMobileNav()">{{ 'ACCOUNT.REGISTER' | translate }}</a>
+      </h5>
+    </ng-template>
 
       <div class="language-switch-mobile">
 
@@ -267,6 +279,7 @@
 
       </a>
     </div>
+
   </div>
 
 

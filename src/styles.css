@@ -49,6 +49,16 @@ i{
 @media (max-width: 1000px) {
   body{
     background-image: url("/assets/img/corner7.png");
+    background-size:28rem;
+
+
+  }
+/* 1b2d6f */
+
+}
+@media (max-width: 600px) {
+  body{
+    background-image: url("/assets/img/corner7.png");
     background-size:22rem;
 
 

@@ -3,7 +3,7 @@
   max-width: 1200px;
   width: 100%;
   margin: auto;
-  padding: 1rem 1rem;
+  padding: 43px 20px 20px 20px;
 }
 .detail-grid {
   display: grid;
@@ -297,12 +297,20 @@
 .close-btn:hover{
   color: #ffffff;
 }
-/* ====================  SLIDER (FEATURED & RECOMMENDED) ==================== */
-.featured {
-  overflow-x: hidden;
-  margin: auto;
-  max-width: 1800px;
+/* ---------- FEATURED PRODUKTY ---------- */
+.sale-section.featured {
+  width: 100%;
+  max-width: 1200px;
+  padding-bottom: 2rem;
 }
+
+.sale-section.featured h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--base-blue);
+}
+
 .scroll-x {
   display: flex;
   gap: 0.75rem;
@@ -311,72 +319,40 @@
   scroll-snap-type: x mandatory;
   padding-inline: 0.75rem;
   width: 100%;
-  box-sizing: border-box;
+  background: transparent;
+  max-width: 1200px;
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
+
 .scroll-x .card {
   position: relative;
-  flex: 0 0 clamp(33.33%, 33.333%, 200px);
-  aspect-ratio: 2 / 5;
-  border-radius: var(--corners);
+  flex: 0 0 clamp(16.66%, 16.66%, 200px);
+  aspect-ratio: 3/5;
+  border-radius: var(--corners2);
   overflow: hidden;
   text-decoration: none;
-  color: var(--base-blue);
   scroll-snap-align: start;
-  border: 0px;
 }
+
 .scroll-x .card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
+
 .scroll-x .card::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.7) 0%,
     rgba(0, 0, 0, 0) 60%
   );
-  pointer-events: none;
 }
-.card-label {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0.95rem;
-  padding-inline: 0.5rem;
-  font-size: 0.75rem;
-  line-height: 119%;
-  font-weight: 500;
-  color: #fff;
-  text-align: left;
-  overflow: hidden;
-  z-index: 1;
-}
-@media (min-width: 600px) {
-  .scroll-x .card {
-    flex-basis: 200px;
-  }
-}
-.loading-message-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 60px; /* výška podľa potreby */
-  /* font-family: monospace; */
-  text-align: left;
-  color: var(--base-blue);
-  /* border: 1px solid #1f357a; */
-}
-.loading-message {
-  margin: auto;
-  /* border: 1px solid #1f357a; */
-  display: inline-block;
-  width: 222px; /* fixná šírka zodpovedajúca najdlhšiemu stavu */
-}
-
 
 .scroll-arrow {
   position: absolute;
@@ -392,10 +368,10 @@
   z-index: 3;
   opacity: 0.75;
   transition: color 0.3s ease;
-  &:hover {
-    color: #333;
-  }
+}
 
+.scroll-arrow:hover {
+  color: #333;
 }
 
 .left-arrow {
@@ -404,6 +380,17 @@
 
 .right-arrow {
   right: -2.7rem;
+}
+
+@media (max-width: 599px) {
+  .scroll-x .card {
+    flex: 0 0 clamp(33.33%, 33.333%, 200px);
+    aspect-ratio: 2/5;
+  }
+
+  .calendar-grid {
+    gap: 0.2rem;
+  }
 }
 
 

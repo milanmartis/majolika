@@ -41,6 +41,12 @@
     "CART_IS_EMPTY": "The cart is empty",
     "SELECT_CATEGORY": "Please select a category",
     "SORT_BY": "Sort by",
+    "SORT_NAME_ASC": "Názov A-Z",
+    "SORT_NAME_DESC": "Názov Z-A",
+    "SORT_PRICE_ASC": "Od najlacnejšieho",
+    "SORT_PRICE_DESC": "Od najdrahšieho",
+    "SORT_NEWEST": "Najnovšie",
+    "SORT_OLDEST": "Najstaršie",
     "FILTER_BY": "Filter",
     "POKRACOVAT_SHOPPING": "Continue Shopping",
     "SIZES_TEXT": "Specifications",
@@ -182,6 +188,13 @@
   "MAJOLIKA_NA_AKCII": "Majolica at the event",
   "DIELNE2": "Workshops",
   "PREHLIADKY": "Tours"
+},
+
+"ACCOUNT": {
+  "TITLE": "Môj účet",
+  "USERNAME": "Prihlasovacie meno",
+  "EMAIL": "E‑mail",
+  "LOGOUT": "Odhlásiť sa"
 }
     
 }

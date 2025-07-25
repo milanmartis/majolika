@@ -31,7 +31,7 @@
     "imagesloaded": "^5.0.0",
     "leaflet": "^1.9.4",
     "masonry-layout": "^4.2.2",
-    "ng-apexcharts": "^1.15.0",
+    "ng-apexcharts": "1.15.0",
     "ngx-color-picker": "^20.0.0",
     "ngx-leaflet": "^0.0.16",
     "ngx-lightbox": "^3.0.0",

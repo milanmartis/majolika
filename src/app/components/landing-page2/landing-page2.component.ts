@@ -108,7 +108,8 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
 
   @Input() externalVideo!: string;
   safeUrl!: SafeResourceUrl;
-
+  @ViewChild('slideVideo', { static: false })
+  slideVideo!: ElementRef<HTMLVideoElement>;
   /* ---------------- SLIDER ---------------- */
   @ViewChild('sliderScroll', { static: false })
   sliderScroll!: ElementRef<HTMLDivElement>;
@@ -147,6 +148,10 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
     private sanitizer: DomSanitizer
   ) {}
 
+
+
+
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['externalVideo']) {
       const base = `https://www.youtube-nocookie.com/embed/${this.externalVideo}`;
@@ -179,9 +184,14 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
   }
 
   ngAfterViewInit(): void {
-    this.startAutoSlide();
+    // this.startAutoSlide();
     setTimeout(() => (this.animationState = true), 0);
+    const el = this.slideVideo.nativeElement;
+    el.muted = true;      // property
+    el.volume = 0;        // rezerva
   }
+
+
 
   ngOnDestroy(): void {
     this.pauseAuto();

@@ -1,0 +1,20 @@
+<mat-card class="acc-card" *ngIf="user$ | async as user">
+    <h2>{{ 'ACCOUNT.TITLE' | translate }}</h2>
+  
+    <div class="info-line">
+      <span class="label">{{ 'ACCOUNT.USERNAME' | translate }}:</span>
+      <span>{{ user.username }}</span>
+    </div>
+  
+    <div class="info-line">
+      <span class="label">{{ 'ACCOUNT.EMAIL' | translate }}:</span>
+      <span>{{ user.email }}</span>
+    </div>
+  
+    <!-- sem si neskôr pridáš objednávky / adresy / heslo atď. -->
+  
+    <button mat-raised-button color="primary" (click)="logout()">
+      {{ 'ACCOUNT.LOGOUT' | translate }}
+    </button>
+  </mat-card>
+  

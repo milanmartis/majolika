@@ -9,6 +9,9 @@ import {
   HostListener,
 } from '@angular/core';
 import { CommonModule }   from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgZone } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule }    from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -82,6 +85,15 @@ import {
       state('visible', style({ opacity: 1 })),
       transition('hidden => visible', animate('500ms ease-in')),
       transition('visible => hidden', animate('500ms ease-out'))
+    ]),
+    trigger('slideUp', [
+      transition(':enter', [
+        style({ transform: 'translateY(100%)', opacity: 0 }),
+        animate('300ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ transform: 'translateY(100%)', opacity: 0 }))
+      ])
     ])
   ],
   templateUrl: './product-detail.component.html',
@@ -139,7 +151,6 @@ export class ProductDetailComponent implements OnInit {
   loadingMap: Record<string, boolean> = {};
   uniqueCategories: Category[] = [];
 
-
   toggle() {
     this.isExpanded = !this.isExpanded;
   }
@@ -156,7 +167,9 @@ export class ProductDetailComponent implements OnInit {
     public auth: AuthService,
     private favState: FavoriteStateService,
     private router: Router,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private snack: MatSnackBar,
+    private zone: NgZone,
     
   ) {
     const rawDesc = '<p>Full product description …</p>';
@@ -167,7 +180,13 @@ export class ProductDetailComponent implements OnInit {
     this.sanitizedShort       = this.sanitizer.bypassSecurityTrustHtml(rawShort);
     this.sanitizedSize        = this.sanitizer.bypassSecurityTrustHtml(rawSize);
   }
- 
+
+  showToast() {
+    this.snack.open('Pridané do obľúbených', 'OK', { duration: 3000 });
+  }
+  info(msg: string) {
+    this.snack.open(msg, 'OK', { duration: 3000, panelClass: 'snack-info' });
+  }
   ngOnInit(): void {
     this.loading = true;
     this.route.paramMap
@@ -242,26 +261,36 @@ export class ProductDetailComponent implements OnInit {
       });
   }
 
-  onToggleFavorite(): void {
-    if (!this.product) return;
+  onToggleFavorite(product: Product): void {
+    console.log('🔹 [Component] product.id =', product.id, typeof product.id);
+
     if (!this.auth.isAuthenticatedSync()) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
       return;
     }
-
+  
     this.loadingFavorite = true;
-
-    // Call toggle: behind the scenes will POST or DELETE
-    this.favState.toggle(this.product);
-
-    // Wait for next favorites$ emission, then update flag and stop spinner
+    const id = product.id;
+    const wasFav = this.favState.isFavorite(id);
+  
+    this.favState.toggle(product);           // ← pošleme celý objekt
+  
     this.favState.favorites$
       .pipe(skip(1), take(1))
-      .subscribe(() => {
-        this.updateIsFavorite();
-        this.loadingFavorite = false;
+      .subscribe({
+        next: () => {
+          this.loadingFavorite = false;
+          this.snack.open(
+            wasFav ? 'Položka vyradená z obľúbených'
+                   : 'Položka pridaná do obľúbených',
+            'OK',
+            { duration: 3000 }
+          );
+        },
+        error: () => (this.loadingFavorite = false)
       });
   }
+
 
 
   private loadProduct(item: Product) {
@@ -681,35 +710,43 @@ onTouchEnd(e: TouchEvent) {
   /** Pripraví čistý popis (čistí <span> tagy a "\n") */
   private prepareShort() {
     const raw = this.product?.short || '';
-    this.sanitizedShort = raw
+    const cleaned = raw
       .replace(/<span[^>]*>/gi, '')
       .replace(/<\/span>/gi, '')
       .replace(/\\n/g, '<br>')
       .trim();
 
-    // Počkáme jednu mikrotasku, aby sa innerHTML aplikovalo, a potom zmeráme
-    setTimeout(() => {
-      const el = this.contentEl.nativeElement;
+    this.sanitizedShort = this.sanitizer.bypassSecurityTrustHtml(cleaned);
+
+    this.zone.onStable.pipe(take(1)).subscribe(() => {
+      const el = this.contentEl?.nativeElement;
+      if (!el) return;
+
       this.isOverflowing = el.scrollHeight > this.collapsedHeight;
-      // Ak používaš ChangeDetectionStrategy.OnPush, pripiš:
-      this.cd.markForCheck();
-    }, 0);
+      this.cd.detectChanges();
+    });
   }
+
+
   private prepareDescription() {
     const raw = this.product?.describe || '';
-    this.sanitizedDescription = raw
+    const cleaned = raw
       .replace(/<span[^>]*>/gi, '')
       .replace(/<\/span>/gi, '')
       .replace(/\\n/g, '<br>')
       .trim();
 
-    // Počkáme jednu mikrotasku, aby sa innerHTML aplikovalo, a potom zmeráme
-    setTimeout(() => {
-      const el = this.contentEl.nativeElement;
+    // stále vraciame SafeHtml
+    this.sanitizedDescription = this.sanitizer.bypassSecurityTrustHtml(cleaned);
+
+    /** 🔽 Spusti po tom, ako Angular dokončí vykreslenie */
+    this.zone.onStable.pipe(take(1)).subscribe(() => {
+      const el = this.contentEl?.nativeElement;
+      if (!el) return;
+
       this.isOverflowing = el.scrollHeight > this.collapsedHeight;
-      // Ak používaš ChangeDetectionStrategy.OnPush, pripiš:
-      this.cd.markForCheck();
-    }, 0);
+      this.cd.detectChanges();      // ak používate ChangeDetectionStrategy.OnPush
+    });
   }
 
 

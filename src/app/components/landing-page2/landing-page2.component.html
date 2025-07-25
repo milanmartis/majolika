@@ -1,11 +1,11 @@
 <div class="landing-container">
 <!-- src/app/landing-page/landing-page.component.html -->
 <!-- ---------- SLIDER ---------- -->
-<div *ngIf="slides.length">
-  <div class="slider-wrapper">
+<div *ngIf="slides.length"  style="width:100%;">
+  <div class="slider-wrapper" >
     <button class="nav prev" (click)="prevSlide()">&#10094;</button>
 
-    <div
+    <div 
       class="slider-scroll"
       #sliderScroll
       (mouseenter)="pauseAuto()"
@@ -32,13 +32,17 @@
         <ng-template #localMedia>
           <ng-container *ngIf="s.videos?.length; else imgTpl">
             <video
-              class="slide-media"
-              [src]="s.videos[0]"
-              autoplay
-              muted
-              loop
-              playsinline
-            ></video>
+            #slideVideo
+            class="slide-media"
+            playsinline
+            loop
+            autoplay            
+            [muted]="true"      
+            poster="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_placeholder_6982996b8f.jpg"
+          >
+            <source [src]="s.videos[0]" type="video/mp4" />
+            {{ 'VIDEO.NOT_SUPPORTED' | translate }}
+          </video>
           </ng-container>
           <ng-template #imgTpl>
             <img

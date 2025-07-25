@@ -42,6 +42,15 @@
       "CART_IS_EMPTY": "Košík je prázdny",
       "SELECT_CATEGORY": "Vyberte si z kategórií",
       "SORT_BY": "Zoradiť",
+      "SORT_NAME_ASC": "Názov A-Z",
+      "SORT_NAME_DESC": "Názov Z-A",
+      "SORT_PRICE_ASC": "Od najlacnejšieho",
+      "SORT_PRICE_DESC": "Od najdrahšieho",
+      "SORT_NEWEST": "Najnovšie",
+      "SORT_OLDEST": "Najstaršie",
+
+
+
       "FILTER_BY": "Filtrovať",
       "POKRACOVAT_SHOPPING": "Pokračovať v nákupe",
       "SIZES_TEXT": "Špecifikácie",
@@ -184,7 +193,18 @@
               "MAJOLIKA_NA_AKCII": "Majolika na akcii",
               "DIELNE2": "Dielne",
               "PREHLIADKY": "Prehliadky"
+            },
+
+            "ACCOUNT": {
+              "TITLE": "Môj účet",
+              "USERNAME": "Prihlasovacie meno",
+              "EMAIL": "E‑mail",
+              "LOGOUT": "Odhlásiť sa",
+              "LOGIN": "Prihlásiť sa",
+              "REGISTER": "Registrovať sa"
             }
+
+
           
         
   }

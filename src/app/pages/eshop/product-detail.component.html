@@ -34,6 +34,7 @@
           [alt]="product.name"
           class="main-image"
           (click)="openFullscreen(currentImage)" [@slideUp]="fullscreenState"
+
           (load)="onImageLoad(currentImage)"
           (error)="onImageError(currentImage)"
           appZoomPan 
@@ -165,7 +166,7 @@
 
         <button
         class="favourite"
-        (click)="onToggleFavorite()"
+        (click)="onToggleFavorite(product)"
         [disabled]="loadingFavorite"
       >
       
@@ -235,7 +236,7 @@
 <div class="bottom_detail"></div>
 
 <!-- ---------- FEATURED PRODUKTY ---------- -->
-<section *ngIf="featured.length" class="sale-section featured" style="position: relative;">
+<section *ngIf="featured.length" class="sale-section featured" style="position: relative;width:100%;">
   <h2 style="text-align:center;color:#2944ba;">{{ 'ESHOP.FEATURED' | translate }}</h2>
 
   <!-- Left arrow -->

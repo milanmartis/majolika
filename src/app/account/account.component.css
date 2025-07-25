@@ -1,0 +1,17 @@
+.acc-card {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  .info-line {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+  }
+  
+  .label {
+    font-weight: 600;
+    color: var(--base-blue);
+  }
+  

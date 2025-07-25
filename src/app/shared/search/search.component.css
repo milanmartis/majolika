@@ -3,10 +3,10 @@
 /* --------------------------------------------------------
    1) Iba lupa tlačidlo (viditeľné pred otvorením overlayu)
    -------------------------------------------------------- */
-   html {
+   /* html {
     z-index: 999999999999;
   }
-  
+   */
   .search-button {
     background: transparent;
     border: none;

@@ -1,38 +1,43 @@
-// src/app/services/favorite.service.ts
-import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Product } from './products.service';
+import { Observable, forkJoin, EMPTY } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { environment } from '../../environments/environment';
 
-export interface Favorite { 
-  id: number; 
-  product: Product; 
-}
-interface FavoriteResponse {
-  data: Favorite[];
-  meta: any;
+export interface Favorite {
+  id: number;
+  product: { id: number } | null;
 }
 
 @Injectable({ providedIn: 'root' })
 export class FavoriteService {
-  private base = `${environment.apiUrl}/favorites`;
+  /** Jeden bod pravdy – meníš len environment.apiUrl, nie kód. */
+  private readonly base = `${environment.apiUrl}/favorites`;
 
   constructor(private http: HttpClient) {}
 
-  /** Vráti priamo pole Favorite[] */
-  getAll() {
+  /** GET /api/favorites?populate=product */
+  getAll(): Observable<Favorite[]> {
     return this.http
-      .get<FavoriteResponse>(`${this.base}?populate=product`)
-      .pipe(map(res => res.data));
+      .get<{ data: Favorite[] }>(`${this.base}?populate=product`)
+      .pipe(map(r => r.data));
   }
 
+  /** POST /api/favorites */
   add(productId: number) {
-    return this.http.post<{ data: Favorite }>(this.base, { data: { product: productId } })
-      .pipe(map(res => res.data));
+    return this.http.post(this.base, { data: { product: productId } });
   }
 
+  /** DELETE /api/favorites/:id */
   remove(favId: number) {
-    return this.http.delete<void>(`${this.base}/${favId}`);
+    return this.http.delete(`${this.base}/${favId}`);
   }
+
+  /** Paralelne zmaže viac obľúbených záznamov */
+  removeMany(favs: Favorite[]) {
+    if (!favs.length) return EMPTY;
+    return forkJoin(favs.map(f => this.remove(f.id)));
+  }
+  
 }

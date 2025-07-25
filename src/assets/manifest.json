@@ -1,5 +1,5 @@
 {
-    "background_color": "#3d45a1",
+    "background_color": "#0e29a0",
     "description": "leagme-chat-tool",
     "dir": "ltr",
     "display": "standalone",
@@ -8,7 +8,7 @@
     "scope": "/",
     "short_name": "majolika",
     "start_url": "/",
-    "theme_color": "#3d45a1",
+    "theme_color": "#0e29a0",
     "categories": [
       "entertainment"
     ],

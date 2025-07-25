@@ -17,7 +17,7 @@ import { LeafletModule } from '@bluehalo/ngx-leaflet';
   // 📌  Stand‑alone component – importy direktív patria tu:
   imports: [CommonModule, ReactiveFormsModule, LeafletModule],
   templateUrl: './kontakt.component.html',
-  styleUrls: ['./kontakt.component.scss'],
+  styleUrls: ['./kontakt.component.css'],
 })
 export class KontaktComponent implements OnInit {
   // --- Leaflet ---

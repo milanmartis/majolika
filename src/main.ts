@@ -8,6 +8,7 @@ import { importProvidersFrom, isDevMode } from '@angular/core';
 import { MegaMenuModule } from 'primeng/megamenu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 
@@ -38,53 +39,31 @@ export function createTranslateLoader(http: HttpClient) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    // 1) HttpClient + DI-based interceptors
     provideHttpClient(withInterceptorsFromDi()),
-
-    // 2) Náš AuthInterceptor
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
-
-    // 3) Router
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     provideRouter(routes),
-
-    // 4) Browser Animations (iba raz!)
     provideAnimations(),
 
-    // 5) Import modulov via importProvidersFrom
     importProvidersFrom(
-      // ngx-translate
       TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: createTranslateLoader,
-          deps: [HttpClient],
-        }
+        loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
       }),
-      // Angular Material dialog
       MatDialogModule,
-      // PrimeNG MegaMenu
+      MatSnackBarModule,      // ← snack bar
       MegaMenuModule
     ),
 
-    // 6) Translate services & compiler
     TranslateService,
     TranslateStore,
-    BrowserAnimationsModule,
     { provide: TranslateCompiler, useClass: TranslateFakeCompiler },
-
-    // 7) Aplikácia-špecifické služby
     LanguageService,
-
-    // 8) Konštanty pre API a frontend URL
     { provide: 'API_URL', useValue: environment.apiUrl },
-    { provide: 'FRONTEND_URL', useValue: environment.frontendUrl }, provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }),
+    { provide: 'FRONTEND_URL', useValue: environment.frontendUrl },
+
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ]
 })
   .catch(err => console.error('Angular sa nespustil:', err));

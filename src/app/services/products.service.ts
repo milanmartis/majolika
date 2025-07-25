@@ -47,7 +47,7 @@ export interface Product {
   inSale: boolean;
   short?: string;
   describe?: string;
-
+  ean: string;
   variations?: Product[];
   categories?: Category[];
 
@@ -183,6 +183,7 @@ export class ProductsService {
       inSale: at.inSale,
       short: at.short,
       describe: at.describe,
+      ean: at.ean,
       variations,
       categories,
       picture_new: primaryPicObj,
@@ -204,34 +205,49 @@ export class ProductsService {
       .set('filters[public][$eq]', 'true')
       .set('filters[$or][0][name][$containsi]', query)
       .set('filters[$or][1][variations][name][$containsi]', query)
+      .set('filters[$or][2][describe][$containsi]', query)
+      .set('filters[$or][3][ean][$containsi]', query)
+      .set('filters[$or][4][short][$containsi]', query)
       .set('populate=*', this.populateList);
-
+  
     console.log(
       'ProductsService.searchProducts(): volám URL =',
       `${this.api}/products?${params.toString()}`
     );
-
-    return this.http
-      .get<StrapiResp>(`${this.api}/products`, { params })
-      .pipe(
-        this.mapResp,
-        map(r => r.data),
-        map((products: Product[]) => {
-          const q = query.trim().toLowerCase();
-          const results: Product[] = [];
-          for (const p of products) {
-            if (p.name.toLowerCase().includes(q)) {
-              results.push(p);
-            }
-            for (const v of p.variations || []) {
-              if (v.name.toLowerCase().includes(q)) {
-                results.push(v);
-              }
+  
+    return this.http.get<StrapiResp>(`${this.api}/products`, { params }).pipe(
+      this.mapResp,
+      map(r => r.data),
+      map((products: Product[]) => {
+        // helper: zjemní reťazec (diakritika → ASCII, lower‑case)
+        const norm = (s: string | undefined) =>
+          (s ?? '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase();
+  
+        const qN = norm(query.trim());
+        const results: Product[] = [];
+  
+        for (const p of products) {
+          // najprv overíme zhodu na úrovni produktu
+          const prodFields = [p.name, p.short, p.describe, p.ean];
+          if (prodFields.some(f => norm(f).includes(qN))) {
+            results.push(p);
+          }
+  
+          // potom pridáme každú zodpovedajúcu variáciu ako samostatný záznam
+          for (const v of p.variations ?? []) {
+            const varFields = [v.name, v.short, v.describe, v.ean];
+            if (varFields.some(f => norm(f).includes(qN))) {
+              results.push(v as Product); // ak Variation dedí/implementuje Product
             }
           }
-          return results;
-        })
-      );
+        }
+  
+        return results;
+      })
+    );
   }
 
   getAllCategoriesFlat(): Observable<Category[]> {
@@ -331,8 +347,9 @@ getFilteredProducts(
   shapes.forEach((s, j) => {
     const idx = decors.length + j;
     params = params.set(
+      // pôvodne slug[$containsi] = s
       `filters[$and][${idx}][variations][slug][$containsi]`,
-      s
+      s.replace(/-/g, '')           // ← príklad odfiltrovania pomlčky
     );
   });
 

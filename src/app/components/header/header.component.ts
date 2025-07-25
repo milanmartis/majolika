@@ -14,6 +14,7 @@ import { ProductsService, Category } from 'app/services/products.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SearchComponent } from 'app/shared/search/search.component';
 import { MegaMenuService } from 'app/services/mega-menu.service';
+import { AuthService } from 'app/services/auth.service'; 
 
 import {
 
@@ -119,7 +120,8 @@ onResize(event: any) {
     private languageService: LanguageService,
     private router: Router,
     private cart: CartService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public auth: AuthService
   ) {
     this.count$ = this.cart.count$;
   }

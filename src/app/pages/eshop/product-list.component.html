@@ -5,50 +5,58 @@
   [@slideUp]="'visible'"
 >
   <!-- Kategória nadpis -->
-  <div style="padding-top:33px;max-width:1000px;width:100%;margin:auto;" *ngIf="selectedCategoryName">
-    <h2>
-      <strong>
-        {{ 'CATEGORIES.'+selectedCategorySlug | translate }}
-        <button
-          (click)="resetCategory()"
-          class="reset-button"
-          title="Zobraziť všetky hlavné kategórie"
-        >
-          ×
-        </button>
-      </strong>
-    </h2>
-    <h5>{{ selectedCategoryText }}</h5>
+<!-- Nadpis kategórií -->
+<div class="cat-heading" *ngIf="selectedRootCategorySlug">
+  <h2>
+    <!-- ROOT názov vždy -->
+    <strong>{{ 'CATEGORIES.' + selectedRootCategorySlug | translate }}</strong>
 
-  </div>
+    <!-- keď sme na podkategórii → » názov child -->
+    <ng-container *ngIf="selectedCategorySlug !== selectedRootCategorySlug">
+      &nbsp;|&nbsp;
+      <strong>{{ 'CATEGORIES.' + selectedCategorySlug | translate }}</strong>
+    </ng-container>
 
+    <!-- tlačidlo × ostáva rovnaké -->
+    <button
+      (click)="resetCategory()"
+      class="reset-button"
+      title="Zobraziť všetky hlavné kategórie"
+    >
+      X
+    </button>
+  </h2>
+
+</div>
+  
   <!-- Výzva na výber kategórie -->
   <div
-    *ngIf="!selectedCategory"
-    class="status"
+  *ngIf="!selectedCategory"
   >
-    <h2>{{ 'ESHOP.SELECT_CATEGORY' | translate }}</h2>
-  </div>
+  <h2>{{ 'ESHOP.SELECT_CATEGORY' | translate }}</h2>
+</div>
 
 <!-- Subkategórie ako buttony -->
 <div
- 
-  class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
+
+class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
 >
-  <div class="child-buttons">
+<div class="child-buttons">
     <button
-      *ngFor="let child of childCategories"
+    *ngFor="let child of childCategories"
       (click)="onCategorySelect(child.category_slug)"
       class="child-button"
       [class.active]="selectedCategory === child.category_slug"
-    >
+      >
       {{ 'CATEGORIES.'+child.category_slug | translate }}
     </button>
   </div>
 </div>
 
-
-
+  <!-- Text kategórie -->
+  <h4 [innerHTML]="selectedCategoryText" *ngIf="selectedCategoryText && selectedCategoryText.length > 0" class="category-text" 
+    style="width:100%;max-width:1000px;margin:auto;padding-bottom:40px;white-space: pre-line;">
+  </h4>
   <!-- Root kategórie -->
   <div
   *ngIf="rootCategories && rootCategories.length > 0"
@@ -71,8 +79,7 @@
     {{ 'ESHOP.ERROR_LOADING_PRODUCTS' | translate }}
   </div>
   <div
-    *ngIf="selectedCategory && !isLoading && !error && products.length === 0"
-    class="status"
+    *ngIf="!isLoading && products.length === 0"
   >
    <h3 class="status-text">
      {{ 'ESHOP.NO_PRODUCTS_IN_CATEGORY' | translate }}
@@ -85,22 +92,21 @@
     *ngIf="!error && products.length > 0"
   >
     <label for="sortSelect"><p>{{ 'ESHOP.SORT_BY' | translate }}: </p></label>
-    <select
-      id="sortSelect"
-      class="sort-select"
-      [(ngModel)]="selectedSort"
-      (ngModelChange)="onSortChange($event)"
-    >
-      <option *ngFor="let opt of sortOptions" [value]="opt.value">
-        <p>
-          {{ opt.label }}
-        </p>
-      </option>
-    </select>
+<!-- header alebo product-list.component.html -->
+<select id="sortSelect"
+        class="sort-select"
+        [(ngModel)]="selectedSort"
+        (ngModelChange)="onSortChange($event)"
+>
+  <option *ngFor="let opt of sortOptions"
+          [ngValue]="opt.value">   <!-- ← ngValue je bezpečnejšie pri stringoch -->
+    {{ opt.label | translate }}    <!-- tu rovno pipuj preklad -->
+  </option>
+</select>
   </div>
 
 <!-- Dekory -->
- <div class="flex">
+ <!-- <div class="flex">
 
    <div class="filter-decor">
      <label *ngFor="let opt of decorOptions">
@@ -113,7 +119,7 @@
       </label>
     </div>
     
-    <!-- Tvary -->
+
     <div class="filter-shape">
       <label *ngFor="let opt of shapeOptions">
     <input
@@ -133,16 +139,19 @@
   </button>
   </div>
 </div>
-</div>
+</div> -->
 
   <!-- Loader -->
-  <div *ngIf="isLoading" class="loading-message-wrapper">
-    <span class="loading-message">{{ loadingText }}</span>
-  </div>
+  <!-- <div *ngIf="isLoading" class="loading-message-wrapper"> -->
+    <!-- <span class="loading-message">{{ loadingText }}</span> -->
+  <!-- </div> -->
   <!-- <div *ngIf="isLoading" class="grid">
     <div class="grid-item shimmer" *ngFor="let _ of loadingPlaceholders"></div>
   </div> -->
-
+<!-- ⬇️ Full‑screen overlay -->
+<div class="page-loading-overlay" *ngIf="isLoading">
+  <!-- <div class="spinner"></div> -->
+</div>
 
   <!-- <div class="grid" *ngIf="!isLoading && !error && products.length > 0"> -->
     <div class="products-wrapper" [class.loading]="isLoading">
@@ -171,11 +180,12 @@
         </div>
   
         <div class="info">
-          <div class="small-decor-info" *ngIf="getDecorFromName(p.name)">
+          <!-- <div class="small-decor-info" *ngIf="getDecorFromName(p.name)">
             {{ getDecorFromName(p.name) }}
-          </div>
+          </div> -->
         
-          <h3>{{ getWithoutDecorFromName(p.name) }}</h3>
+          <h3>{{ p.name }}</h3>
+          <!-- <h3>{{ getWithoutDecorFromName(p.name) }}</h3> -->
         
           <p *ngIf="p.price !== null; else noPrice">
             {{ p.price }} €
