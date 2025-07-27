@@ -12,6 +12,7 @@ import { RegisterComponent }         from 'app/auth/register.component';
 import { ArticlePageComponent }      from 'app/article-page/article-page.component';
 import { eshopRoutes }               from './pages/eshop/eshop.routes';
 import { galleryRoutes }             from './pages/gallery/gallery.routes';
+import { ConfirmEmailComponent }     from './pages/confirm-email/confirm-email.component';
 
 import { AuthGuard }          from './guards/auth.guard';          // ⬅ musí existovať
 import { AlreadyAuthGuard }   from './guards/already-auth.guard';  // ⬅ nový guard
@@ -52,6 +53,17 @@ export const routes: Routes = [
   { path: 'article/:slug',
     component: ArticlePageComponent,
     data: { animation: 'ArticlePage' }
+  },
+
+  {
+    path: 'checkout',
+    loadChildren: () =>
+      import('./checkout/checkout.routes').then(m => m.checkoutRoutes)
+  },
+
+  {
+    path: 'confirm-email',
+    component: ConfirmEmailComponent
   },
 
   // --- Fallback ---

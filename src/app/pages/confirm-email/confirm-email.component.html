@@ -1,0 +1,17 @@
+<div class="confirm-email-container" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>⏳ Overujeme email...</p>
+  </div>
+  
+  <div class="confirm-email-container" *ngIf="success && !loading">
+    <mat-icon color="primary" style="font-size: 48px;">check_circle</mat-icon>
+    <h2>✅ Váš email bol úspešne potvrdený!</h2>
+    <p>Budete presmerovaný na prihlásenie...</p>
+  </div>
+  
+  <div class="confirm-email-container" *ngIf="error && !loading">
+    <mat-icon color="warn" style="font-size: 48px;">error</mat-icon>
+    <h2>❌ Token je neplatný alebo už bol použitý.</h2>
+    <p>Ak je váš účet už potvrdený, môžete sa <a routerLink="/login">prihlásiť</a>.</p>
+  </div>
+  

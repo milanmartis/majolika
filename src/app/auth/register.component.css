@@ -1,46 +1,62 @@
-.auth-form {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-  }
-  .auth-form h2 {
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-  .auth-form label {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  .auth-form input {
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.25rem;
-    box-sizing: border-box;
-  }
-  .auth-form .error {
-    color: red;
-    margin-top: 0.5rem;
-  }
-  .auth-form button {
-    width: 100%;
-    padding: 0.75rem;
-    margin-top: 1rem;
-  }
-  
+.login-title {
+  text-align: center;
+  margin: 120px auto 30px;
+  font-size: 2.4rem;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: var(--base-blue);
+}
 
-  .auth-card {
-    max-width: 400px;
-    margin: 8rem auto;
-    padding: 1rem;
-    height: 100%;
-    min-height: 555px;
-  }
-  .full-width {
-    width: 100%;
-  }
-  .error-msg {
-    color: #f44336;
-    margin-top: 0.5rem;
-  }
+.auth-card {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 2rem;
+  border-radius: var(--corners);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.auth-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--base-blue, #2944ba);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.login-btn, .register-btn, .save-btn {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: var(--corners);
+}
+
+.server-error {
+  margin: 1rem 0;
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.08);
+  padding: 0.8rem;
+  border-radius: var(--corners);
+  text-align: center;
+}
+
+.auth-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.auth-actions a {
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--base-blue, #2944ba);
+  transition: color 0.2s ease;
+}
+.auth-actions a:hover {
+  color: #1f3796;
+}

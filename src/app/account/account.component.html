@@ -1,20 +1,60 @@
-<mat-card class="acc-card" *ngIf="user$ | async as user">
-    <h2>{{ 'ACCOUNT.TITLE' | translate }}</h2>
-  
-    <div class="info-line">
-      <span class="label">{{ 'ACCOUNT.USERNAME' | translate }}:</span>
-      <span>{{ user.username }}</span>
+<h1 class="checkout-title">Môj účet</h1>
+
+<div class="account-wrapper">
+
+  <!-- 🟦 1. veľký blok – formulár -->
+  <div class="account-section form-block">
+    <h2 class="section-title">Údaje používateľa</h2>
+
+    <form [formGroup]="accountForm" (ngSubmit)="saveAccount()">
+      <app-user-form [form]="accountForm"></app-user-form>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Uložiť zmeny</button>
+      </div>
+    </form>
+
+
+  </div>
+
+  <!-- 🟦 Pravý stĺpec (2 menšie bloky pod sebou) -->
+  <div class="right-column">
+
+    <!-- 2. blok – obľúbené produkty -->
+    <div class="account-section">
+      <h2 class="section-title">Moje obľúbené produkty</h2>
+
+      <div *ngIf="favorites$ | async as favs">
+        <div *ngIf="favs.length > 0; else noFavs" class="favorites-grid">
+          <div *ngFor="let product of favs" class="favorite-card">
+            <a class="fav-link" [routerLink]="['/produkt', product.slug]">
+              <img class="fav-img"
+                   [src]="product.primaryImageUrl || '/assets/img/logo-SLM-modre.gif'"
+                   alt="{{ product.name }}" />
+              <div class="fav-info">
+                <span class="fav-name">{{ product.name }}</span>
+                <span class="fav-price">{{ product.price | currency:'EUR' }}</span>
+              </div>
+            </a>
+            <button class="btn-remove" (click)="removeFavorite(product)">❌ Odstrániť</button>
+          </div>
+        </div>
+        <ng-template #noFavs>
+          <p class="empty-msg">Nemáte žiadne obľúbené produkty.</p>
+        </ng-template>
+      </div>
     </div>
-  
-    <div class="info-line">
-      <span class="label">{{ 'ACCOUNT.EMAIL' | translate }}:</span>
-      <span>{{ user.email }}</span>
+
+    <!-- 3. blok – napr. ďalšie informácie -->
+    <div class="account-section">
+      <h2 class="section-title">Moje objednávky</h2>
+      <p>Tu môžu byť informácie o posledných objednávkach alebo iný obsah.</p>
     </div>
-  
-    <!-- sem si neskôr pridáš objednávky / adresy / heslo atď. -->
-  
-    <button mat-raised-button color="primary" (click)="logout()">
-      {{ 'ACCOUNT.LOGOUT' | translate }}
-    </button>
-  </mat-card>
-  
+
+  </div>
+  <div class="logout-wrapper" style="margin:auto;">
+    <button class="btn-primary btn-logout" (click)="logout()">Odhlásiť sa</button>
+  </div>
+</div>
+
+<app-footer></app-footer>

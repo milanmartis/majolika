@@ -1,0 +1,159 @@
+.checkout-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .checkout-title {
+    text-align: center;
+    margin: 2rem 0;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 2rem;
+  }
+  
+  .checkout-cart,
+  .checkout-form {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  
+  .cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .8rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 1rem;
+    border-radius: 4px;
+  }
+  
+  .cart-item-info {
+    flex: 1;
+  }
+  
+  .cart-item-total {
+    font-weight: bold;
+  }
+  
+  .cart-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  }
+  
+  .checkout-form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  
+  h2{
+    color: var(--base-blue);
+  }
+
+  .checkout-form h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--base-blue);
+    text-align: center;
+  }
+  
+  .checkout-form h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  /* Každý riadok */
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  
+  .form-row label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: #444;
+  }
+  
+  .form-row input {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .form-row input:focus {
+    border-color: var(--base-blue);
+    box-shadow: 0 0 0 3px rgba(41, 68, 186, 0.15);
+    outline: none;
+  }
+  
+  /* Grid pre adresu */
+  .address-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 1.5rem;
+  }
+  
+  .address-grid .full-width {
+    grid-column: span 2;
+  }
+  
+  /* Akcie (tlačidlo) */
+  .form-actions {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .btn-primary {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--base-blue);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-primary:hover {
+    background: #1f3796;
+  }
+  
+  .btn-primary[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Responzívne na mobile */
+  @media (max-width: 768px) {
+    .address-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .checkout-wrapper {
+      grid-template-columns: 1fr;
+    }
+  }
+  

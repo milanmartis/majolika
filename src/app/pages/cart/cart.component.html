@@ -10,7 +10,7 @@
       *ngFor="let r of rows; trackBy: trackById"
       [@bounceOut]
       [@.disabled]="disableAnim"
-           >
+      [ngClass]="{ 'new-item': isHighlighted(r) }">
 
         <a [routerLink]="['/eshop', r.slug]" (click)="onProductClick()">
           <img class="item-thumb" [src]="r.img" [alt]="r.name" />
@@ -54,7 +54,7 @@
   <!-- k pokladni -->
     <button class="checkout"
             [disabled]="rows.length === 0"
-            routerLink="/pokladna">
+            [routerLink]="['/checkout']" (click)="onProductClick()">
       {{ 'ESHOP.DO_POKLADNE' | translate }}
     </button>
 

@@ -40,26 +40,53 @@ export class CartComponent {
   @Output() productClicked = new EventEmitter<void>();
   disableAnim = false;
 
-  readonly rows$!:  Observable<CartRow[]>;
+  readonly rows$!: Observable<CartRow[]>;
   readonly total$!: Observable<number>;
 
-  constructor(private readonly cart: CartService) {
-    this.rows$  = this.cart.cart$;
-    this.total$ = this.cart.total$;
-  }
+  /** ID produktov, ktoré sa majú zvýrazniť */
+  highlightedIds = new Set<number>();
 
-  inc(row: CartRow)    { this.cart.updateQty(row.id, row.qty + 1); }
-  dec(row: CartRow)    { if (row.qty > 1) this.cart.updateQty(row.id, row.qty - 1); }
-  remove(row: CartRow) { this.cart.remove(row.id); }
-  // clear()              { this.cart.clear(); }
-  clear() {
-    this.disableAnim = true;      // animácie OFF
-    this.cart.clear();            // vyprázdnime košík okamžite
-    setTimeout(() => {            // po mikro-tiku ich zasa povolíme
-      this.disableAnim = false;
+  /** ID produktov, ktoré boli v košíku naposledy */
+  private prevIds = new Set<number>();
+
+  constructor(private readonly cart: CartService) {
+    this.rows$ = this.cart.cart$;
+    this.total$ = this.cart.total$;
+
+    // Sledujeme zmeny v košíku
+    this.cart.cart$.subscribe(rows => {
+      const currentIds = new Set(rows.map(r => r.id));
+
+      // nájdeme len tie, ktoré predtým neboli → nové položky
+      rows.forEach(r => {
+        if (!this.prevIds.has(r.id)) {
+          this.highlightedIds.add(r.id); // zvýrazníme len nové
+        }
+      });
+
+      // zapamätáme si aktuálne ID ako "predošlé"
+      this.prevIds = currentIds;
     });
   }
-  onProductClick()     { this.productClicked.emit(); }
+
+  resetHighlights() {
+    // Po zatvorení košíka resetujeme zvýraznenie
+    this.highlightedIds.clear();
+  }
+
+  isHighlighted(row: CartRow): boolean {
+    return this.highlightedIds.has(row.id);
+  }
+
+  inc(row: CartRow) { this.cart.updateQty(row.id, row.qty + 1); }
+  dec(row: CartRow) { if (row.qty > 1) this.cart.updateQty(row.id, row.qty - 1); }
+  remove(row: CartRow) { this.cart.remove(row.id); }
+  clear() {
+    this.disableAnim = true;
+    this.cart.clear();
+    setTimeout(() => this.disableAnim = false);
+  }
+  onProductClick() { this.productClicked.emit(); }
 
   trackById = (_: number, row: CartRow) => row.id;
 }

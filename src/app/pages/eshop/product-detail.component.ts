@@ -184,9 +184,9 @@ export class ProductDetailComponent implements OnInit {
   showToast() {
     this.snack.open('Pridané do obľúbených', 'OK', { duration: 3000 });
   }
-  info(msg: string) {
-    this.snack.open(msg, 'OK', { duration: 3000, panelClass: 'snack-info' });
-  }
+  // info(msg: string) {
+  //   this.snack.open(msg, 'OK', { duration: 3000, panelClass: 'snack-info' });
+  // }
   ngOnInit(): void {
     this.loading = true;
     this.route.paramMap
@@ -264,11 +264,14 @@ export class ProductDetailComponent implements OnInit {
   onToggleFavorite(product: Product): void {
     console.log('🔹 [Component] product.id =', product.id, typeof product.id);
 
-    if (!this.auth.isAuthenticatedSync()) {
-      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
-      return;
-    }
-  
+    this.auth.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+
+        this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+        return;
+      }
+    });
+    
     this.loadingFavorite = true;
     const id = product.id;
     const wasFav = this.favState.isFavorite(id);

@@ -7,7 +7,7 @@
     min-height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
-    z-index: 99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999;
+    z-index: 999999;
   }
 
   /* .close-btn{
@@ -42,8 +42,25 @@
     /* box-shadow: 0 2px 8px rgba(0,0,0,0.25); */
     padding: 1rem;
     align-items: center;
+    transition: all 0.3s ease;
+
+  }
+
+  
+  .cart-item.new-item {
+    background: rgba(41, 68, 186, 0.08); /* jemne modré zvýraznenie */
+    animation: highlight-fade 2s ease forwards;
   }
   
+  @keyframes highlight-fade {
+    0%   { background: rgba(41, 68, 186, 0.2); }
+    100% { background: rgba(41, 68, 186, 0.08); }
+  }
+
+
+
+
+
   .item-thumb {
     vertical-align: top;
     /* grid-area: thumb; */

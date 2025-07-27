@@ -1,44 +1,48 @@
+<h1 class="login-title">Registrácia</h1>
+
 <mat-card class="auth-card">
-    <mat-card-title>Registrácia</mat-card-title>
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Používateľské meno</mat-label>
-        <input matInput formControlName="username" />
-        <mat-error *ngIf="username?.hasError('required')">
-          Toto pole je povinné.
-        </mat-error>
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>E-mail</mat-label>
-        <input matInput formControlName="email" />
-        <mat-error *ngIf="email?.hasError('required')">
-          Toto pole je povinné.
-        </mat-error>
-        <mat-error *ngIf="email?.hasError('email')">
-          Zadajte platný e-mail.
-        </mat-error>
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Heslo</mat-label>
-        <input matInput type="password" formControlName="password" />
-        <mat-error *ngIf="password?.hasError('required')">
-          Toto pole je povinné.
-        </mat-error>
-        <mat-error *ngIf="password?.hasError('minlength')">
-            Heslo musí mať aspoň {{ passwordMinLength }} znakov.
-          </mat-error>
-      </mat-form-field>
-  
-      <button mat-raised-button color="primary" class="full-width" [disabled]="form.invalid">
-        Registrovať sa
-      </button>
-  
-      <div *ngIf="error" class="error-msg">{{ error }}</div>
-    </form>
-    <mat-card-actions>
-      <a mat-button [routerLink]="['/login']">Už máte účet? Prihlásenie</a>
-    </mat-card-actions>
-  </mat-card>
-  
+  <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Používateľské meno</mat-label>
+      <input matInput formControlName="username" />
+      <mat-error *ngIf="form.get('username')?.hasError('required')">
+        Toto pole je povinné.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>E-mail</mat-label>
+      <input matInput formControlName="email" />
+      <mat-error *ngIf="form.get('email')?.hasError('required')">
+        Zadajte email
+      </mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('email')">
+        Zadajte platný e-mail
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Heslo</mat-label>
+      <input matInput type="password" formControlName="password" />
+      <mat-error *ngIf="form.get('password')?.hasError('required')">
+        Zadajte heslo
+      </mat-error>
+      <mat-error *ngIf="form.get('password')?.hasError('minlength')">
+        Heslo musí mať aspoň {{ passwordMinLength }} znakov.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Serverová chyba -->
+    <div *ngIf="error" class="server-error">{{ error }}</div>
+
+    <button mat-raised-button color="primary" class="register-btn" [disabled]="form.invalid">
+      Registrovať sa
+    </button>
+  </form>
+
+  <mat-card-actions class="auth-actions">
+    <a mat-button [routerLink]="['/login']">Už máte účet? Prihlásenie</a>
+  </mat-card-actions>
+</mat-card>
+<app-footer class="mt-8"></app-footer>

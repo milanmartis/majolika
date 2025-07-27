@@ -1,0 +1,17 @@
+.confirm-email-container {
+    max-width: 500px;
+    margin: 80px auto;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+  
+  mat-spinner {
+    margin: 20px auto;
+    display: block;
+  }
+  
+  mat-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+  

@@ -36,23 +36,13 @@ export class FavoriteStateService {
   /** ----- public API --------------------------------------- */
 
   toggle(product: Product): void {
-    if (this.pending) return;
-    this.pending = true;
+    const favorite = this.favs$.value.find(f => f.product?.id === product.id);
   
-    const prodId = Number(product.id);
+    const req$ = favorite
+      ? this.favSrv.remove(favorite.id)  // DELETE konkrétny záznam
+      : this.favSrv.add(product.id);     // POST nový
   
-    // vyfiltruj všetko, čo má user + product, aj tie bez product (null)
-    const targets = this.favs$.value.filter(
-      f => Number(f.product?.id) === prodId || !f.product
-    );
-  
-    const req$ = targets.length
-      ? this.favSrv.removeMany(targets)   // DELETE všetky
-      : this.favSrv.add(prodId);          // POST, ak ešte nič nie je
-  
-    req$
-      .pipe(finalize(() => { this.pending = false; this.reload(); }))
-      .subscribe();
+    req$.pipe(finalize(() => this.reload())).subscribe();
   }
 
   /** Lokálne overenie pre UI */

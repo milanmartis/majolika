@@ -8,7 +8,7 @@ export class AlreadyAuthGuard implements CanActivate {
 
   canActivate(): boolean | UrlTree {
     return this.auth.isAuthenticatedSync()
-      ? this.router.createUrlTree(['/account'])  // prihlásený? preskoč /login
-      : true;                                    // neprihlásený? dovoľ
+      ? this.router.createUrlTree(['/account'])
+      : true;
   }
 }

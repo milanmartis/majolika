@@ -1,71 +1,113 @@
-// src/app/services/auth.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { environment } from 'environments/environment';
 
 export interface User {
   id: number;
   username: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
-  // pridajte ďalšie polia, ktoré používate
+  phone?: string;
+ // address?: {
+    street?: string;
+    city?: string;
+    zip?: string;
+    country?: string;
+ // };
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly apiUrl = environment.apiUrl.replace(/\/\/+$/, '');
+  private readonly TOKEN_KEY = 'jwt';      // kľúč v localStorage
+  private apiUrl = environment.apiUrl;
 
+  /** Aktuálny používateľ (BehaviorSubject pre reactive update) */
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Ak máte v localStorage uložený token a user objekt, môžete tu obnoviť stav:
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      this.currentUserSubject.next(JSON.parse(storedUser));
+    // ✅ Ak už máme JWT v localStorage, môžeme načítať profil hneď po štarte
+    if (this.isAuthenticatedSync()) {
+      this.loadCurrentUser();
     }
   }
 
-  login(creds: { identifier: string; password: string }): Observable<User> {
-    return this.http
-      .post<{ jwt: string; user: User }>(`${this.apiUrl}/auth/local`, creds)
-      .pipe(
-        tap(res => {
-          localStorage.setItem('jwt', res.jwt);
-          localStorage.setItem('currentUser', JSON.stringify(res.user));
-          this.currentUserSubject.next(res.user);
-        }),
-        map(res => res.user)
-      );
-  }
-
-  register(data: { username: string; email: string; password: string }) {
-    return this.http
-      .post<{ jwt: string; user: User }>(`${this.apiUrl}/auth/local/register`, data)
-      .pipe(
-        tap(res => {
-          localStorage.setItem('jwt', res.jwt);
-          localStorage.setItem('currentUser', JSON.stringify(res.user));
-          this.currentUserSubject.next(res.user);
-        }),
-        map(res => res.user)
-      );
-  }
-
-  logout(): void {
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
-  }
-
-  /** vyžaduje sa asynchrónny Observable<boolean> */
-  get isAuthenticated$(): Observable<boolean> {
-    return this.currentUser$.pipe(map(user => !!user));
-  }
-
-  /** Ak potrebujete synchronne skontrolovať, či je user prihlásený */
+  /**
+   * ✅ Overí, či je používateľ prihlásený (synchronne, iba podľa JWT)
+   */
   isAuthenticatedSync(): boolean {
-    return !!localStorage.getItem('jwt');
+    return !!localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  /**
+   * ✅ Načíta profil aktuálne prihláseného používateľa zo Strapi
+   */
+  loadCurrentUser(): void {
+    if (!this.isAuthenticatedSync()) {
+      this.currentUserSubject.next(null);
+      return;
+    }
+
+    this.http.get<User>(`${this.apiUrl}/users/me`).subscribe({
+      next: (user) => this.currentUserSubject.next(user),
+      error: () => {
+        // token je možno neplatný → odhlásime
+        this.logout();
+      }
+    });
+  }
+
+  /**
+   * ✅ Prihlásenie používateľa
+   * - zavolá Strapi `/auth/local`
+   * - uloží JWT do localStorage
+   * - načíta profil
+   */
+  login(identifier: string, password: string): Observable<{ jwt: string; user: User }> {
+    return this.http.post<{ jwt: string; user: User }>(
+      `${this.apiUrl}/auth/local`,
+      { identifier, password }
+    ).pipe(
+      tap((res) => {
+        localStorage.setItem(this.TOKEN_KEY, res.jwt);
+        this.currentUserSubject.next(res.user);
+      })
+    );
+  }
+
+  /**
+   * ✅ Registrácia nového používateľa
+   */
+  register(username: string, email: string, password: string): Observable<{ jwt: string; user: User }> {
+    return this.http.post<{ jwt: string; user: User }>(
+      `${this.apiUrl}/auth/local/register`,
+      { username, email, password }
+    ).pipe(
+      tap((res) => {
+        localStorage.setItem(this.TOKEN_KEY, res.jwt);
+        this.currentUserSubject.next(res.user);
+      })
+    );
+  }
+
+  /**
+   * ✅ PATCH na Strapi default endpoint `/users/me`
+   * - Aktualizuje profil používateľa (meno, email, adresu...)
+   */
+  updateProfile(id: number, data: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/${id}`, data).pipe(
+      tap(user => this.currentUserSubject.next(user))
+    );
+  }
+
+  /**
+   * ✅ Odhlásenie – vymaže token aj lokálneho používateľa
+   */
+  logout(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    this.currentUserSubject.next(null);
   }
 }

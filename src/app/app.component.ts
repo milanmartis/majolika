@@ -7,10 +7,12 @@ import {
   ChangeDetectorRef,
   HostListener
 } from '@angular/core';
+import { ViewChild } from '@angular/core';
 import { skip } from 'rxjs/operators';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { CartService } from 'app/services/cart.service';
 import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
+import { ActivatedRoute } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet, Router } from '@angular/router';
@@ -18,11 +20,12 @@ import { slideLeftAnimation } from 'app/animations/route.animations';
 import { HeaderComponent } from 'app/components/header/header.component';
 // import { FooterComponent } from 'app/components/footer/footer.component';
 import { PopupLauncherComponent } from './popup/popup-launcher.component';
-import { CartComponent } from 'app/pages/cart/cart.component';   // ← import here
 import { MatDialogModule } from '@angular/material/dialog';
 // import { CartDrawerService } from 'app/services/cart-drawer.service';
 import { ThemeService } from 'app/services/theme.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { CartComponent } from 'app/pages/cart/cart.component';
+
 // import { HeadingBlockComponent } from 'app/blocks/heading-block/heading-block.component';
 // import { LinkBlockComponent } from 'app/blocks/link-block/link-block.component';
 // import { VideoBlockComponent } from 'app/blocks/video-block/video-block.component';
@@ -147,12 +150,14 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
       <!-- 4) Footer -->
       <!-- <app-footer></app-footer> -->
     </div>
+    
   `,
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
 
   isOpen = false;
+  @ViewChild(CartComponent) cartComponent!: CartComponent;
 
 
   corners = [0];      // => px values
@@ -178,7 +183,8 @@ export class AppComponent implements OnInit {
     private cart: CartService,
     private theme: ThemeService,
     private el: ElementRef,
-    private bo: BreakpointObserver
+    private bo: BreakpointObserver,
+    private route: ActivatedRoute,
   ) {
     // Otvoriť sidebar pri prvom pridaní položky do košíka
     this.cart.cart$
@@ -221,8 +227,23 @@ export class AppComponent implements OnInit {
   closeSidebar() {
     this.isCartOpen = false;
   }
-  openCart()  { this.isCartOpen = true;  }
-  closeCart() { this.isCartOpen = false; }
+  openCart()  { 
+    this.isCartOpen = true;   
+    
+    // ✅ posun na vrch pri otvorení
+  
+    setTimeout(() => {
+      const sidebar = document.querySelector('.cart-sidebar');
+      if (sidebar) sidebar.scrollTop = 0;
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }); 
+  }
+
+  closeCart() { 
+    this.isCartOpen = false;
+    this.cartComponent.resetHighlights(); // vyčistí zvýraznenie
+
+   }
 
   onAnimationDone() {
     // prípadne niečo po dojazde animácie
@@ -255,6 +276,17 @@ export class AppComponent implements OnInit {
       this.isLoading = false;
       this.cdRef.detectChanges();
     }, 2000);
+
+    this.route.queryParamMap.subscribe(params => {
+      const token = params.get('confirmation');
+      if (token) {
+        console.log('✅ Zachytený token v root URL:', token);
+        this.router.navigate(['/confirm-email'], {
+          queryParams: { confirmation: token },
+          replaceUrl: true // aby sa v histórii nezobrazovala táto medzizastávka
+        });
+      }
+    });
   }
 
   onPrimaryChange(newColor: string) {

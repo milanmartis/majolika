@@ -1,33 +1,39 @@
+<h1 class="login-title">Prihlásenie</h1>
+
 <mat-card class="auth-card">
-    <mat-card-title>Prihlásenie</mat-card-title>
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>E-mail alebo používateľské meno</mat-label>
-        <input matInput formControlName="identifier" />
-        <mat-error *ngIf="identifierControl?.hasError('required')">
-          Toto pole je povinné.
-        </mat-error>
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Heslo</mat-label>
-        <input matInput type="password" formControlName="password" />
-        <mat-error *ngIf="passwordControl?.hasError('required')">
-          Toto pole je povinné.
-        </mat-error>
-        <mat-error *ngIf="passwordControl?.hasError('minlength')">
-          Heslo musí mať aspoň {{ passwordMinLength }} znakov.
-        </mat-error>
-      </mat-form-field>
-  
-      <button mat-raised-button color="primary" class="full-width" [disabled]="form.invalid">
-        Prihlásiť sa
-      </button>
-  
-      <div *ngIf="error" class="error-msg">{{ error }}</div>
-    </form>
-    <mat-card-actions>
-      <a mat-button [routerLink]="['/register']">Nemáte účet? Registrácia</a>
-    </mat-card-actions>
-  </mat-card>
-  
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>E-mail alebo používateľské meno</mat-label>
+      <input matInput formControlName="identifier" />
+      <mat-error *ngIf="identifierControl?.hasError('required')">
+        Zadajte e‑mail alebo meno
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Heslo</mat-label>
+      <input matInput type="password" formControlName="password" />
+      <mat-error *ngIf="passwordControl?.hasError('required')">
+        Zadajte heslo
+      </mat-error>
+      <mat-error *ngIf="passwordControl?.hasError('minlength')">
+        Heslo musí mať aspoň {{ passwordMinLength }} znakov.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- ✅ Serverová chyba -->
+    <div *ngIf="errorMessage" class="server-error">
+      {{ errorMessage }}
+    </div>
+
+    <button mat-raised-button color="primary" class="login-btn" [disabled]="form.invalid">
+      Prihlásiť sa
+    </button>
+  </form>
+
+  <mat-card-actions class="auth-actions">
+    <a mat-button [routerLink]="['/register']">Nemáte účet? Registrácia</a>
+  </mat-card-actions>
+</mat-card>
+<app-footer class="mt-8"></app-footer>

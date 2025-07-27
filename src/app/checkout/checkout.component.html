@@ -1,0 +1,37 @@
+<h1 class="checkout-title">Pokladňa</h1>
+
+<div class="checkout-wrapper" *ngIf="cartItems$ | async as items">
+  <div class="checkout-cart">
+    <h2>Moje položky</h2>
+    <div *ngFor="let row of items" class="cart-item">
+      <img [src]="row.img" alt="{{ row.name }}" />
+      <div class="cart-item-info">
+        <div>{{ row.name }}</div>
+        <div>{{ row.qty }} × {{ row.price | currency:'EUR' }}</div>
+      </div>
+      <div class="cart-item-total">
+        {{ (row.price * row.qty) | currency:'EUR' }}
+      </div>
+    </div>
+    <div class="cart-total">
+      <strong>Spolu: </strong>
+      <span>{{ total$ | async | currency:'EUR' }}</span>
+    </div>
+  </div>
+
+  <div class="checkout-form">
+    <h2>Údaje o zákazníkovi</h2>
+
+    <form [formGroup]="checkoutForm" (ngSubmit)="submitCheckout(items)">
+        <app-user-form [form]="checkoutForm"></app-user-form>
+      
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+            Pokračovať k platbe
+          </button>
+        </div>
+      </form>
+  </div>
+  
+</div>
+<app-footer class="mt-8"></app-footer>

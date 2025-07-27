@@ -298,15 +298,27 @@ export class ProductListComponent implements OnInit, OnDestroy {
    *  HTTP volania
    * ============================================================= */
   private fetchProducts() {
-    this.isLoading = true; this.error = false;
-
+    this.isLoading = true;
+    this.error = false;
+  
     return this.productsSrv.getFilteredProducts(
-      this.currentPage, this.pageSize, this.selectedSort,
-      this.selectedCategory, this.selectedDecors, this.selectedShapes,
+      this.currentPage,
+      this.pageSize,
+      this.selectedSort,
+      this.selectedCategory,
+      this.selectedDecors,
+      this.selectedShapes
     ).pipe(
       tap(r => this.handleResponse(r)),
-      catchError(err => { this.error = true; return of(null); }),
-      tap(() => (this.isLoading = false)),
+      catchError(err => {
+        console.error('❌ Nepodarilo sa načítať produkty', err);
+        this.error = true;
+        return of(null);
+      }),
+      tap(() => {
+        this.isLoading = false;  // po načítaní alebo chybe
+        this.cdr.markForCheck();
+      })
     );
   }
 
