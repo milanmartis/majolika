@@ -1,26 +1,75 @@
 {
-  "BASE": "Home",
+  "BASE": {
+    "HOME": "Home",
+    "OR": "or",
+    "VIAC_INFO": "More information",
+    "POPISKY_KAT_VYROBKOV": "Product categories",
+    "VYBERTE_KATEGORIU": "Choose a category",
+    "ADD_TO_CART_HOLD": "Add to cart (free places {{available}})",
+    "FULL": "Full",
+    "NO_TOURS_OR_WORKSHOPS": "No tours or workshops scheduled for this day.",
+    "LOADING_SESSION":"Loading sessions...",
+    "AT": "at",
+    "LABEL": "Capacity",
+    "STATUS": "{{booked}} booked / {{max}} max ({{available}} available)",
+    "LOADING": "— loading capacity…",
+    "TRVANIE": "Duration"
+
+  },
+
+  "FORM": {
+    "FIRST_NAME": "First Name",
+    "LAST_NAME": "Last Name",
+    "EMAIL": "Email",
+    "PHONE": "Phone",
+    "STREET": "Street",
+    "STREET2": "Street and Number",
+    "CITY": "City",
+    "ZIP": "ZIP Code",
+    "COUNTRY": "Country",
+    "ADRRESS": "Address"
+  },
+
+ "feedback": {
+    "checking_auth": "Checking authentication...",
+    "login_required": "Login required to book a session.",
+    "login_to_book": "Login",
+    "register_to_book": "Register",   
+    "season_full": "The session is full."
+  },
+
   "HOME": {
     "WELCOME": "Slovak Folk Majolica",
     "PEREX": "Modra majolica and majolica ornamentation are inscribed in the Representative List of the Intangible Cultural Heritage of Slovakia.",
     "FIRST_TEXT": "For 140 years, masters of the craft in Slovak Folk Majolica have been developing inherited traditions, creating the ceramic soul of the region with their hands and hearts. All products are handmade and hand-painted. Each piece is a unique work of art. Modra Majolica and Majolica ornamentation are listed in the Representative List of Intangible Cultural Heritage of Slovakia.",
     "TRADICIA": "Tradition",
     "ESHOP": "E-shop",
-    "DIELNE": "Workshop"
+    "DIELNE": "Workshop",
+    "READMORE": "Read more",
+    "SHARE_US": "Share...",
+    "SEARCHING": "Searching",
+    "DECOR_FILTER": "Filter by decor",
+    "SHAPE_FILTER": "Filter by shape"
+
   },
 
   "ONAS": { 
     "CO_ROBIME": "What we do",
     "KTO_SME": "Who we are",
     "HISTORIA": "History",
-    "INFO": "Information"
+    "INFO": "Information",
+    "MAJOLIKA_DOMA_HEADER": "Majolica in Your Home",
+    "MAJOLIKA_DOMA_TEXT": "Slovak folk majolica is one of the bearers of the tradition of Modra majolica and majolica ornamentation, while also serving as a space for creativity and innovative approaches in the production of Modra ceramics. The aim of the project support is to develop creative talent and innovation in the field of traditional crafts through the preservation and restoration of an important part of Slovakia’s cultural heritage.\n\nDiscover unique hand-painted vases from the Majolika workshop. A perfect addition to your interior."
+
     },
 
 
 
-    "SLIDE":{
-      "VIAC_INFO":"More informations"
-    },
+"SLIDE": {
+  "VIAC_INFO": "More information",
+  "POPISKY_KAT_VYROBKOV": "Product Categories",
+  "VYBERTE_KATEGORIU": "Choose a category"
+},
 
 
   "ESHOP": { 
@@ -53,17 +102,34 @@
     "DESCRIPTION_TEXT": "Description",
     "DEKOR":"Decor",
     "CANCEL_ALL_DECORS": "Cancel All Filters",
-    "BUTTON": "Discover Now"
+    "BUTTON": "Discover Now",
+    "HABANSKY_DEKOR": "Haban decor",
+        "FAVORITE_ADD": "Add to favorites",
+    "FAVORITE_REMOVE": "Remove from favorites",
+    "FAVORITE_ADDED": "Item added to favorites",
+    "FAVORITE_REMOVED": "Item removed from favorites",
+    "OK": "OK",
+     "CHECKOUT_FORM_INVALID": "Please fill in all required fields.",
+     "CHECKOUT_MY_ITEMS": "My Items",
+     "CHECKOUT_CUSTOMER_INFO": "Customer Information",
+     "CHECKOUT_PROCEED_PAYMENT": "Proceed to Payment",
+     
+"FAREBNY_DEKOR": "Colorful decor",
+"PESTRY_DEKOR": "Vivid decor",
+"MODRY_DEKOR": "Blue decor",
+"ZELENY_DEKOR": "Green decor",
 
-
-
-
-
+"TVAR_TEXT": "Shape",
+"DEKOR_TEXT": "Decor",
+"RESULT_SEARCH": "Search results",
+"SEARCH_PLACEHOLDER": "Search products...",
+"SEARCH": "Search",
+"NO_RESULTS":"No results found"
 
 
   },
   "DIELNE": { 
-    "WELCOME": "Tours and creative workshops",
+    "WELCOME": "Tours and Creative Workshops",
     "FIRST_TEXT": "Discover the ancient beauty of traditional folk craftsmanship. We offer you a unique opportunity to peek behind the scenes of the largest craft workshops with the longest tradition in Slovakia. Modra Majolica and Majolica ornamentation are listed in the Representative List of Intangible Cultural Heritage of Slovakia."
   },
   "TRADICIA": { 
@@ -72,11 +138,13 @@
   },
     "CATEGORIES": {
       "HOME": "Home",
+      "AKTUALITY": "News",
       "PRODUCTS": "E-shop",
       "WORKSHOPS": "Workshops",
       "TRADITION": "Tradition",
       "ABOUT": "About",
       "KONTAKTY": "Contact",
+      "PREHLIADKY": "Tours",
     "dekoracie-a-svietidla": "Decorations and Lighting",
     "hodiny": "Clocks",
     "kosiky": "Baskets",
@@ -174,8 +242,14 @@
   "NAME": "our-offer"
 },
 
+
+"KOMPLET": {
+  "PONUKA": "Complete Offer"
+},
+
+
 "CALENDAR": {
-  "TITLE": "Exhibitions & workshops",
+  "TITLE": "Exhibitions & Workshops",
   "REGISTER_TITLE": "Register for",
   "NAME": "Name",
   "EMAIL": "Email",
@@ -188,6 +262,32 @@
   "MAJOLIKA_NA_AKCII": "Majolica at the event",
   "DIELNE2": "Workshops",
   "PREHLIADKY": "Tours"
+},
+
+"ACCOUNT2": {
+  "TITLE": "My Account",
+  "USER_DATA": "User Information",
+  "SAVE_CHANGES": "Save Changes",
+  "FAVORITES": "My Favorite Products",
+  "REMOVE_FAVORITE": "Remove",
+  "NO_FAVORITES": "You have no favorite products.",
+  "ADD_FAVORITES": "Add them here...",
+  "ORDERS": "My Orders",
+  "NO_ORDERS": "You have no orders.",
+  "ADD_ORDERS": "Add them here...",
+  "LOGOUT": "Log out"
+},
+"table": {
+  "index": "#",
+  "date": "Date",
+  "status": "Status",
+  "payment": "Payment",
+  "total": "Total",
+  "paid": "Paid",
+  "unpaid": "Unpaid",
+  "pending":" Pending",
+  "cancelled": "Cancelled",
+  "completed": "Completed"
 },
 
 "ACCOUNT": {

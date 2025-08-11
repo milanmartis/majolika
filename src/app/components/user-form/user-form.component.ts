@@ -1,57 +1,57 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
     <div class="checkout-form" [formGroup]="form">
       
       <!-- First / Last Name -->
       <div class="form-row">
-        <label>First name *</label>
-        <input formControlName="firstName" placeholder="Your first name" />
+        <label>{{ ('FORM.FIRST_NAME' | translate) }} *</label>
+        <input formControlName="firstName" placeholder="{{ ('FORM.LAST_NAME' | translate) }}" />
       </div>
 
       <div class="form-row">
-        <label>Last name *</label>
-        <input formControlName="lastName" placeholder="Your last name" />
+        <label>{{ ('FORM.LAST_NAME' | translate) }} *</label>
+        <input formControlName="lastName" placeholder="{{ ('FORM.LAST_NAME' | translate) }}" />
       </div>
 
       <!-- Email -->
       <div class="form-row">
-        <label>Email *</label>
-        <input formControlName="email" type="email" placeholder="your@email.com" />
+        <label>{{ ('FORM.EMAIL' | translate) }} *</label>
+        <input formControlName="email" type="email" placeholder="{{ ('FORM.EMAIL' | translate) }}" />
       </div>
 
       <!-- Phone -->
       <div class="form-row">
-        <label>Phone</label>
+        <label>{{ ('FORM.PHONE' | translate) }}</label>
         <input formControlName="phone" type="text" placeholder="+421..." />
       </div>
 
       <!-- Address -->
-      <h3>Address</h3>
+      <h3>{{ ('FORM.ADRRESS' | translate) }}</h3>
         <div class="form-row full-width">
-          <label>Street *</label>
-          <input formControlName="street" placeholder="Street and number" />
+          <label>{{ ('FORM.STREET' | translate) }} *</label>
+          <input formControlName="street" placeholder="{{ ('FORM.STREET2' | translate) }}" />
         </div>
 
         <div class="form-row full-width">
-          <label>City *</label>
-          <input formControlName="city" placeholder="City" />
+          <label>{{ ('FORM.CITY' | translate) }} *</label>
+          <input formControlName="city" placeholder="{{ ('FORM.CITY' | translate) }}" />
         </div>
 
         <div class="form-row full-width">
-          <label>ZIP *</label>
-          <input formControlName="zip" placeholder="Postal code" />
+          <label>{{ ('FORM.ZIP' | translate) }} *</label>
+          <input formControlName="zip" placeholder="{{ ('FORM.ZIP' | translate) }}" />
         </div>
 
         <div class="form-row full-width">
-          <label>Country *</label>
-          <input formControlName="country" placeholder="Country" />
+          <label>{{ ('FORM.COUNTRY' | translate) }} *</label>
+          <input formControlName="country" placeholder="{{ ('FORM.COUNTRY' | translate) }}" />
         </div>
       </div>
 

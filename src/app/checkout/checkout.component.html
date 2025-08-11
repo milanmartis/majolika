@@ -2,8 +2,7 @@
 
 <div class="checkout-wrapper" *ngIf="cartItems$ | async as items">
   <div class="checkout-cart">
-    <h2>Moje položky</h2>
-    <div *ngFor="let row of items" class="cart-item">
+    <h2>{{ 'ESHOP.CHECKOUT_MY_ITEMS' | translate }}</h2>    <div *ngFor="let row of items" class="cart-item">
       <img [src]="row.img" alt="{{ row.name }}" />
       <div class="cart-item-info">
         <div>{{ row.name }}</div>
@@ -20,14 +19,14 @@
   </div>
 
   <div class="checkout-form">
-    <h2>Údaje o zákazníkovi</h2>
-
+    <h2>{{ 'ESHOP.CHECKOUT_CUSTOMER_INFO' | translate }}</h2>
+    <!-- <p *ngIf="userId">Používateľ ID: {{ userId }}</p> -->
     <form [formGroup]="checkoutForm" (ngSubmit)="submitCheckout(items)">
         <app-user-form [form]="checkoutForm"></app-user-form>
       
         <div class="form-actions">
           <button type="submit" class="btn-primary" [disabled]="isSubmitting">
-            Pokračovať k platbe
+         {{ 'ESHOP.CHECKOUT_PROCEED_PAYMENT' | translate }}
           </button>
         </div>
       </form>

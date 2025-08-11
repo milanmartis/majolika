@@ -48,10 +48,10 @@
     left: 0;
     right: 0;        /* zabezpečí 100% šírky */
     bottom: 0;       /* zabezpečí 100% výšky */
-    /* background: linear-gradient(45deg, #f5f4f1, #eee1c1); */
+    /* background: red; */
     background: var(--color-primary);
     box-sizing: border-box;
-    z-index: 1000;
+    z-index: 9991000;
   
     /* Štart mimo obrazovky (vľavo) a neviditeľné */
     transform: translateX(-100%);
@@ -110,6 +110,8 @@ margin:auto;
      3) Horný riadok (input + tlačidlá)
      -------------------------------------------------------- */
   .search-header {
+    position: relative;
+    top: 44px;
     margin: auto;
     max-width: 600px;
     width: 100%;
@@ -157,7 +159,7 @@ margin-right: -10px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     transition: background 0.2s;
-    margin-left: 8px;
+    margin-left: 0px;
     white-space: nowrap; 
 
   }
@@ -292,7 +294,7 @@ margin-right: -10px;
   .results-wrapper {
     padding: 20px;
     box-sizing: border-box;
-    margin-top: 8px;
+    margin-top: 38px;
     z-index: 1000;
     background: transparent;
     overflow-y: auto;

@@ -15,7 +15,7 @@
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto 3rem;
-  padding: 0 1rem;
+  padding: 0.8rem;
 }
 
 /* ===== Ľavý veľký blok ===== */
@@ -29,7 +29,6 @@
 /* ===== Pravý stĺpec (obsahuje 2 bloky) ===== */
 .right-column {
   display: grid;
-  grid-template-rows: 1fr 1fr; /* polovica a polovica výšky */
   gap: 2rem;
 }
 
@@ -39,6 +38,7 @@
   padding: 1.5rem;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  height: fit-content;
 }
 
 /* ===== Sekcie – nadpisy ===== */
@@ -66,7 +66,7 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
@@ -87,18 +87,14 @@
 
 /* Karta obľúbeného produktu */
 .favorite-card {
-  background: #f8f9fa;
+  /* background: #f8f9fa; */
   border-radius: 8px;
   overflow: hidden;
   padding: 0.6rem;
   text-align: center;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
 }
 
-.favorite-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
 
 /* Klikateľný blok (obrázok + info) */
 .fav-link {
@@ -108,13 +104,29 @@
   width: 100%;
 }
 
-.fav-img {
+.fav-img-wrapper {
   width: 100%;
-  height: auto;
-  max-height: 120px;
-  object-fit: contain;
-  margin-bottom: 0.4rem;
+  height: 100px; /* pevná výška pre obrázok */
+  overflow: hidden;
+  border-radius: var(--corners);
+  position: relative;
+  margin-bottom: 10px;
 }
+.fav-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin-bottom: 0.4rem;
+  transition: transform 0.3s ease; /* opravene na transition */
+  display: block;
+}
+
+.fav-img-wrapper img:hover {
+  transform: scale(1.15);
+}
+
+
+
 
 .fav-info {
   display: flex;
@@ -124,8 +136,11 @@
 
 .fav-name {
   color: var(--base-blue);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;   
 }
 
 .fav-price {
@@ -136,7 +151,7 @@
 
 /* Tlačidlo Odstrániť */
 .btn-remove {
-  margin-top: 0.5rem;
+  margin: 0.5rem;
   width: 100%;
   padding: 0.4rem;
   background: transparent;
@@ -196,5 +211,130 @@
   .form-row input {
     font-size: 0.95rem;
     padding: 0.7rem;
+  }
+}
+
+.favorites-placeholder {
+  margin: auto;
+  width: 100%;         
+  height: 100%;        /* pevná výška alebo použi aspect-ratio */
+  overflow: hidden;
+  border-radius: 8px;
+  filter: grayscale(100%);
+  opacity: 0.4; 
+  display: flex;
+}
+
+.favorites-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    /* správa sa ako background-size: cover */
+  display: block;
+  opacity: 0.3;        /* mierne priehľadné */
+
+  /* Čiernobiely filter */
+  filter: grayscale(100%);
+}
+
+
+
+.order-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+  margin: 0 auto 2rem;
+  font-size: 1rem;
+}
+
+.order-table thead tr {
+  background: var(--base-blue, #2d3eaf);
+  color: #fff;
+  font-weight: 600;
+}
+
+.order-table th, .order-table td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+}
+
+.order-table th:first-child,
+.order-table td:first-child {
+  border-top-left-radius: 12px;
+}
+
+.order-table th:last-child,
+.order-table td:last-child {
+  border-top-right-radius: 12px;
+}
+
+.order-table tbody tr {
+  transition: background 0.15s;
+}
+
+.order-table tbody tr:hover {
+  background: rgba(45, 62, 175, 0.06); /* jemný modrý podklad na hover */
+}
+
+.order-table td {
+  border-top: 1px solid #f0f1f3;
+  color: #263159;
+}
+
+.order-table tbody tr:first-child td {
+  border-top: none;
+}
+.badge-paid {
+  background: #38d99a;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.2em 0.7em;
+  font-size: 0.96em;
+}
+.badge-unpaid {
+  background: #f6c343;
+  color: #333;
+  border-radius: 6px;
+  padding: 0.2em 0.7em;
+  font-size: 0.96em;
+}
+
+.spinner {
+  margin: auto;
+  border: 4px solid rgba(0,0,0,0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: var(--base-blue);
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spinner2 {
+  margin: auto;
+  border: 4px solid rgba(0,0,0,0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: var(--base-blue);
+  animation: spin2 1s ease infinite;
+}
+
+@keyframes spin2 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Mobile: stackuj riadky */
+@media (max-width: 700px) {
+  .order-table th, .order-table td {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.98rem;
   }
 }

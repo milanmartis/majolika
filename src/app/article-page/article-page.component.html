@@ -38,7 +38,6 @@
     </ng-container>
   </div>
 
-  <app-footer class="mt-8"></app-footer>
   <app-gallery
     *ngIf="galleryOpen"
     [images]="imageUrls"
@@ -46,3 +45,6 @@
     (close)="closeGallery()">
   </app-gallery>
 </main>
+
+
+<app-footer class="mt-8"></app-footer>

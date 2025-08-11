@@ -101,18 +101,30 @@ export class ProductsService {
     preferred: FormatKey = 'medium',
     fallback: FormatKey[] = ['large', 'medium', 'small', 'thumbnail', 'original']
   ): string => {
+    // plain string path (napr. '/assets/...') alebo úplná URL
+    if (typeof raw === 'string') {
+      return this.absolutize(raw);
+    }
+  
     const a = this.attr(raw);
-    if (!a) { return this.placeholder; }
-
+    if (!a) {
+      console.warn('imageUrl: no attributes found, raw=', raw);
+      return this.placeholder;
+    }
+  
     const fm: Record<string, MediaFmt> | undefined = a.formats;
     const pick = (k: FormatKey): string | undefined =>
       k === 'original' ? a.url : fm?.[k]?.url;
-
+  
     const queue = [preferred, ...fallback.filter(k => k !== preferred)];
     for (const key of queue) {
       const url = pick(key);
-      if (url) { return this.absolutize(url); }
+      if (url) {
+        return this.absolutize(url);
+      }
     }
+  
+    console.warn('imageUrl: could not find any format, attr=', a);
     return this.placeholder;
   };
 
@@ -126,19 +138,27 @@ export class ProductsService {
   /** ------------------ normalize() --------------------------- */
   private normalize = (raw: any): Product => {
     const at = raw.attributes ?? raw;
-
-    /* variations (už normalizované rekurzívne) */
+  
+    // variations (rekurzívne)
     const rawVarArr = at.variations?.data ?? at.variations ?? [];
     const variations: Product[] = Array.isArray(rawVarArr)
       ? rawVarArr.map(this.normalize)
       : [];
-
-    /* PRIMARY PICTURE fallback */
-    const primaryPicObj = at.picture_new || 'assets/images/logo.png' || null;
-    const primaryGalleryObj = at.pictures_new || 'assets/images/logo.png';
+  
+    // PRIMARY PICTURE fallback: ak je undefined, použijeme placeholder string
+    const primaryPicObj = at.picture_new ?? at.primaryImageUrl ?? '/assets/img/logo-SLM-modre.gif';
+    const primaryGalleryObj = at.pictures_new ?? [];
+  
     const primaryImg = this.imageUrl(primaryPicObj, 'small');
-
-    /* logika pre cenu */
+  
+    if (!primaryImg || primaryImg === this.placeholder) {
+      console.warn(
+        `normalize: resolved primaryImageUrl may be fallback for product id=${raw.id}, slug=${at.slug}`,
+        { primaryPicObj, primaryImg }
+      );
+    }
+  
+    // logika pre cenu
     let resolvedPrice: number | null = at.price ?? null;
     let resolvedPriceSale: number | null = at.price_sale ?? null;
     if ((resolvedPrice == null) && variations.length > 0) {
@@ -147,8 +167,8 @@ export class ProductsService {
     if ((resolvedPriceSale == null) && variations.length > 0) {
       resolvedPriceSale = variations[0].price_sale;
     }
-
-    /* categories */
+  
+    // categories
     const catsRawData: any[] = Array.isArray(at.categories)
       ? at.categories
       : (at.categories?.data ?? []);
@@ -173,7 +193,7 @@ export class ProductsService {
         parent: parentObj
       };
     });
-
+  
     return {
       id: raw.id,
       slug: at.slug,
@@ -189,7 +209,9 @@ export class ProductsService {
       picture_new: primaryPicObj,
       pictures_new: primaryGalleryObj,
       primaryImageUrl: primaryImg,
-      galleryUrls: this.gallery(primaryGalleryObj, 'thumbnail'),
+      galleryUrls: Array.isArray(primaryGalleryObj)
+        ? this.gallery(primaryGalleryObj, 'thumbnail')
+        : [],
     };
   };
 
@@ -198,17 +220,41 @@ export class ProductsService {
     data: r.data.map(this.normalize),
   }));
 
+  
+/** GET produkt podľa ID (vracia normalizovaný Product[]) */
+getProductById(id: number): Observable<Product | null> {
+  const params = new HttpParams()
+    .set('filters[id][$eq]', id.toString())
+    .set('filters[public][$eq]', 'true')
+    .set('populate', this.populateList)
+    .set('pagination[page]', '1')
+    .set('pagination[pageSize]', '1');
+  return this.http
+    .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+    .pipe(
+      this.mapResp,
+      map(resp => (resp.data.length ? resp.data[0] : null))
+    );
+}
   /* ---------- verejné API ------------------------------------ */
 
   searchProducts(query: string): Observable<Product[]> {
     const params = new HttpParams()
-      .set('filters[public][$eq]', 'true')
-      .set('filters[$or][0][name][$containsi]', query)
-      .set('filters[$or][1][variations][name][$containsi]', query)
-      .set('filters[$or][2][describe][$containsi]', query)
-      .set('filters[$or][3][ean][$containsi]', query)
-      .set('filters[$or][4][short][$containsi]', query)
-      .set('populate=*', this.populateList);
+    .set('filters[public][$eq]', 'true')
+    .set('filters[$or][0][name][$containsi]', query)
+    .set('filters[$or][1][variations][name][$containsi]', query)
+    .set('filters[$or][2][describe][$containsi]', query)
+    .set('filters[$or][3][ean][$containsi]', query)
+    .set('filters[$or][4][short][$containsi]', query)
+    .set('filters[$or][5][slug][$containsi]', query)
+    .set('filters[$or][6][categories][category_slug][$containsi]', query)
+    .set('filters[$or][7][variations][slug][$containsi]', query)
+    // .set('filters[$or][8][dekory][slug][$containsi]', query)
+    // .set('filters[$or][9][tvar][slug][$containsi]', query)
+    .set('sort', 'name:asc') // default sort
+    .set('populate', this.populateList)
+    .set('pagination[page]', '1')
+    .set('pagination[pageSize]', '1000');
   
     console.log(
       'ProductsService.searchProducts(): volám URL =',
@@ -319,45 +365,64 @@ export class ProductsService {
       .pipe(this.mapResp);
   }
 
-getFilteredProducts(
-  page: number,
-  pageSize: number,
-  sort: string,
-  categorySlug: string | null,
-  decors: string[],
-  shapes: string[]
-): Observable<StrapiResp<Product>> {
-  let params = new HttpParams()
-    .set('populate', this.populateList)
-    .set('sort', sort)
-    .set('pagination[page]', page.toString())
-    .set('pagination[pageSize]', pageSize.toString());
-
-  if (categorySlug) {
-    params = params.set('filters[categories][category_slug][$eq]', categorySlug);
+  getFilteredProducts(
+    page: number,
+    pageSize: number,
+    sort: string,
+    categorySlug: string | null,
+    decors: string[],
+    shapes: string[]
+  ): Observable<StrapiResp<Product>> { // ← tu ponechaj StrapiResp<Product> !
+    let params = new HttpParams()
+      .set('populate', this.populateList)
+      .set('sort', sort)
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString());
+  
+    if (categorySlug) {
+      params = params.set('filters[categories][category_slug][$eq]', categorySlug);
+    }
+  
+    decors.forEach((d, i) => {
+      params = params.set(
+        `filters[$and][${i}][variations][slug][$containsi]`,
+        d
+      );
+    });
+    shapes.forEach((s, j) => {
+      const idx = decors.length + j;
+      params = params.set(
+        `filters[$and][${idx}][variations][slug][$containsi]`,
+        s.replace(/-/g, '')
+      );
+    });
+  
+    return this.http
+      .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+      .pipe(
+        this.mapResp,
+        map(resp => ({
+          ...resp,
+          data: this.flattenProductsWithVariations(resp.data)
+        }))
+      );
   }
 
-  // AND-filtre pre dekor aj shape
-  decors.forEach((d, i) => {
-    params = params.set(
-      `filters[$and][${i}][variations][slug][$containsi]`,
-      d
-    );
-  });
-  shapes.forEach((s, j) => {
-    const idx = decors.length + j;
-    params = params.set(
-      // pôvodne slug[$containsi] = s
-      `filters[$and][${idx}][variations][slug][$containsi]`,
-      s.replace(/-/g, '')           // ← príklad odfiltrovania pomlčky
-    );
-  });
-
-  return this.http
-    .get<StrapiResp<Product>>(`${this.api}/products`, { params })
-    .pipe(this.mapResp);
-}
-
+  flattenProductsWithVariations(products: Product[]): Product[] {
+    const results: Product[] = [];
+    for (const p of products) {
+      results.push(p);
+      for (const v of p.variations ?? []) {
+        // Ak chceš, môžeš do variácie pridať parentSlug, typ, atď.
+        results.push({
+          ...v,
+          parentId: p.id,
+          // prípadne aj ďalšie property z parentu, ak potrebuješ
+        } as Product);
+      }
+    }
+    return results;
+  }
 
 getFeaturedProducts(): Observable<Product[]> {
   const params = new HttpParams()

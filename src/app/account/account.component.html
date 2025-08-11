@@ -1,16 +1,20 @@
-<h1 class="checkout-title">Môj účet</h1>
+<h1 class="checkout-title">{{ 'ACCOUNT22.TITLE' | translate }}</h1>
 
 <div class="account-wrapper">
 
   <!-- 🟦 1. veľký blok – formulár -->
   <div class="account-section form-block">
-    <h2 class="section-title">Údaje používateľa</h2>
+    <h2 class="section-title">{{ 'ACCOUNT2.USER_DATA' | translate }}</h2>
 
     <form [formGroup]="accountForm" (ngSubmit)="saveAccount()">
       <app-user-form [form]="accountForm"></app-user-form>
 
       <div class="form-actions">
-        <button type="submit" class="btn-primary">Uložiť zmeny</button>
+        <button type="submit" class="btn-primary">{{ 'ACCOUNT2.SAVE_CHANGES' | translate }}</button>
+        <button class="btn-primary btn-logout" (click)="logout()">{{ 'ACCOUNT2.LOGOUT' | translate }}</button>
+      </div>
+
+      <div class="logout-wrapper" style="margin:auto;">
       </div>
     </form>
 
@@ -20,41 +24,116 @@
   <!-- 🟦 Pravý stĺpec (2 menšie bloky pod sebou) -->
   <div class="right-column">
 
+
+     <!-- 3. blok – napr. ďalšie informácie -->
+     <div class="account-section">
+      <h2 class="section-title">{{ 'ACCOUNT2.ORDERS' | translate }}</h2>
+
+      <div *ngIf="ordersLoading" style="justify-content: center;" style="width:100%;text-align:center; margin:auto; padding:1.5rem 0">
+        <div class="spinner2"></div>
+      </div>
+      <div class="orders-section" *ngIf="!ordersLoading && orders.length > 0;">
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>{{ 'table.index' | translate }}</th>
+              <th>{{ 'table.date' | translate }}</th>
+              <th>{{ 'table.status' | translate }}</th>
+              <th>{{ 'table.payment' | translate }}</th>
+              <th>{{ 'table.total' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let o of orders; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ o.createdAt | date: 'short':undefined:lang.getCurrentLanguage()}}</td>
+              <td>{{ o.status === 'pending' ? ('table.pending' | translate) : ('table.completed' | translate) }}</td>
+              <td>
+                <span [ngClass]="{
+                    'badge-paid': o.paymentStatus === 'paid',
+                    'badge-unpaid': o.paymentStatus !== 'paid'
+                  }">
+                  {{ o.paymentStatus === 'paid'
+                    ? ('table.paid' | translate)
+                    : ('table.unpaid' | translate)
+                  }}
+                </span>
+              </td>
+              <td>{{ o.total | currency: 'EUR' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <!-- <div class="orders-total">
+          <strong>Celková suma nákupov: </strong>
+          {{ totalSpent | currency: 'EUR' }}
+        </div> -->
+      </div>
+
+
+      <p class="empty-msg" *ngIf="orders.length === 0">
+        <img class="favorites-placeholder"
+        src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
+        alt="Nakupene produkty" />
+        
+        {{ 'ACCOUNT2.NO_ORDERS' | translate }} <br><a [routerLink]="['/eshop']">{{ 'ACCOUNT2.ADD_ORDERS' | translate }}</a>
+      </p>
+    </div>
+
+
+
+
     <!-- 2. blok – obľúbené produkty -->
     <div class="account-section">
-      <h2 class="section-title">Moje obľúbené produkty</h2>
-
-      <div *ngIf="favorites$ | async as favs">
+      <h2 class="section-title">{{ 'ACCOUNT2.FAVORITES' | translate }}</h2>
+      
+      <div *ngIf="favoritesLoading" style="justify-content: center;" style="width:100%;text-align:center; margin:auto; padding:1.5rem 0">
+        <div class="spinner"></div>
+      </div>
+      <ng-container *ngIf="!favoritesLoading">
+        
+        <div *ngIf="favorites$ | async as favs">
+        <div *ngIf="favs.length === 0" class="favorites-grid">
+          <img class="favorites-placeholder"
+               src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
+               alt="Obľúbené produkty" />
+         </div>
         <div *ngIf="favs.length > 0; else noFavs" class="favorites-grid">
-          <div *ngFor="let product of favs" class="favorite-card">
-            <a class="fav-link" [routerLink]="['/produkt', product.slug]">
-              <img class="fav-img"
-                   [src]="product.primaryImageUrl || '/assets/img/logo-SLM-modre.gif'"
-                   alt="{{ product.name }}" />
+
+          <div *ngFor="let product of favs; trackBy: trackBySlug" class="favorite-card">
+            <a class="fav-link" [routerLink]="['/eshop', product.slug]">
+              <div class="fav-img-wrapper">
+                <img
+                  class="fav-img"
+                  [src]="product.primaryImageUrl || '/assets/img/logo-SLM-modre.gif'"
+                  alt="{{ product.name }}"
+                  loading="lazy"
+                  title="{{ product.name }}"
+                  (load)="onFavImageLoad($event, product.primaryImageUrl)"
+                  (error)="onFavImageError($event)"
+                />
+              </div>
               <div class="fav-info">
                 <span class="fav-name">{{ product.name }}</span>
                 <span class="fav-price">{{ product.price | currency:'EUR' }}</span>
               </div>
             </a>
-            <button class="btn-remove" (click)="removeFavorite(product)">❌ Odstrániť</button>
+            <button class="btn-remove" (click)="removeFavorite(product)">{{ 'ACCOUNT2.REMOVE_FAVORITE' | translate }}</button>
           </div>
         </div>
+        </div>
         <ng-template #noFavs>
-          <p class="empty-msg">Nemáte žiadne obľúbené produkty.</p>
+          
+          <p class="empty-msg">{{ 'ACCOUNT2.NO_FAVORITES' | translate }}<br><a [routerLink]="['/eshop']">{{ 'ACCOUNT2.ADD_FAVORITES' | translate }}</a></p>
         </ng-template>
-      </div>
+      
+    </ng-container>
     </div>
 
-    <!-- 3. blok – napr. ďalšie informácie -->
-    <div class="account-section">
-      <h2 class="section-title">Moje objednávky</h2>
-      <p>Tu môžu byť informácie o posledných objednávkach alebo iný obsah.</p>
-    </div>
+   
 
   </div>
-  <div class="logout-wrapper" style="margin:auto;">
-    <button class="btn-primary btn-logout" (click)="logout()">Odhlásiť sa</button>
-  </div>
+
 </div>
 
 <app-footer></app-footer>

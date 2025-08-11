@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import { FavoriteService, Favorite } from './favorite.service';
@@ -10,14 +10,20 @@ export class FavoriteStateService {
   private readonly favs$ = new BehaviorSubject<Favorite[]>([]);
   readonly favorites$    = this.favs$.asObservable();
 
-  private pending = false;
-
   constructor(private favSrv: FavoriteService) {
-    this.reload();                                // init
+    // prvotné načítanie
+    this.reload();
   }
 
-  /** ----- private helpers ---------------------------------- */
+  /** 
+   * Verejná metóda na explicitné opätovné načítanie obľúbených 
+   * (volaj z komponentu, napr. po prihlásení)
+   */
+  loadFavorites(): void {
+    this.reload();
+  }
 
+  /** ----- interné načítanie zo servera -------------------- */
   private reload(): void {
     this.favSrv.getAll().subscribe({
       next: favs => {
@@ -28,24 +34,16 @@ export class FavoriteStateService {
     });
   }
 
-  private orphanOrMatches(prodId: number) {
-    return (f: Favorite) =>
-      (f.product && Number(f.product.id) === prodId) || !f.product;
-  }
-
-  /** ----- public API --------------------------------------- */
-
+  /** ----- prepínanie obľúbeného stavu a re–load ----------- */
   toggle(product: Product): void {
-    const favorite = this.favs$.value.find(f => f.product?.id === product.id);
-  
-    const req$ = favorite
-      ? this.favSrv.remove(favorite.id)  // DELETE konkrétny záznam
-      : this.favSrv.add(product.id);     // POST nový
-  
+    const existing = this.favs$.value.find(f => f.product?.id === product.id);
+    const req$ = existing
+      ? this.favSrv.remove(existing.id)  // odstrániť
+      : this.favSrv.add(product.id);     // pridať
     req$.pipe(finalize(() => this.reload())).subscribe();
   }
 
-  /** Lokálne overenie pre UI */
+  /** Lokálna kontrola, či je produkt obľúbený */
   isFavorite(id: number | string): boolean {
     const key = String(id);
     return this.favs$.value.some(f => String(f.product?.id) === key);

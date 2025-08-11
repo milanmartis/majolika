@@ -1,0 +1,91 @@
+<!-- fullscreen overlay -->
+<div #overlay *ngIf="isFullscreen" class="overlay" (click)="closeFullscreen()">
+  <button class="close-btn" (click)="closeFullscreen()">✖</button>
+  <img
+    class="overlay-img fullscreen-image"
+    [src]="galleryFull[fullscreenIndex]"
+    alt=""
+    (click)="$event.stopPropagation()"
+  />
+  <div class="nav-footer" (click)="$event.stopPropagation()">
+    <button *ngIf="galleryFull.length>1" class="nav-btn prev" (click)="prev($event)">‹</button>
+    <span class="counter">{{ fullscreenIndex + 1 }}/{{ galleryFull.length }}</span>
+    <button *ngIf="galleryFull.length>1" class="nav-btn next" (click)="next($event)">›</button>
+  </div>
+</div>
+<!-- aktualita-detail.component.html -->
+<h1 class="login-title">{{ 'CATEGORIES.AKTUALITY' | translate }}</h1>
+
+<div class="detail-page">
+
+  <!-- Hlavný obsah -->
+  <main class="detail-content" *ngIf="aktualita$ | async as akt; else loading">
+    <article>
+      <header>
+        <h1 [innerHTML]="akt.title | nbspSmallWords | linkify"></h1>
+        <p class="meta">
+            {{ akt.publishedAt 
+                | date:'mediumDate':undefined:lang.getCurrentLanguage() }}
+          <span *ngIf="akt.author">— {{ akt.author.username }}</span>
+        </p>
+        <img
+          *ngIf="akt.featuredImage"
+          [src]="getMediaUrl(akt.featuredImage)"
+          [alt]="getAltText(akt.featuredImage)"
+        />
+        <!-- Fotogaléria -->
+        <div class="gallery" *ngIf="galleryThumbs.length">
+          <!-- <h3>Fotogaléria</h3> -->
+          <div class="thumbs">
+            <img
+              *ngFor="let thumb of galleryThumbs; let i = index"
+              [src]="thumb"
+              class="thumb"
+              (click)="openFullscreen(i); $event.preventDefault()"
+            />
+          </div>
+        </div>
+      </header>
+
+
+      <section class="body" [innerHTML]="akt.content | nbspSmallWords | linkify"></section>
+    </article>
+    <br>
+    <br>
+    <br>
+    <app-share-buttons [title]="akt.title" [url]="articleUrl"></app-share-buttons>
+  </main>
+
+  <!-- Loading stav -->
+  <ng-template #loading>
+    <p>Načítavam aktualitu…</p>
+  </ng-template>
+
+  <!-- Sekcia Ďalšie aktuality -->
+  <aside class="related" *ngIf="others$ | async as others">
+    <h2>Ďalšie aktuality</h2>
+    <ng-container *ngIf="others.length; else noOthers">
+      <ul>
+        <li *ngFor="let o of others">
+          <a [routerLink]="['/aktuality', o.slug]">
+            <img
+              *ngIf="o.featuredImage"
+              [src]="getMediaUrl(o.featuredImage)"
+              [alt]="o.title"
+            />
+            <div class="info">
+              <h3>{{ o.title }}</h3>
+              <p class="date">{{ o.publishedAt 
+                | date:'mediumDate':undefined:lang.getCurrentLanguage() }}</p>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </ng-container>
+    <ng-template #noOthers>
+      <p>Žiadne ďalšie aktuality.</p>
+    </ng-template>
+  </aside>
+</div>
+
+<app-footer></app-footer>

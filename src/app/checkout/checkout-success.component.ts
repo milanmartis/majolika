@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { CartService } from 'app/services/cart.service';
 
 @Component({
   selector: 'app-checkout-success',
@@ -45,4 +46,12 @@ import { RouterModule } from '@angular/router';
     }
   `]
 })
-export class CheckoutSuccessComponent {}
+export class CheckoutSuccessComponent {
+
+  private cart = inject(CartService);
+
+  ngOnInit(): void {
+    this.cart.clear(); // 🧹 vymaže košík po návrate z platby
+    localStorage.removeItem('lastBookingTmpId');
+  }
+}

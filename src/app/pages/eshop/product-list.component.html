@@ -9,7 +9,7 @@
 <div class="cat-heading" *ngIf="selectedRootCategorySlug">
   <h2>
     <!-- ROOT názov vždy -->
-    <strong>{{ 'CATEGORIES.' + selectedRootCategorySlug | translate }}</strong>
+    <strong (click)="onCategorySelect(selectedRootCategorySlug)" style="cursor: pointer;">{{ 'CATEGORIES.' + selectedRootCategorySlug | translate }}</strong>
 
     <!-- keď sme na podkategórii → » názov child -->
     <ng-container *ngIf="selectedCategorySlug !== selectedRootCategorySlug">
@@ -69,7 +69,7 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
         (click)="onCategorySelect(root.category_slug)"
         class="child-button"
       >
-        {{ 'CATEGORIES.'+root.category_slug | translate }}
+        {{ 'CATEGORIES.'+root.category_slug | translate }} 
       </button>
     </div>
   </div>
@@ -78,12 +78,10 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
   <div *ngIf="error" class="status error">
     {{ 'ESHOP.ERROR_LOADING_PRODUCTS' | translate }}
   </div>
-  <div
-    *ngIf="!isLoading && products.length === 0"
-  >
-   <h3 class="status-text">
-     {{ 'ESHOP.NO_PRODUCTS_IN_CATEGORY' | translate }}
-   </h3> 
+  <div *ngIf="loaded && !isLoading && !error && products.length === 0" class="status-text">
+    <h3>
+      {{ 'ESHOP.NO_PRODUCTS_IN_CATEGORY' | translate }}
+    </h3>  
   </div>
 
   <!-- *** SORTOVANIE *** -->
@@ -106,40 +104,50 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
   </div>
 
 <!-- Dekory -->
- <!-- <div class="flex">
+ <div class="flex" style="display: none;">
 
-   <div class="filter-decor">
-     <label *ngFor="let opt of decorOptions">
-       <input
-       #cbDec type="checkbox"
-       [checked]="selectedDecors.includes(opt.slug)"
-       (change)="onDecorToggle(opt.slug, cbDec.checked)"
-       />
-       {{ opt.label }}
-      </label>
-    </div>
+   <!-- Dekory ako chips -->
+<div class="filter-group">
+  <!-- <p>{{ 'HOME.DECOR_FILTER' | translate }}</p> -->
+  <div class="chip-container">
+    <button
+      *ngFor="let opt of decorOptions"
+      class="chip"
+      [class.selected]="selectedDecors.includes(opt.slug)"
+      (click)="onDecorToggle(opt.slug, !selectedDecors.includes(opt.slug))"
+    >
+      {{ opt.label }}
+    </button>
+  </div>
+</div>
     
 
-    <div class="filter-shape">
-      <label *ngFor="let opt of shapeOptions">
-    <input
-    #cbSh type="checkbox"
-    [checked]="selectedShapes.includes(opt.slug)"
-    (change)="onShapeToggle(opt.slug, cbSh.checked)"
-    />
-    {{ opt.label }}
-  </label>
-  <div class="filter-actions">
+<!-- Tvarové filtre -->
+<div class="filter-group">
+  <!-- <p>{{ 'HOME.SHAPE_FILTER' | translate }}</p> -->
+  <div class="chip-container">
     <button
+      *ngFor="let opt of shapeOptions"
+      class="chip"
+      [class.selected]="selectedShapes.includes(opt.slug)"
+      (click)="onShapeToggle(opt.slug, !selectedShapes.includes(opt.slug))"
+    >
+      {{ opt.label }}
+    </button>
+  </div>
+</div>
+
+
+<div class="filter-actions">
+  <button
     *ngIf="selectedDecors.length || selectedShapes.length"
     class="btn-clear-filters"
     (click)="clearAllDecorFilters()"
-    >
+  >
     {{ 'ESHOP.CANCEL_ALL_DECORS' | translate }}
   </button>
-  </div>
 </div>
-</div> -->
+</div> 
 
   <!-- Loader -->
   <!-- <div *ngIf="isLoading" class="loading-message-wrapper"> -->
@@ -147,7 +155,7 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
   <!-- </div> -->
   <!-- <div *ngIf="isLoading" class="grid">
     <div class="grid-item shimmer" *ngFor="let _ of loadingPlaceholders"></div>
-  </div> -->
+  </div>-->
 <!-- ⬇️ Full‑screen overlay -->
 <div class="page-loading-overlay" *ngIf="isLoading">
   <!-- <div class="spinner"></div> -->
@@ -156,56 +164,53 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
   <!-- <div class="grid" *ngIf="!isLoading && !error && products.length > 0"> -->
     <div class="products-wrapper" [class.loading]="isLoading">
       <div class="grid">
-    <ng-container *ngFor="let p of paginatedProducts">
-      <a
-        [routerLink]="['/eshop', p.slug]"
-        class="grid-item"
-
-      >
-        <div class="img-wrapper" [class.loading]="loadingMap[p.slug]">
-          <button
-          class="btn-heart"
-
-        >   
-
-        <i class="fa fa-heart"></i>
-        </button>
-          <img
-
-            [src]="p.primaryImageUrl || '/assets/img/gall/placeholder.jpg'"
-            alt="{{ p.name }}"
-            (load)="onImageLoad(p.slug)"
-            (error)="onImageError(p.slug)"
-          />
-        </div>
-  
-        <div class="info">
-          <!-- <div class="small-decor-info" *ngIf="getDecorFromName(p.name)">
-            {{ getDecorFromName(p.name) }}
-          </div> -->
+        <ng-container *ngFor="let p of paginatedProducts">
+          <div class="grid-item">
+            <div class="img-wrapper" [class.loading]="loadingMap[p.slug]">
+              <button
+                class="btn-heart"
+                (click)="addToFav(p)"
+                type="button"
+                tabindex="0"
+                aria-label="Obľúbený produkt"
+              >   
+                <i class="fa fa-heart"></i>
+              </button>
+              <!-- Klik na obrázok vedie na detail produktu -->
+              <a [routerLink]="['/eshop', p.slug]">
+                <img
+                  [src]="p.primaryImageUrl || '/assets/img/gall/placeholder.jpg'"
+                  alt="{{ p.name }}"
+                  (load)="onImageLoad(p.slug)"
+                  (error)="onImageError(p.slug)"
+                />
+              </a>
+            </div>
         
-          <h3>{{ p.name }}</h3>
-          <!-- <h3>{{ getWithoutDecorFromName(p.name) }}</h3> -->
+            <div class="info">
+              <h3>
+                <a [routerLink]="['/eshop', p.slug]">{{ p.name }}</a>
+              </h3>
+              <p *ngIf="p.price !== null; else noPrice">
+                {{ p.price }} €
+              </p>
+              <ng-template #noPrice>
+                <p>{{ 'ESHOP.PRICE_NOT_SET' | translate }}</p>
+              </ng-template>
+            </div>
         
-          <p *ngIf="p.price !== null; else noPrice">
-            {{ p.price }} €
-          </p>
-          <ng-template #noPrice>
-            <p>{{ 'ESHOP.PRICE_NOT_SET' | translate }}</p>
-          </ng-template>
-        </div>
-
+            <!-- Add to cart button full-width pod produktom -->
+            <button
+              class="btn-cart"
+              (click)="addProductToCart(p)"
+              type="button"
+            >
+              <span class="icon" id="cart_image"></span>
+              {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
+            </button>
+          </div>
+        </ng-container>
         
-        <!-- Add to cart button full-width pod produktom -->
-        <button
-        class="btn-cart"
-        (click)="addProductToCart(p); $event.stopPropagation(); $event.preventDefault()"
-      >
-        <span class="icon" id="cart_image"></span>
-        {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
-      </button>
-        </a>
-    </ng-container>
   </div>
     <!-- overlay so spinnerom počas načítania -->
  <div class="loading-overlay" *ngIf="isLoading">

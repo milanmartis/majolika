@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Subject, Observable, combineLatest } from 'rxjs';
+import { takeUntil, map, switchMap, tap } from 'rxjs/operators';
 
 import { ArticleService } from 'app/services/article.service';
+import { LanguageService } from 'app/services/language.service';
+
 import { HeadingBlockComponent } from 'app/blocks/heading-block/heading-block.component';
 import { TextBlockComponent } from 'app/blocks/text-block/text-block.component';
 import { ImageBlockComponent } from 'app/blocks/image-block/image-block.component';
@@ -15,6 +17,7 @@ import { GalleryComponent } from 'app/components/gallery/gallery.component';
 
 import type { Article } from 'app/models/article.model';
 import type { ContentBlock, ImageBlock } from 'app/models/blocks.model';
+
 import {
   trigger,
   transition,
@@ -40,43 +43,54 @@ import {
   templateUrl: './article-page.component.html',
   styleUrls: ['./article-page.component.css'],
   animations: [
-      trigger('listAnimation', [
-        transition(':enter', [
-          // nájdi všetky .block-item vnútri gridu
-          query('.block-item', [
-            // štartovacie štýly
-            style({ opacity: 0, transform: 'translateY(20px)' }),
-            // postupné animovanie s odstupom 100 ms
-            stagger('100ms', [
-              animate(
-                '500ms ease-out',
-                style({ opacity: 1, transform: 'translateY(0)' })
-              )
-            ])
-          ], { optional: true })
-        ])
+    trigger('listAnimation', [
+      transition(':enter', [
+        query('.block-item', [
+          style({ opacity: 0, transform: 'translateY(20px)' }),
+          stagger('100ms', [
+            animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+          ])
+        ], { optional: true })
       ])
-    ]
+    ])
+  ]
 })
 export class ArticlePageComponent {
   article$!: Observable<Article>;
+  private destroy$ = new Subject<void>();
+
   imageUrls: string[] = [];
   galleryOpen = false;
   galleryIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
-    private articleService: ArticleService
+    private articleService: ArticleService,
+    private lang: LanguageService
   ) {
-    this.article$ = this.route.paramMap.pipe(
-      map(pm => pm.get('slug')!),
-      switchMap(slug => this.articleService.getArticleBySlug(slug)),
+    this.initArticleLoader();
+  }
+
+  private initArticleLoader() {
+    this.article$ = combineLatest([
+      this.route.paramMap.pipe(map(pm => pm.get('slug')!)),
+      this.lang.langChanged$
+    ]).pipe(
+      takeUntil(this.destroy$),
+      switchMap(([slug, lang]) => this.articleService.getArticleBySlug(slug, lang)),
       tap(article => {
         this.imageUrls = article.content
           .filter((b): b is ImageBlock => b.__component === 'blocks.image-block')
           .map(b => b.largeUrl);
       })
     );
+  }
+  ngOnInit() {
+    this.initArticleLoader();
+  }
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   openGallery(mediaUrl: string) {
@@ -94,7 +108,8 @@ export class ArticlePageComponent {
     return (
       block.__component === 'blocks.heading-block' ||
       block.__component === 'blocks.link-block' ||
-      block.__component === 'blocks.video-block'
+      block.__component === 'blocks.video-block' ||
+      block.__component === 'blocks.text-block'
     );
   }
 

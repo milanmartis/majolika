@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { NbspSmallWordsPipe } from 'app/pipes/nbsp-small-words.pipe';
 
 import { ProductsService, Product } from 'app/services/products.service';
 import { SlidesService, Slide } from 'app/services/slides.service';
@@ -46,6 +47,7 @@ interface CalendarDay {
     TranslateModule,
     FormsModule,
     FooterComponent,
+    NbspSmallWordsPipe
   ],
   animations: [
     trigger('fadeIn', [

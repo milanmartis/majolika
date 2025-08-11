@@ -4,11 +4,12 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { PopupService, Popup } from 'app/services/popup.service';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-popup-launcher',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [ CommonModule, TranslateModule ],
   templateUrl: './popup-launcher.component.html',
   styleUrls: ['./popup-launcher.component.css'],
   animations: [

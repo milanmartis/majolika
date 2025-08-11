@@ -1,25 +1,77 @@
 {
-  "BASE": "Startseite",
+  "BASE": {
+    "HOME": "Startseite",
+    "OR": "oder",
+    "VIAC_INFO": "Weitere Informationen",
+    "POPISKY_KAT_VYROBKOV": "Produktkategorien",
+    "VYBERTE_KATEGORIU": "Kategorie auswählen",
+    "ADD_TO_CART_HOLD": "In den Warenkorb legen (frei {{available}})",
+    "FULL": "Ausgebucht",
+    "NO_TOURS_OR_WORKSHOPS": "Für diesen Tag sind keine Führungen oder Workshops geplant.",
+    "LOADING_SESSION":"Sitzungen werden geladen",
+    "AT": "am",
+    "LABEL": "Kapazität",
+    "STATUS": "{{booked}} gebucht / {{max}} maximal ({{available}} verfügbar)",
+    "LOADING": "— lade Kapazität…",
+    "TRVANIE": "Dauer"
+
+
+  },
+
+  "FORM": {
+    "FIRST_NAME": "Vorname",
+    "LAST_NAME": "Nachname",
+    "EMAIL": "E-Mail",
+    "PHONE": "Telefon",
+    "STREET": "Straße",
+    "STREET2": "Straße und Nummer",
+    "CITY": "Stadt",
+    "ZIP": "PLZ",
+    "COUNTRY": "Land",
+    "ADRRESS": "Adresse"
+  },
+
+
+"feedback": {
+    "checking_auth": "Authentifizierung wird überprüft...",
+    "login_required": "Anmeldung erforderlich, um eine Sitzung zu buchen.",
+    "login_to_book": "Anmelden",
+    "register_to_book": "Registrieren",   
+    "season_full": "Die Kapazität ist erschöpft."
+  },
+
   "HOME": {
     "WELCOME": "Slowakische Volksmajolika",
     "PEREX": "Die Modra-Majolika und die Majolika-Ornamentik sind in die Repräsentative Liste des immateriellen Kulturerbes der Slowakei eingetragen.",
     "FIRST_TEXT": "Seit 140 Jahren entwickeln Meister ihres Fachs in der Slowakischen Volksmajolika die geerbten Traditionen weiter und erschaffen mit ihren Händen und Herzen die keramische Seele der Region. Alle Produkte sind handgefertigt und handbemalt. Jedes Stück ist ein einzigartiges Kunstwerk. Die Modra Majolika und die Majolika-Ornamentik sind in der Repräsentativen Liste des immateriellen Kulturerbes der Slowakei eingetragen.",
     "TRADICIA": "Tradition",
     "ESHOP": "E-shop",
-    "DIELNE": "Werkstatt"
+    "DIELNE": "Werkstatt",
+    "READMORE": "Weiterlesen",
+    "SHARE_US": "Teilen...",
+    "SEARCHING": "Suche",
+    "DECOR_FILTER": "Filter nach Dekor",
+    "SHAPE_FILTER": "Filter nach Form"
+
+
   },
 
   "ONAS": { 
     "CO_ROBIME": "Was wir tun",
     "KTO_SME": "Wer wir sind",
     "HISTORIA": "Geschichte",
-    "INFO": "Informationen"
+    "INFO": "Informationen",
+    "MAJOLIKA_DOMA_HEADER": "Majolika bei Ihnen zu Hause",
+    "MAJOLIKA_DOMA_TEXT": "Die slowakische Volksmajolika ist ein Träger der Tradition der Modra-Majolika und der Majolika-Ornamentik. Gleichzeitig bietet sie Raum für Kreativität und innovative Ansätze in der Herstellung von Modra-Keramik. Ziel der Projektförderung ist die Entwicklung kreativer Talente und Innovationen im Bereich des traditionellen Handwerks durch die Bewahrung und Wiederherstellung eines bedeutenden Teils des Kulturerbes der Slowakei.\n\nEntdecken Sie einzigartige handbemalte Vasen aus der Majolika-Werkstatt. Die perfekte Ergänzung für Ihr Interieur."
+
     },
     
 
-    "SLIDE":{
-      "VIAC_INFO": "Weitere Informationen"
-    },
+  "SLIDE": {
+  "VIAC_INFO": "Mehr Informationen",
+  "POPISKY_KAT_VYROBKOV": "Produktkategorien",
+  "VYBERTE_KATEGORIU": "Kategorie auswählen"
+},
 
   "ESHOP": { 
     "WELCOME": "Shop mit unserer Produktion",
@@ -51,9 +103,32 @@
     "DESCRIPTION_TEXT": "Beschreibung",
     "DEKOR":"Dekor",
     "CANCEL_ALL_DECORS": "Alle Filter entfernen",
-    "BUTTON": "Jetzt entdecken"
-
-
+    "BUTTON": "Jetzt entdecken",
+    "HABANSKY_DEKOR": "Haban Dekor",
+    "FAVORITE_ADD": "Zu Favoriten hinzufügen",
+    "FAVORITE_REMOVE": "Aus Favoriten entfernen",
+    "FAVORITE_ADDED": "Artikel zu Favoriten hinzugefügt",
+    "FAVORITE_REMOVED": "Artikel aus Favoriten entfernt",
+    "OK": "OK",
+      "CHECKOUT_FORM_INVALID": "Bitte füllen Sie alle Pflichtfelder aus.",
+      "CHECKOUT_MY_ITEMS": "Meine Artikel",
+      "CHECKOUT_CUSTOMER_INFO": "Kundendaten",
+      "CHECKOUT_PROCEED_PAYMENT": "Weiter zur Zahlung",
+"FAREBNY_DEKOR": "Buntes Dekor",
+"PESTRY_DEKOR": "Lebhaftes Dekor",
+"MODRY_DEKOR": "Blaues Dekor",
+"ZELENY_DEKOR": "Grünes Dekor",
+"TVAR_TANIER": "Tellerform",
+"TVAR_VAZA": "Vasenform",
+"TVAR_DZBAN": "Krugform",
+"TVAR_POHAR": "Glasform",
+"TVAR_MISKA": "Schalenform",
+"TVAR_TEXT": "Form",
+"DEKOR_TEXT": "Dekor",
+"RESULT_SEARCH": "Suchergebnisse",
+"SEARCH_PLACEHOLDER": "Produkte suchen...",
+"SEARCH": "Suche",
+"NO_RESULTS":"Keine Ergebnisse gefunden"
 
   },
   "DIELNE": { 
@@ -66,11 +141,13 @@
   },
     "CATEGORIES": {
       "HOME": "Startseite",
+      "AKTUALITY": "Neuigkeiten",
       "PRODUCTS": "E-shop",
       "WORKSHOPS": "Werkstätten",
       "TRADITION": "Tradition",
       "ABOUT": "Uber uns",
       "KONTAKTY": "Kontakt",
+      "PREHLIADKY": "Führungen",
     "dekoracie-a-svietidla": "Dekorationen und Beleuchtung",
     "hodiny": "Uhren",
     "kosiky": "Körbe",
@@ -164,6 +241,9 @@
       "IMG": {
   "NAME": "unser-angebot"
 },
+"KOMPLET": {
+  "PONUKA": "Gesamtes Angebot"
+},
 
 "CALENDAR": {
   "TITLE": "Ausstellungen & Workshops",
@@ -178,6 +258,32 @@
   "MAJOLIKA_NA_AKCII": "Majolica at the event",
   "DIELNE2": "Workshops",
   "PREHLIADKY": "Tours"
+},
+
+"ACCOUNT2": {
+  "TITLE": "Mein Konto",
+  "USER_DATA": "Benutzerdaten",
+  "SAVE_CHANGES": "Änderungen speichern",
+  "FAVORITES": "Meine Lieblingsprodukte",
+  "REMOVE_FAVORITE": "Entfernen",
+  "NO_FAVORITES": "Sie haben keine Lieblingsprodukte.",
+  "ADD_FAVORITES": "Fügen Sie sie hier hinzu...",
+  "ORDERS": "Meine Bestellungen",
+  "NO_ORDERS": "Sie haben keine Bestellungen.",
+  "ADD_ORDERS": "Fügen Sie sie hier hinzu...",
+  "LOGOUT": "Abmelden"
+},
+"table": {
+  "index": "#",
+  "date": "Datum",
+  "status": "Status",
+  "payment": "Zahlung",
+  "total": "Gesamt",
+  "paid": "Bezahlt",
+  "unpaid": "Offen",
+  "pending": "Ausstehend",
+  "completed": "Abgeschlossen",
+  "cancelled": "Storniert"
 },
 
 "ACCOUNT": {

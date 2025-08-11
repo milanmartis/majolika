@@ -13,9 +13,10 @@ export interface HeadingBlock {
 }
 
 export interface TextBlock {
-  __component: 'blocks.text-block';
-  id: number;
+  __component: string;
   richText: string;
+  columns?: 'one' | 'two';
+  alignment?: 'left' | 'center' | 'right';
 }
 
 export interface ImageBlock {

@@ -34,10 +34,26 @@
     </mat-form-field>
 
     <!-- Serverová chyba -->
-    <div *ngIf="error" class="server-error">{{ error }}</div>
+    <div *ngIf="error" class="server-error">
+      {{ error }}
 
-    <button mat-raised-button color="primary" class="register-btn" [disabled]="form.invalid">
-      Registrovať sa
+      <!-- ✅ Tlačidlo sa zobrazí len ak existuje error -->
+      <div class="mt-3">
+        <button mat-stroked-button color="accent"
+          (click)="resendConfirmation(form.get('email')?.value)">
+          Znovu odoslať potvrdzovací e‑mail
+        </button>
+      </div>
+    </div>
+
+    <button mat-raised-button color="primary" class="register-btn" [disabled]="form.invalid || isSubmitting">
+      <ng-container *ngIf="!isSubmitting">Registrovať sa</ng-container>
+      <mat-progress-spinner *ngIf="isSubmitting"
+        diameter="24"
+        mode="indeterminate"
+        color="accent"
+        class="spinner-button"
+      ></mat-progress-spinner>
     </button>
   </form>
 
@@ -45,4 +61,5 @@
     <a mat-button [routerLink]="['/login']">Už máte účet? Prihlásenie</a>
   </mat-card-actions>
 </mat-card>
+
 <app-footer class="mt-8"></app-footer>

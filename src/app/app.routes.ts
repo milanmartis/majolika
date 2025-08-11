@@ -13,21 +13,59 @@ import { ArticlePageComponent }      from 'app/article-page/article-page.compone
 import { eshopRoutes }               from './pages/eshop/eshop.routes';
 import { galleryRoutes }             from './pages/gallery/gallery.routes';
 import { ConfirmEmailComponent }     from './pages/confirm-email/confirm-email.component';
-
+import { SigninCallbackComponent }     from './signin-callback/signin-callback.component';
+import { AktualityListComponent } from './pages/aktualities/aktuality-list.component';
+import { AktualitaDetailComponent } from './pages/aktualities/aktualita-detail.component';
 import { AuthGuard }          from './guards/auth.guard';          // ⬅ musí existovať
 import { AlreadyAuthGuard }   from './guards/already-auth.guard';  // ⬅ nový guard
 
 export const routes: Routes = [
   { path: '',         component: HomePageComponent,    data: { animation: 'LandingPage'  } },
-  { path: 'onas',     component: LandingPageComponent, data: { animation: 'LandingPage'  } },
   { path: 'dielne',   component: LandingPage2Component,data: { animation: 'LandingPage2' } },
 
-  // --- Eshop (zachovaný children) ---
-  { path: 'eshop',
+  { path: 'eshop', component: LandingPageComponent, pathMatch: 'full' },
+  // samostatná landing page pre /eshop
+  {
+    path: 'eshop',
+    component: LandingPageComponent,
+    pathMatch: 'full',
+    data: { animation: 'LandingPage' }
+  },
+
+  // zvyšok e‑shopu pod vlastným obalom
+  {
+    path: 'eshop',
     component: EshopComponent,
     data: { animation: 'EshopPage' },
-    children: eshopRoutes
+    children: [
+      { path: 'categories/:categorySlug',
+        loadComponent: () =>
+          import('./pages/eshop/product-list.component')
+            .then(m => m.ProductListComponent),
+        data: { animation: 'EshopListPage' }
+      },
+      { path: 'cart',
+        loadComponent: () =>
+          import('./pages/cart/cart.component')
+            .then(m => m.CartComponent),
+        data: { animation: 'CartPage' }
+      },
+      { path: ':slug',
+        loadComponent: () =>
+          import('./pages/eshop/product-detail.component')
+            .then(m => m.ProductDetailComponent),
+        data: { animation: 'EshopDetailPage' }
+      }
+    ]
   },
+
+  { path: 'eshop/categories/:categorySlug/dekor/:dekorSlug', loadComponent: () =>
+    import('./pages/eshop/product-list.component')
+      .then(m => m.ProductListComponent) },
+
+  { path: 'dekor/:slug', loadComponent: () =>
+    import('./pages/eshop/product-list.component')
+      .then(m => m.ProductListComponent), },
 
   { path: 'tradicia', component: TradiciaComponent, data: { animation: 'TradiciaPage' } },
   { path: 'kontakt',  component: KontaktComponent, data: { animation: 'KontaktPage'  } },
@@ -64,6 +102,21 @@ export const routes: Routes = [
   {
     path: 'confirm-email',
     component: ConfirmEmailComponent
+  },
+
+  {
+    path: 'signin/callback',
+    component: SigninCallbackComponent,
+  },
+  {
+    path: 'aktuality',
+    component: AktualityListComponent,
+    data: { animation: 'AktualityList' }
+  },
+  {
+    path: 'aktuality/:slug',
+    component: AktualitaDetailComponent,
+    data: { animation: 'AktualitaDetail' }
   },
 
   // --- Fallback ---

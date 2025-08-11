@@ -25,6 +25,7 @@ import {
 import { ProductsService, Product } from 'app/services/products.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { tap, finalize } from 'rxjs/operators';
+import { SearchService } from 'app/services/search.service';
 
 @Component({
   selector: 'app-search',
@@ -70,11 +71,17 @@ export class SearchComponent implements OnInit, AfterViewInit {
     private productsService: ProductsService,
     private router: Router,
     private renderer: Renderer2,
-    private translate: TranslateService
-    
+    private translate: TranslateService,
+    private searchService: SearchService
+
   ) {}
   
   ngOnInit() {
+
+    // Odozva na trigger z iného komponentu
+    this.searchService.openOverlay$.subscribe(() => {
+      this.openOverlay();
+    });
     // Autocomplete (živé návrhy) pri písaní s loaderom
     this.suggestions$ = this.searchControl.valueChanges.pipe(
       debounceTime(250),
@@ -139,6 +146,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       event.preventDefault();
     }
   }
+  icons = ['tanier','dzban','vaza','pohar','miska'];
 
   /** Otvorí overlay a obnoví posledný query + výsledky z localStorage */
   openOverlay(): void {
@@ -174,43 +182,45 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   onSearch(storeInLocal: boolean = true): void {
     this.isLoading = true;
-
     this.showDropdown = false;
-
+  
     const query = this.searchControl.value?.trim() || '';
     if (!query) {
       this.clearAllResults();
       if (storeInLocal) {
         localStorage.removeItem('lastSearchQuery');
       }
+      this.isLoading = false; // ← tu tiež
       return;
     }
-
+  
     if (storeInLocal) {
       localStorage.setItem('lastSearchQuery', query);
     }
-
+  
     this.productsService.searchProducts(query).subscribe({
       next: products => {
         this.results = products;
         this.nextIndex = 0;
         this.displayedResults = [];
         this.appendNextPage();
-
+  
         this.loadingMap = {};
         this.displayedResults.forEach(p => {
           if (p.primaryImageUrl) {
             this.loadingMap[p.primaryImageUrl] = true;
-            this.isLoading = false
           }
         });
+  
+        this.isLoading = false; // ✅ loader off po úspešnom výsledku
       },
       error: () => {
         this.clearAllResults();
+        this.isLoading = false; // ✅ loader off aj pri chybe
       },
     });
   }
-
+  
 
   
   startLoadingDots() {

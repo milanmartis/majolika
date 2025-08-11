@@ -30,6 +30,12 @@ import { AuthService } from 'app/services/auth.service';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ShareButtonsComponent } from 'app/shared/share-buttons/share-buttons.component'; 
+import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { EventSessionsService, EventSessionWithCapacity, BookingPayload } from 'app/services/event-sessions.service';
+import { Subject } from 'rxjs';
+
 
 
 import {
@@ -50,7 +56,8 @@ import {
     TranslateModule,
     MaterialModule,
     ZoomPanDirective,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    ShareButtonsComponent
     ],
   animations: [slideFullscreenAnimation,
     trigger('expandCollapse', [
@@ -100,6 +107,9 @@ import {
   styleUrls: ['./product-detail.component.css'],
 })
 export class ProductDetailComponent implements OnInit {
+
+  articleUrl = window.location.href; 
+
   @ViewChild('contentContainer') contentEl!: ElementRef<HTMLElement>;
   openSection: 'description' | 'short' | 'size' | null = null;
   // your sanitized HTML inputs
@@ -151,6 +161,16 @@ export class ProductDetailComponent implements OnInit {
   loadingMap: Record<string, boolean> = {};
   uniqueCategories: Category[] = [];
 
+//////bookovanie udalostí
+sessions: EventSessionWithCapacity[] = [];
+selectedSession: EventSessionWithCapacity | null = null;
+booking = { name: '', email: '' };
+bookingLoading = false;
+bookingError = '';
+bookingSuccess = '';
+holdTimer?: any; // for auto release
+private destroyed$ = new Subject<void>();
+
   toggle() {
     this.isExpanded = !this.isExpanded;
   }
@@ -160,7 +180,7 @@ export class ProductDetailComponent implements OnInit {
   }
   constructor(
     private sanitizer: DomSanitizer,
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
     private productsService: ProductsService,
     private cart: CartService,
     private translate: TranslateService,
@@ -170,6 +190,7 @@ export class ProductDetailComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private snack: MatSnackBar,
     private zone: NgZone,
+    private sessionsService: EventSessionsService,
     
   ) {
     const rawDesc = '<p>Full product description …</p>';
@@ -181,36 +202,193 @@ export class ProductDetailComponent implements OnInit {
     this.sanitizedSize        = this.sanitizer.bypassSecurityTrustHtml(rawSize);
   }
 
+
+  // public selectedSession: EventSessionWithCapacity | null = null;
+public sessionQty: number = 1;
+
+onSessionChange(session: EventSessionWithCapacity) {
+  this.selectedSession = session;
+  this.sessionQty = 1; // resetni na začiatku
+}
+
+onLoginSuccess() {
+  // Predpoklad: login už prebehol úspešne, už máš usera
+  const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+  this.router.navigateByUrl(returnUrl);
+}
+
+addSessionToCart(session: EventSessionWithCapacity, qty: number) {
+  this.cart.add({
+    id: session.id,
+    name: session.title || 'Termín',
+    slug: session.product?.slug || '',
+    price: 0, // alebo reálnu cenu
+    price_sale: undefined, // povinné podľa CartRow definície (aj keď undefined)
+    inSale: false, // session termíny nemajú zľavu, tak false
+    img: session.product?.primaryImageUrl || '',
+    session,
+  }, qty);
+}
+
+  isExperienceSession(s: EventSessionWithCapacity): boolean {
+    return s.type === 'workshop' || s.type === 'tour';
+  }
+  isExperienceProduct(prod: Product | null): boolean {
+    if (!prod?.categories?.length) return false;
+    // Ak má produkt kategóriu, ktorá je pod "zazitky" a má slug "prehliadky" alebo "dielna"
+    return prod.categories.some(cat =>
+      (cat.parent?.category_slug === 'zazitky') &&
+      (cat.category_slug === 'prehliadky' || cat.category_slug === 'dielne' || cat.category_slug === 'dielna')
+    );
+  }
+
   showToast() {
     this.snack.open('Pridané do obľúbených', 'OK', { duration: 3000 });
   }
   // info(msg: string) {
   //   this.snack.open(msg, 'OK', { duration: 3000, panelClass: 'snack-info' });
   // }
+  
+  
+
   ngOnInit(): void {
     this.loading = true;
+
+    this.sessionsService.bookingChanged$
+    .subscribe(() => {
+      // Znovu načítaj sessions pre vybraný produkt
+      if (this.product) {
+        this.sessionsService.getSessionsForProduct(this.product.slug)
+          .subscribe(list => {
+            this.sessions = list;
+            // Ak máš vybraný session a medzitým sa zmenil (vypršal, zrušil) → precheck
+            if (this.selectedSession) {
+              const updated = list.find(s => s.id === this.selectedSession!.id);
+              if (!updated || (updated.capacity?.available ?? 0) <= 0) {
+                this.selectedSession = null;
+              } else {
+                this.selectedSession = updated;
+              }
+            }
+            this.cd.markForCheck(); // ak máš OnPush
+          });
+      }
+    });
+
+
     this.route.paramMap
       .pipe(
         map(params => params.get('slug')),
         filter((slug): slug is string => !!slug),
-        switchMap(slug => this.productsService.getProductWithVariations(slug))
-      )
-      .subscribe(
-        rawResp => {
-          const item = rawResp.data[0];
-          if (item) {
-            this.loadProduct(item);
-            this.buildBreadcrumbs(item.categories ?? []);
+        switchMap(slug =>
+          this.productsService.getProductWithVariations(slug).pipe(
+            map(rawResp => ({ product: rawResp.data[0], slug }))
+          )
+        ),
+        tap(({ product, slug }) => {
+          if (product) {
+            this.loadProduct(product);
+            this.buildBreadcrumbs(product.categories ?? []);
             this.updateIsFavorite();
           }
+        }),
+        switchMap(({ product, slug }) =>
+          product ? this.sessionsService.getSessionsForProduct(slug) : of([])
+        ),
+        tap(list => {
+          this.sessions = list;
           this.loading = false;
-        },
-        () => {
+        }),
+        catchError(() => {
           this.loading = false;
-        }
-      );
-
+          return of([]);
+        })
+      )
+      .subscribe();
+  
     this.favState.favorites$.subscribe(() => this.updateIsFavorite());
+  }
+  
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  
+  private loadSessionsForProduct(product: Product) {
+    // Ak máš endpoint na všetky sessions pre produkt, použijeme ho.
+    // Ak nie, tak načítame sessions pre dnes a vyfiltrujeme podľa slugu:
+    this.sessionsService.listForDay(new Date()).subscribe({
+      next: sessions => {
+        this.sessions = sessions.filter(s =>
+          s.product?.slug === product.slug ||
+          (this.selectedVariation && s.product?.slug === this.selectedVariation.slug)
+        );
+      },
+      error: () => { this.sessions = []; }
+    });
+  }
+
+  startBooking(session: EventSessionWithCapacity, qty: number = 1) {
+    this.selectedSession = session;
+    this.bookingError = '';
+    this.bookingSuccess = '';
+  
+    // Meno/email ťahaj z loginu, alebo vypýtaj od usera
+    const name = this.booking.name || 'Návštevník';
+    const email = this.booking.email || 'test@test.sk';
+  
+    if (!name || !email) { this.bookingError = 'Meno a email sú povinné.'; return; }
+    if ((session.capacity?.available ?? 0) < qty) { this.bookingError = 'Kapacita je plná.'; return; }
+  
+    this.bookingLoading = true;
+    const payload: BookingPayload = {
+      session: session.id,
+      peopleCount: qty,
+      customerName: name,
+      customerEmail: email,
+      status: 'pending',
+    };
+  
+    this.sessionsService.createBooking(payload).subscribe({
+      next: bookingRes => {
+        this.bookingLoading = false;
+        this.bookingSuccess = 'Rezervácia vytvorená!';
+        // Zníž capacity na fronte
+        if (session.capacity) session.capacity.available = Math.max(0, session.capacity.available - qty);
+  
+        // Pridaj do cartu s bookingId
+        const expireAt = Date.now() + 10 * 60 * 1000;
+        this.cart.add(
+          {
+            id: this.selectedVariation?.id ?? this.product?.id ?? session.id,
+            name: this.product?.name ?? session.title,
+            slug: this.selectedVariation?.slug ?? this.product?.slug ?? '',
+            price: this.displayPrice,
+            img: this.currentImage,
+            qty: qty,
+            session,
+            bookingId: bookingRes.id,
+            holdExpires: expireAt,
+          } as any,
+          qty
+        );
+  
+        // Automaticky zrušiť po 10 min
+        this.holdTimer && clearTimeout(this.holdTimer);
+        this.holdTimer = setTimeout(() => {
+          this.sessionsService.patchBooking(bookingRes.id, { status: 'cancelled' }).subscribe();
+          this.cart.removeByBooking(bookingRes.id);
+          this.bookingError = 'Rezervácia vypršala.';
+          this.bookingSuccess = '';
+          if (session.capacity) session.capacity.available += qty;
+        }, 10 * 60 * 1000);
+      },
+      error: err => {
+        this.bookingLoading = false;
+        this.bookingError = 'Chyba pri vytváraní rezervácie.';
+      }
+    });
   }
 
   private updateIsFavorite(): void {
@@ -262,36 +440,36 @@ export class ProductDetailComponent implements OnInit {
   }
 
   onToggleFavorite(product: Product): void {
-    console.log('🔹 [Component] product.id =', product.id, typeof product.id);
-
     this.auth.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-
         this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
-        return;
+        return; // Ukončíme hneď, nič ďalej nerob
       }
-    });
-    
-    this.loadingFavorite = true;
-    const id = product.id;
-    const wasFav = this.favState.isFavorite(id);
   
-    this.favState.toggle(product);           // ← pošleme celý objekt
+      // Logika s obľúbenými už vo vnútri subscribe
+      this.loadingFavorite = true;
+      const id = product.id;
+      const wasFav = this.favState.isFavorite(id);
   
-    this.favState.favorites$
-      .pipe(skip(1), take(1))
-      .subscribe({
-        next: () => {
-          this.loadingFavorite = false;
-          this.snack.open(
-            wasFav ? 'Položka vyradená z obľúbených'
-                   : 'Položka pridaná do obľúbených',
-            'OK',
-            { duration: 3000 }
-          );
-        },
-        error: () => (this.loadingFavorite = false)
+      this.favState.toggle(product); // pošleme celý objekt
+  
+      this.favState.favorites$
+  .pipe(skip(1), take(1))
+  .subscribe({
+    next: () => {
+      this.loadingFavorite = false;
+      const msgKey = wasFav ? 'ESHOP.FAVORITE_REMOVED' : 'ESHOP.FAVORITE_ADDED';
+      this.translate.get([msgKey, 'ESHOP.OK']).subscribe(translations => {
+        this.snack.open(
+          translations[msgKey],
+          translations['ESHOP.OK'],
+          { duration: 3000 }
+        );
       });
+    },
+    error: () => (this.loadingFavorite = false)
+  });
+    });
   }
 
 
@@ -365,10 +543,99 @@ export class ProductDetailComponent implements OnInit {
   
     // Scroll to top of the page
     window.scrollTo({ top: 0 });
-  }
-  
-  
 
+    const today = new Date();
+    this.loadSessionsForDate(today);
+    }
+
+    private loadSessionsForDate(date: Date) {
+      if (!this.product) return;
+      this.sessionsService.listForDay(date).subscribe({
+        next: list => {
+          console.log('Sessions from server:', list);
+          const slug = this.selectedVariation?.slug || this.product?.slug;
+          // Skontroluj, ktoré produkty v sessions reálne sú
+          console.log('Looking for slug:', slug);
+          list.forEach(sess => {
+            console.log('Session product:', sess.product?.slug, 'id:', sess.product?.id, 'sess:', sess);
+          });
+          this.sessions = list.filter(s => s.product?.slug === slug);
+          // Ak sessions je stále 0, filter je zlý
+        },
+        error: () => { /* ... */ }
+      });
+    }
+
+    registerToSession() {
+      this.bookingError = '';
+      this.bookingSuccess = '';
+      if (!this.selectedSession) { this.bookingError = 'Vyberte termín.'; return; }
+      if (!this.booking.name || !this.booking.email) { this.bookingError = 'Meno a email sú povinné.'; return; }
+      if ((this.selectedSession.capacity?.available || 0) <= 0) { this.bookingError = 'Táto session je už plná.'; return; }
+    
+      this.bookingLoading = true;
+      const payload = {
+        session: this.selectedSession.id,
+        peopleCount: 1,
+        customerName: this.booking.name,
+        customerEmail: this.booking.email,
+        status: 'pending' as const,
+      };
+      this.sessionsService.createBooking(payload).subscribe({
+        next: booking => {
+          this.bookingLoading = false;
+          this.bookingSuccess = 'Rezervácia vytvorená.';
+          // optimistic hold: decrement available locally
+          if (this.selectedSession && this.selectedSession.capacity) {
+            this.selectedSession.capacity.available = Math.max(0, this.selectedSession.capacity.available - 1);
+          }
+          // set up hold expiry (10 minutes)
+          const bookingId = booking.id;
+          const expireAt = Date.now() + 10 * 60 * 1000;
+          // attach to cart with metadata
+          this.cart.add(
+            {
+              id: this.selectedVariation?.id || this.product!.id,
+              name: this.product!.name,
+              slug: this.selectedVariation?.slug || this.product!.slug || '',
+              price: this.displayPrice,
+              img: this.currentImage,
+              quantity: 1,
+              session: this.selectedSession,
+              bookingId,
+              holdExpires: expireAt,
+            } as any,
+            1
+          );
+    
+          // auto release if not confirmed
+          this.holdTimer && clearTimeout(this.holdTimer);
+          this.holdTimer = setTimeout(() => {
+            // if still pending, cancel
+            this.sessionsService.patchBooking(bookingId, { status: 'cancelled' }).subscribe();
+
+            this.cart.removeByBooking(bookingId);
+            this.bookingError = 'Rezervácia vypršala.';
+            this.bookingSuccess = '';
+            if (this.selectedSession && this.selectedSession.capacity) {
+              this.selectedSession.capacity.available += 1; // restore locally
+            }
+          }, 10 * 60 * 1000);
+        },
+        error: err => {
+          this.bookingLoading = false;
+          if (err.status === 409) { this.bookingError = 'Kapacita je plná.'; }
+          else if (err.status === 401 || err.status === 403) { this.bookingError = 'Problém s autorizáciou.'; }
+          else { this.bookingError = 'Chyba pri vytváraní rezervácie.'; }
+        }
+      });
+    }
+    
+    selectSession(s: EventSessionWithCapacity) {
+      this.selectedSession = s;
+      this.bookingError = '';
+      this.bookingSuccess = '';
+    }
 
   incQuantity() {
     if (this.quantity < 99) {
@@ -650,7 +917,7 @@ onTouchEnd(e: TouchEvent) {
   }
 
   get IfProductInSale(): boolean {
-    return this.selectedVariation?.inSale ?? false;
+    return this.selectedVariation?.inSale ?? this.product?.inSale ?? false;
   }
   get displayPriceSale(): number {
     return this.selectedVariation?.price_sale ?? this.product?.price_sale ?? 0;
@@ -675,7 +942,7 @@ onTouchEnd(e: TouchEvent) {
   addToCart() {
     if (!this.product) return;
   
-    // --- TU JE NOVÁ ČASŤ: fallback variácie → hlavný produkt → prvá galéria ---
+    // --- fallback variácie → hlavný produkt → prvá galéria ---
     const variationImg = this.selectedVariation?.primaryImageUrl || '';
     const mainImg      = this.product.primaryImageUrl      || '';
     const galleryImg   = this.mediumImages.length 
@@ -683,16 +950,23 @@ onTouchEnd(e: TouchEvent) {
                          : '';
   
     const imgToUse = variationImg || mainImg || galleryImg;
-    // -----------------------------------------------------------------------
   
     const p = this.selectedVariation ?? this.product;
+  
+    // Helper pre null -> undefined
+    function nullToUndefined<T>(value: T | null | undefined): T | undefined {
+      return value === null ? undefined : value;
+    }
+  
     this.cart.add(
       {
         id:    p.id,
         name:  p.name,
         slug:  p.slug,
         price: p.price ?? 0,
-        img:   imgToUse
+        price_sale: nullToUndefined(p.price_sale),
+        inSale: p.inSale ?? false,
+        img:   imgToUse,
       },
       this.quantity
     );
@@ -776,20 +1050,26 @@ onTouchEnd(e: TouchEvent) {
    *  nevyhodili ten istý parent viackrát.
    */
   private buildBreadcrumbs(allCats: Category[]) {
-    const seenPairs = new Set<string>();
-    this.uniqueCategories = [];
+    const seen = new Set<string>();
+    const trail: Category[] = [];
   
     allCats.forEach(cat => {
-      if (!cat.parent) {
-        return;
-      }
-      // vytvoríme unikátny string „parentSlug→childSlug“
-      const key = `${cat.parent.category_slug}→${cat.category_slug}`;
-      if (!seenPairs.has(key)) {
-        seenPairs.add(key);
-        this.uniqueCategories.push(cat);
+      // ak má kategória rodiča, vložíme ho ako prvého
+      if (cat.parent) {
+        const parent = cat.parent;
+        if (!seen.has(parent.category_slug)) {
+          seen.add(parent.category_slug);
+          trail.push(parent);
+        }
+        // potom vložíme samotnú (dieťa) kategóriu
+        if (!seen.has(cat.category_slug)) {
+          seen.add(cat.category_slug);
+          trail.push(cat);
+        }
       }
     });
+  
+    this.uniqueCategories = trail;
   }
 
 

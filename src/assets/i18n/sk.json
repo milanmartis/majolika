@@ -1,12 +1,48 @@
 {
-    "BASE": "Úvod",
+    "BASE": 
+    {
+      "HOME2": "Domov",
+      "OR": "alebo",
+      "VIAC_INFO": "Viac informácií",
+      "POPISKY_KAT_VYROBKOV": "Kategórie výrobkov",
+      "VYBERTE_KATEGORIU": "Vyberte kategóriu",
+      "ADD_TO_CART_HOLD": "Do košíka (voľné miesta: {{available}})",
+      "FULL": "Vyčerpané",
+      "NO_TOURS_OR_WORKSHOPS": "Na tento deň nie sú naplánované žiadne prehliadky ani dielne.",
+      "LOADING_SESSION": "Načítavanie zážitkov...",
+      "AT": "o",
+        "LABEL": "Kapacita",
+        "STATUS": "{{booked}} rezervované / {{max}} max ({{available}} k dispozícii)",
+        "LOADING": "— načítava sa kapacita…",
+        "TRVANIE": "Trvanie"
+    },
+    "FORM": {
+      "FIRST_NAME": "Meno",
+      "LAST_NAME": "Priezvisko",
+      "EMAIL": "Email",
+      "PHONE": "Telefón",
+      "STREET": "Ulica",
+      "STREET2": "Ulica a číslo",
+      "CITY": "Mesto",
+      "ZIP": "PSČ",
+      "COUNTRY": "Krajina",
+      "ADRRESS": "Adresa"
+    },
+
     "HOME": {
       "WELCOME": "Slovenská ľudová majolika",
       "PEREX": "Modranská majolika a majoliková ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska.",
       "FIRST_TEXT": "V Slovenskej ľudovej majolike už 140 rokov majstri remesla rozvíjajú zdedené tradície, rukami a srdcom tvoria keramickú dušu regiónu. Všetky výrobky sú ručne vyrobené a maľované. Každý kus je jedinečné dielo. Modranská majolika a majoliková ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska.",
       "TRADICIA": "Tradícia",
       "ESHOP": "E-shop",
-      "DIELNE": "Dielne"
+      "DIELNE": "Dielne",
+      "READMORE": "Čítať viac",
+      "SHARE_US": "Zdieľať...",
+      "SEARCHING": "Vyhľadávanie",
+      "DECOR_FILTER": "Filtrujte podľa dekoru",
+      "SHAPE_FILTER": "Filtrujte podľa tvaru"
+
+
     },
 
     
@@ -14,12 +50,17 @@
       "CO_ROBIME": "Čo robíme",
       "KTO_SME": "Kto sme",
       "HISTORIA": "História",
-      "INFO": "Informácie"
+      "INFO": "Informácie",
+      "MAJOLIKA_DOMA_HEADER": "Majolika u vás doma",
+      "MAJOLIKA_DOMA_TEXT": "Slovenská ľudová majolika patrí k nositeľom tradície modranskej majoliky a majolikovej ornamentiky a zároveň je priestorom pre realizáciu kreativity a inovatívnych postupov vo výrobe modranskej keramiky. Cieľom podpory z projektu je rozvoj kreatívneho talentu a inovácií v oblasti tradičného remesla formou záchrany, zachovania a obnovy významnej časti kultúrneho dedičstva Slovenska.\n\nObjavte unikátne ručne maľované vázy z dielne Majolika. Perfektný doplnok do vášho interiéru."
+   
     
     },
 
 "SLIDE":{
-  "VIAC_INFO":"Viac informácií"
+  "VIAC_INFO":"Viac informácií",
+  "POPISKY_KAT_VYROBKOV":"Kategórie výrobkov",
+  "VYBERTE_KATEGORIU":"Vyberte kategóriu"
 },
 
     "ESHOP": { 
@@ -48,7 +89,31 @@
       "SORT_PRICE_DESC": "Od najdrahšieho",
       "SORT_NEWEST": "Najnovšie",
       "SORT_OLDEST": "Najstaršie",
-
+      "HABANSKY_DEKOR": "Habánsky dekór",
+      "FAREBNY_DEKOR": "Farebný dekór",
+      "PESTRY_DEKOR": "Pestrý dekór",
+      "MODRY_DEKOR": "Modrý dekór",
+      "ZELENY_DEKOR": "Zelený dekór",
+      "FAVORITE_ADD": "Pridať do obľúbených",
+    "FAVORITE_REMOVE": "Odstrániť z obľúbených",
+    "FAVORITE_ADDED": "Položka pridaná do obľúbených",
+    "FAVORITE_REMOVED": "Položka vyradená z obľúbených",
+    "OK": "OK",
+     "CHECKOUT_FORM_INVALID": "Prosím, vyplňte všetky povinné polia.",
+     "CHECKOUT_MY_ITEMS": "Moje položky",
+     "CHECKOUT_CUSTOMER_INFO": "Údaje o zákazníkovi",
+     "CHECKOUT_PROCEED_PAYMENT": "Pokračovať k platbe",
+"TVAR_TANIER": "Tanier",
+"TVAR_VAZA": "Váza",
+"TVAR_DZBAN": "Džbán",
+"TVAR_POHAR": "Pohár",
+"TVAR_MISKA": "Miska",
+"TVAR_TEXT": "Tvar",
+"DEKOR_TEXT": "Dekór",
+"RESULT_SEARCH":"Výsledky vyhľadávania",
+"SEARCH_PLACEHOLDER": "Hľadať produkty...",
+"SEARCH": "Hľadať",
+"NO_RESULTS":"Žiadne výsledky",
 
 
       "FILTER_BY": "Filtrovať",
@@ -69,13 +134,25 @@
       "FIRST_TEXT": "V roku 1883 bolo v Modre založené Keramicko-priemyselné učilište (Agyagipar Tanműhely Modor). Založenie keramického učilišťa dalo základ pre vznik budúceho prosperujúceho podniku Slovenskej keramiky a neskôr Slovenskej ľudovej majoliky, ktorý kontinuálne pokračuje vo výrobe až do súčasnosti.Učilište založilo mesto Modra s uhorským ministerstvom priemyslu a obchodu. Prvým správcom sa stal Jozef Mička, keramikár z Moravy. Učni sa učili najdôležitejšie dielenské práce, točenie, maľovanie a pálenie."
     },
     
+    
+    "feedback": {
+      "checking_auth": "Overovanie prihlásenia...",
+      "login_required": "Pre rezerváciu sa prihláste alebo zaregistrujte.",
+      "login_to_book": "Prihlásiť ",
+      "register_to_book": "Registrovať",
+      "season_full": "Kapacita je naplnená."
+    },
+    
+
       "CATEGORIES": {
         "HOME": "Úvod",
+        "AKTUALITY": "Aktuality",
         "PRODUCTS": "E-shop",
         "WORKSHOPS": "Prehliadky/Dielne",
         "TRADITION": "Tradícia",
         "ABOUT": "O nás",
         "KONTAKTY": "Kontakt",
+        "PREHLIADKY":"Prehliadky",
         
 
 
@@ -194,7 +271,33 @@
               "DIELNE2": "Dielne",
               "PREHLIADKY": "Prehliadky"
             },
+          "ACCOUNT2": {
+            "TITLE": "Môj účet",
+            "USER_DATA": "Údaje používateľa",
+            "SAVE_CHANGES": "Uložiť zmeny",
+            "FAVORITES": "Moje obľúbené produkty",
+            "REMOVE_FAVORITE": "Odstrániť",
+            "NO_FAVORITES": "Nemáte žiadne obľúbené produkty.",
+            "ADD_FAVORITES": "Pridajte si ich tu...",
+            "ORDERS": "Moje objednávky",
+            "NO_ORDERS": "Nemáte žiadne objednávky.",
+            "ADD_ORDERS": "Pridajte si ich tu...",
+            "LOGOUT": "Odhlásiť sa"
+          },
 
+            "table": {
+              "index": "#",
+              "date": "Dátum",
+              "status": "Stav",
+              "payment": "Platba",
+              "total": "Celkom",
+              "paid": "Zaplatené",
+              "unpaid": "Nezaplatené",
+              "pending":"Pripravuje sa",
+              "cancelled": "Zrušené",
+              "completed": "Dokončené"
+          
+            },
             "ACCOUNT": {
               "TITLE": "Môj účet",
               "USERNAME": "Meno užívateľa",

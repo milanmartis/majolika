@@ -13,19 +13,21 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Directive, HostBinding, HostListener, Input } from '@angular/core';
 import { NgxMasonryModule } from 'ngx-masonry';
-import { LightboxModule, Lightbox } from 'ngx-lightbox';
-import { GalleryComponent } from 'app/pages/gallery/gallery.component'; // uprav podľa cesty
-import { Category } from 'app/services/products.service'; // už tam máš
+import { LightboxModule } from 'ngx-lightbox';
 
-import { ProductsService, Product } from 'app/services/products.service';
+import { ProductsService, Product, Category } from 'app/services/products.service';
 import { SlidesService, Slide } from 'app/services/slides.service';
 import { FooterComponent } from 'app/components/footer/footer.component';
-import { ArticlePageComponent } from 'app/article-page/article-page.component';
 import { SafeUrlPipe } from 'app/shared/safe-url.pipe';
 import {
-  trigger, state, style, transition, animate, query, stagger
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+  query,
+  stagger
 } from '@angular/animations';
 
 interface CalendarDay {
@@ -48,10 +50,10 @@ interface CalendarDay {
     FooterComponent,
     SafeUrlPipe,
     LightboxModule,
-    NgxMasonryModule,
-    // ArticlePageComponent,
-    // GalleryComponent
+    NgxMasonryModule
   ],
+  templateUrl: './landing-page.component.html',
+  styleUrls: ['./landing-page.component.css'],
   animations: [
     trigger('fadeIn', [
       state('visible', style({ opacity: 1 })),
@@ -81,11 +83,11 @@ interface CalendarDay {
     ]),
     trigger('fadeInStagger', [
       transition('false => true', [
-        query('.choice-card', [
+        query('.choice-card, .choice-card2', [
           style({ opacity: 0, transform: 'translateY(-1000px)' }),
           stagger(150, [
             animate(
-              '1000ms cubic-bezier(0.25, 0.8, 0.25, 1)', // pomalší koniec
+              '1000ms cubic-bezier(0.25, 0.8, 0.25, 1)',
               style({ opacity: 1, transform: 'translateY(0)' })
             )
           ])
@@ -94,41 +96,168 @@ interface CalendarDay {
     ]),
     trigger('overlayAnimation', [
       transition('* => *', [
-        // start hidden & a little down
         style({ opacity: 0, transform: 'translateY(50px)' }),
-        // wait 1s, then animate up & fade in over 500ms
         animate('500ms 1000ms ease-out',
                 style({ opacity: 1, transform: 'translateY(0)' }))
       ])
     ]),
-    ],
-  templateUrl: './landing-page.component.html',
-  styleUrls: ['./landing-page.component.css'],
+  ],
 })
-
 export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   defaultImage = 'https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_ktosme1_a1dc30edf2.jpg';
-  // URL po hoveri
-  hoverImage   = 'https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_ktosme2_16d5651d8b.jpg';
-  // momentálne zobrazovaná src
+  hoverImage = 'https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_ktosme2_16d5651d8b.jpg';
   imageSrc = this.defaultImage;
 
   onHover(isHover: boolean) {
     this.imageSrc = isHover ? this.hoverImage : this.defaultImage;
   }
-  categories: Category[] = [];
 
+  categories: Category[] = [];
   animationState = false;
 
   /* ---------------- SLIDER ---------------- */
   @ViewChild('sliderScroll', { static: false })
   sliderScroll!: ElementRef<HTMLDivElement>;
-
   slides: Slide[] = [];
   currentSlideIndex = 0;
   private slidesSub?: Subscription;
   private autoId?: number;
+  private scrollSyncTimeout?: number;
+  private resizeObserver?: ResizeObserver;
+
+  /* -------- FEATURED‐PRODUCTS SCROLLER -------- */
+  @ViewChild('scrollContainer', { static: false })
+  scrollContainer!: ElementRef<HTMLDivElement>;
+  private autoSlideInterval?: number;
+
+  saleProducts: Product[] = [];
+  featured: Product[] = [];
+  experiences: Product[] = [];
+  loadingMap: Record<string, boolean> = {};
+  private saleSub?: Subscription;
+  private expSub?: Subscription;
+  imgState = 'hidden';
+  @ViewChild('ponuka') ponuka!: ElementRef;
+
+  /* ---------------- KALENDÁR ---------------- */
+  calendarDays: CalendarDay[] = [];
+  weekDays = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
+  currentMonth = new Date();
+  selectedDay: CalendarDay | null = null;
+  registration = { name: '', email: '' };
+
+  constructor(
+    private router: Router,
+    private productsService: ProductsService,
+    private slidesService: SlidesService
+  ) {}
+
+  ngOnInit(): void {
+    this.slidesService.slides$.subscribe(s => {
+      this.slides = s;
+    });
+
+    this.slidesSub = this.slidesService
+      .getSlides()
+      .pipe(catchError(() => of([] as Slide[])))
+      .subscribe(sl => {
+        this.slides = sl;
+        this.resumeAuto();
+      });
+
+    this.loadSaleAndFeatured();
+    this.loadExperiences();
+    this.generateCalendar(this.currentMonth);
+    setTimeout(() => (this.imgState = 'visible'), 300);
+    this.loadCategories();
+  }
+
+  private loadCategories(): void {
+    this.productsService.getAllCategoriesFlat()
+      .pipe(catchError(() => of([])))
+      .subscribe(all => {
+        this.categories = all.filter(cat => !cat.parent);
+      });
+  }
+
+  goToCategory(slug: string): void {
+    this.router.navigate(['/eshop', 'categories', slug]);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.animationState = true, 0);
+    this.startAutoSlide();
+
+    // sync bullets when user swipes / scrolls
+    const el = this.sliderScroll.nativeElement;
+    el.addEventListener('scroll', this.onSliderScroll);
+    this.resizeObserver = new ResizeObserver(() => {
+      // keep alignment after resize
+      this.scrollToSlide(this.currentSlideIndex);
+    });
+    this.resizeObserver.observe(el);
+  }
+
+  private onSliderScroll = (): void => {
+    this.pauseAuto();
+    const el = this.sliderScroll.nativeElement;
+    if (this.scrollSyncTimeout != null) {
+      clearTimeout(this.scrollSyncTimeout);
+    }
+    this.scrollSyncTimeout = window.setTimeout(() => {
+      const slideWidth = el.offsetWidth;
+      const newIndex = Math.round(el.scrollLeft / slideWidth);
+      if (newIndex !== this.currentSlideIndex) {
+        this.currentSlideIndex = newIndex;
+      }
+      this.resumeAuto();
+    }, 100);
+  };
+
+  ngOnDestroy(): void {
+    this.pauseAuto();
+    this.stopAutoSlide();
+    this.slidesSub?.unsubscribe();
+    this.saleSub?.unsubscribe();
+    this.expSub?.unsubscribe();
+    if (this.sliderScroll?.nativeElement) {
+      this.sliderScroll.nativeElement.removeEventListener('scroll', this.onSliderScroll);
+    }
+    this.resizeObserver?.disconnect();
+  }
+
+  /* === SLIDER NAVIGATION === */
+  nextSlide(): void {
+    if (!this.slides.length) return;
+    this.pauseAuto();
+    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
+    this.scrollToSlide(this.currentSlideIndex);
+    this.resumeAuto();
+  }
+
+  prevSlide(): void {
+    if (!this.slides.length) return;
+    this.pauseAuto();
+    this.currentSlideIndex =
+      (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
+    this.scrollToSlide(this.currentSlideIndex);
+    this.resumeAuto();
+  }
+
+  goToSlide(i: number): void {
+    if (!this.slides.length) return;
+    this.pauseAuto();
+    this.currentSlideIndex = i;
+    this.scrollToSlide(i);
+    this.resumeAuto();
+  }
+
+  private scrollToSlide(index: number): void {
+    const el = this.sliderScroll.nativeElement;
+    el.scrollTo({ left: el.offsetWidth * index, behavior: 'smooth' });
+    this.currentSlideIndex = index;
+  }
 
   public pauseAuto(): void {
     if (this.autoId != null) {
@@ -142,16 +271,13 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /* -------- FEATURED‐PRODUCTS SCROLLER -------- */
-  @ViewChild('scrollContainer', { static: false })
-  scrollContainer!: ElementRef<HTMLDivElement>;
-  private autoSlideInterval?: number;
-
+  /* === FEATURED SCROLLER === */
   startAutoSlide(): void {
+    if (!this.scrollContainer) return;
     if (this.autoSlideInterval != null) return;
+    const container = this.scrollContainer.nativeElement;
+    const maxScrollLeft = container.scrollWidth - container.clientWidth;
     this.autoSlideInterval = window.setInterval(() => {
-      const container = this.scrollContainer.nativeElement;
-      const maxScrollLeft = container.scrollWidth - container.clientWidth;
       if (container.scrollLeft >= maxScrollLeft) {
         container.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
@@ -175,103 +301,12 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.scrollContainer.nativeElement.scrollBy({ left: 300, behavior: 'smooth' });
   }
 
-  /* ---------------- PRODUKTY & OSTATNÉ ---------------- */
-  saleProducts: Product[] = [];
-  featured: Product[] = [];
-  experiences: Product[] = [];
-  loadingMap: Record<string, boolean> = {};
-  private saleSub?: Subscription;
-  private expSub?: Subscription;
-  imgState = 'hidden';
-
-  /* ---------------- KALENDÁR ---------------- */
-  calendarDays: CalendarDay[] = [];
-  weekDays = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
-  currentMonth = new Date();
-  selectedDay: CalendarDay | null = null;
-  registration = { name: '', email: '' };
-
-  constructor(
-    private router: Router,
-    private productsService: ProductsService,
-    private slidesService: SlidesService
-  ) {}
-
-  ngOnInit(): void {
-    // fetch slides
-    this.slidesSub = this.slidesService
-      .getSlides()
-      .pipe(catchError(() => of([] as Slide[])))
-      .subscribe(sl => {
-        this.slides = sl;
-        this.resumeAuto();
-      });
-
-    this.loadSaleAndFeatured();
-    this.loadExperiences();
-    this.generateCalendar(this.currentMonth);
-
-    setTimeout(() => (this.imgState = 'visible'), 300);
-
-    this.loadCategories();
-
-  }
-  goToCategory(slug: string): void {
-    this.router.navigate(['/eshop'], { queryParams: { category: slug } });
+  openInNewTab(url: string): void {
+    window.open(url, '_self', 'noopener');
   }
 
-  loadCategories(): void {
-    this.productsService.getAllCategoriesFlat()
-      .pipe(catchError(() => of([])))
-      .subscribe(all => {
-        this.categories = all.filter(cat => !cat.parent); // iba root kategórie
-      });
-  }
-
-
-  ngAfterViewInit(): void {
-    setTimeout(() => this.animationState = true, 0);
-
-    // auto‐scroll featured products when view is ready
-    this.startAutoSlide();
-  }
-
-  ngOnDestroy(): void {
-    this.pauseAuto();
-    this.stopAutoSlide();
-    this.slidesSub?.unsubscribe();
-    this.saleSub?.unsubscribe();
-    this.expSub?.unsubscribe();
-  }
-
-  /* === SLIDER NAVIGATION === */
-  nextSlide(): void {
-    if (!this.slides.length) return;
-    this.pauseAuto();
-    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
-    this.scrollToSlide(this.currentSlideIndex);
-    this.resumeAuto();
-  }
-
-  prevSlide(): void {
-    if (!this.slides.length) return;
-    this.pauseAuto();
-    this.currentSlideIndex =
-      (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
-    this.scrollToSlide(this.currentSlideIndex);
-    this.resumeAuto();
-  }
-
-  goToSlide(i: number): void {
-    this.pauseAuto();
-    this.currentSlideIndex = i;
-    this.scrollToSlide(i);
-    this.resumeAuto();
-  }
-
-  private scrollToSlide(index: number): void {
-    const el = this.sliderScroll.nativeElement;
-    el.scrollTo({ left: el.offsetWidth * index, behavior: 'smooth' });
+  goToLink(url: string): void {
+    this.router.navigateByUrl('/' + url);
   }
 
   /* === PRODUKTY === */
@@ -310,14 +345,6 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onImageError(slug: string): void {
     this.loadingMap[slug] = false;
-  }
-
-  openInNewTab(url: string): void {
-    window.open(url, '_self', 'noopener');
-  }
-
-  goToLink(url: string): void {
-    this.router.navigateByUrl('/' + url);
   }
 
   /* === KALENDÁR === */
@@ -385,5 +412,9 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
         ? { category: 'zazitky' }
         : { category: 'kolekcie' };
     this.router.navigate(['/eshop'], { queryParams });
+  }
+
+  scrollToPonuka() {
+    this.ponuka.nativeElement.scrollIntoView({ behavior: 'smooth' });
   }
 }

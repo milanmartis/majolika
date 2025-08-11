@@ -9,13 +9,17 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ViewChild } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CommonModule }    from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule }     from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CartService } from 'app/services/cart.service';
+import { ProductDetailComponent } from './product-detail.component';
+import { FavoriteStateService } from 'app/services/favorite-state.service';
 
 import {
   ProductsService,
@@ -72,6 +76,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   allCategories:   Category[] = [];
   rootCategories:  Category[] = [];
   childCategories: Category[] = [];
+  @ViewChild(ProductDetailComponent) productDetail!: ProductDetailComponent;
 
   selectedCategory:         string | null = null;
   selectedRootCategorySlug: string | null = null;
@@ -112,6 +117,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   loadingMap: Record<string, boolean> = {};
   isLoading = false;
   error = false;
+  loaded = false;
 
   readonly pageSize = 20;
   currentPage = 1;
@@ -126,11 +132,29 @@ export class ProductListComponent implements OnInit, OnDestroy {
   constructor(
     private productsSrv: ProductsService,
     private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private cart: CartService
+    private cart: CartService,
+    private favState: FavoriteStateService,
+    private snack: MatSnackBar,
+    private translate: TranslateService,
+
+
   ) {}
+
+  addToFav(product: Product) {
+    const wasFav = this.favState.isFavorite(product.id);
+    this.favState.toggle(product);
+  
+    const msgKey = wasFav ? 'ESHOP.FAVORITE_REMOVED' : 'ESHOP.FAVORITE_ADDED';
+  
+    this.snack.open(
+      this.translate.instant(msgKey),
+      this.translate.instant('ESHOP.OK'),
+      { duration: 3000 }
+    );
+  }
 
   /* =============================================================
    *  Lifecycle
@@ -140,24 +164,27 @@ export class ProductListComponent implements OnInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustHtml(raw);
   }
 
+
   ngOnInit(): void {
     /* 1️⃣ – najprv pripoj odber na refresh$ */
-    this.refresh$
+      this.refresh$
       .pipe(
         debounceTime(50),
         switchMap(() => this.fetchProducts()),
-        takeUntil(this.destroyed$),
-      )
-      .subscribe();
+        takeUntil(this.destroyed$),)
+      .subscribe({
+        next: () => { this.loaded = true; },
+        error: () => { this.loaded = true; }
+      });
   
     /* 2️⃣ – až potom sleduj ?category= v URL */
-    this.route.queryParamMap
+    this.route.paramMap
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(q => {
-        const slug = q.get('category');
+      .subscribe(pm => {
+        const slug = pm.get('categorySlug');
         this.applySlugFromUrl(slug);
         this.currentPage = 1;
-        this.triggerRefresh();          // odber už existuje → fetch sa spustí
+        this.triggerRefresh();
       });
   
     /* 3️⃣ – načítaj kategórie */
@@ -167,6 +194,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroyed$.next(); this.destroyed$.complete();
   }
+
+
 
   /* =============================================================
    *  Obrázky – metódy vyžadované šablónou
@@ -178,7 +207,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   onImageError(slug: string): void {
     this.loadingMap[slug] = false;
     const p = this.products.find(x => x.slug === slug);
-    if (p) { p.primaryImageUrl = '/assets/img/gall/placeholder.jpg'; }
+    if (p) { p.primaryImageUrl = '/assets/img/logo-SLM-modre.gif'; }
   }
 
   /* =============================================================
@@ -229,21 +258,20 @@ export class ProductListComponent implements OnInit, OnDestroy {
   /* =============================================================
    *  Handlery klikov
    * ============================================================= */
-  private updateQueryParam(slug: string | null): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { category: slug || null },
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
-    });
-  }
+    private navigateBySlug(slug: string | null): void {
+        if (slug) {
+          this.router.navigate(['/eshop', 'categories', slug]);
+        } else {
+          this.router.navigate(['/eshop']);
+        }
+      }
 
   onCategorySelect(slug: string): void {
     if (slug === this.selectedCategory) { return; }
     this.isLoading = true; 
     this.applySlugFromUrl(slug);
     this.currentPage = 1;
-    this.updateQueryParam(slug);
+    this.navigateBySlug(slug);
     this.triggerRefresh();
   }
 
@@ -255,7 +283,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     ) {
       this.applySlugFromUrl(this.selectedRootCategorySlug);
       this.currentPage = 1;
-      this.updateQueryParam(this.selectedRootCategorySlug);
+      this.navigateBySlug(this.selectedRootCategorySlug);
       this.triggerRefresh();
       return;
     }
@@ -267,7 +295,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.selectedCategoryName =
     this.selectedCategoryText = undefined;
     this.currentPage = 1;
-    this.updateQueryParam(null);
+    this.navigateBySlug(null);
     this.triggerRefresh();
   }
 
@@ -289,11 +317,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.currentPage = 1; this.triggerRefresh();
   }
 
+
   changePage(p: number): void {
     if (p === this.currentPage || p < 1 || p > this.totalPages) { return; }
     this.currentPage = p; this.triggerRefresh();
   }
 
+
+
+
+
+  
   /* =============================================================
    *  HTTP volania
    * ============================================================= */
@@ -309,14 +343,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.selectedDecors,
       this.selectedShapes
     ).pipe(
-      tap(r => this.handleResponse(r)),
+      tap((resp: StrapiResp<Product>) => this.handleResponse(resp)),
       catchError(err => {
         console.error('❌ Nepodarilo sa načítať produkty', err);
         this.error = true;
+        this.handleResponse(null);
         return of(null);
       }),
       tap(() => {
-        this.isLoading = false;  // po načítaní alebo chybe
+        this.isLoading = false;
         this.cdr.markForCheck();
       })
     );
@@ -324,7 +359,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   private handleResponse(resp: StrapiResp<Product> | null): void {
     if (!resp) { return; }
-
+  
     const meta = resp.meta.pagination;
     this.products          = resp.data;
     this.paginatedProducts = resp.data;
@@ -415,6 +450,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
         name: variation?.name ?? p.name,
         slug: variation?.slug ?? p.slug,
         price: variation?.price ?? p.price ?? 0,
+        price_sale: variation?.price_sale ?? p.price_sale ?? undefined,
+        inSale: variation?.inSale ?? p.inSale ?? false,
         img: imgToUse
       },
       1 // množstvo

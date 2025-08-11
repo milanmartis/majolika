@@ -1,0 +1,266 @@
+.login-title {
+  text-align: center;
+  margin: 120px auto 30px;
+  font-size: 2.4rem;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: var(--base-blue);
+}
+
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .detail-page {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.detail-content {
+  flex: 1;
+  background: #fff;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.detail-content header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .detail-content header {
+    max-width: 40%;
+    margin: 0 2rem 1.5rem 0;
+    text-align: left;
+  }
+}
+
+.detail-content header h1 {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.detail-content header .meta {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.detail-content header img {
+  width: 100%;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  /* max-height: 400px; */
+  margin-bottom: 1.5rem;
+}
+
+.gallery .thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.gallery .thumb {
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.gallery .thumb:hover {
+  transform: scale(1.05);
+}
+
+.detail-content .body {
+  flex: 1;
+  line-height: 1.7;
+  font-size: 1rem;
+
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+@media (min-width: 768px) {
+  .detail-content .body {
+    max-width: 60%;
+  }
+}
+
+.detail-content .body img {
+  max-width: 100%;
+  margin: 1rem 0;
+}
+
+.detail-content .body p {
+  margin-bottom: 1rem;
+}
+
+.detail-content .body a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.related {
+  background: #f9f9f9;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.related h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.related ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.related li {
+  margin-bottom: 1rem;
+}
+
+.related a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s;
+}
+
+.related a:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.related img {
+  width: 80px;
+  height: 80px;
+  border-radius: 0.25rem;
+  object-fit: cover;
+  margin-right: 0.75rem;
+}
+
+.related .info h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.related .info .date {
+  font-size: 0.8rem;
+  color: #888;
+}
+.overlay {
+  touch-action: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.overlay-img {
+  max-width: 90vw;
+  max-height: 80vh; /* O něco menší, aby byl prostor pro footer */
+  object-fit: contain;
+  pointer-events: auto;
+}
+
+/* Zavírací tlačítko */
+.close-btn {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  color: #ffffff9f;
+  cursor: pointer;
+  transition: all 0.6s ease;
+
+}
+.close-btn:hover{
+  color: #ffffff;
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  font-size: 2rem;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all ease 0.6s;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.99);
+}
+
+.counter {
+  color: #fff;
+  font-size: 1rem;
+  margin: 0 15px;
+}
+
+
+.gallery .thumb {
+  width: 80px;            /* or whatever fixed size you want */
+  height: 80px;
+  object-fit: cover;      /* crop to fill without distortion */
+  border-radius: .25rem;
+  cursor: pointer;
+  transition: transform .2s;
+}
+
+/* if you have a wrapper around each thumb: */
+.gallery .thumb-wrapper {
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+}
+
+/* optional hover pop */
+.gallery .thumb:hover {
+  transform: scale(1.05);
+}
+
+/* Základ: na mobiloch bude stĺpcový layout */
+.detail-content article {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Na šírke ≥768px rozdelíme layout na dve kolóny */
+@media (min-width: 768px) {
+  .detail-content article {
+    flex-direction: row;
+  }
+
+  /* Ľavá kolóna: header + gallery */
+  .detail-content article header,
+  .detail-content article .gallery {
+    flex: 0 0 40%;       /* vezmú 40% šírky */
+    margin-right: 2rem;  /* odsadenie k textu */
+  }
+
+  /* Pravá kolóna: samotný obsah */
+  .detail-content article .body {
+    flex: 1;             /* zoberie zostávajúcich 60% */
+  }
+}

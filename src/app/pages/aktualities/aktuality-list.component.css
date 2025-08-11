@@ -1,0 +1,70 @@
+.login-title {
+  text-align: center;
+  margin: 90px auto 30px;
+  font-size: 2.4rem;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: var(--base-blue);
+}
+
+.cards {
+  display: grid;
+  /* vedľa seba čo najmenej 280px široké dlaždice, zaberú však vždy rovnomerne dostupný priestor */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;       /* medzera medzi dlaždicami */
+  padding: 1rem 0; /* odsadenie okolo mriežky */
+}
+
+.card {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card img {
+  width: 100%;
+  height: 290px;
+  object-fit: cover;
+}
+
+.card .content {
+  padding: 0.75rem;
+  flex: 1; /* aby tlačidlo „Read more“ vždy zostalo dole */
+}
+
+.card .content h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.card .content .date {
+  font-size: .875rem;
+  color: #666;
+  margin: .25rem 0;
+}
+
+.card .content .summary {
+  flex: 1; /* roztiahne summary do medzery */
+  margin: .5rem 20;
+}
+
+.card .content .read-more {
+  position: absolute;
+  bottom: 0px;
+  display: inline-block;
+  margin-top: 20px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  color: var(--base-blue);
+}

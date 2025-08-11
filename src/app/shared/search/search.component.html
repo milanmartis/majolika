@@ -24,7 +24,7 @@
         type="text"
         [formControl]="searchControl"
         class="search-input-full"
-        placeholder="Hľadaj produkt…"
+        placeholder="{{'ESHOP.SEARCH_PLACEHOLDER' | translate}}"
         aria-label="Vyhľadávanie produktov"
         (focus)="onFocus()"
         (blur)="onBlur()"
@@ -68,16 +68,34 @@
           </span>
         </li>
         <li *ngIf="(suggestions$ | async)?.length === 0" class="no-suggestion">
-          Žiadne návrhy
+          {{ 'ESHOP.NO_RESULTS' | translate }}
         </li>
       </ul>
     </div>
 
     <button class="search-go-button" (click)="onSearch()" aria-label="Spustiť vyhľadávanie">
-      Hľadaj
+      {{ 'ESHOP.SEARCH' | translate }}
     </button>
+
   </div>
+
   <div class="others" *ngIf="results.length === 0 || searchControl.value === null ">
+    <div class="product-card" *ngFor="let icon of icons">
+      <a (click)="searchFromLink(icon)"  class="icon-link"
+      
+      >
+        <img
+          class="icon"
+          width="32"
+          height="32"
+          [alt]="icon"
+          src="assets/img/icons/{{ icon }}.svg"
+          >
+
+      </a>
+    </div>
+</div>
+    <div class="others" *ngIf="results.length === 0 || searchControl.value === null ">
     <div class="product-card" (click)="searchFromLink('habánsky dekór')">
       <div class="img-wrapper card-img-wrapper" [class.loading]="loadingMap['habansky']">
         <img
@@ -88,7 +106,7 @@
         />
       </div>
       <div class="card-content">
-        <h3 class="card-title">Habánsky vzor</h3>
+        <h3 class="card-title">{{ 'ESHOP.HABANSKY_DEKOR' | translate }}</h3>
       </div>
     </div>
     <div class="product-card" (click)="searchFromLink('modrý dekór')">
@@ -101,7 +119,7 @@
         />
       </div>
       <div class="card-content">
-        <h3 class="card-title">Modrý vzor</h3>
+        <h3 class="card-title">{{ 'ESHOP.MODRY_DEKOR' | translate }}</h3>
       </div>
     </div>
     <div class="product-card" (click)="searchFromLink('pestrý dekór')">
@@ -114,7 +132,7 @@
         />
       </div>
       <div class="card-content">
-        <h3 class="card-title">Pestrý vzor</h3>
+        <h3 class="card-title">{{ 'ESHOP.PESTRY_DEKOR' | translate }}</h3>
       </div>
     </div>
     <div class="product-card" (click)="searchFromLink('zelený dekór')">
@@ -127,7 +145,7 @@
         />
       </div>
       <div class="card-content">
-        <h3 class="card-title">Zelený vzor</h3>
+        <h3 class="card-title">{{ 'ESHOP.ZELENY_DEKOR' | translate }}</h3>
       </div>
     </div>
   </div>
@@ -138,9 +156,19 @@
   (scroll)="onResultsScroll($event)"
 >
   <h2 class="results-title">
-    Výsledky vyhľadávania ({{ results.length }})
+    {{ 'ESHOP.RESULT_SEARCH' | translate }} ({{ results.length }})
   </h2>
-
+      <!-- "FAREBNY_DEKOR": "Buntes Dekor",
+      "PESTRY_DEKOR": "Lebhaftes Dekor",
+      "MODRY_DEKOR": "Blaues Dekor",
+      "ZELENY_DEKOR": "Grünes Dekor",
+      "TVAR_TANIER": "Tellerform",
+      "TVAR_VAZA": "Vasenform",
+      "TVAR_DZBAN": "Krugform",
+      "TVAR_POHAR": "Glasform",
+      "TVAR_MISKA": "Schalenform",
+      "TVAR_TEXT": "Form",
+      "DEKOR_TEXT": "Dekor" -->
   <div class="cards-grid">
     <div
       *ngFor="let p of displayedResults"

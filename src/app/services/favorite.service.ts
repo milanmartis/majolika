@@ -7,7 +7,28 @@ import { environment } from '../../environments/environment';
 
 export interface Favorite {
   id: number;
-  product: { id: number } | null;
+  product: { 
+    id: number
+      slug: string;
+      name: string;
+      price: number | null;
+      price_sale: number | null;
+      inSale: boolean;
+      short?: string;
+      describe?: string;
+      ean: string;
+  
+    
+      picture_new?: any;
+      pictures_new?: any;
+    
+      primaryImageUrl: string;
+      galleryUrls: string[];
+
+
+
+   } | null;
+  
 }
 
 @Injectable({ providedIn: 'root' })

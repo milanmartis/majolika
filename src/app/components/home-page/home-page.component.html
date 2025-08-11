@@ -5,8 +5,8 @@
   <!-- ---------- DVE KARTY ---------- -->
   <div class="choice-grid" [@fadeInStagger]="animationState">
     <div class="choice-card">
-      <a routerLink="/onas">
-      <div class="image-wrapper">
+      <a [routerLink]="['/eshop']">
+        <div class="image-wrapper">
         <!-- <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_home_majolika_1_3815377127.jpg" alt="E-shop" /> -->
         <img src="/assets/img/eshop/e/16.jpg" alt="E-shop" />
       </div>
@@ -15,7 +15,7 @@
     </div>
 
     <div class="choice-card">
-      <a routerLink="/dielne">
+      <a [routerLink]="['/dielne']">
         <div class="image-wrapper">
           <video
             #bgVideo
@@ -45,9 +45,9 @@
       style="transform: rotate(90deg)"
     />
   </div>
-  <h4 style="max-width:600px;width:100%; text-align: center;padding-bottom: 40px;padding-left:18px;padding-right:18px;">
-    {{ 'ESHOP.FIRST_TEXT' | translate }}
-  </h4>
+  <h4 style="  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;max-width:600px;width:100%; text-align: center;padding-bottom: 40px;padding-left:18px;padding-right:18px;" [innerHTML]="'ESHOP.FIRST_TEXT' | translate | nbspSmallWords"></h4>
 
 
   <div

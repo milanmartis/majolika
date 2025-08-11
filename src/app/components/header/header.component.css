@@ -120,10 +120,24 @@ header.hidden {
   transition: color 0.2s;
 }
 
-.desktop-menu-link:hover {
-  color: var(--base-blue-hover);
-  /* font-weight: 550; */
+h5{
+
+  color: var(--base-blue);
 }
+
+/* Hover podčiarknutie */
+.desktop-menu-link:hover {
+  text-decoration: underline;
+}
+
+/* Aktívna položka zostáva podčiarknutá */
+.desktop-menu-link--active {
+  text-decoration: underline;
+}
+
+
+
+
 
 /* ================= Hamburger (mobilné) ================= */
 .mobile-menu {
@@ -260,13 +274,13 @@ header.hidden {
 
 /* 🌐 Prepínač jazykov (desktop) */
 .language-switch {
+  cursor: pointer;
   z-index: 999;
   position: relative;
   left: 0px;
   width: 60px;
   text-align: left;
   border-radius: var(--corners);
-  cursor: pointer;
 }
 
 .language-switch select {

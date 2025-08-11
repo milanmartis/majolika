@@ -1,0 +1,45 @@
+<h1 class="login-title">{{ 'CATEGORIES.AKTUALITY' | translate }}</h1>
+
+<div class="cards" style="max-width:1200px; margin:auto; text-align:center; padding-bottom:100px;">
+  <ng-container *ngIf="aktuality$ | async as aktualityList; else loading">
+    <ng-container *ngIf="aktualityList.length; else noNews">
+      <div
+        *ngFor="let akt of aktualityList"
+        class="card"
+        @fadeSlideIn              
+      >
+        <img
+          *ngIf="akt.featuredImage"
+          class="akt-image"
+          [src]="getMediaUrl(akt.featuredImage)"
+          [alt]="akt.title"
+        />
+        <div class="content">
+          <h2>
+            <a [routerLink]="['/aktuality', akt.slug]" [innerHTML]="akt.title | nbspSmallWords | linkify"></a>
+          </h2>
+          <p class="date">
+            {{ akt.publishedAt 
+               | date:'mediumDate':undefined:lang.getCurrentLanguage() }}
+          </p>
+          <p class="summary" [innerHTML]="akt.summary | nbspSmallWords | linkify"></p>
+          <a
+            class="read-more"
+            [routerLink]="['/aktuality', akt.slug]"
+          >
+            {{ 'HOME.READMORE' | translate }} →
+          </a>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #noNews>
+    <p>Žiadne aktuality.</p>
+  </ng-template>
+  <ng-template #loading>
+    <p>Načítavam aktuality…</p>
+  </ng-template>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,16 @@
+<h6> {{ 'HOME.SHARE_US' | translate }}</h6>
+
+<div class="share-buttons">
+  <a *ngFor="let link of shareLinks"
+     [href]="link.url"
+     target="_blank"
+     rel="noopener"
+     [attr.aria-label]="'Zdieľať na ' + link.platform">
+    <img [src]="'/assets/soc/' + link.platform + '.svg'"
+         [alt]="link.platform + ' icon'"
+         class="icon" />
+  </a>
+  <button (click)="shareNative()" class="native-share-button" aria-label="Zdieľať cez zariadenie">
+    <img src="/assets/soc/share.svg" alt="Zdieľať" class="icon" />
+  </button>
+</div>

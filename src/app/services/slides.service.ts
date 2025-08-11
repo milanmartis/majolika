@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LanguageService } from './language.service'; // alebo správna cesta
+import { BehaviorSubject } from 'rxjs';
 
 export interface Slide {
   id: number;
@@ -56,8 +58,30 @@ export class SlidesService {
   private readonly api  = environment.apiUrl.replace(/\/\/+$/, '');
   private readonly host = this.api.replace(/\/api\/?$/, '');
   private readonly placeholder = '/assets/img/gall/1.jpg';
+  // slides$: BehaviorSubject<Slide[]> = new BehaviorSubject<Slide[]>([]);
+  public slides$ = new BehaviorSubject<Slide[]>([]);
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private languageService: LanguageService
+  ) {
+    // reaguje na zmenu jazyka
+    this.languageService.langChanged$.subscribe(() => {
+      this.fetchSlides();
+    });
+  
+    // prvé načítanie
+    this.fetchSlides();
+  }
+  
+  private fetchSlides(): void {
+    this.getSlides().subscribe((slides) => {
+      this.slides$.next(slides);
+    });
+  }
+
+
+
 
   /** relatívnu URL → absolútna; externé URL ostávajú nedotknuté  */
   private absolutize = (u?: string) =>
@@ -104,19 +128,20 @@ export class SlidesService {
 
   /** ----------- verejné API --------------------------------- */
   getSlides(): Observable<Slide[]> {
+    const lang = this.languageService.getCurrentLanguage();
+  
     const url =
       `${this.api}/slides` +
-      `?sort=order:asc` +
+      `?locale=${lang}` +
+      `&sort=order:asc` +
       `&populate[images][populate]=*` +
       `&populate[videos][populate]=*`;
-
+  
     return this.http.get<StrapiResp>(url).pipe(
       map(resp =>
         resp.data.map(raw => {
-          const at = raw.attributes ?? raw;      // flattened vs nested
-
-
-
+          const at = raw.attributes ?? raw;
+  
           return {
             id: raw.id,
             order: at.order ?? 0,
@@ -125,10 +150,11 @@ export class SlidesService {
             url: at.url ?? '',
             images: this.mediaUrls(at.images),
             videos: this.mediaUrls(at.videos),
-            externalVideo: this.pickExternal(at)
+            externalVideo: this.pickExternal(at),
           } as Slide;
         })
       )
     );
   }
+  
 }

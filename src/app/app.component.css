@@ -37,6 +37,7 @@ html, body{
 
 .cart-sidebar {
   position: fixed;
+  float: right;
   top: 0; right: 0;
   width: 320px; height: 100%;
   background: #fff;
@@ -46,7 +47,7 @@ html, body{
 }
 
 .cart-sidebar .close-btn {
-  position: absolute;
+  position: relative;
   top: 1rem; right: 1rem;
   background: none; border: none; font-size: 1.5rem;
   cursor: pointer;

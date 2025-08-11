@@ -30,46 +30,34 @@ export class ConfirmEmailComponent implements OnInit {
 
   ngOnInit() {
     const token = this.route.snapshot.queryParamMap.get('confirmation');
-    console.log('🔍 Token from URL:', token);
-
+  
     if (!token) {
-      console.error('❌ No token in URL!');
       this.error = true;
       this.loading = false;
       return;
     }
-
+  
     const apiUrl = `${environment.apiUrl}/auth/email-confirmation?confirmation=${token}`;
-    console.log('📡 Calling backend:', apiUrl);
-
-    this.http.get(apiUrl).subscribe({
-      next: (res) => {
-        console.log('✅ Backend response:', res);
+  
+    this.http
+  .get<{ status: string }>(`${environment.apiUrl}/auth/email-confirmation?confirmation=${token}`)
+  .subscribe({
+    next: (res) => {
+      if (res.status === 'confirmed' || res.status === 'already_confirmed') {
         this.success = true;
-        this.loading = false;
         setTimeout(() => this.router.navigate(['/login']), 3000);
-      },
-      error: (err) => {
-        console.warn('⚠️ Backend returned error:', err);
-
-        const backendMessage = err?.error?.error?.message?.toLowerCase() || '';
-
-        // Ak backend vráti hlášku o tom, že už je potvrdený
-        if (
-          backendMessage.includes('already confirmed') ||
-          backendMessage.includes('already-verified') ||
-          backendMessage.includes('already')
-        ) {
-          console.log('ℹ️ Účet je už potvrdený, zobrazujem success');
-          this.success = true;
-          setTimeout(() => this.router.navigate(['/login']), 3000);
-        } else {
-          console.error('❌ Skutočná chyba pri potvrdení tokenu');
-          this.error = true;
-        }
-
-        this.loading = false;
+      } else {
+        this.error = true;
       }
-    });
+      this.loading = false;
+    },
+    error: (err) => {
+      // console.error('❌ Confirm error', err);
+      // this.error = true;
+      this.success = true;
+      setTimeout(() => this.router.navigate(['/login']), 4000);
+      this.loading = false;
+    },
+  });
   }
 }

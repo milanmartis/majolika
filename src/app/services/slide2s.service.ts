@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LanguageService } from './language.service'; // alebo správna cesta
+import { BehaviorSubject } from 'rxjs';
 
 export interface Slide2 {
   id: number;
@@ -52,13 +54,30 @@ interface StrapiResp {
 
 @Injectable({ providedIn: 'root' })
 export class Slide2sService {
+  public slides2$ = new BehaviorSubject<Slide2[]>([]);
 
   private readonly api  = environment.apiUrl.replace(/\/\/+$/, '');
   private readonly host = this.api.replace(/\/api\/?$/, '');
   private readonly placeholder = '/assets/img/gall/1.jpg';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private languageService: LanguageService
 
+  ) {
+    this.languageService.langChanged$.subscribe(() => {
+      this.fetchSlides2();
+    });
+  
+    // prvé načítanie
+    this.fetchSlides2();
+  }
+
+  private fetchSlides2(): void {
+    this.getSlides().subscribe((slides2) => {
+      this.slides2$.next(slides2);
+    });
+  }
   /** relatívnu URL → absolútna; externé URL ostávajú nedotknuté  */
   private absolutize = (u?: string) =>
     u ? (/^https?:\/\//i.test(u) ? u : `${this.host}${u}`) : this.placeholder;
@@ -104,19 +123,18 @@ export class Slide2sService {
 
   /** ----------- verejné API --------------------------------- */
   getSlides(): Observable<Slide2[]> {
+    const lang = this.languageService.getCurrentLanguage();   // ← pridaj toto
     const url =
       `${this.api}/slide2s` +
-      `?sort=order:asc` +
+      `?locale=${lang}` +    // ← a aj tu
+      `&sort=order:asc` +
       `&populate[images][populate]=*` +
       `&populate[videos][populate]=*`;
-
+  
     return this.http.get<StrapiResp>(url).pipe(
       map(resp =>
         resp.data.map(raw => {
-          const at = raw.attributes ?? raw;      // flattened vs nested
-
-
-
+          const at = raw.attributes ?? raw;
           return {
             id: raw.id,
             order: at.order ?? 0,

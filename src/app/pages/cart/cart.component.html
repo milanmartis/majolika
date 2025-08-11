@@ -1,3 +1,4 @@
+<app-cart-hold-timer></app-cart-hold-timer>
 <section class="cart-page">
   <h1>{{ 'ESHOP.CART' | translate }}</h1>
 
@@ -20,6 +21,11 @@
           <a class="image-cart" [routerLink]="['/eshop', r.slug]" (click)="onProductClick()">
             <h2 class="item-name">{{ r.name }}</h2>
           </a>
+          <div *ngIf="r.session && (r.session.type === 'tour' || r.session.type === 'workshop')">
+            <span>
+              {{ r.session.startDateTime | date:'d.M.yyyy HH:mm' }}
+            </span>
+          </div>
 
           <p class="item-price">
             {{ r.price | number:'1.2-2' }} €
@@ -30,6 +36,8 @@
             <span>{{ r.qty }}</span>
             <button (click)="inc(r)">+</button>
           </div>
+
+
 
           <p class="item-total">
             {{ (r.price * r.qty) | number:'1.2-2' }} €

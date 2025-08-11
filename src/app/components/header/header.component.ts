@@ -15,6 +15,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { SearchComponent } from 'app/shared/search/search.component';
 import { MegaMenuService } from 'app/services/mega-menu.service';
 import { AuthService } from 'app/services/auth.service'; 
+import { SearchService } from 'app/services/search.service';
 
 import {
 
@@ -75,6 +76,7 @@ onResize(event: any) {
 
   categories2 = [
     { name: 'CATEGORIES.HOME', link: '/' },
+    { name: 'CATEGORIES.AKTUALITY', link: '/aktuality' },
     { name: 'CATEGORIES.PRODUCTS', link: '/eshop' },
     { name: 'CATEGORIES.WORKSHOPS', link: '/dielne' },
     { name: 'CATEGORIES.TRADITION', link: '/tradicia' },
@@ -121,9 +123,14 @@ onResize(event: any) {
     private router: Router,
     private cart: CartService,
     private cdr: ChangeDetectorRef,
-    public auth: AuthService
+    public auth: AuthService,
+    private searchService: SearchService
   ) {
     this.count$ = this.cart.count$;
+  }
+
+  onClickSearch() {
+    this.searchService.triggerOpenOverlay();
   }
   onCartIconClick(): void {
     this.cart.openCart();
@@ -244,9 +251,8 @@ onResize(event: any) {
   }
 
   onCategorySelect(slug: string): void {
-    this.router.navigate(['/eshop'], { queryParams: { category: slug } });
+    this.router.navigate(['/eshop', 'categories', slug]);
     this.toggleSidebar();
-    // reset _all_ panels:
     this.expanded = {};
   }
   // toggleCategory(slug: string): void {

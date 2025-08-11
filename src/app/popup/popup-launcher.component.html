@@ -2,7 +2,6 @@
 <div
   class="popup-backdrop"
   *ngIf="popup && isOpen"
-  (click)="close()"
 ></div>
 
 <!-- sliding popup panel with background cover -->
@@ -36,8 +35,8 @@
         *ngIf="popup.url_link"
         (click)="goToLink()"
       >
-        
-          {{ 'GO' }}
+                  <h3>{{ 'BASE.VIAC_INFO' | translate }}</h3>
+
     </button>
       </div>
 

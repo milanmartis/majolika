@@ -36,8 +36,10 @@
             class="slide-media"
             playsinline
             loop
-            autoplay            
-            [muted]="true"      
+            autoplay
+            [muted]="true"
+            (loadedmetadata)="onVideoReady($event)"
+            [volume]="0"  
             poster="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_placeholder_6982996b8f.jpg"
           >
             <source [src]="s.videos[0]" type="video/mp4" />
@@ -94,7 +96,7 @@
   <!-- ---------- DVE KARTY ---------- -->
   <div class="choice-grid">
     <div class="choice-card">
-      <a routerLink="/article/prehliadky">
+      <a routerLink="/eshop/categories/prehliadky">
 
       <div class="image-wrapper">
         <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_prehliadky_7be0195e2e.webp" alt="E-shop" />
@@ -104,7 +106,7 @@
     </div>
 
     <div class="choice-card" >
-      <a routerLink="/article/dielne">
+      <a routerLink="/eshop/categories/dielne">
 
       <div class="image-wrapper">
         <img
@@ -169,7 +171,7 @@
     <div class="month-navigation">
       <button class="month-btn" (click)="prevMonth()">&larr;</button>
       <span class="month-label">
-        {{ currentMonth | date: 'LLLL yyyy':'':'en' }}
+        {{ currentMonth | date:'LLLL yyyy':undefined:lang.getCurrentLanguage() }}
       </span>
       <button class="month-btn" (click)="nextMonth()">&rarr;</button>
     </div>
@@ -177,64 +179,100 @@
     <div class="calendar-container">
       <div class="calendar-left">
         <div class="calendar-grid calendar-header">
-          <div class="calendar-cell header-cell" *ngFor="let wd of weekDays">
-            {{ wd }}
+          <div class="calendar-cell header-cell" *ngFor="let d of weekDayDates">
+            {{ d | date: 'EEE': undefined:lang.getCurrentLanguage() }}
           </div>
         </div>
         <div class="calendar-grid">
           <div
-            class="calendar-cell"
-            *ngFor="let day of calendarDays"
-            [class.not-current-month]="!day.isInCurrentMonth"
-            [class.today]="day.isToday"
-            [class.occupied]="day.isOccupied"
-            [class.selectable]="day.isSelectable"
-            (click)="selectDay(day)"
-          >
-            {{ day.dayOfMonth }}
-          </div>
+          class="calendar-cell"
+          *ngFor="let day of calendarDays"
+          [class.not-current-month]="!day.isInCurrentMonth"
+          [class.today]="day.isToday"
+          [class.occupied]="day.isOccupied"
+          [class.selectable]="day.isSelectable"
+          [class.selected]="isSelected(day)"
+          (click)="selectDay(day)"
+        >
+          {{ day.dayOfMonth }}
+        </div>
         </div>
       </div>
 
-      <div class="calendar-right" #formCard>
+
+
+      
+      <div class="calendar-right flex-center" #formCard style="text-align:left;">
         <ng-container *ngIf="selectedDay; else expTpl">
-          <div class="form-card">
-            <h3>
-              {{ 'CALENDAR.REGISTER_TITLE' | translate }}<br />
-              {{ selectedDay.date | date: 'd. MMMM yyyy':'':'en' }}
-            </h3>
-
-            <form (ngSubmit)="submitRegistration()" #regForm="ngForm">
-              <label for="name">{{ 'CALENDAR.NAME' | translate }}</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                [(ngModel)]="registration.name"
-                required
-              />
-
-              <label for="email">{{ 'CALENDAR.EMAIL' | translate }}</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                [(ngModel)]="registration.email"
-                required
-              />
-
-              <button type="submit" [disabled]="!regForm.form.valid">
-                {{ 'CALENDAR.SUBMIT' | translate }}
-              </button>
-              <button
-                type="button"
-                class="cancel-btn"
-                (click)="selectedDay = null"
-              >
-                {{ 'CALENDAR.CANCEL' | translate }}
-              </button>
-            </form>
+          <div *ngIf="selectedDay" class="form-card">
+            <h1 >
+              <!-- {{ 'CALENDAR.REGISTER_TITLE' | translate }} -->
+              {{ selectedDay.date | date:'d. MMMM yyyy':undefined:lang.getCurrentLanguage() }}
+            </h1>
+          
+            <div *ngIf="loadingSessions">{{ 'BASE.LOADING_SESSION' | translate }}</div>
+            <div *ngIf="!loadingSessions && sessionsForSelectedDay.length === 0">
+              {{ 'BASE.NO_TOURS_OR_WORKSHOPS' | translate }}
+            </div>
+          
+            <div *ngFor="let session of sessionsForSelectedDay" class="session-simple-row">
+              <!-- Volanie loaderu obrázka (musí byť na začiatku cyklu!) -->
+              <ng-container *ngIf="loadProductImageForSession(session) === undefined"></ng-container>
+              
+              <!-- Obrázok vľavo (bez erroru) -->
+              <ng-container *ngIf="session.product?.id as productId">
+                <img
+                  *ngIf="sessionProductImages[productId]"
+                  [src]="sessionProductImages[productId]"
+                  [alt]="session.product?.name"
+                  class="session-img"
+                  (click)="goToLink('eshop/' + session.product?.slug)"
+                  
+                />
+              </ng-container>
+            
+              <!-- Ostatné vpravo -->
+              <div class="session-content">
+                <div style="padding-left: 10px;">
+                  <h3>{{ session.title || session.product?.name }}</h3>
+                </div>
+                  <div style="padding-left: 10px;margin-top:-15px;">
+                    <span>
+                      <i class="fa fa-clock"></i> {{ session.startDateTime | date:'HH:mm':undefined:lang.getCurrentLanguage() }}
+                      ( {{ 'BASE.TRVANIE' | translate }}: {{ session.durationMinutes }} min)
+                    </span><span>{{ getSessionPrice(session) | number:'1.2-2' }} €</span>
+                </div>
+                    <div class="session-actions" style="padding: 0px;margin-top:-20px;">
+                  <button
+                    class="btn"
+                    type="button"
+                    *ngIf="session.product?.slug"
+                    (click)="goToLink('eshop/' + session.product?.slug)">
+                    {{ 'BASE.VIAC_INFO' | translate }}
+                  </button>
+                  <button class="btn"
+                    type="button"
+                    [disabled]="session.capacity?.available === 0"
+                    (click)="startBooking(session)">
+                    {{ session.capacity?.available
+                      ? ('BASE.ADD_TO_CART_HOLD' | translate:{ available: session.capacity?.available })
+                      : ('BASE.FULL' | translate) }}
+                  </button>
+                </div>
+                <div style="position:relative; top:0px;margin-top:-10px;margin-bottom:-40px;">
+                  <img src="/assets/img/back_dekor_black2.png" alt="dekor" width="64" style="transform: rotate(90deg);">
+                </div>
+              </div>
+             </div>
+          
+            <div *ngIf="feedbackKey === 'login_required'">
+              {{ 'feedback.login_required' | translate }}<br>
+              <a routerLink="/account"> {{ 'feedback.login_to_book' | translate }}</a> {{ 'BASE.OR' | translate }} <a routerLink="/register"> {{ 'feedback.register_to_book' | translate }}</a>
+            </div>
           </div>
+
+
+
         </ng-container>
 
         <ng-template #expTpl>

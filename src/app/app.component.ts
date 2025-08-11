@@ -43,6 +43,7 @@ import { CartComponent } from 'app/pages/cart/cart.component';
     PopupLauncherComponent,
     CartComponent,
     MatDialogModule,          // ← sem
+
     // ColorPickerComponent,
    // ColorPickerDirective,
     // CartDrawerService
@@ -139,9 +140,9 @@ import { CartComponent } from 'app/pages/cart/cart.component';
   (@slideIn.done)="onAnimationDone()"
   [@slideIn]="isCartOpen ? 'open' : 'closed'"
 >
-  <button class="close-btn" (click)="closeCart()">✕</button>
-  <app-cart (productClicked)="closeSidebar()"></app-cart>
+<app-cart (productClicked)="closeSidebar()"></app-cart>
 </aside>
+<!-- <button class="close-btn" (click)="closeCart()">✕</button> -->
 <div
   class="backdrop"
   *ngIf="isCartOpen"
@@ -277,16 +278,16 @@ export class AppComponent implements OnInit {
       this.cdRef.detectChanges();
     }, 2000);
 
-    this.route.queryParamMap.subscribe(params => {
-      const token = params.get('confirmation');
-      if (token) {
-        console.log('✅ Zachytený token v root URL:', token);
-        this.router.navigate(['/confirm-email'], {
-          queryParams: { confirmation: token },
-          replaceUrl: true // aby sa v histórii nezobrazovala táto medzizastávka
-        });
-      }
-    });
+    // this.route.queryParamMap.subscribe(params => {
+    //   const token = params.get('confirmation');
+    //   if (token) {
+    //     console.log('✅ Zachytený token v root URL:', token);
+    //     this.router.navigate(['/confirm-email'], {
+    //       queryParams: { confirmation: token },
+    //       replaceUrl: true // aby sa v histórii nezobrazovala táto medzizastávka
+    //     });
+    //   }
+    // });
   }
 
   onPrimaryChange(newColor: string) {

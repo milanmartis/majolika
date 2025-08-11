@@ -32,10 +32,19 @@ import { AuthInterceptor } from 'app/interceptors/auth.interceptor';
 
 import { environment } from './environments/environment';
 import { provideServiceWorker } from '@angular/service-worker';
+import { registerLocaleData } from '@angular/common';
+import localeSk from '@angular/common/locales/sk';
+import localeEn from '@angular/common/locales/en';
+import localeDe from '@angular/common/locales/de';
+import { LOCALE_ID } from '@angular/core';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
+registerLocaleData(localeEn, 'en');
+registerLocaleData(localeSk, 'sk');
+registerLocaleData(localeDe, 'de');
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -57,6 +66,7 @@ bootstrapApplication(AppComponent, {
     TranslateStore,
     { provide: TranslateCompiler, useClass: TranslateFakeCompiler },
     LanguageService,
+    { provide: LOCALE_ID, useValue: 'sk' },
     { provide: 'API_URL', useValue: environment.apiUrl },
     { provide: 'FRONTEND_URL', useValue: environment.frontendUrl },
 

@@ -15,32 +15,36 @@
       <img src="assets/img/logo-SLM-modre.gif" alt="Logo" class="logo-image" />
     </a>
 
-    <!-- ===== DESKTOP MENU (≥ 992 px) ===== -->
-    <nav class="desktop-menu" (mouseenter)="cancelMegaTimeout()">
-      <ul class="desktop-menu-list d-flex align-items-center">
-        <li *ngFor="let item of categories2" class="desktop-menu-item">
-          <ng-container *ngIf="item.link === '/eshop'; else normalDesk">
-            <a
-              class="desktop-menu-link"
-              [routerLink]="item.link"
-              (mouseenter)="openMegaNav()"
-              (click)="toggleMegaNav()"
-            >
-              {{ item.name | translate }}
-            </a>
-          </ng-container>
-          <ng-template #normalDesk>
-            <a
-              class="desktop-menu-link"
-              [routerLink]="item.link"
-              (click)="closeMegaNav2()"
-            >
-              {{ item.name | translate }}
-            </a>
-          </ng-template>
-        </li>
-      </ul>
-    </nav>
+<!-- ===== DESKTOP MENU (≥ 992 px) ===== -->
+<nav class="desktop-menu" (mouseenter)="cancelMegaTimeout()">
+  <ul class="desktop-menu-list d-flex align-items-center">
+    <li *ngFor="let item of categories2" class="desktop-menu-item">
+      <ng-container *ngIf="item.link === '/eshop'; else normalDesk">
+        <a
+          class="desktop-menu-link"
+          [routerLink]="item.link"
+          routerLinkActive="desktop-menu-link--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (mouseenter)="openMegaNav()"
+          (click)="closeMegaNav2()"
+        >
+          {{ item.name | translate }}
+        </a>
+      </ng-container>
+      <ng-template #normalDesk>
+        <a
+          class="desktop-menu-link"
+          [routerLink]="item.link"
+          routerLinkActive="desktop-menu-link--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMegaNav2()"
+        >
+          {{ item.name | translate }}
+        </a>
+      </ng-template>
+    </li>
+  </ul>
+</nav>
 
     <!-- <div class="deskImage"><img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/thumbnail_2_f5e2e3a292.jpg"></div> -->
 
@@ -186,12 +190,12 @@
       <div class="language-switch nomobile">
 
 
-        <select
+        <select style="cursor:pointer;"
         #langSelect
         [(ngModel)]="currentLang"
           (ngModelChange)="switchLanguage($event)"
         >
-          <option *ngFor="let lang of ['sk','en','de']" [value]="lang">
+          <option  style="cursor:pointer;" *ngFor="let lang of ['sk','en','de']" [value]="lang">
             {{ lang.toUpperCase() }}
           </option>
         </select>
@@ -213,10 +217,13 @@
   (mouseleave)="closeMegaNav2()"
   (click)="closeMegaNav2()"
   >
+  <button style="background:transparent;" (click)="onClickSearch()"> <h5 style="font-size:122%;"><i class="fas fa-search"></i>
+    {{ 'HOME.SEARCHING' | translate }}</h5></button>
+  <button style="background:transparent;float:right;"  class="mega-nav__close" (click)="closeMegaNav2()"><h3>×</h3></button>
   <!-- <a class="logo-link" routerLink="/">
     <img src="assets/img/logo-SLM-modre.gif" alt="Logo" class="logo-image" />
   </a> -->
-  <div class="flex" style="text-align:center;margin:auto; padding:16px 0px 0px 14px; float:left;margin-right:10px;">
+  <!-- <div class="flex" style="text-align:center;margin:auto; padding:16px 0px 0px 14px; float:left;margin-right:10px;">
 
     <div class="product-card" >
       <i style="padding-bottom:10px;">
@@ -229,7 +236,6 @@
       [queryParams]="{ category: null,  decor: 'habansky-dekor' }"
       queryParamsHandling="merge"><img width="75" src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/pestry_c66dc15903.png" alt=""></a>
       <div class="card-content" style="padding: 5px; flex-grow: 1;">
-        <!-- <h3 class="card-title">{{ 'Habánsky vzor' }}</h3> -->
       </div>
     </div>
     <div class="product-card" >
@@ -237,7 +243,6 @@
       [queryParams]="{ category: null,  decor: 'modry-dekor' }"
       queryParamsHandling=""><img width="75" src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/modry_3d97dda614.png" alt=""></a>
     <div class="card-content" style="padding: 5px; flex-grow: 1;">
-      <!-- <h3 class="card-title" >{{ 'Modrý vzor' }}</h3> -->
     </div>
   </div>
   <div class="product-card">
@@ -245,7 +250,6 @@
     [queryParams]="{ category: null,  decor: 'pestry-dekor' }"
     queryParamsHandling=""><img width="75" src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/habansky_d991e83517.png" alt=""></a>
     <div class="card-content" style="padding: 5px; flex-grow: 1;">
-      <!-- <h3 class="card-title">{{ 'Pestrý vzor' }}</h3> -->
     </div>
   </div>
   <div class="product-card">
@@ -253,13 +257,12 @@
     [queryParams]="{ category: null,  decor: 'zeleny-dekor' }"
     queryParamsHandling=""><img width="75" src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/zeleny_e59e86cc20.png" alt=""></a>
     <div class="card-content" style="padding: 5px; flex-grow: 1;">
-      <!-- <h3 class="card-title">{{ 'Zelený vzor' }}</h3> -->
   </div>
   </div>
-  </div>
+  </div> -->
 
 
-  <div class="flex" style="text-align:center; margin:auto; padding:16px 0px 0px 14px; float:left; margin-right:10px;">
+  <!-- <div class="flex" style="text-align:center; margin:auto; padding:16px 0px 0px 14px; float:left; margin-right:10px;">
     <div class="product-card">
       <i style="padding-bottom:10px;">Forma</i>
     </div>
@@ -280,17 +283,17 @@
       </a>
     </div>
 
-  </div>
+  </div> -->
 
 
     <ul class="mega-nav__list">
       <li *ngFor="let c of categories" class="mega-nav__item">
-        <a class="mega-nav__link" (click)="onCategorySelect(c.category_slug)">
+        <a class="mega-nav__link" [routerLink]="['/eshop','categories', c.category_slug]">
           {{ 'CATEGORIES.'+c.category_slug | translate }}
         </a>
         <ul class="mega-nav__sublist">
           <li *ngFor="let sub of c.children">
-            <a (click)="onCategorySelect(sub.category_slug)">
+            <a [routerLink]="['/eshop','categories', sub.category_slug]">
               {{ 'CATEGORIES.'+sub.category_slug | translate }}
             </a>
           </li>
