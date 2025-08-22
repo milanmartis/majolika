@@ -1,17 +1,22 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-checkout-cancel',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, TranslateModule],
   template: `
     <div class="checkout-result">
-      <h1>Platba bola zrušená ❌</h1>
-      <p>Môžete skúsiť znova alebo sa vrátiť do košíka.</p>
+      <h1>{{ 'CHECKOUT_CANCEL.TITLE' | translate }}</h1>
+      <p>{{ 'CHECKOUT_CANCEL.DESCRIPTION' | translate }}</p>
       <div class="actions">
-        <a routerLink="/checkout" class="btn-back">Späť na pokladňu</a>
-        <a routerLink="/eshop" class="btn-alt">Pokračovať v nákupe</a>
+        <a routerLink="/checkout" class="btn-back">
+          {{ 'CHECKOUT_CANCEL.BACK_TO_CHECKOUT' | translate }}
+        </a>
+        <a routerLink="/eshop" class="btn-alt">
+          {{ 'CHECKOUT_CANCEL.CONTINUE_SHOPPING' | translate }}
+        </a>
       </div>
     </div>
   `,

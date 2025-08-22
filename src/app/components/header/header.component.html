@@ -1,14 +1,14 @@
+<header
+  [class.at-top]="isAtTop && !hidden"
+  [class.hidden]="hidden"
+  [style.top.px]="showPromo ? 30 : 0"  
+>
 <div class="promo-bar" *ngIf="showPromo">
   <div class="promo-content">
     <span>Letná zľava 20 % na všetky prehliadky</span>
-    <button class="promo-close">×</button>
+    <button class="promo-close" (click)="closePromo()">×</button>
   </div>
 </div>
-<header
-  [class.at-top]="isAtTop && !hidden"
-  [class.scrolled]="!isAtTop && !hidden"
-  [class.hidden]="hidden"
->
   <div class="container d-flex justify-content-between align-items-center">
     <!-- 🖼️ Logo -->
     <a class="logo-link" routerLink="/">

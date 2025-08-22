@@ -5,10 +5,11 @@
 
 .slider-wrapper {
   position: relative;
+  top: -36px;
   width: 100%;
   overflow: hidden;
   border-radius: var(--corners);
-  margin-bottom: 3rem;
+  margin-bottom: 0rem;
 }
 
 .slider-scroll {

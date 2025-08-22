@@ -21,6 +21,7 @@ import { take, skip } from 'rxjs/operators';
 import { ProductsService, Product, Category } from '../../services/products.service';
 import { CartService } from '../../services/cart.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CalendarLinkService, EventSessionDto } from 'app/services/calendar-link.service';
 
 import { MaterialModule } from 'app/material.module';
 import { ZoomPanDirective } from 'app/pages/eshop/zoom-pan.directive';
@@ -127,6 +128,7 @@ export class ProductDetailComponent implements OnInit {
   isFavorite = false;
 
   animatedTotalPrice = 0;      // tá, ktorú budeme bindovať v šablóne
+  animatedTotalPriceSale = 0;
   private prevTotalPrice = 0;  // predchádzajúca hodnota (pre animáciu)
   private priceAnimSub?: Subscription;
   product: Product | null = null;
@@ -191,6 +193,8 @@ private destroyed$ = new Subject<void>();
     private snack: MatSnackBar,
     private zone: NgZone,
     private sessionsService: EventSessionsService,
+    public cal: CalendarLinkService
+    
     
   ) {
     const rawDesc = '<p>Full product description …</p>';
@@ -329,6 +333,20 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
     });
   }
 
+
+  public getSessionPrice(session: EventSessionWithCapacity): number {
+    // priorita: session.price > session.product.price > 0
+    // ak session.price neexistuje, použije cenu produktu
+    if (!session) return 0;
+  if (session.product?.inSale === true) {
+    return (session as any).price ?? session.product?.price_sale ?? 0;
+  }else{
+    return (session as any).price ?? session.product?.price ?? 0;
+  }
+    // return session.price;
+  }
+
+
   startBooking(session: EventSessionWithCapacity, qty: number = 1) {
     this.selectedSession = session;
     this.bookingError = '';
@@ -364,8 +382,10 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
             id: this.selectedVariation?.id ?? this.product?.id ?? session.id,
             name: this.product?.name ?? session.title,
             slug: this.selectedVariation?.slug ?? this.product?.slug ?? '',
-            price: this.displayPrice,
             img: this.currentImage,
+            price: this.getSessionPrice(session),
+            price_sale: undefined, // alebo cenu ak vieš
+            inSale: false, // alebo true podľa logiky, session zvyčajne false
             qty: qty,
             session,
             bookingId: bookingRes.id,
@@ -420,21 +440,23 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
   }
 
 
-  private runPriceAnimation(from: number, to: number) {
-    // ak už beží stará animácia, ukončíme ju
+  private runTotalsAnimation(fromReg: number, toReg: number, fromSale: number, toSale: number) {
     this.priceAnimSub?.unsubscribe();
-  
-    const frames = 14;           // počet krokov animácie
-    const duration = 500;        // ms celkom
+
+    const frames = 14;
+    const duration = 500;
     const stepTime = duration / frames;
     let frame = 0;
-    const delta = to - from;
-  
-    // spustíme RxJS interval, ktorý každých stepTime ms nastaví novú cenu
+
+    const deltaReg = toReg - fromReg;
+    const deltaSale = toSale - fromSale;
+
     this.priceAnimSub = interval(stepTime)
       .pipe(take(frames + 1))
       .subscribe(() => {
-        this.animatedTotalPrice = +(from + (delta * (frame / frames))).toFixed(2);
+        const t = frame / frames;
+        this.animatedTotalPrice = +(fromReg + deltaReg * t).toFixed(2);
+        this.animatedTotalPriceSale = +(fromSale + deltaSale * t).toFixed(2);
         frame++;
       });
   }
@@ -505,6 +527,10 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
   
     // Initialize animated price
     this.animatedTotalPrice = this.displayPrice * this.quantity;
+
+    this.animatedTotalPriceSale = this.IfProductInSale
+      ? this.displayPriceSale * this.quantity
+      : 0;
   
     // Preload images to avoid shimmer on variation switch
     this.preloadAllVariationImages(item);
@@ -637,27 +663,35 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
       this.bookingSuccess = '';
     }
 
-  incQuantity() {
-    if (this.quantity < 99) {
-      const oldQty = this.quantity;
-      const newQty = oldQty + 1;
-      const from = this.animatedTotalPrice;
-      const to   = this.displayPrice * newQty;
-      this.quantity = newQty;
-      this.runPriceAnimation(from, to);
+    incQuantity() {
+      if (this.quantity < 99) {
+        const oldQty = this.quantity;
+        const newQty = oldQty + 1;
+
+        const fromReg  = this.animatedTotalPrice;
+        const toReg    = this.displayPrice * newQty;
+        const fromSale = this.animatedTotalPriceSale;
+        const toSale   = this.IfProductInSale ? this.displayPriceSale * newQty : 0;
+
+        this.quantity = newQty;
+        this.runTotalsAnimation(fromReg, toReg, fromSale, toSale);
+      }
     }
-  }
-  
-  decQuantity() {
-    if (this.quantity > 1) {
-      const oldQty = this.quantity;
-      const newQty = oldQty - 1;
-      const from = this.animatedTotalPrice;
-      const to   = this.displayPrice * newQty;
-      this.quantity = newQty;
-      this.runPriceAnimation(from, to);
+
+    decQuantity() {
+      if (this.quantity > 1) {
+        const oldQty = this.quantity;
+        const newQty = oldQty - 1;
+
+        const fromReg  = this.animatedTotalPrice;
+        const toReg    = this.displayPrice * newQty;
+        const fromSale = this.animatedTotalPriceSale;
+        const toSale   = this.IfProductInSale ? this.displayPriceSale * newQty : 0;
+
+        this.quantity = newQty;
+        this.runTotalsAnimation(fromReg, toReg, fromSale, toSale);
+      }
     }
-  }
   
   /** 
    * Prednačíta do cache všetky obrázky z hlavného produktu aj zo všetkých variácií 
@@ -972,9 +1006,12 @@ onTouchEnd(e: TouchEvent) {
     );
   
     // Reset množstva a animácia ceny
-    const from = this.animatedTotalPrice;
-    this.quantity = 1;
-    this.runPriceAnimation(from, this.displayPrice * this.quantity);
+      const fromReg  = this.animatedTotalPrice;
+      const fromSale = this.animatedTotalPriceSale;
+      this.quantity = 1;
+      const toReg   = this.displayPrice * this.quantity;
+      const toSale  = this.IfProductInSale ? this.displayPriceSale * this.quantity : 0;
+      this.runTotalsAnimation(fromReg, toReg, fromSale, toSale);
   }
 
   onImageLoad(url: string): void {

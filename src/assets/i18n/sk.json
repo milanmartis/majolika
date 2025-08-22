@@ -7,14 +7,17 @@
       "POPISKY_KAT_VYROBKOV": "Kategórie výrobkov",
       "VYBERTE_KATEGORIU": "Vyberte kategóriu",
       "ADD_TO_CART_HOLD": "Do košíka (voľné miesta: {{available}})",
-      "FULL": "Vyčerpané",
+      "FULL": "Vypredané",
       "NO_TOURS_OR_WORKSHOPS": "Na tento deň nie sú naplánované žiadne prehliadky ani dielne.",
       "LOADING_SESSION": "Načítavanie zážitkov...",
       "AT": "o",
         "LABEL": "Kapacita",
         "STATUS": "{{booked}} rezervované / {{max}} max ({{available}} k dispozícii)",
         "LOADING": "— načítava sa kapacita…",
-        "TRVANIE": "Trvanie"
+        "TRVANIE": "Trvanie",
+        "WHO_WE_ARE": "Kto sme",
+        "WHO_WE_ARE_PEREX": "Predstavujeme vám náš tím, ktorý sa stará o zachovanie a rozvoj tradičnej slovenskej keramiky."
+       
     },
     "FORM": {
       "FIRST_NAME": "Meno",
@@ -122,9 +125,50 @@
       "DESCRIPTION_TEXT": "Popis",
       "DEKOR":"Dekór",
       "CANCEL_ALL_DECORS": "Zrušiť všetky filtre",
-      "BUTTON": "Objavte teraz"
+      "BUTTON": "Objavte teraz",
+      "POCET_VOLNYCH_MIEST": "Miesta",
+
+    "CHECKOUT_FAILED": "Platba zlyhala.",
+    "PAYMENT": "Platba",
+    "PAYMENT_CARD": "Platba kartou",
+    "PAYMENT_COD": "Dobierka",
+    "PAYMENT_BANK": "Bankový prevod",
+    "PAYMENT_ONSITE": "Na mieste",
+    "PAYMENT_POST": "Na pošte",
+    "DELIVERY": "Doručenie",
+    "DELIVERY_PICKUP": "Vyzdvihnutie na mieste",
+    "DELIVERY_POST_OFFICE": "Doručiť na poštu",
+    "DELIVERY_PACKETA_BOX": "Packeta box",
+    "DELIVERY_POST_COURIER": "Kuriér na adresu",
+    "SHIPPING_FEE": "Doprava",
+    "POST_OFFICE_ID": "ID pošty",
+    "PACKETA_BOX_ID": "ID Packeta boxu",
+      "DELIVERY_ADDRESS_WHERE": "Kde doručiť?",
+    "DELIVERY_ADDRESS_SAME": "Použiť adresu zákazníka",
+    "DELIVERY_ADDRESS_OTHER": "Doručiť na inú adresu",
+
+    "CHECKOUT_SUBTOTAL": "Medzisúčet",
+    "GRAND_TOTAL": "Celková suma",
+    "SELECT_PACKETA_BOX": "Vybrať Packeta box",
+    "SELECT_REQUIRED": "Pred pokračovaním je potrebné vybrať miesto doručenia.",
+    "SELECT_POST_OFFICE": "Vybrať poštu",
+      "BANK_TRANSFER_TITLE": "Bankový prevod",
+      "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
+      "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
+      "BANK_TRANSFER_BIC": "BANKSKBX",
+      "PAYMENT_FEE": "Poplatok za platbu"
+    
 
     },
+
+
+ "CHECKOUT_CANCEL": {
+    "TITLE": "Platba bola zrušená ❌",
+    "DESCRIPTION": "Môžete skúsiť znova alebo sa vrátiť do košíka.",
+    "BACK_TO_CHECKOUT": "Späť na pokladňu",
+    "CONTINUE_SHOPPING": "Pokračovať v nákupe"
+  },
+
     "DIELNE": { 
       "WELCOME": "Prehliadky a tvorivé dielne",
       "FIRST_TEXT": "Objavte dávnu krásu tradičného ľudového remesla. Ponúkame vám výnimočnú príležitosť nazrieť do zákulisia najväčších remeselných dielní s najdlhšou tradíciou na Slovensku. Modranská majolika a majoliková ornamentika je zapísaná v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska."
@@ -142,8 +186,82 @@
       "register_to_book": "Registrovať",
       "season_full": "Kapacita je naplnená."
     },
+     "COMMON": { 
+      "OK": "OK",
+      "CHANGE": "Zmeniť Packeta box",
+        "STREET": "Ulica",
+    "CITY": "Mesto",
+    "ZIP": "PSČ",
+    "COUNTRY": "Krajina",
+    "NOTES": "Poznámka",
+    "COPY": "Kopírovať",
+    "COPIED": "Skopírované do schránky!"
     
+    },
 
+
+
+"AUTH": {
+   "ERRORS":{
+"INVALID_CREDENTIALS":"Nesprávny e-mail alebo heslo."
+   },
+    "OR_SIGN_UP_WITH_GOOGLE": "Pokračujte cez Google",
+    "NO_ACCOUNT_REGISTER": "Nemáte účet? Registrujte sa.",
+    "ACCOUNT_LOGIN": "Máte už účet? Prihláste sa.",
+      "BUTTONS": { "LOADING": "Prebieha spracovanie…" },
+    "FIELDS": {
+      "IDENTIFIER": {
+        "LABEL": "E-mail alebo používateľské meno",
+        "PLACEHOLDER": "napr. jana@domena.sk",
+        "REQUIRED": "Zadajte e-mail alebo meno"
+      },
+      "USERNAME": {
+        "LABEL": "Používateľské meno",
+        "PLACEHOLDER": "napr. janamajolika",
+        "REQUIRED": "Toto pole je povinné."
+      },
+      "EMAIL": {
+        "LABEL": "E-mail",
+        "PLACEHOLDER": "tvoj@e-mail.sk",
+        "REQUIRED": "Zadajte e-mail",
+        "INVALID": "Zadajte platný e-mail"
+      },
+      "PASSWORD": {
+        "LABEL": "Heslo",
+        "PLACEHOLDER": "••••••••",
+        "REQUIRED": "Zadajte heslo",
+        "MINLENGTH": "Heslo musí mať aspoň {{min}} znakov."
+      }
+    },
+    "LOGIN": {
+      "TITLE": "Prihlásenie",
+      "SUBMIT": "Prihlásiť sa",
+     "SUCCESS": "Prihlásenie úspešné!",
+      "ERRORS": {
+      "EMAIL_NOT_CONFIRMED": "Musíte najprv potvrdiť e-mail. Skontrolujte si schránku.",
+      "INVALID_CREDENTIALS": "Nesprávny e-mail alebo heslo.",
+      "GENERIC": "Prihlásenie zlyhalo. Skúste to znova."
+    }
+    },
+    "REGISTER": {
+      "TITLE": "Registrácia",
+      "SUBMIT": "Registrovať sa",
+      "RESEND_CONFIRM": "Znovu odoslať potvrdzovací e-mail",
+       "CONFIRM_SENT": "Potvrdzovací e-mail bol odoslaný.",
+      "SUCCESS": "✅ Registrácia úspešná! Skontrolujte si e-mail a potvrďte účet.",
+      "RESEND": {
+        "SUCCESS": "📧 Potvrdzovací e-mail bol znova odoslaný.",
+        "FAIL": "Nepodarilo sa odoslať potvrdzovací e-mail.",
+        "NO_EMAIL": "Nie je k dispozícii e-mail pre opätovné odoslanie."
+      },
+      "ERRORS": {
+        "EMAIL_TAKEN": "Tento e-mail je už používaný.",
+        "USERNAME_TAKEN": "Toto používateľské meno je už obsadené.",
+        "WEAK_PASSWORD": "Heslo nespĺňa požiadavky na silu.",
+        "GENERIC": "Registrácia zlyhala. Skúste to znova."
+      }
+    }
+  },
       "CATEGORIES": {
         "HOME": "Úvod",
         "AKTUALITY": "Aktuality",
@@ -154,87 +272,87 @@
         "KONTAKTY": "Kontakt",
         "PREHLIADKY":"Prehliadky",
         
-
-
-    "dekoracie-a-svietidla": "Dekorácie a svietidlá",
-    "hodiny": "Hodiny",
-    "kosiky": "Košíky",
-    "plakety-a-figurky": "Plakety a figúrky",
-    "pokladnicky": "Pokladničky",
-    "sakralna-tematika": "Sakrálna tématika",
-    "svietniky-a-lustre": "Svietniky a lustre",
-    "cutory": "Čutory",
-    "drobnosti-na-pamiatku": "Drobnosti na pamiatku",
-    "korkove-stuple-drobnosti-na-pamiatku": "Korkové štuple",
-    "magnetky": "Magnetky",
-    "minikeramika": "Minikeramika",
-    "odznaky": "Odznaky",
-    "zvonceky-a-podkovicky": "Zvončeky a podkovičky",
-    "knihy-a-publikacie": "Knihy a publikácie",
-    "kolekcie": "Kolekcie",
-    "bordovy-listok": "Bordový lístok",
-    "bajny-jednorozec": "Bájny jednorožec",
-    "fialovy-klas": "Fialový klas",
-    "figuralna-tematika": "Figurálna tématika",
-    "kruhy": "Kruhy",
-    "linky": "Linky",
-    "modra-glazura": "Modrá glazúra",
-    "modre-hrozno": "Modré hrozno",
-    "modre-pierko": "Modré pierko",
-    "modry-listok-jahody": "Modrý lístok jahody",
-    "odfarbena-tradicia": "Odfarbená tradícia",
-    "panabeka": "Pánabeka",
-    "skratky": "Skratky",
-    "slavnostna-kolekcia-s-pravym-zlatom-svadba": "Slávnostná kolekcia s pravým zlatom – Svadba",
-    "slavnostna-kolekcia-s-pravvym-zlatom-vianoce": "Slávnostná kolekcia s pravým zlatom – Vianoce",
-    
-    "starinky": "Starinky",
-    "vlocky": "Vločky",
-    "sipky": "Šípky",
-    "milovnikom-vina": "Milovníkom vína",
-    "doplnky-ku-vinu": "Doplnky ku vínu",
-    "dzbany-milovnikom-vina": "Džbány",
-    "taniere-milovnikom-vina": "Taniere",
-    "vinove-pohare": "Vínové poháre",
-    "kalichy": "Kalichy",
-    "na-kvety-a-male-tajomstva": "Na kvety a malé tajomstvá",
-    "dozy": "Dózy",
-    "kvetinace": "Kvetináče",
-    "vazy": "Vázy",
-    "na-stol": "Na stôl",
-    "doplnky-ku-stolovaniu": "Doplnky ku stolovaniu",
-    "dzbany": "Džbány",
-    "misy_a_misky": "Misy a misky",
-    "podnosy": "Podnosy",
-    "pohare": "Poháre",
-    "popolniky": "Popolníky",
-    "taniere": "Taniere",
-    "cajniky": "Čajníky",
-    "salky-a-hrnceky": "Šálky a hrnčeky",
-    "obkladacky": "Obkladačky",
-    "dzbany_s_figuralnu_tematikou": "Džbány s figúrálna tématikou",
-    "taniere_s_figuralnu_tematikou": "Taniere s figúrálna tématikou",
-    "vinohradnickycyklus": "Vinohradnícky cyklus",
-    "ludovy-motiv": "Ľudový motív",
-    "supravy": "Praktické darčekové súpravy",
-    "pre-najkrajsie-chvile-roka": "Pre najkrajšie chvíle",
-    "velka-noc": "Veľká Noc",
-    "vianoce": "Vianoce",
-    "vianocne-ozdobky-sperky": "Vianočné ozdôbky/šperky",
-    "sklo": "Sklo",
-    "tvorenie-na-doma": "Tvorenie na doma",
-    "vystavne-kusky": "Výstavné kúsky",
-    "zazitky": "Zážitky",
-    "darcekove-poukazy": "Darčekové poukazy",
-    "prehliadky-a-tvorive-dielne": "Prehliadky a tvorivé dielne",
-    "sperky-a-odevy": "Šperky a odevy",
-    "fusakle-x-majolika": "Fusakle x Majolika",
-    "ine_doplnky": "Iné doplnky",
-    "nausnice": "Náušnice",
-    "odevy": "Odevy",
-    "prstene": "Prstene",
-    "tasky": "Tašky"
-  },
+        "dekoracie-a-svietidla": "Dekorácie a svietidlá",
+        "hodiny": "Hodiny",
+        "kosiky": "Košíky",
+        "plakety-a-figurky": "Plakety a figúrky",
+        "pokladnicky": "Pokladničky",
+        "sakralna-tematika": "Sakrálna tématika",
+        "svietniky-a-lustre": "Svietniky a lustre",
+        "cutory": "Čutory",
+        "drobnosti-na-pamiatku": "Drobnosti na pamiatku",
+        "korkove-stuple-drobnosti-na-pamiatku": "Korkové štuple",
+        "magnetky": "Magnetky",
+        "minikeramika": "Minikeramika",
+        "odznaky": "Odznaky",
+        "zvonceky-a-podkovicky": "Zvončeky a podkovičky",
+        "knihy-a-publikacie": "Knihy a publikácie",
+        "kolekcie": "Kolekcie",
+        "bordovy-listok": "Bordový lístok",
+        "bajny-jednorozec": "Bájny jednorožec",
+        "fialovy-klas": "Fialový klas",
+        "figuralna-tematika": "Figurálna tématika",
+        "kruhy": "Kruhy",
+        "linky": "Linky",
+        "modra-glazura": "Modrá glazúra",
+        "modre-hrozno": "Modré hrozno",
+        "modre-pierko": "Modré pierko",
+        "modry-listok-jahody": "Modrý lístok jahody",
+        "odfarbena-tradicia": "Odfarbená tradícia",
+        "panabeka": "Pánabeka",
+        "skratky": "Skratky",
+        "slavnostna-kolekcia-s-pravym-zlatom-svadba": "Slávnostná kolekcia s pravým zlatom – Svadba",
+        "slavnostna-kolekcia-s-pravvym-zlatom-vianoce": "Slávnostná kolekcia s pravým zlatom – Vianoce",
+        
+        "starinky": "Starinky",
+        "vlocky": "Vločky",
+        "sipky": "Šípky",
+        "milovnikom-vina": "Milovníkom vína",
+        "doplnky-ku-vinu": "Doplnky ku vínu",
+        "dzbany-milovnikom-vina": "Džbány",
+        "taniere-milovnikom-vina": "Taniere",
+        "vinove-pohare": "Vínové poháre",
+        "kalichy": "Kalichy",
+        "na-kvety-a-male-tajomstva": "Na kvety a malé tajomstvá",
+        "dozy": "Dózy",
+        "kvetinace": "Kvetináče",
+        "vazy": "Vázy",
+        "na-stol": "Na stôl",
+        "doplnky-ku-stolovaniu": "Doplnky ku stolovaniu",
+        "dzbany": "Džbány",
+        "misy_a_misky": "Misy a misky",
+        "podnosy": "Podnosy",
+        "pohare": "Poháre",
+        "popolniky": "Popolníky",
+        "taniere": "Taniere",
+        "cajniky": "Čajníky",
+        "salky-a-hrnceky": "Šálky a hrnčeky",
+        "obkladacky": "Obkladačky",
+        "dzbany_s_figuralnu_tematikou": "Džbány s figúrálna tématikou",
+        "taniere_s_figuralnu_tematikou": "Taniere s figúrálna tématikou",
+        "vinohradnickycyklus": "Vinohradnícky cyklus",
+        "ludovy-motiv": "Ľudový motív",
+        "supravy": "Praktické darčekové súpravy",
+        "pre-najkrajsie-chvile-roka": "Pre najkrajšie chvíle",
+        "velka-noc": "Veľká Noc",
+        "vianoce": "Vianoce",
+        "vianocne-ozdobky-sperky": "Vianočné ozdôbky/šperky",
+        "sklo": "Sklo",
+        "tvorenie-na-doma": "Tvorenie na doma",
+        "vystavne-kusky": "Výstavné kúsky",
+        "zazitky": "Zážitky",
+        "darcekove-poukazy": "Darčekové poukazy",
+        "prehliadky-a-tvorive-dielne": "Prehliadky a tvorivé dielne",
+        "sperky-a-odevy": "Šperky a odevy",
+        "fusakle-x-majolika": "Fusakle x Majolika",
+        "ine_doplnky": "Iné doplnky",
+        "nausnice": "Náušnice",
+        "odevy": "Odevy",
+        "prstene": "Prstene",
+        "tasky": "Tašky",
+        "prehliadky": "Prehliadky",
+        "tvorive-dielne": "Tvorivé dielne"
+      },
 
 
 
@@ -269,7 +387,7 @@
               "INFO": "Informácie",
               "MAJOLIKA_NA_AKCII": "Majolika na akcii",
               "DIELNE2": "Dielne",
-              "PREHLIADKY": "Prehliadky"
+              "PREHLIADKY2": "Prehliadky"
             },
           "ACCOUNT2": {
             "TITLE": "Môj účet",
@@ -342,13 +460,63 @@
               "ORDER_TOTAL": "Celková suma",
               "ORDER_ITEMS": "Položky objednávky",
               "REMOVE_FROM_FAVORITES": "Odstrániť",
-              "ADD_TO_FAVORITES": "Pridať do obľúbených"
+              "ADD_TO_FAVORITES": "Pridať do obľúbených",
+                "FORM": {
+      "REQUIRED_FIELDS": "❌ Vyplňte všetky povinné údaje!"
+    },
+    "ERRORS": {
+      "NOT_LOGGED_IN": "❌ Nie ste prihlásený!"
+    },
+    "SAVE": {
+      "SUCCESS": "✅ Údaje boli úspešne uložené.",
+      "FAIL": "❌ Nepodarilo sa uložiť profil."
+    },
+    "LOGOUT2": {
+      "SUCCESS": "✅ Boli ste odhlásený."
+    }
 
-            }
+            },
 
 
           
-        
+          "FOOTER": {
+    "ABOUT": {
+      "TITLE": "O príbehu menom Majolike",
+      "TEXT": "V Slovenskej ľudovej majolike už 140 rokov majstri remesla rozvíjajú zdedené tradície, rukami a srdcom tvoria keramickú dušu regiónu. Všetky výrobky sú ručne vyrobené a maľované. Každý kus je jedinečné dielo. Modranská majolika a majoliková ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska. <a href='o-nas'>Kliknite a dozviete sa viac</a>"
+    },
+    "SUPPORT": {
+      "TITLE": "Zákaznícka podpora",
+      "MY_ACCOUNT": "Moja Majolika",
+      "FAQ": "FAQ",
+      "SHIPPING": "Doprava & doručenie",
+      "RETURNS": "Reklamácie",
+      "CONTACT": "Kontaktuj nás"
+    },
+    "INFO": {
+      "TITLE": "Informácie",
+      "ABOUT_COMPANY": "O spoločnosti",
+      "CAREERS": "Kariéra",
+      "BLOG": "Blog",
+      "TERMS": "Obchodné podmienky",
+      "PRIVACY": "Ochrana osobných údajov"
+    },
+    "NEWSLETTER": {
+      "TITLE": "Newsletter",
+      "TEXT": "Prihlás sa na odber a získaj 10% zľavu na prvú objednávku.",
+      "EMAIL_PLACEHOLDER": "Tvoja e-mailová adresa",
+      "SUBMIT": "Odber"
+    },
+    "SOCIAL": {
+      "TITLE": "Sleduj nás"
+    }
+  },
+    "CHECKOUT": {
+    "SUCCESS": {
+      "TITLE": "Ďakujeme za objednávku! 🎉",
+      "BODY": "Vaša platba prebehla úspešne. \n Potvrdenie vám príde e-mailom.",
+      "BACK": "Späť na úvod"
+    }
+  }
   }
 
   

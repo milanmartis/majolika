@@ -1,36 +1,36 @@
-<h1 class="login-title">Prihlásenie</h1>
+<h1 class="login-title">{{ 'AUTH.LOGIN.TITLE' | translate }}</h1>
 
 <mat-card class="auth-card">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>E-mail alebo používateľské meno</mat-label>
-      <input matInput formControlName="identifier" />
+      <mat-label>{{ 'AUTH.FIELDS.IDENTIFIER.LABEL' | translate }}</mat-label>
+      <input matInput formControlName="identifier"
+             [placeholder]="'AUTH.FIELDS.IDENTIFIER.PLACEHOLDER' | translate" />
       <mat-error *ngIf="identifierControl?.hasError('required')">
-        Zadajte e‑mail alebo meno
+        {{ 'AUTH.FIELDS.IDENTIFIER.REQUIRED' | translate }}
       </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Heslo</mat-label>
-      <input matInput type="password" formControlName="password" />
+      <mat-label>{{ 'AUTH.FIELDS.PASSWORD.LABEL' | translate }}</mat-label>
+      <input matInput type="password" formControlName="password"
+             [placeholder]="'AUTH.FIELDS.PASSWORD.PLACEHOLDER' | translate" />
       <mat-error *ngIf="passwordControl?.hasError('required')">
-        Zadajte heslo
+        {{ 'AUTH.FIELDS.PASSWORD.REQUIRED' | translate }}
       </mat-error>
       <mat-error *ngIf="passwordControl?.hasError('minlength')">
-        Heslo musí mať aspoň {{ passwordMinLength }} znakov.
+        {{ 'AUTH.FIELDS.PASSWORD.MINLENGTH' | translate:{min: passwordMinLength} }}
       </mat-error>
     </mat-form-field>
 
-    <!-- ✅ Serverová chyba -->
     <div *ngIf="errorMessage" class="server-error">
-      {{ errorMessage }}
+      {{ errorMessage | translate }} <!-- ak posielaš kľúče; inak odstráň | translate -->
     </div>
 
     <button mat-raised-button color="primary" class="login-btn"
-    [disabled]="form.invalid || isSubmitting">
-
-    <ng-container *ngIf="!isSubmitting">Prihlásiť sa</ng-container>
+            [disabled]="form.invalid || isSubmitting">
+      <ng-container *ngIf="!isSubmitting">{{ 'AUTH.LOGIN.SUBMIT' | translate }}</ng-container>
 
       <mat-progress-spinner
       *ngIf="isSubmitting"
@@ -44,7 +44,7 @@
   </form>
 
    <mat-card-actions class="auth-actions">
-       <button (click)="loginWithGoogle()" class="gsi-material-button">
+              <button (click)="auth.loginWithGoogle()" class="gsi-material-button">
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
@@ -56,12 +56,16 @@
               <path fill="none" d="M0 0h48v48H0z"></path>
             </svg>
           </div>
-          <span class="gsi-material-button-contents">Or Sign up with Google</span>
-          <span style="display: none;">Or Sign up with Google</span>
+          <span class="gsi-material-button-contents">{{ 'AUTH.OR_SIGN_UP_WITH_GOOGLE' | translate }}</span>
+          <span style="display: none;">{{ 'AUTH.OR_SIGN_UP_WITH_GOOGLE' | translate }}</span>
         </div>
       </button> 
-    <br>
-    <a mat-button [routerLink]="['/register']">Nemáte účet? Registrácia</a>
-  </mat-card-actions>
+
+<br>
+
+</mat-card-actions>
+<a mat-button [routerLink]="['/register']">
+  {{ 'AUTH.NO_ACCOUNT_REGISTER' | translate }}
+</a>
 </mat-card>
 <app-footer class="mt-8"></app-footer>

@@ -3,7 +3,7 @@ import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Inject,
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -58,6 +58,10 @@ export class AccountComponent implements OnInit, OnDestroy {
   favoritesLoading = true;
   private destroy$ = new Subject<void>();
 
+  private t(key: string, params?: Record<string, any>) {
+    return this.translate.instant(key, params);
+  }
+
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
@@ -68,7 +72,8 @@ export class AccountComponent implements OnInit, OnDestroy {
     private ordersService: OrdersService,
     public lang: LanguageService,  
     private cdRef: ChangeDetectorRef,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    private translate: TranslateService,
     
   ) {
     this.user$ = this.auth.currentUser$;
@@ -82,7 +87,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   this.ordersService.getMyOrders().subscribe({
     next: result => {
-      console.log('Načítané objednávky:', result.orders);
+      // console.log('Načítané objednávky:', result.orders);
       this.orders = result.orders;
       this.totalSpent = result.totalSpent;
       this.ordersLoading = false;
@@ -107,7 +112,7 @@ export class AccountComponent implements OnInit, OnDestroy {
       street: ['', Validators.required],
       city: ['', Validators.required],
       zip: ['', Validators.required],
-      country: ['Slovakia', Validators.required]
+      country: ['Slovensko', Validators.required]
     });
   
     // 5. Patchni údaje používateľa do formulára, keď sa user objaví
@@ -123,7 +128,7 @@ export class AccountComponent implements OnInit, OnDestroy {
             street: user.street || '',
             city: user.city || '',
             zip: user.zip || '',
-            country: user.country || 'Slovakia'
+            country: user.country || 'Slovensko'
           });
         }
       });
@@ -186,7 +191,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   public onFavImageLoad(event: Event, src: string): void {
-    console.log('Obrázok načítaný:', src);
+    // console.log('Obrázok načítaný:', src);
   }
 
   public onFavImageError(event: Event): void {
@@ -197,7 +202,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   async saveAccount() {
     if (this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
-      this.snackBar.open('❌ Vyplňte všetky povinné údaje!', 'OK', {
+      this.snackBar.open(this.t('ACCOUNT.FORM.REQUIRED_FIELDS'), this.t('COMMON.OK'), {
         duration: 4000,
         panelClass: ['snack-error']
       });
@@ -206,7 +211,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     const user = await firstValueFrom(this.user$);
     if (!user) {
-      this.snackBar.open('❌ Nie ste prihlásený!', 'OK', {
+      this.snackBar.open(this.t('ACCOUNT.ERRORS.NOT_LOGGED_IN'), this.t('COMMON.OK'), {
         duration: 4000,
         panelClass: ['snack-error']
       });
@@ -218,13 +223,13 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     this.auth.updateProfile(user.id, updated).subscribe({
       next: newUser => {
-        this.snackBar.open('✅ Údaje boli úspešne uložené.', 'OK', {
+        this.snackBar.open(this.t('ACCOUNT.SAVE.SUCCESS'), this.t('COMMON.OK'), {
           duration: 3000,
           panelClass: ['snack-success']
         });
       },
       error: err => {
-        this.snackBar.open('❌ Nepodarilo sa uložiť profil.', 'OK', {
+        this.snackBar.open(this.t('ACCOUNT.SAVE.FAIL'), this.t('COMMON.OK'), {
           duration: 4000,
           panelClass: ['snack-error']
         });
@@ -235,7 +240,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   logout(): void {
     this.auth.logout();
     setTimeout(() => this.router.navigate(['/']), 500);
-    this.snackBar.open('✅ Boli ste odhlásený.', 'OK', {
+    this.snackBar.open(this.t('ACCOUNT.LOGOUT.SUCCESS'), this.t('COMMON.OK'), {
       duration: 5000,
       panelClass: ['snack-info']
     });

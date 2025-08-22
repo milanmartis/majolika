@@ -18,6 +18,8 @@ import { AktualityListComponent } from './pages/aktualities/aktuality-list.compo
 import { AktualitaDetailComponent } from './pages/aktualities/aktualita-detail.component';
 import { AuthGuard }          from './guards/auth.guard';          // ⬅ musí existovať
 import { AlreadyAuthGuard }   from './guards/already-auth.guard';  // ⬅ nový guard
+import { AuthorsListComponent } from './pages/autors/authors-list.component';
+import { AuthorDetailComponent } from './pages/autors/author-detail.component';
 
 export const routes: Routes = [
   { path: '',         component: HomePageComponent,    data: { animation: 'LandingPage'  } },
@@ -70,12 +72,34 @@ export const routes: Routes = [
   { path: 'tradicia', component: TradiciaComponent, data: { animation: 'TradiciaPage' } },
   { path: 'kontakt',  component: KontaktComponent, data: { animation: 'KontaktPage'  } },
 
+
+
+  { path: 'o-nas', component: AuthorsListComponent, data: { animation: 'autori' } },
+  { path: 'o-nas/:id', component: AuthorDetailComponent, data: { animation: 'autor-detail' } },
+  // ... tvoje ostatné trasy
+  { path: '', pathMatch: 'full', redirectTo: 'autori' }, // voliteľne
   // --- Login  (neprístupné, ak už som prihlásený) ---
-  { path: 'login',
-    component: LoginComponent,
-    canActivate: [AlreadyAuthGuard],
-    data: { animation: 'LoginPage' }
+  // { path: 'login',
+  //   component: LoginComponent,
+  //   canActivate: [AlreadyAuthGuard],
+  //   data: { animation: 'LoginPage' }
+  // },
+
+{
+    path: 'connect/google/redirect',
+    loadComponent: () =>
+      import('app/auth/google-redirect.component').then(m => m.GoogleRedirectComponent)
   },
+  {
+    path: 'login',
+    canActivate: [AlreadyAuthGuard],
+
+    loadComponent: () =>
+      import('app/auth/login.component').then(m => m.LoginComponent)
+  },
+
+
+
 
   { path: 'register', component: RegisterComponent, data: { animation: 'RegisterPage' } },
 

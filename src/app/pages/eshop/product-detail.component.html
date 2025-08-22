@@ -100,6 +100,7 @@
       <div *ngIf="sessions?.length" class="session-group-wrapper">
         <div class="session-group" role="radiogroup" aria-label="Termín">
           <ng-container *ngFor="let session of sessions; let i = index">
+            <div class="session-row">
             <input
               type="radio"
               [id]="'session-' + i"
@@ -111,18 +112,37 @@
             />
             <label [for]="'session-' + i" class="variant-button">
               <!-- {{ session.title || (session.type === 'tour' ? 'Prehliadka' : 'Workshop') }}, -->
-              {{ session.startDateTime | date:'d.M.yyyy HH:mm' }},
-              <span *ngIf="session.capacity"><i class="fa fa-clock"></i>
-                {{ session.capacity.available }} voľných
+               <div style="margin: auto; padding:0px 5px 0px 5px;">
+               
+               {{ session.startDateTime | date:'d.M.yyyy' }}
+              </div>
+               <div style="margin: auto; padding:0px 5px 0px 5px;">
+                 
+              </div>
+              <div style="margin: auto; padding:0px 5px 0px 5px;">
+                {{ session.startDateTime | date:'HH:mm' }}
+                <span *ngIf="session.capacity"><i class="fa fa-clock" style="padding:0px 5px 0px 5px;"></i></span>
+               {{ session.durationMinutes }} m
+             </div>
+               <div style="padding:0px 5px 0px 5px;">
+                
+               </div>
+   
+               <div style="margin: auto; padding:0px 5px 0px 5px;">
+               
+                 {{ 'ESHOP.POCET_VOLNYCH_MIEST' | translate }} <b>#{{ session.capacity?.available }}
+               </b>
+              </div>
+
+              
                 <!-- {{ session.capacity.available }} / {{ session.capacity.max }} voľných -->
-              </span>
-            </label>
+   
             <ng-container *ngIf="session === selectedSession">
               <!-- Výber počtu osôb pre aktuálny termín -->
               <div class="flex items-center gap-2">
 
               <div class="qty-group">
-                <button
+                <!-- <button
                   class="qty-btn"
                   (click)="sessionQty = (sessionQty - 1 < 1 ? 1 : sessionQty - 1)"
                   [disabled]="sessionQty <= 1"
@@ -132,7 +152,7 @@
                   <svg viewBox="0 0 30 3" xmlns="http://www.w3.org/2000/svg">
                     <path d="M28.003 0H1.5a1.5 1.5 0 100 3h26.503a1.5 1.5 0 100-3z" fill="currentColor"/>
                   </svg>
-                </button>
+                </button> -->
                 
                 <input
                   type="number"
@@ -143,7 +163,7 @@
                   style="width: 60px; margin-left: 0.5em; text-align: center;"
                 />
                 
-                <button
+                <!-- <button
                   class="qty-btn"
                   (click)="sessionQty = (sessionQty + 1 > (session.capacity?.available || 1) ? (session.capacity?.available || 1) : sessionQty + 1)"
                   [disabled]="sessionQty >= (session.capacity?.available || 1)"
@@ -156,12 +176,12 @@
                       fill="currentColor"
                     />
                   </svg>
-                </button>
+                </button> -->
               </div>
             
               <button
                 type="button"
-                class="btn"
+                class="btn session-addtocart"
                 (click)="startBooking(session, sessionQty)"
                 [disabled]="(session.capacity?.available || 0) < 1 || sessionQty < 1"
               >
@@ -169,8 +189,19 @@
               </button>
               </div>
             </ng-container>
+                      
+            </label>
+
+            </div>
           </ng-container>
         </div>
+      </div>
+      <div *ngIf="sessions.length">
+        <a *ngIf="product?.id"
+          [href]="cal.buildProductIcsUrl(product.id)"
+          target="_blank" rel="noopener">
+          Odoberať termíny (google calendar)
+        </a>
       </div>
 <!-- Ak nemáš sessions, môžeš ukázať: -->
 <div *ngIf="isExperienceProduct(product) && !sessions.length">
@@ -207,7 +238,7 @@
 
       <div class="price">
         <div *ngIf="IfProductInSale">
-          <span>€{{ displayPriceSaleFormatted }} </span>
+          <span>€{{ animatedTotalPriceSale }} </span>
           <span class="in-sale"> €{{ animatedTotalPrice | number:'1.2-2' }}</span>
         </div>
         <div *ngIf="!IfProductInSale" class="price-sale">

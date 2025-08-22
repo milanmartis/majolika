@@ -3,50 +3,51 @@
         <div class="container">
           <!-- O nás -->
           <div class="footer-col">
-            <h4>O nás</h4>
-            <p>
-              V Slovenskej ľudovej majolike už 140 rokov majstri remesla rozvíjajú zdedené tradície, rukami a srdcom tvoria keramickú dušu regiónu. Všetky výrobky sú ručne vyrobené a maľované. Každý kus je jedinečné dielo. Modranská majolika a majoliková 
-              ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska.
-            </p>
-          </div>
-    
-          <!-- Zákaznícka podpora -->
-          <div class="footer-col">
-            <h4>Zákaznícka podpora</h4>
-            <ul>
-              <li><a [routerLink]="['/login']">Moja Majolika <i class="fa fa-user"></i></a></li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Doprava & doručenie</a></li>
-              <li><a href="#">Reklamácie</a></li>
-              <li><a href="#">Kontaktuj nás</a></li>
-            </ul>
-          </div>
-    
-          <!-- Informácie -->
-          <div class="footer-col">
-            <h4>Informácie</h4>
-            <ul>
-              <li><a href="#">O spoločnosti</a></li>
-              <li><a href="#">Kariéra</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Podmienky používania</a></li>
-              <li><a href="#">Ochrana osobných údajov</a></li>
-            </ul>
-          </div>
-    
-          <!-- Newsletter -->
-          <div class="footer-col footer-newsletter">
-            <h4>Newsletter</h4>
-            <p>Prihlás sa na odber a získaj 10% zľavu na prvú objednávku.</p>
-            <form>
-              <input type="email" placeholder="Tvoja e-mailová adresa" required>
-              <button type="submit">Odber</button>
-            </form>
-          </div>
-    
-          <!-- Sociálne siete -->
-          <div class="footer-col">
-            <h4>Sleduj nás</h4>
+           <h4 [innerHTML]="'FOOTER.ABOUT.TITLE' | translate | linkify"></h4>
+  <p [innerHTML]="'FOOTER.ABOUT.TEXT' | translate | linkify"></p>
+</div>
+
+<div class="footer-col">
+  <h4>{{ 'FOOTER.SUPPORT.TITLE' | translate }}</h4>
+  <ul>
+    <li>
+      <a [routerLink]="['/account']">
+        {{ 'FOOTER.SUPPORT.MY_ACCOUNT' | translate }} <i class="fa fa-user"></i>
+      </a>
+    </li>
+    <li><a href="#">{{ 'FOOTER.SUPPORT.FAQ' | translate }}</a></li>
+    <li><a href="#">{{ 'FOOTER.SUPPORT.SHIPPING' | translate }}</a></li>
+    <li><a href="#">{{ 'FOOTER.SUPPORT.RETURNS' | translate }}</a></li>
+    <li><a href="#">{{ 'FOOTER.SUPPORT.CONTACT' | translate }}</a></li>
+  </ul>
+</div>
+
+<div class="footer-col">
+  <h4>{{ 'FOOTER.INFO.TITLE' | translate }}</h4>
+  <ul>
+    <li><a href="#">{{ 'FOOTER.INFO.ABOUT_COMPANY' | translate }}</a></li>
+    <li><a href="#">{{ 'FOOTER.INFO.CAREERS' | translate }}</a></li>
+    <li><a href="#">{{ 'FOOTER.INFO.BLOG' | translate }}</a></li>
+    <li><a [routerLink]="['/article/vseobecne-obchodne-podmienky']">{{ 'FOOTER.INFO.TERMS' | translate }}</a></li>
+    <li><a [routerLink]="['/article/ochrana-a-spracovanie-osobnych-udajov']">{{ 'FOOTER.INFO.PRIVACY' | translate }}</a></li>
+  </ul>
+</div>
+
+<div class="footer-col footer-newsletter">
+  <h4>{{ 'FOOTER.NEWSLETTER.TITLE' | translate }}</h4>
+  <p>{{ 'FOOTER.NEWSLETTER.TEXT' | translate }}</p>
+  <form>
+    <input
+      type="email"
+      [placeholder]="'FOOTER.NEWSLETTER.EMAIL_PLACEHOLDER' | translate"
+      required
+    />
+    <button type="submit">{{ 'FOOTER.NEWSLETTER.SUBMIT' | translate }}</button>
+  </form>
+</div>
+
+<div class="footer-col">
+  <h4>{{ 'FOOTER.SOCIAL.TITLE' | translate }}</h4>
             <div class="social-links">
 
               <a href="#" aria-label="Facebook"><i  style="font-size:1.8rem;" class="fa-brands fa-facebook"></i></a>

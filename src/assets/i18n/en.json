@@ -13,7 +13,9 @@
     "LABEL": "Capacity",
     "STATUS": "{{booked}} booked / {{max}} max ({{available}} available)",
     "LOADING": "— loading capacity…",
-    "TRVANIE": "Duration"
+    "TRVANIE": "Duration",
+    "WHO_WE_ARE": "Who we are",
+    "WHO_WE_ARE_PEREX": "We introduce you to our team that takes care of preserving and developing traditional Slovak ceramics."
 
   },
 
@@ -124,10 +126,52 @@
 "RESULT_SEARCH": "Search results",
 "SEARCH_PLACEHOLDER": "Search products...",
 "SEARCH": "Search",
-"NO_RESULTS":"No results found"
+"NO_RESULTS":"No results found",
+"POCET_VOLNYCH_MIEST": "Left seats",
+
+    "CHECKOUT_FAILED": "Payment failed.",
+    "PAYMENT": "Payment",
+    "PAYMENT_CARD": "Card",
+    "PAYMENT_COD": "Cash on delivery",
+    "PAYMENT_BANK": "Bank transfer",
+    "PAYMENT_ONSITE": "Pay on site",
+    "PAYMENT_POST": "At the post office",
+    "DELIVERY": "Delivery",
+    "DELIVERY_PICKUP": "Pick up on site",
+    "DELIVERY_POST_OFFICE": "Deliver to post office",
+    "DELIVERY_PACKETA_BOX": "Packeta box",
+    "DELIVERY_POST_COURIER": "Post courier to address",
+    "SHIPPING_FEE": "Shipping",
+    "POST_OFFICE_ID": "Post office ID",
+    "PACKETA_BOX_ID": "Packeta box ID",
+    "DELIVERY_ADDRESS_WHERE": "Where to deliver?",
+    "DELIVERY_ADDRESS_SAME": "Use customer address",
+    "DELIVERY_ADDRESS_OTHER": "Deliver to a different address",
+      "CHECKOUT_SUBTOTAL": "Subtotal",
+    "GRAND_TOTAL": "Total",
+    "SELECT_PACKETA_BOX": "Select Packeta box",
+    "SELECT_REQUIRED": "Please select a delivery place before continuing.",
+    "SELECT_POST_OFFICE": "Select post office",
+      "BANK_TRANSFER_TITLE": "Bank transfer",
+      "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
+      "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
+      "BANK_TRANSFER_BIC": "BANKSKBX",
+      "PAYMENT_FEE": "Payment surcharge"
+    
 
 
   },
+
+  "CHECKOUT_CANCEL": {
+    "TITLE": "Payment was cancelled ❌",
+    "DESCRIPTION": "You can try again or return to your cart.",
+    "BACK_TO_CHECKOUT": "Back to checkout",
+    "CONTINUE_SHOPPING": "Continue shopping"
+  },
+
+
+
+
   "DIELNE": { 
     "WELCOME": "Tours and Creative Workshops",
     "FIRST_TEXT": "Discover the ancient beauty of traditional folk craftsmanship. We offer you a unique opportunity to peek behind the scenes of the largest craft workshops with the longest tradition in Slovakia. Modra Majolica and Majolica ornamentation are listed in the Representative List of Intangible Cultural Heritage of Slovakia."
@@ -219,16 +263,84 @@
     "nausnice": "Earrings",
     "odevy": "Clothing",
     "prstene": "Rings",
-    "tasky": "Bags"
+    "tasky": "Bags",
+    "prehliadky": "Tours",
+    "tvorive-dielne": "Creative Workshops"
   },
 
 
 
 
+"AUTH": {
+     "ERRORS":{
+"INVALID_CREDENTIALS":"Invalid email or password."
+   },
+    "OR_SIGN_UP_WITH_GOOGLE": "Or Continue with Google",
+    "NO_ACCOUNT_REGISTER": "Don't have an account? Register",
+    "ACCOUNT_LOGIN": "Already have an account? Log in",
+        "BUTTONS": { "LOADING": "Processing…" },
+    "FIELDS": {
+      "IDENTIFIER": {
+        "LABEL": "Email or username",
+        "PLACEHOLDER": "e.g. jane@example.com",
+        "REQUIRED": "Enter email or username"
+      },
+      "USERNAME": {
+        "LABEL": "Username",
+        "PLACEHOLDER": "e.g. janemajolica",
+        "REQUIRED": "This field is required."
+      },
+      "EMAIL": {
+        "LABEL": "Email",
+        "PLACEHOLDER": "your@email.com",
+        "REQUIRED": "Enter your email",
+        "INVALID": "Enter a valid email"
+      },
+      "PASSWORD": {
+        "LABEL": "Password",
+        "PLACEHOLDER": "••••••••",
+        "REQUIRED": "Enter your password",
+        "MINLENGTH": "Password must be at least {{min}} characters."
+      }
+    },
+    "LOGIN": {
+      "TITLE": "Sign in",
+      "SUBMIT": "Sign in",
+      "SUCCESS": "Signed in successfully!"
+    },
+    "REGISTER": {
+      "TITLE": "Sign up",
+      "SUBMIT": "Create account",
+      "RESEND_CONFIRM": "Resend confirmation email",
+      "CONFIRM_SENT": "Confirmation email has been sent.",
 
+      "SUCCESS": "✅ Registration successful! Please check your email to confirm your account.",
+      "RESEND": {
+        "SUCCESS": "📧 Confirmation email has been resent.",
+        "FAIL": "Could not send the confirmation email.",
+        "NO_EMAIL": "No email available to resend."
+      },
+      "ERRORS": {
+        "EMAIL_TAKEN": "This email is already in use.",
+        "USERNAME_TAKEN": "This username is already taken.",
+        "WEAK_PASSWORD": "Password does not meet strength requirements.",
+        "INVALID_CREDENTIALS": "Invalid email or password.",
 
-
-
+        "GENERIC": "Registration failed. Please try again."
+      }
+    }
+  },
+  "COMMON": { 
+    "OK": "OK", 
+    "CHANGE": "Change Packeta Box",
+   "STREET": "Street",
+    "CITY": "City",
+    "ZIP": "ZIP",
+    "COUNTRY": "Country",
+    "NOTES": "Notes",
+    "COPY": "Copy",
+    "COPIED": "Copied to clipboard!"
+  },
 
 
 
@@ -261,7 +373,7 @@
   "INFO": "Information",
   "MAJOLIKA_NA_AKCII": "Majolica at the event",
   "DIELNE2": "Workshops",
-  "PREHLIADKY": "Tours"
+  "PREHLIADKY2": "Tours"
 },
 
 "ACCOUNT2": {
@@ -294,7 +406,58 @@
   "TITLE": "Môj účet",
   "USERNAME": "Prihlasovacie meno",
   "EMAIL": "E‑mail",
-  "LOGOUT": "Odhlásiť sa"
-}
+  "LOGOUT": "Odhlásiť sa",
+    "FORM": {
+      "REQUIRED_FIELDS": "❌ Please fill in all required fields!"
+    },
+    "ERRORS": {
+      "NOT_LOGGED_IN": "❌ You are not signed in!"
+    },
+    "SAVE": {
+      "SUCCESS": "✅ Your details have been saved.",
+      "FAIL": "❌ Could not save your profile."
+    },
+    "LOGOUT2": {
+      "SUCCESS": "✅ You have been signed out."
+    }
+},
+  "FOOTER": {
+    "ABOUT": {
+ "TITLE": "The Majolika Story",
+    "TEXT": "At Slovenská ľudová majolika, master artisans have been nurturing inherited traditions for 140 years, shaping the ceramic soul of the region with their hands and hearts. All products are handmade and hand-painted. Every piece is a unique work of art. Modra majolika and majolica ornamentation are inscribed on the Representative List of the Intangible Cultural Heritage of Slovakia. <a href='o-nas'>Click to learn more</a>"
+    },
+    "SUPPORT": {
+      "TITLE": "Customer support",
+      "MY_ACCOUNT": "My Majolica",
+      "FAQ": "FAQ",
+      "SHIPPING": "Shipping & delivery",
+      "RETURNS": "Returns",
+      "CONTACT": "Contact us"
+    },
+    "INFO": {
+      "TITLE": "Information",
+      "ABOUT_COMPANY": "About the company",
+      "CAREERS": "Careers",
+      "BLOG": "Blog",
+      "TERMS": "Terms of bussiness",
+      "PRIVACY": "Privacy policy"
+    },
+    "NEWSLETTER": {
+      "TITLE": "Newsletter",
+      "TEXT": "Subscribe and get 10% off your first order.",
+      "EMAIL_PLACEHOLDER": "Your email address",
+      "SUBMIT": "Subscribe"
+    },
+    "SOCIAL": {
+      "TITLE": "Follow us"
+    }
+  },
+    "CHECKOUT": {
+    "SUCCESS": {
+      "TITLE": "Thank you for your order! 🎉",
+      "BODY": "Your payment was successful. A confirmation has been sent to your email.",
+      "BACK": "Back to Home"
+    }
+  }
     
 }

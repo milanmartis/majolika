@@ -1,6 +1,6 @@
 .login-title {
   text-align: center;
-  margin: 120px auto 30px;
+  margin: 70px auto 30px;
   font-size: 2.4rem;
   text-transform: uppercase;
   font-weight: 900;
@@ -103,14 +103,14 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   -webkit-appearance: none; */
-  background-color: WHITE;
+  background-color: var(--color-primary);
   background-image: none;
-  border: 1px solid #747775;
+  border: 1px solid var(--base-blue);
   -webkit-border-radius: 4px;
   border-radius: 4px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  color: #1f1f1f;
+  color: var(--base-blue);
   cursor: pointer;
   font-family: 'Roboto', arial, sans-serif;
   font-size: 14px;
@@ -174,8 +174,8 @@
 
 .gsi-material-button:disabled {
   cursor: default;
-  background-color: #ffffff61;
-  border-color: #1f1f1f1f;
+  background-color: var(--base-blue2);
+  border-color: var(--base-blue);
 }
 
 .gsi-material-button:disabled .gsi-material-button-contents {
@@ -188,16 +188,16 @@
 
 .gsi-material-button:not(:disabled):active .gsi-material-button-state, 
 .gsi-material-button:not(:disabled):focus .gsi-material-button-state {
-  background-color: #303030;
+  background-color:var(--base-blue);
   opacity: 12%;
 }
 
 .gsi-material-button:not(:disabled):hover {
-  -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
-  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+  -webkit-box-shadow: 0 1px 2px 0 var(--base-blue), 0 1px 3px 1px var(--base-blue);
+  box-shadow: 0 1px 2px 0 var(--base-blue), 0 1px 3px 1px var(--base-blue);
 }
 
 .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
-  background-color: #303030;
+  background-color: var(--base-blue);
   opacity: 8%;
 }

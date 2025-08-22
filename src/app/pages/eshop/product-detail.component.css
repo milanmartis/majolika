@@ -304,6 +304,31 @@ button.favourite2:hover {
   color: var(--base-blue);
 }
 
+.session-row { 
+  display: block;
+  margin: 4px 0;
+  padding: 0.5rem;
+ }
+
+.session-addtocart{
+  width: 100%;
+  padding: 0rem;
+  background: var(--base-blue);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--corners);
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.6s ease;
+}
+
+
+.session-addtocart:hover {
+  background: #1a2f8a;
+  color: #ddd;
+  border-color: #ddd;
+}
+
 .scroll-x {
   display: flex;
   gap: 0.75rem;
@@ -443,7 +468,7 @@ button.favourite2:hover {
   padding: 0px;
   margin: 6px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   font-size: 0.5rem;
 }
 .qty-btn:hover:not(:disabled) {
@@ -482,18 +507,20 @@ button.favourite2:hover {
     pointer-events: none;
   }
   .variant-button {
-    display: inline-block;
+    display: flex;
     padding: 6px 14px;
     border: 2px solid #ccc;
     border-radius: var(--corners);
-    background-color: #fafafa;
+
     cursor: pointer;
     transition: background-color 0.2s, border-color 0.2s;
     user-select: none;
-    font-size: 0.9rem;
+    font-size: 0.973rem;
   }
-  .variant-button:hover {
+  .variant-button:hover{
     border-color: var(--base-blue);
+    background-color: var(--color-primary);
+    color: var(--base-blue);
   }
   .variant-radio:checked + .variant-button {
     background-color: var(--base-blue);
@@ -536,8 +563,24 @@ body.no-scroll {
   overflow: hidden;
 }
 
+.session-group-wrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-y: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--base-blue) transparent;
+  overflow-x: hidden;
+  height: 100%;
+  max-height: 280px;
+}
 .error_404 h3{
+  margin-top: 40px;
   color:var(--base-blue);
 }
 

@@ -10,6 +10,19 @@ import { Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid'; // npm install uuid
 
 export interface SessionCapacity { booked: number; available: number; max: number; }
+
+export type Freq = 'DAILY'|'WEEKLY'|'MONTHLY';
+
+export interface SeriesLite {
+  id: number;
+  title?: string;
+  seriesVersion?: number;
+  frequency?: Freq;
+  interval?: number;
+  byWeekday?: string[];
+  timeOfDay?: string; // "15:00:00"
+}
+
 export interface EventSessionWithCapacity {
   id: number;
   title?: string;
@@ -19,6 +32,8 @@ export interface EventSessionWithCapacity {
   maxCapacity: number;
   product?: Product;
   capacity?: SessionCapacity;
+  series?: SeriesLite;   
+  isDetachedFromSeries?: boolean;
 }
 
 export interface BookingPayload {

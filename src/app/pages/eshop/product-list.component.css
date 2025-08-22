@@ -703,25 +703,6 @@ float: none;
 
 }
 
-#cart_image {
-  margin: auto;
-  position: relative;
-  top: -2px;
-  left: -15px;
-  background-image: url('/assets/img/cart.svg');
-  background-size: 18px 18px;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 12px;
-  height: 12px;
-  padding: 2px 20px 2px 20px;
-
-}
-
-.btn-cart:hover #cart_image {
-  background-image: url('/assets/img/cart-light.svg');
-
-}
 
 .btn-cart{
   width: 96%;
@@ -747,37 +728,58 @@ float: none;
 }
 
 
+#cart_image {
+  margin: auto;
+  position: relative;
+  top: -2px;
+  left: -15px;
+  background-image: url('/assets/img/cart.svg');
+  background-size: 18px 18px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 12px;
+  height: 12px;
+  padding: 2px 20px 2px 20px;
 
-.btn-heart .fa {
+}
+
+.btn-cart:hover #cart_image {
+  background-image: url('/assets/img/cart-light.svg');
+
+}
+
+.img-wrapper { position: relative; }
+
+.img-wrapper .btn-heart {
   position: absolute;
-  top:12px;
-  right:12px;
+  top: 8px;
+  right: 8px;
   background: transparent;
-  font-size: 2rem;
-  /* border: 1px solid var(--base-blue-thin2);  */
+  border: none;
+  cursor: pointer;
+  opacity: 0;                 /* default: ukryté */
+  transition: opacity .2s ease;
+  z-index: 2;                 /* nad <img> */
+  padding: 0;
+  line-height: 1;
+}
+
+.grid-item:hover .btn-heart,
+.img-wrapper .btn-heart.is-fav {
+  opacity: 1;                 /* ukáž pri hoveri alebo ak je obľúbený */
+}
+
+.img-wrapper .btn-heart .mat-icon {
+  font-size: 32px;
   color: var(--base-blue);
-  transition: all 0.35s ease;
-  text-align: center;
-  display:inline;
-  padding: 2px 10px 2px 10px;
-  z-index: 999;
-  opacity: 0;
-  
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
 }
 
-
-.btn-heart:hover .fa {
-opacity: 1;
+.img-wrapper .btn-heart.is-fav .mat-icon {
+  color: var(--base-blue);
 }
-
-
-.grid-item:hover .btn-heart .fa {
-opacity: 0.6;
-}
-
-.btn-heart:hover .fa {
-  opacity: 1;
-  }
 /* 
 .grid-item:hover .btn-cart {
   background: var(--base-blue);
@@ -1039,6 +1041,7 @@ input::after{
   .btn-cart{
     font-size:0.85rem;
    }
+   
 }
 
 @media (min-width: 600px) and (max-width: 999px) {

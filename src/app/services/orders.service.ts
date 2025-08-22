@@ -9,6 +9,7 @@ export interface Order {
   paymentStatus: string;
   total: number;
   items: any[];
+  products: any[];
 }
 
 @Injectable({ providedIn: 'root' })

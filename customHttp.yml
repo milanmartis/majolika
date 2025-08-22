@@ -1,0 +1,38 @@
+customHeaders:
+  # HTML – revalidovať
+  - pattern: '/'
+    headers:
+      - key: Cache-Control
+        value: 'no-cache, must-revalidate'
+  - pattern: '/*.html'
+    headers:
+      - key: Cache-Control
+        value: 'no-cache, must-revalidate'
+  - pattern: '/index.html'
+    headers:
+      - key: Cache-Control
+        value: 'no-cache, must-revalidate'
+
+  # Angular SW manifest – nikdy nekašovať
+  - pattern: '/ngsw.json'
+    headers:
+      - key: Cache-Control
+        value: 'no-cache, must-revalidate'
+
+  # Hashované assety – dlhá cache
+  - pattern: '/*.js'
+    headers:
+      - key: Cache-Control
+        value: 'public, max-age=31536000, immutable'
+  - pattern: '/*.css'
+    headers:
+      - key: Cache-Control
+        value: 'public, max-age=31536000, immutable'
+  - pattern: '/*.map'
+    headers:
+      - key: Cache-Control
+        value: 'public, max-age=31536000, immutable'
+  - pattern: '/*.(png|jpg|jpeg|webp|svg|ico|woff|woff2|ttf|eot)'
+    headers:
+      - key: Cache-Control
+        value: 'public, max-age=31536000, immutable'

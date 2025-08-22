@@ -23,7 +23,7 @@ export class AktualityService {
   /** Získa všetky publikované aktuality ako pole */
   getAll(): Observable<Aktualita[]> {
     const params = new HttpParams()
-      .set('filters[status][$eq]', 'published')
+      // .set('filters[status][$eq]', 'published')
       .set('locale', this.lang.getCurrentLanguage())
       .set('sort', 'publishedAt:desc')
       .set('populate', '*');

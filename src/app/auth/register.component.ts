@@ -6,6 +6,8 @@ import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../environments/environment';
 import { FooterComponent } from 'app/components/footer/footer.component';
+import { AuthService } from 'app/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Material moduly
 import { MatCardModule } from '@angular/material/card';
@@ -26,7 +28,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatInputModule,
     MatButtonModule,
     FooterComponent,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
@@ -41,7 +44,9 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    public auth: AuthService,
+
   ) {}
 
   ngOnInit() {
@@ -89,31 +94,31 @@ export class RegisterComponent implements OnInit {
       });
   }
 
+cooldownSec = 0;
+private cooldownTimer?: any;
 
-  resendConfirmation(email?: string) {
-    const targetEmail = email || this.lastAttemptedEmail;
-    if (!targetEmail) {
-      this.snack.open('Nie je k dispozícii email pre opätovné odoslanie.', 'OK', {
-        duration: 4000,
-        panelClass: ['error-snackbar']
-      });
-      return;
-    }
+resendConfirmation(email?: string) {
+  if (this.isSubmitting || this.cooldownSec > 0) return;
 
-    this.http.post(`${environment.apiUrl}/auth/send-email-confirmation`, { email: targetEmail })
-      .subscribe({
-        next: () => {
-          this.snack.open('📧 Potvrdzovací e-mail bol znovu odoslaný.', 'OK', {
-            duration: 4000,
-            panelClass: ['success-snackbar', 'bounce-in']
-          });
-        },
-        error: () => {
-          this.snack.open('Nepodarilo sa odoslať potvrdzovací e-mail.', 'OK', {
-            duration: 4000,
-            panelClass: ['error-snackbar', 'bounce-in']
-          });
-        }
-      });
-  }
+  this.isSubmitting = true;
+  this.auth.resendConfirmation(email || this.lastAttemptedEmail || '')
+    .subscribe({
+      next: () => {
+        this.startCooldown(30); // 30 s pauza
+        // ... snackbar „odoslané“
+      },
+      error: (err) => {
+        // ... snackbar podľa chyby
+      }
+    }).add(() => this.isSubmitting = false);
+}
+
+private startCooldown(sec: number) {
+  this.cooldownSec = sec;
+  this.cooldownTimer && clearInterval(this.cooldownTimer);
+  this.cooldownTimer = setInterval(() => {
+    this.cooldownSec--;
+    if (this.cooldownSec <= 0) clearInterval(this.cooldownTimer);
+  }, 1000);
+}
 }

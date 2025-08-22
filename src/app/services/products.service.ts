@@ -8,7 +8,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, of } from 'rxjs';
-import { map as rxMap, map } from 'rxjs/operators';
+import { map as rxMap, map, switchMap } from 'rxjs/operators';
+
 
 /* ---------- typy (len to, čo na fronte reálne potrebujeme) --- */
 
@@ -50,7 +51,7 @@ export interface Product {
   ean: string;
   variations?: Product[];
   categories?: Category[];
-
+  isNew?: boolean;
   picture_new?: any;
   pictures_new?: any;
 
@@ -79,7 +80,7 @@ export class ProductsService {
 
   private readonly api = environment.apiUrl.replace(/\/\/+$/, '');
   private readonly host = this.api.replace(/\/api\/?$/, '');
-  private readonly placeholder = '/assets/img/logo-SLM-modre.gif';
+  private readonly placeholder = 'assets/img/logo-SLM-modre.gif';
 
   // Populate všetky polia a všetky polia variácií, aby slug/name/price boli k dispozícii
   private readonly populateList = ['*', 'variations.*'].join(',');
@@ -88,10 +89,17 @@ export class ProductsService {
 
   /* ---------- helpery ---------------------------------------- */
 
-  private absolutize = (url?: string): string =>
-    url
-      ? /^https?:\/\//i.test(url) ? url : `${this.host}${url}`
-      : this.placeholder;
+  private absolutize = (url?: string): string => {
+    if (!url) return this.placeholder;
+
+    if (/^https?:\/\//i.test(url)) return url;          // už absolútna URL
+    if (/^(\/)?assets\//i.test(url)) {
+      return url.startsWith('/') ? url.slice(1) : url;  // → 'assets/...'
+    }
+    if (/^(data:|blob:)/i.test(url)) return url;        // data/blob nechaj tak
+
+    return `${this.host}${url}`;                        // Strapi relatívna
+  };
 
   private attr = (raw: any): MediaAttr | undefined =>
     raw?.data?.attributes ?? raw ?? undefined;
@@ -146,7 +154,7 @@ export class ProductsService {
       : [];
   
     // PRIMARY PICTURE fallback: ak je undefined, použijeme placeholder string
-    const primaryPicObj = at.picture_new ?? at.primaryImageUrl ?? '/assets/img/logo-SLM-modre.gif';
+    const primaryPicObj = at.picture_new ?? at.primaryImageUrl ?? 'assets/img/logo-SLM-modre.gif';
     const primaryGalleryObj = at.pictures_new ?? [];
   
     const primaryImg = this.imageUrl(primaryPicObj, 'small');
@@ -320,24 +328,49 @@ getProductById(id: number): Observable<Product | null> {
       .pipe(this.mapResp);
   }
 
+
+
+  private hasChildCategories(slug: string): Observable<boolean> {
+  const params = new HttpParams()
+    .set('filters[parent][category_slug][$eq]', slug)
+    .set('pagination[page]', '1')
+    .set('pagination[pageSize]', '1');
+  return this.http
+    .get<StrapiResp<Category>>(`${this.api}/categories`, { params })
+    .pipe(map(resp => (resp?.meta?.pagination?.total ?? 0) > 0));
+}
+
+
   getProductsByCategorySlug(
-    slug: string,
-    sort: string,
-    page: number = 1,
-    pageSize: number = 20
-  ): Observable<StrapiResp<Product>> {
-    const params = new HttpParams()
-      .set('filters[categories][category_slug][$eq]', slug)
-      .set('filters[public][$eq]', '1')
-      .set('populate', this.populateList)
-      .set('sort', sort)
-      .set('pagination[page]', page.toString())
-      .set('pagination[pageSize]', pageSize.toString());
-  
-    return this.http
-      .get<StrapiResp<Product>>(`${this.api}/products`, { params })
-      .pipe(this.mapResp);
-  }
+  slug: string,
+  sort: string,
+  page: number = 1,
+  pageSize: number = 20
+): Observable<StrapiResp<Product>> {
+  return this.hasChildCategories(slug).pipe(
+    switchMap(hasChildren => {
+      if (hasChildren) {
+        // má podkategórie → neukazuj produkty
+        return of({
+          data: [],
+          meta: { pagination: { page, pageSize, pageCount: 0, total: 0 } }
+        } as StrapiResp<Product>);
+      }
+      const params = new HttpParams()
+        .set('filters[categories][category_slug][$eq]', slug)
+        .set('filters[parent][id][$null]', 'true') // iba parents
+        .set('filters[public][$eq]', '1')
+        .set('populate', this.populateList)
+        .set('sort', sort)
+        .set('pagination[page]', page.toString())
+        .set('pagination[pageSize]', pageSize.toString());
+
+      return this.http
+        .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+        .pipe(this.mapResp);
+    })
+  );
+}
 
 
   getProductWithVariations(
@@ -366,63 +399,58 @@ getProductById(id: number): Observable<Product | null> {
   }
 
   getFilteredProducts(
-    page: number,
-    pageSize: number,
-    sort: string,
-    categorySlug: string | null,
-    decors: string[],
-    shapes: string[]
-  ): Observable<StrapiResp<Product>> { // ← tu ponechaj StrapiResp<Product> !
-    let params = new HttpParams()
-      .set('populate', this.populateList)
-      .set('sort', sort)
-      .set('pagination[page]', page.toString())
-      .set('pagination[pageSize]', pageSize.toString());
-  
-    if (categorySlug) {
-      params = params.set('filters[categories][category_slug][$eq]', categorySlug);
-    }
-  
-    decors.forEach((d, i) => {
-      params = params.set(
-        `filters[$and][${i}][variations][slug][$containsi]`,
-        d
-      );
-    });
-    shapes.forEach((s, j) => {
-      const idx = decors.length + j;
-      params = params.set(
-        `filters[$and][${idx}][variations][slug][$containsi]`,
-        s.replace(/-/g, '')
-      );
-    });
-  
-    return this.http
-      .get<StrapiResp<Product>>(`${this.api}/products`, { params })
-      .pipe(
-        this.mapResp,
-        map(resp => ({
-          ...resp,
-          data: this.flattenProductsWithVariations(resp.data)
-        }))
-      );
+  page: number,
+  pageSize: number,
+  sort: string,
+  categorySlug: string | null,
+  decors: string[],
+  shapes: string[]
+): Observable<StrapiResp<Product>> {
+  let params = new HttpParams()
+    .set('populate', this.populateList)
+    .set('sort', sort)
+    .set('pagination[page]', page.toString())
+    .set('pagination[pageSize]', pageSize.toString())
+    // iba root (parents)
+    .set('filters[parent][id][$null]', 'true');
+
+  if (categorySlug) {
+    params = params.set('filters[categories][category_slug][$eq]', categorySlug);
   }
 
-  flattenProductsWithVariations(products: Product[]): Product[] {
-    const results: Product[] = [];
-    for (const p of products) {
-      results.push(p);
-      for (const v of p.variations ?? []) {
-        // Ak chceš, môžeš do variácie pridať parentSlug, typ, atď.
-        results.push({
-          ...v,
-          parentId: p.id,
-          // prípadne aj ďalšie property z parentu, ak potrebuješ
-        } as Product);
-      }
-    }
-    return results;
-  }
+  return this.http
+    .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+    .pipe(
+      this.mapResp,
+      map(resp => ({
+        ...resp,
+        // nechávame len parents (žiadne rozbaľovanie variácií)
+        data: this.flattenProductsWithVariations(resp.data)
+      }))
+    );
+}
+
+flattenProductsWithVariations(products: Product[]): Product[] {
+  return products;
+}
+
+
+
+  // flattenProductsWithVariations(products: Product[]): Product[] {
+  //   const results: Product[] = [];
+  //   for (const p of products) {
+  //     results.push(p);
+  //     for (const v of p.variations ?? []) {
+  //       // Ak chceš, môžeš do variácie pridať parentSlug, typ, atď.
+  //       results.push({
+  //         ...v,
+  //         parentId: p.id,
+  //         // prípadne aj ďalšie property z parentu, ak potrebuješ
+  //       } as Product);
+  //     }
+  //   }
+  //   return results;
+  // }
 
 getFeaturedProducts(): Observable<Product[]> {
   const params = new HttpParams()
@@ -440,7 +468,7 @@ getFeaturedProducts(): Observable<Product[]> {
       map(resp => resp.data.map(p => ({
         ...p,
         // zabezpečíme obrázok cez primaryImageUrl
-        primaryImageUrl: p.primaryImageUrl || '/assets/img/logo-SLM-modre.gif'
+        primaryImageUrl: p.primaryImageUrl || 'assets/img/logo-SLM-modre.gif'
       })))
     );
 }

@@ -111,39 +111,50 @@ export class CartComponent {
   inc(row: CartRow) {
     const session = row.session;
     if (session && session.capacity?.available != null) {
-      // Koľko je reálne už obsadené na serveri (paid/confirmed)
-      const bookedOnServer = session.maxCapacity - session.capacity.available;
-      // Najvyšší počet, ktorý ešte môžeš mať v košíku (aby si neprekročil kapacitu)
-      const maxAllowed = session.maxCapacity - bookedOnServer;
-      if (row.qty >= maxAllowed) {
-        // Nedovoľ ďalší prírastok
-        return;
+      if (session.capacity.available <= 0) {
+        return; // nič voľné → stop
       }
     }
+
     const newQty = row.qty + 1;
     this.cart.updateQty(row.id, newQty, row.session?.id);
+
     if (row.bookingId) {
       this.eventSessionsService.patchBooking(row.bookingId, { peopleCount: newQty }).subscribe({
         next: () => {
           this.eventSessionsService.notifyBookingChanged();
+
+          // (voliteľné, ale praktické) drž dostupné miesta v UI v synchronizácii:
+          if (row.session?.capacity?.available != null) {
+            row.session.capacity.available = Math.max(0, row.session.capacity.available - 1);
+          }
         },
         error: (err) => {
-          // TODO: Prípadne ošetriť chybu (409 Conflict, capacity full...)
+          // TODO: ošetriť chybu (409 Conflict, capacity full...)
         }
       });
     }
   }
+
+
   dec(row: CartRow) {
-    if (row.qty > 1) {
-      const newQty = row.qty - 1;
-      this.cart.updateQty(row.id, newQty, row.session?.id);
-      if (row.bookingId) {
-        this.eventSessionsService.patchBooking(row.bookingId, { peopleCount: newQty }).subscribe({
+    if (row.qty <= 1) return;
+
+    const newQty = row.qty - 1;
+    this.cart.updateQty(row.id, newQty, row.session?.id);
+
+    if (row.bookingId) {
+      this.eventSessionsService
+        .patchBooking(row.bookingId, { peopleCount: newQty })
+        .subscribe({
           next: () => {
             this.eventSessionsService.notifyBookingChanged();
+            // uvoľnili sme 1 miesto → vráť ho do available (lokálne v UI)
+            if (row.session?.capacity?.available != null) {
+              row.session.capacity.available = row.session.capacity.available + 1;
+            }
           }
         });
-      }
     }
   }
   

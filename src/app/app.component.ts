@@ -5,7 +5,8 @@ import {
   OnInit,
   ElementRef,
   ChangeDetectorRef,
-  HostListener
+  HostListener,
+  inject 
 } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { skip } from 'rxjs/operators';
@@ -13,6 +14,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { CartService } from 'app/services/cart.service';
 import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
 import { ActivatedRoute } from '@angular/router';
+import { GoogleOneTapService } from './core/google-one-tap.service';
 
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet, Router } from '@angular/router';
@@ -85,7 +87,8 @@ import { CartComponent } from 'app/pages/cart/cart.component';
          [@routeAnimations]="prepareRoute(outlet)"
          class="app-wrapper">
       <!-- 1) Header -->
-      <app-header [isAtTop]="isAtTop" [hidden]="headerHidden"></app-header>
+      <app-header  [hidden]="headerHidden"></app-header>
+      <!-- <app-header [isAtTop]="isAtTop" [hidden]="headerHidden"></app-header> -->
 <br>
       <!-- 2) Popup (ak je) -->
       <app-popup-launcher></app-popup-launcher>
@@ -159,6 +162,7 @@ export class AppComponent implements OnInit {
 
   isOpen = false;
   @ViewChild(CartComponent) cartComponent!: CartComponent;
+  private oneTap = inject(GoogleOneTapService);
 
 
   corners = [0];      // => px values
@@ -250,10 +254,15 @@ export class AppComponent implements OnInit {
     // prípadne niečo po dojazde animácie
   }
 
+  
+
+
   ngOnInit(): void {
     // simulácia načítania
     this.lastScrollY = window.scrollY;
     this.isAtTop = window.scrollY <= this.scrollThreshold;
+
+   
 
     const stored = localStorage.getItem('color-primary');
     if (stored) {

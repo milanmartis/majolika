@@ -1,0 +1,42 @@
+
+<div class="overlay_2">
+
+
+<section class="container" style="margin-top: 16px;"> 
+    <h1 class="text-4xl font-bold text-center">{{ 'BASE.WHO_WE_ARE' | translate }}</h1> 
+    <br> <br>
+    
+<p class="text-4xl font-bold text-center">{{ 'BASE.WHO_WE_ARE_PEREX' | translate }}</p> 
+
+<br> 
+ <!-- <div class="toolbar"> <input [(ngModel)]="q" (ngModelChange)="onQueryChange($event)" placeholder="Hľadať podľa mena…" />
+     <select [(ngModel)]="pageSize" (change)="reload()"> <option [value]="8">8</option> <option [value]="12">12</option>
+         <option [value]="24">24</option> </select> </div> --> <!-- <div *ngIf="loading" class="muted">Načítavam…</div> --> 
+         
+
+<div *ngIf="error" class="error">{{ error }}</div> 
+<div class="grid"> <button class="card" *ngFor="let a of items" (click)="openAuthor(a)"> 
+    <img *ngIf="a.fotoUrl" [src]="a.fotoUrl" [alt]="a.fotoAlt || a.meno" loading="lazy" /> 
+    <div class="content"> <h3>{{ a.meno }}</h3> <h4 class="pozicia" *ngIf="a.bio">{{ a.pozicia}}</h4> </div> 
+</button> </div>
+
+<!-- <div class="pager" *ngIf="totalPages > 1"> 
+    <button (click)="prev()" [disabled]="page<=1">‹ Predchádzajúca</button> <span>Strana {{page}} / {{totalPages}}</span> 
+    <button (click)="next()" [disabled]="page>=totalPages">Ďalšia ›</button> </div> </section>
+-->
+
+</section>
+     <div style="position:relative; top:0px;margin-top:0px;margin-bottom:0px;">
+          <img src="/assets/img/back_dekor_black2.png" alt="dekor" width="74" style="transform: rotate(90deg);">
+        </div>
+  
+        <div style="position:relative; top:0px;" class="buttons2 mb-4">
+          <a class="btn" routerLink="/eshop">{{ 'HOME.ESHOP' | translate }}</a>
+          <a class="btn" routerLink="/dielne">{{ 'HOME.DIELNE' | translate }}</a>
+          <a class="btn" routerLink="/tradicia">{{ 'HOME.TRADICIA' | translate }}</a>
+        </div>
+
+        <br>
+    </div>
+
+<app-footer></app-footer>

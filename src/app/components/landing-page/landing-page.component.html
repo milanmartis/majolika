@@ -49,8 +49,8 @@
             </ng-template>
 
             <div class="slide-overlay" [@overlayAnimation]="i">
-              <h2 *ngIf="s.title">{{ s.title }}</h2>
-              <p *ngIf="s.subtitle">{{ s.subtitle }}</p>
+              <h2  style="width: 100%; max-width: 666px;" *ngIf="s.title">{{ s.title }}</h2>
+              <p  style="width: 100%; max-width: 666px;" *ngIf="s.subtitle">{{ s.subtitle }}</p>
               <button
                 type="button"
                 class="slider-button"
@@ -90,7 +90,7 @@
     <!-- ---------- 4 KARTY ---------- -->
     <div class="choice-grid" [@fadeInStagger]="animationState">
       <div class="choice-card">
-        <a routerLink="/article/kto-sme">
+        <a routerLink="/o-nas">
           <div class="image-wrapper">
             <img
               [src]="imageSrc"
@@ -150,30 +150,7 @@
       </div>
     </div>
 
-    <!-- HERO -->
-    <section class="lp-hero" [@fadeInStagger]="animationState">
-      <div class="lp-hero__image">
-        <img
-          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
-          alt="Majolika váza"
-        />
-      </div>
-      <div class="lp-hero__content">
-        <h2 class="lp-hero__title">
-          {{ 'ONAS.MAJOLIKA_DOMA_HEADER' | translate }}
-        </h2>
-        <p class="lp-hero__text">
-          {{ 'ONAS.MAJOLIKA_DOMA_TEXT' | translate }}
-        </p>
-        <button
-          [routerLink]="['/eshop/categories', 'na-stol']"
-          class="lp-hero__cta"
-        >
-          {{ 'KOMPLET.PONUKA' | translate }}
-        </button>
-      </div>
-    </section>
-
+    
     <!-- FEATURED KATEGÓRIE -->
     <section *ngIf="featured.length" class="mt-4 sale-section featured" style="position: relative;">
       <h2
@@ -301,6 +278,32 @@
       </div>
     </section>
 
+    
+
+    <section class="lp-hero" [@fadeInStagger]="animationState">
+      <div class="lp-hero__image">
+        <img
+          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
+          alt="Majolika váza"
+        />
+      </div>
+      <div class="lp-hero__content">
+        <h2 class="lp-hero__title">
+          {{ 'ONAS.MAJOLIKA_DOMA_HEADER' | translate }}
+        </h2>
+        <p class="lp-hero__text"  style="width:100%;max-width: 566px;">
+          {{ 'ONAS.MAJOLIKA_DOMA_TEXT' | translate }}
+        </p>
+        <button
+          [routerLink]="['/eshop/categories', 'na-stol']"
+          class="lp-hero__cta"
+        >
+          {{ 'KOMPLET.PONUKA' | translate }}
+        </button>
+      </div>
+    </section>
+
+
     <!-- ---------- FEATURED eshopy ---------- -->
     <section *ngIf="featured.length" class="sale-section featured" style="position: relative;">
       <h2 style="text-align:center; margin:auto; padding-top:20px; padding-bottom:33px;">
@@ -351,7 +354,7 @@
       </a>
     </div>
 
-    <p class="mt-4" style="text-align: center;">
+    <p class="mt-4" style="text-align: center; width:100%;max-width: 566px;">
       {{ 'ESHOP.FIRST_TEXT' | translate }}
     </p>
   </div>

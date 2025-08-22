@@ -23,6 +23,7 @@ export interface ImageBlock {
   __component: 'blocks.image-block';
   id: number;
   alignment: 'left' | 'center' | 'right';
+  columns?: 'one' | 'two';
   thumbnailUrl: string;
   mediumUrl: string;
   largeUrl: string;

@@ -1,28 +1,195 @@
-a{
-    color: var(--base-blue);
+/* ─────────────────────────────────────────
+   Linky
+────────────────────────────────────────── */
+.article-content a {
+  color: var(--base-blue);
+  text-decoration: underline;
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
 }
 
+/* ─────────────────────────────────────────
+   Text block – základ
+   (pri rich HTML nepoužívaj pre-line)
+────────────────────────────────────────── */
 .text-block {
-    color: #000;
-    padding-bottom: 10px;
-    float: left;
-    white-space: pre-line;
-  }
-  
-  .block-two-cols {
-    column-count: 2;
-    column-gap: 40px;
-  }
-  .block-one-col {
-    column-count: 1;
-  }
-  
-  .align-left {
-    text-align: left;
-  }
-  .align-center {
-    text-align: center;
-  }
-  .align-right {
-    text-align: right;
-  }
+
+  color: #000;
+  padding-bottom: 10px;
+  white-space: normal;               /* ← žiadne umelé <br> z whitespace */
+  max-width: 1000px;
+  float: none;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: -30px;              /* zachované z tvojej verzie */
+  text-shadow: var(--primary-color) 0 1px 0;
+
+  /* centrálne riadenie zarovnania */
+  text-align: var(--text-align, start);
+}
+
+/* Ak niekde renderuješ čistý plain text bez HTML, použij toto: */
+.text-block.is-plain { white-space: pre-line; }
+
+/* ─────────────────────────────────────────
+   Užívateľské zarovnanie
+   (prepínané triedou aj cez CSS premennú)
+────────────────────────────────────────── */
+.text-block.align-left   { --text-align: left; }
+.text-block.align-center { --text-align: center; }
+.text-block.align-right  { --text-align: right; }
+
+/* ─────────────────────────────────────────
+   Médiá v texte – responzívne a zarovnanie
+────────────────────────────────────────── */
+.text-block img,
+.text-block picture,
+.text-block figure,
+.text-block video {
+  max-width: 390px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* centrovanie/zarovnanie médií podľa textu */
+.text-block.align-center img,
+.text-block.align-center picture,
+.text-block.align-center figure,
+.text-block.align-center video {
+  margin-inline: auto;               /* center */
+}
+
+.text-block.align-right img,
+.text-block.align-right picture,
+.text-block.align-right figure,
+.text-block.align-right video {
+  margin-left: auto;                 /* right */
+}
+
+.text-block.align-left img,
+.text-block.align-left picture,
+.text-block.align-left figure,
+.text-block.align-left video {
+  margin-right: auto;                /* left (default) */
+}
+
+/* figcaption dedí zarovnanie rodiča */
+.text-block figure { text-align: inherit; }
+
+/* figcaption (ak nechceš žiadny, odkomentuj display:none) */
+figure > figcaption {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-top: 6px;
+  text-align: inherit;
+  /* display: none !important; */
+}
+
+/* ─────────────────────────────────────────
+   Normalizované medzery v rich obsahu
+────────────────────────────────────────── */
+.article-content p {
+  margin: 0 0 -0.9rem;
+  line-height: 1.6;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  margin: -0.4rem -0.45rem;
+  line-height: 1.2;
+}
+
+/* Špecificky ak chceš menšie medzery na h4 (voliteľné) */
+/* .article-content h4 { margin: .8rem 0 .4rem; } */
+
+/* prvý element bez horného okraja (eliminuje "veľkú medzeru" hore) */
+.article-content > :is(h1,h2,h3,h4,h5,h6,p,ul,ol,figure,blockquote):first-child {
+  margin-top: 0 !important;
+}
+
+/* zoznamy */
+.article-content ul,
+.article-content ol {
+  margin: 0 0 .75rem 1.25rem;
+  padding: 0;
+}
+
+
+.article-content br + br {
+  display: block;
+  margin-bottom: 0.9rem;
+  margin-top: 2.9rem;
+}
+
+/* ─────────────────────────────────────────
+   Odstránenie "falošných" prázdnych odsekov od editorov
+   (vyhladzuje veľké skoky po Enter)
+   Pozn.: :has() vyžaduje moderný prehliadač
+────────────────────────────────────────── */
+.text-block p:empty {
+  display: none;
+  margin-top: 20px;
+  padding: 0;
+}
+
+/* <p><br></p> alebo len single <br> → skry */
+.text-block p:has(br:only-child) {
+  display: none;
+  margin-top: 0;
+  padding: 0;
+}
+
+/* ak po prázdnom <p> nasleduje nadpis, nedovoľ mu extra top margin */
+.text-block p:empty + :is(h1,h2,h3,h4,h5,h6),
+.text-block p:has(br:only-child) + :is(h1,h2,h3,h4,h5,h6) {
+  margin-top: 20px;
+}
+
+/* ─────────────────────────────────────────
+   Fallback zarovnanie (ak triedy používaš inde)
+────────────────────────────────────────── */
+.align-left   { text-align: left; }
+.align-center { text-align: center; }
+.align-right  { text-align: right; }
+
+
+/* 🔧 Zjemnenie medzier v rich bloku s .prose */
+.prose.article-content :where(h1,h2,h3,h4,h5,h6) {
+  margin-block-start: .6rem !important;   /* nad nadpisom */
+  margin-block-end:   .35rem !important;  /* POD nadpisom – tu to zmenšuje medzeru */
+  line-height: 1.2 !important;
+}
+
+.prose.article-content :where(p,ul,ol,figure,blockquote) {
+  margin-block: 0.75rem !important;      /* odseky & spol. – bežná „medzera po Entere“ */
+}
+
+/* menšia medzera ak po nadpise hneď nasleduje text/zoznam/obrázok */
+.prose.article-content :where(h1,h2,h3,h4,h5,h6)
+   {
+  margin-top: 1.4rem !important;
+  margin-bottom: 1.075rem !important; /* zmenšená medzera pod nadpisom */
+}
+.prose.article-content :where(p,ul,ol,figure,blockquote) {
+  margin-top: .4rem !important;
+  margin-bottom: -1.075rem !important; /* zmenšená medzera pod nadpisom */
+}
+
+/* prvý blok bez horného okraja */
+.prose.article-content > :where(h1,h2,h3,h4,h5,h6,p,ul,ol,figure,blockquote):first-child {
+  margin-top: 0 !important;
+}
+
+/* skry „prázdne“ odseky, ktoré robia veľké skoky */
+.prose.article-content p:empty,
+.prose.article-content p:has(br:only-child) {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

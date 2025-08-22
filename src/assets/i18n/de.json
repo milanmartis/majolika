@@ -13,7 +13,10 @@
     "LABEL": "Kapazität",
     "STATUS": "{{booked}} gebucht / {{max}} maximal ({{available}} verfügbar)",
     "LOADING": "— lade Kapazität…",
-    "TRVANIE": "Dauer"
+    "TRVANIE": "Dauer",
+    "WHO_WE_ARE": "Wer wir sind",
+    "WHO_WE_ARE_PEREX": "Wir stellen Ihnen unser Team vor, das sich um die Bewahrung und Entwicklung der traditionellen slowakischen Keramik kümmert."
+
 
 
   },
@@ -128,9 +131,48 @@
 "RESULT_SEARCH": "Suchergebnisse",
 "SEARCH_PLACEHOLDER": "Produkte suchen...",
 "SEARCH": "Suche",
-"NO_RESULTS":"Keine Ergebnisse gefunden"
+"NO_RESULTS":"Keine Ergebnisse gefunden",
+"POCET_VOLNYCH_MIEST": "Plätze",
 
+    "CHECKOUT_FAILED": "Zahlung fehlgeschlagen.",
+    "PAYMENT": "Zahlung",
+    "PAYMENT_CARD": "Kartenzahlung",
+    "PAYMENT_COD": "Nachnahme",
+    "PAYMENT_BANK": "Banküberweisung",
+    "PAYMENT_ONSITE": "Zahlung vor Ort",
+    "PAYMENT_POST": "In der Postfiliale",
+    "DELIVERY": "Lieferung",
+    "DELIVERY_PICKUP": "Abholung vor Ort",
+    "DELIVERY_POST_OFFICE": "An die Postfiliale liefern",
+    "DELIVERY_PACKETA_BOX": "Packeta Paketbox",
+    "DELIVERY_POST_COURIER": "Postkurier an Adresse",
+    "SHIPPING_FEE": "Versand",
+    "PAYMENT_FEE": "Zahlungszuschlag",
+    "GRAND_TOTAL": "Gesamtsumme",
+    "POST_OFFICE_ID": "Postfiliale-ID",
+    "PACKETA_BOX_ID": "Packeta-Box-ID",
+     "DELIVERY_ADDRESS_WHERE": "Wohin liefern?",
+    "DELIVERY_ADDRESS_SAME": "Kundenadresse verwenden",
+    "DELIVERY_ADDRESS_OTHER": "An eine andere Adresse liefern",
+    "CHECKOUT_SUBTOTAL": "Zwischensumme",
+    "SELECT_PACKETA_BOX": "Packeta-Box auswählen",
+    "SELECT_REQUIRED": "Bitte wählen Sie vor dem Fortfahren einen Lieferort.",
+    "SELECT_POST_OFFICE": "Postfiliale auswählen",
+      "BANK_TRANSFER_TITLE": "Banküberweisung",
+      "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
+      "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
+      "BANK_TRANSFER_BIC": "BANKSKBX"
+  
   },
+
+  "CHECKOUT_CANCEL": {
+    "TITLE": "Zahlung wurde abgebrochen ❌",
+    "DESCRIPTION": "Sie können es erneut versuchen oder zum Warenkorb zurückkehren.",
+    "BACK_TO_CHECKOUT": "Zur Kasse zurück",
+    "CONTINUE_SHOPPING": "Weiter einkaufen"
+  },
+
+
   "DIELNE": { 
     "WELCOME": "Führungen und kreative Werkstätten",
     "FIRST_TEXT": "Entdecken Sie die uralte Schönheit des traditionellen Volkskunsthandwerks. Wir bieten Ihnen eine einzigartige Gelegenheit, einen Blick hinter die Kulissen der größten Handwerkswerkstätten mit der längsten Tradition in der Slowakei zu werfen. Die Modra Majolika und die Majolika-Ornamentik sind in der Repräsentativen Liste des immateriellen Kulturerbes der Slowakei eingetragen."
@@ -222,17 +264,92 @@
     "nausnice": "Ohrringe",
     "odevy": "Bekleidung",
     "prstene": "Ringe",
-    "tasky": "Taschen"
-  
+    "tasky": "Taschen",
+    "prehliadky": "Führungen",
+    "tvorive-dielne": "Kreativ-Workshops",
+    "WHO_WE_ARE": "Wer wir sind",
+    "WHO_WE_ARE_PEREX": "Wir stellen Ihnen unser Team vor, das sich um die Bewahrung und Entwicklung der traditionellen slowakischen Keramik kümmert."
+    
     },
 
 
 
+  "AUTH": {
+       "ERRORS":{
+"INVALID_CREDENTIALS":"Ungültige E-Mail oder Passwort."
+   },
+    "OR_SIGN_UP_WITH_GOOGLE": "Oder mit Google weiter anmelden",
+     "EMAIL_NOT_CONFIRMED": "Bitte bestätige zuerst deine E-Mail. Prüfe deinen Posteingang.",
+    "NO_ACCOUNT_REGISTER": "Kein Konto? Registrieren",
+    "ACCOUNT_LOGIN": "Haben Sie bereits ein Konto? Anmelden",
+       "BUTTONS": { "LOADING": "Wird verarbeitet…" },
+    "FIELDS": {
+      "IDENTIFIER": {
+        "LABEL": "E-Mail oder Benutzername",
+        "PLACEHOLDER": "z. B. jana@beispiel.de",
+        "REQUIRED": "E-Mail oder Benutzername eingeben"
+      },
+      "USERNAME": {
+        "LABEL": "Benutzername",
+        "PLACEHOLDER": "z. B. janemajolika",
+        "REQUIRED": "Dieses Feld ist erforderlich."
+      },
+      "EMAIL": {
+        "LABEL": "E-Mail",
+        "PLACEHOLDER": "deine@mail.de",
+        "REQUIRED": "E-Mail eingeben",
+        "INVALID": "Gültige E-Mail eingeben"
+      },
+      "PASSWORD": {
+        "LABEL": "Passwort",
+        "PLACEHOLDER": "••••••••",
+        "REQUIRED": "Passwort eingeben",
+        "MINLENGTH": "Das Passwort muss mindestens {{min}} Zeichen lang sein."
+      }
+    },
+    "LOGIN": {
+      "TITLE": "Anmelden",
+      "SUBMIT": "Anmelden",
+      "SUCCESS": "Erfolgreich angemeldet!"
+    },
+    "REGISTER": {
+      "TITLE": "Registrieren",
+      "SUBMIT": "Konto erstellen",
+      "RESEND_CONFIRM": "Bestätigungs-E-Mail erneut senden",
+      "CONFIRM_SENT": "Bestätigungs-E-Mail wurde gesendet.",
+
+      "SUCCESS": "✅ Registrierung erfolgreich! Bitte bestätige dein Konto per E-Mail.",
+      "RESEND": {
+        "SUCCESS": "📧 Bestätigungs-E-Mail wurde erneut gesendet.",
+        "FAIL": "Bestätigungs-E-Mail konnte nicht gesendet werden.",
+        "NO_EMAIL": "Keine E-Mail zum erneuten Senden verfügbar."
+      },
+      "ERRORS": {
+        "EMAIL_TAKEN": "Diese E-Mail wird bereits verwendet.",
+        "EMAIL_NOT_CONFIRMED": "Bitte bestätige zuerst deine E-Mail. Prüfe deinen Posteingang.",
+        "USERNAME_TAKEN": "Dieser Benutzername ist bereits vergeben.",
+        "WEAK_PASSWORD": "Das Passwort erfüllt nicht die Anforderungen.",
+        "INVALID_CREDENTIALS": "Ungültige E-Mail oder Passwort.",
+        "GENERIC": "Registrierung fehlgeschlagen. Bitte versuche es erneut."
+      }
+    }
+
+  },
+
+ "COMMON": { 
+  "OK": "OK", 
+  "CHANGE": "Packeta Box ändern",
+   "STREET": "Straße",
+    "CITY": "Stadt",
+    "ZIP": "PLZ",
+    "COUNTRY": "Land",
+    "NOTES": "Hinweis",
+    "COPY": "Kopieren",
+    "COPIED": "In die Zwischenablage kopiert!"
+  },
 
 
 
-
-      
     "CATEGORIES2": {
       "TRADITIONAL": "Traditionell",
       "MODERN": "Modern",
@@ -257,7 +374,7 @@
   "INFO": "Information",
   "MAJOLIKA_NA_AKCII": "Majolica at the event",
   "DIELNE2": "Workshops",
-  "PREHLIADKY": "Tours"
+  "PREHLIADKY2": "Tours"
 },
 
 "ACCOUNT2": {
@@ -290,8 +407,61 @@
   "TITLE": "Môj účet",
   "USERNAME": "Prihlasovacie meno",
   "EMAIL": "E‑mail",
-  "LOGOUT": "Odhlásiť sa"
-}
+  "LOGOUT": "Odhlásiť sa",
+     "FORM": {
+      "REQUIRED_FIELDS": "❌ Bitte füllen Sie alle Pflichtfelder aus!"
+    },
+    "ERRORS": {
+      "NOT_LOGGED_IN": "❌ Sie sind nicht angemeldet!"
+    },
+    "SAVE": {
+      "SUCCESS": "✅ Die Daten wurden erfolgreich gespeichert.",
+      "FAIL": "❌ Das Profil konnte nicht gespeichert werden."
+    },
+    "LOGOUT2": {
+      "SUCCESS": "✅ Sie wurden abgemeldet."
+    }
+},
+
+
+  "FOOTER": {
+    "ABOUT": {
+    "TITLE": "Die Majolika-Geschichte",
+    "TEXT": "In der Slovenská ľudová majolika pflegen seit 140 Jahren Meister ihres Handwerks die geerbten Traditionen und formen mit Hand und Herz die keramische Seele der Region. Alle Produkte sind handgefertigt und handbemalt. Jedes Stück ist ein Unikat. Die Modraer Majolika und die Majolika-Ornamentik sind in die Repräsentative Liste des immateriellen Kulturerbes der Slowakei eingetragen. <a href='o-nas'>Klicken Sie und erfahren Sie mehr</a>"
+    },
+    "SUPPORT": {
+      "TITLE": "Kundenservice",
+      "MY_ACCOUNT": "Mein Majolika",
+      "FAQ": "FAQ",
+      "SHIPPING": "Versand & Lieferung",
+      "RETURNS": "Reklamationen",
+      "CONTACT": "Kontaktiere uns"
+    },
+    "INFO": {
+      "TITLE": "Informationen",
+      "ABOUT_COMPANY": "Über das Unternehmen",
+      "CAREERS": "Karriere",
+      "BLOG": "Blog",
+      "TERMS": "Geschäftsbedingungen",
+      "PRIVACY": "Datenschutz"
+    },
+    "NEWSLETTER": {
+      "TITLE": "Newsletter",
+      "TEXT": "Melde dich an und erhalte 10 % Rabatt auf deine erste Bestellung.",
+      "EMAIL_PLACEHOLDER": "Deine E-Mail-Adresse",
+      "SUBMIT": "Abonnieren"
+    },
+    "SOCIAL": {
+      "TITLE": "Folge uns"
+    }
+  },
+    "CHECKOUT": {
+    "SUCCESS": {
+      "TITLE": "Danke für Ihre Bestellung! 🎉",
+      "BODY": "Ihre Zahlung war erfolgreich. Eine Bestätigung wurde an Ihre E-Mail gesendet.",
+      "BACK": "Zur Startseite"
+    }
+  }
 
    
   }

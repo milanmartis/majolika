@@ -281,17 +281,16 @@ public selectDay(day: CalendarDay): void {
   this.loadSessionsForDay(utcDate, true);
 }
 
-private loadSessionsForDay(date: string, forceReload = false) {
+private loadSessionsForDay(date: string | Date | CalendarDay, forceReload = false) {
+  const dateStr =
+    typeof date === 'string' ? date :
+    date instanceof Date ? this.toUTCDateString(date) :
+    this.toUTCDateString(date.date);
+
   this.loadingSessions = true;
-  this.eventSessionsService.listForDay(date, forceReload).subscribe({
-    next: (sessions) => {
-      this.sessionsForSelectedDay = sessions ?? [];
-      this.loadingSessions = false;
-    },
-    error: () => {
-      this.loadingSessions = false;
-      this.sessionsForSelectedDay = [];
-    }
+  this.eventSessionsService.listForDay(dateStr, forceReload).subscribe({
+    next: (sessions) => { this.sessionsForSelectedDay = sessions ?? []; this.loadingSessions = false; },
+    error: () => { this.loadingSessions = false; this.sessionsForSelectedDay = []; }
   });
 }
 
@@ -694,23 +693,43 @@ this.holdTimer = setTimeout(() => {
 
 
   public prevMonth(): void {
-    this.currentMonth = new Date(Date.UTC(
-      this.currentMonth.getUTCFullYear(),
-      this.currentMonth.getUTCMonth() - 1,
-      1
-    ));
-    this.generateCalendar(this.currentMonth);
-    this.selectedDay = this.calendarDays.find(d => d.isInCurrentMonth && d.dayOfMonth === 1) ?? null;
+  this.currentMonth = new Date(Date.UTC(
+    this.currentMonth.getUTCFullYear(),
+    this.currentMonth.getUTCMonth() - 1,
+    1
+  ));
+  this.generateCalendar(this.currentMonth);
+  this.selectedDay = this.calendarDays.find(d => d.isInCurrentMonth && d.dayOfMonth === 1) ?? null;
+
+  if (this.selectedDay) {
+    this.loadSessionsForDay(this.toUTCDateString(this.selectedDay.date), true);
   }
+}
   
-  public nextMonth(): void {
-    this.currentMonth = new Date(Date.UTC(
-      this.currentMonth.getUTCFullYear(),
-      this.currentMonth.getUTCMonth() + 1,
-      1
-    ));
-    this.generateCalendar(this.currentMonth);
-    this.selectedDay = this.calendarDays.find(d => d.isInCurrentMonth && d.dayOfMonth === 1) ?? null;
+  public async nextMonth(): Promise<void> {
+    // Move to first day of next month in UTC
+    const y = this.currentMonth.getUTCFullYear();
+    const m = this.currentMonth.getUTCMonth();
+    this.currentMonth = new Date(Date.UTC(y, m + 1, 1));
+
+    const prevSelectedDom = this.selectedDay?.dayOfMonth ?? 1;
+
+    // If generateCalendar is sync, removing await is fine.
+    await this.generateCalendar(this.currentMonth);
+
+    // Try to keep same day-of-month; otherwise fall back to 1st; otherwise last day in month grid.
+    const inMonth = this.calendarDays.filter(d => d.isInCurrentMonth);
+    this.selectedDay =
+      inMonth.find(d => d.dayOfMonth === prevSelectedDom) ??
+      inMonth.find(d => d.dayOfMonth === 1) ??
+      inMonth.at(-1) ??
+      null;
+
+    if (this.selectedDay) {
+      this.loadSessionsForDay(this.toUTCDateString(this.selectedDay.date), true); // ✅ string
+    } else {
+      // optionally: this.clearSessions();
+    }
   }
 
   // public selectDay(day: CalendarDay): void {

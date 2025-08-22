@@ -20,6 +20,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { CartService } from 'app/services/cart.service';
 import { ProductDetailComponent } from './product-detail.component';
 import { FavoriteStateService } from 'app/services/favorite-state.service';
+import { MatIconModule } from '@angular/material/icon';
 
 import {
   ProductsService,
@@ -53,7 +54,7 @@ interface FilterOption {
   standalone: true,
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
-  imports: [CommonModule, RouterModule, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterModule, FormsModule, TranslateModule, MatIconModule   ],
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
@@ -118,7 +119,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   isLoading = false;
   error = false;
   loaded = false;
-
+  favIds = new Set<number>();
   readonly pageSize = 20;
   currentPage = 1;
   totalPages = 1;
@@ -142,6 +143,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
 
   ) {}
+
+  isFav(p: Product): boolean {
+    return this.favIds.has(Number(p.id));
+  }
 
   addToFav(product: Product) {
     const wasFav = this.favState.isFavorite(product.id);
@@ -167,6 +172,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     /* 1️⃣ – najprv pripoj odber na refresh$ */
+     this.favState.favorites$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(favs => {
+        this.favIds = new Set(
+          favs
+            .filter(f => f.product?.id != null)
+            .map(f => Number(f.product!.id))
+        );
+        this.cdr.markForCheck();
+      });
+
       this.refresh$
       .pipe(
         debounceTime(50),

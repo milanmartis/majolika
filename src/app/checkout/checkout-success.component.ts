@@ -1,27 +1,31 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { CartService } from 'app/services/cart.service';
+import { FooterComponent } from 'app/components/footer/footer.component';
 
 @Component({
   selector: 'app-checkout-success',
   standalone: true,
-  imports: [RouterModule],  // aby fungoval routerLink
+  imports: [RouterModule, TranslateModule, FooterComponent],
   template: `
     <div class="checkout-result">
-      <h1>Ďakujeme za objednávku! 🎉</h1>
-      <p>Vaša platba prebehla úspešne. Potvrdenie vám príde emailom.</p>
-      <a routerLink="/" class="btn-back">Späť na úvod</a>
+      <h1>{{ 'CHECKOUT.SUCCESS.TITLE' | translate }}</h1>
+      <p>{{ 'CHECKOUT.SUCCESS.BODY' | translate }}</p>
+      <a routerLink="/" class="btn-back">{{ 'CHECKOUT.SUCCESS.BACK' | translate }}</a>
     </div>
+    <app-footer class="mt-8"></app-footer>
+
   `,
   styles: [`
     .checkout-result {
-      max-width: 600px;
+      max-width: 500px;
       margin: 5rem auto;
       text-align: center;
       background: #fff;
       padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: var(--corners);
+      // box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .checkout-result h1 {
       color: var(--base-blue);
@@ -36,7 +40,7 @@ import { CartService } from 'app/services/cart.service';
       padding: 0.8rem 1.2rem;
       background: var(--base-blue);
       color: #fff;
-      border-radius: 6px;
+      border-radius: var(--corners);
       text-decoration: none;
       font-weight: bold;
       transition: all 0.2s;

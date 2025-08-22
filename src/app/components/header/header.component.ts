@@ -80,7 +80,8 @@ onResize(event: any) {
     { name: 'CATEGORIES.PRODUCTS', link: '/eshop' },
     { name: 'CATEGORIES.WORKSHOPS', link: '/dielne' },
     { name: 'CATEGORIES.TRADITION', link: '/tradicia' },
-    { name: 'CATEGORIES.ABOUT', link: '/article/kto-sme' },
+    { name: 'CATEGORIES.ABOUT', link: '/o-nas' },
+    // { name: 'CATEGORIES.ABOUT', link: '/article/kto-sme' },
     { name: 'CATEGORIES.KONTAKTY', link: '/article/informacie' },
   ];
   @ViewChild(SearchComponent) searchCmp!: SearchComponent;

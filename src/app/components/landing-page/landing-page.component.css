@@ -9,10 +9,11 @@
 
 .slider-wrapper {
   position: relative;
+  top: -36px;
   width: 100%;
   overflow: hidden;
   border-radius: var(--corners);
-  margin-bottom: 3rem;
+  margin-bottom: 0rem;
 }
 
 .slider-scroll {
@@ -62,12 +63,12 @@
 
 .slide-overlay {
   z-index: 92;
-  max-width: 1200px;
+  max-width: 660px;
   width: 100%;
   position: absolute;
   bottom: 0;
   left: 0;
-  margin-left: 150px;
+  margin-left: 100px;
   margin-bottom: 40px;
   padding: 1rem 1.5rem;
   color: #edeef1;

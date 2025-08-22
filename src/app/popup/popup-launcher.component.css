@@ -29,6 +29,7 @@
     font-weight: 600;
     font-size: 0.87rem;
     margin-bottom: 5px;
+    color: #000;
   }
   
   /* kontejner pro textové bloky nahoře */
@@ -53,6 +54,7 @@
       transparent 100%
     ); */
     z-index: 1;
+    
   }
   
   /* footer s tmavým priehľadným podkladom a radiálnym gradientom strácajúcim sa smerom nahor */
@@ -63,21 +65,28 @@
     /* display: flex; */
     /* justify-content: space-between; */
     align-items: center;
-    background: linear-gradient(
-        to top,               /* smer: zhora nadol */
-        rgba(0, 0, 0, 0.75) 0%,  /* na vrchu čierna s 75% krytím */
-        transparent 100%         /* na spodku priehľadnosť */
-      );
-    color: #fff;
+    color: #000;
+    border-radius: var(--corners);
+   background: var(--color-primary);
+   opacity: 0.9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    font-size: 0.9rem;
+   margin: 24px;
     z-index: 3;
+      background-image: url("/assets/img/corner7.png");
+  background-size: auto;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size:9rem;
   }
   
   /* styl tlačítka */
   .footer .btn {
-    float:right;
-    margin: 0px;
+    float:left;
+    margin: 10px 0px;
+    border: 1px solid var(--base-blue);
     padding: 0.5rem 1rem 0.1rem 1rem;
-    background:var(--color-primary);
     color: var(--base-blue);
     text-decoration: none;
     border-radius: var(--corners);
@@ -99,7 +108,7 @@ h3{
   font-size: 0.94rem;
 }
   h1{
-    color:#fff;
+    color:var(--base-blue);
   }
   p{
     margin: 0px 0px 10px 0px;

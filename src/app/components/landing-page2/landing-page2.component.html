@@ -56,8 +56,8 @@
         </ng-template>
 
         <div class="slide-overlay"  [@overlayAnimation]="i">
-          <h2 *ngIf="s.title">{{ s.title }}</h2>
-          <p *ngIf="s.subtitle">{{ s.subtitle }}</p>
+          <h2 style="width: 100%; max-width: 666px;"  *ngIf="s.title">{{ s.title }}</h2>
+          <p style="width: 100%; max-width: 666px;" *ngIf="s.subtitle">{{ s.subtitle }}</p>
           <button
             type="button"
             class="slider-button"
@@ -101,7 +101,7 @@
       <div class="image-wrapper">
         <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_prehliadky_7be0195e2e.webp" alt="E-shop" />
       </div>
-      <button class="choice-button">{{ 'PREHLIADKY2.PREHLIADKY' | translate }}</button>
+      <button class="choice-button">{{ 'PREHLIADKY2.PREHLIADKY2' | translate }}</button>
       </a>
     </div>
 
@@ -322,7 +322,7 @@
     >
   </div>
 
-  <p class="mt-4" style="text-align: center">
+  <p class="mt-4" style="text-align: center; width: 100%; max-width: 666px; margin: auto;">
     {{ 'ESHOP.FIRST_TEXT' | translate }}
   </p>
 </div>

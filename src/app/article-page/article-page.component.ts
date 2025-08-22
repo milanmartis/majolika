@@ -104,20 +104,25 @@ export class ArticlePageComponent {
     this.galleryOpen = false;
   }
 
+  /** Full-width sú len tieto typy, alebo ak block nemá columns/je 'one' */
   isFullWidth(block: ContentBlock): boolean {
-    return (
+    if (
       block.__component === 'blocks.heading-block' ||
       block.__component === 'blocks.link-block' ||
-      block.__component === 'blocks.video-block' ||
-      block.__component === 'blocks.text-block'
-    );
+      block.__component === 'blocks.video-block'
+    ) {
+      return true;
+    }
+    const columns = (block as any).columns as 'one' | 'two' | undefined;
+    // text/image: full ak columns chýba alebo je 'one'; half ak je 'two'
+    return !columns || columns === 'one';
   }
 
   isHeading = (b: ContentBlock): b is any => b.__component === 'blocks.heading-block';
-  isText = (b: ContentBlock): b is any => b.__component === 'blocks.text-block';
-  isImage = (b: ContentBlock): b is ImageBlock => b.__component === 'blocks.image-block';
-  isLink = (b: ContentBlock): b is any => b.__component === 'blocks.link-block';
-  isVideo = (b: ContentBlock): b is any => b.__component === 'blocks.video-block';
+  isText    = (b: ContentBlock): b is any => b.__component === 'blocks.text-block';
+  isImage   = (b: ContentBlock): b is ImageBlock => b.__component === 'blocks.image-block';
+  isLink    = (b: ContentBlock): b is any => b.__component === 'blocks.link-block';
+  isVideo   = (b: ContentBlock): b is any => b.__component === 'blocks.video-block';
 
   trackByIndex = (_: number) => _;
 }

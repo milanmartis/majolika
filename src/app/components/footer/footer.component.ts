@@ -5,11 +5,13 @@ import { Router, NavigationStart  } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from 'app/services/language.service';
 import { fadeInOutAnimation } from 'app/animations/route.animations';
+import { LinkifyPipe } from 'app/pipes/linkify.pipe';
 
+  
 @Component({
   selector: 'app-footer',
   standalone: true, 
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, LinkifyPipe],
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })

@@ -157,9 +157,7 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
     <div class="grid-item shimmer" *ngFor="let _ of loadingPlaceholders"></div>
   </div>-->
 <!-- ⬇️ Full‑screen overlay -->
-<div class="page-loading-overlay" *ngIf="isLoading">
-  <!-- <div class="spinner"></div> -->
-</div>
+
 
   <!-- <div class="grid" *ngIf="!isLoading && !error && products.length > 0"> -->
     <div class="products-wrapper" [class.loading]="isLoading">
@@ -167,14 +165,17 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
         <ng-container *ngFor="let p of paginatedProducts">
           <div class="grid-item">
             <div class="img-wrapper" [class.loading]="loadingMap[p.slug]">
+              {{ p.name }}
               <button
                 class="btn-heart"
+                [class.is-fav]="isFav(p)"
+                [attr.aria-pressed]="isFav(p)"
                 (click)="addToFav(p)"
                 type="button"
                 tabindex="0"
                 aria-label="Obľúbený produkt"
-              >   
-                <i class="fa fa-heart"></i>
+              >
+                <mat-icon>{{ isFav(p) ? 'favorite' : 'favorite_border' }}</mat-icon>
               </button>
               <!-- Klik na obrázok vedie na detail produktu -->
               <a [routerLink]="['/eshop', p.slug]">
@@ -191,12 +192,23 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
               <h3>
                 <a [routerLink]="['/eshop', p.slug]">{{ p.name }}</a>
               </h3>
-              <p *ngIf="p.price !== null; else noPrice">
+              <!-- <p style="font-size: 1rem;" *ngIf="p.price !== null; else noPrice">
                 {{ p.price }} €
-              </p>
+              </p> -->
+
+        <div *ngIf="p.inSale === true;">
+          <p style="font-size: 1rem; text-align: center;display:inline-flex;"> {{ p.price_sale }} € </p>
+          <p style="padding-left:12px;display: inline-flex;font-size: 1rem;text-decoration: line-through;" class="in-sale">  {{ p.price | number:'1.2-2' }} €</p>
+          
+        </div>
+        <div *ngIf="p.inSale === false" class="price-sale">
+          <p style="font-size: 1rem;">{{ p.price| number:'1.2-2' }} €</p>
+        </div>
               <ng-template #noPrice>
                 <p>{{ 'ESHOP.PRICE_NOT_SET' | translate }}</p>
+
               </ng-template>
+
             </div>
         
             <!-- Add to cart button full-width pod produktom -->
@@ -205,6 +217,7 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
               (click)="addProductToCart(p)"
               type="button"
             >
+           
               <span class="icon" id="cart_image"></span>
               {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
             </button>
