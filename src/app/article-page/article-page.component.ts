@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Observable, combineLatest } from 'rxjs';
@@ -14,7 +14,8 @@ import { LinkBlockComponent } from 'app/blocks/link-block/link-block.component';
 import { VideoBlockComponent } from 'app/blocks/video-block/video-block.component';
 import { FooterComponent } from 'app/components/footer/footer.component';
 import { GalleryComponent } from 'app/components/gallery/gallery.component';
-
+import { MapComponent } from 'app/components/map/map.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 import type { Article } from 'app/models/article.model';
 import type { ContentBlock, ImageBlock } from 'app/models/blocks.model';
 
@@ -38,7 +39,8 @@ import {
     LinkBlockComponent,
     VideoBlockComponent,
     FooterComponent,
-    GalleryComponent
+    GalleryComponent,
+    MapComponent
   ],
   templateUrl: './article-page.component.html',
   styleUrls: ['./article-page.component.css'],
@@ -58,19 +60,22 @@ import {
 export class ArticlePageComponent {
   article$!: Observable<Article>;
   private destroy$ = new Subject<void>();
-
   imageUrls: string[] = [];
   galleryOpen = false;
   galleryIndex = 0;
-
+  private route = inject(ActivatedRoute)
   constructor(
-    private route: ActivatedRoute,
+    // private route: ActivatedRoute,
     private articleService: ArticleService,
     private lang: LanguageService
   ) {
     this.initArticleLoader();
   }
 
+  slug = toSignal(this.route.paramMap.pipe(map(p => p.get('slug') ?? '')), { initialValue: '' });
+  showMap = computed(() => this.slug() === 'informacie');
+  
+  
   private initArticleLoader() {
     this.article$ = combineLatest([
       this.route.paramMap.pipe(map(pm => pm.get('slug')!)),
@@ -80,8 +85,8 @@ export class ArticlePageComponent {
       switchMap(([slug, lang]) => this.articleService.getArticleBySlug(slug, lang)),
       tap(article => {
         this.imageUrls = article.content
-          .filter((b): b is ImageBlock => b.__component === 'blocks.image-block')
-          .map(b => b.largeUrl);
+        .filter((b): b is ImageBlock => b.__component === 'blocks.image-block')
+        .map(b => b.largeUrl);
       })
     );
   }

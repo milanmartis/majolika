@@ -90,6 +90,7 @@
     "ERROR_404": "Das Produkt wurde leider nicht gefunden",
     "CART":"Warenkorb",
     "DO_POKLADNE":"Zur Kasse",
+    "POKLADNA": "Kasse",
     "SUM_TOTAL":"Gesamtsumme",
     "CART_IS_EMPTY": "Der Warenkorb ist leer",
     "SELECT_CATEGORY": "Bitte wählen Sie eine Kategorie aus",
@@ -161,7 +162,11 @@
       "BANK_TRANSFER_TITLE": "Banküberweisung",
       "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
       "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
-      "BANK_TRANSFER_BIC": "BANKSKBX"
+      "BANK_TRANSFER_BIC": "BANKSKBX",
+      "LOGIN_TO_SAVE_FAV": "Melden Sie sich an, um Favoriten zu speichern",
+    "LOGIN": "Anmelden",
+        "NOVINKA": "Neuheit",
+    "ZLAVA": "Rabatt"
   
   },
 
@@ -185,11 +190,12 @@
       "HOME": "Startseite",
       "AKTUALITY": "Neuigkeiten",
       "PRODUCTS": "E-shop",
-      "WORKSHOPS": "Werkstätten",
+      "WORKSHOPS": "Führungen & Werkstätten",
       "TRADITION": "Tradition",
       "ABOUT": "Uber uns",
       "KONTAKTY": "Kontakt",
       "PREHLIADKY": "Führungen",
+      "detska-kolekcia-s-mackom": "Kinderserie mit Bärchen",
     "dekoracie-a-svietidla": "Dekorationen und Beleuchtung",
     "hodiny": "Uhren",
     "kosiky": "Körbe",
@@ -271,6 +277,29 @@
     "WHO_WE_ARE_PEREX": "Wir stellen Ihnen unser Team vor, das sich um die Bewahrung und Entwicklung der traditionellen slowakischen Keramik kümmert."
     
     },
+
+
+  "cookie": {
+    "title": "Informationen zu Cookies",
+    "desc": "Mit Klick auf <strong>Alle akzeptieren</strong> speichern wir technische und Analyse-Cookies, um Ihre Nutzung zu verbessern und die Leistung zu messen. Sie können Ihre Präferenzen unter <em>Cookie-Einstellungen</em> ändern.",
+    "acceptAll": "Alle akzeptieren",
+    "rejectAll": "Alle ablehnen",
+    "openSettings": "Cookie-Einstellungen",
+    "save": "Einstellungen speichern",
+    "categories": {
+      "necessary": {
+        "title": "Notwendige Cookies",
+        "desc": "Erforderlich für die korrekte Funktion der Website (Sicherheit, Login, Sprache)."
+      },
+      "analytics": {
+        "title": "Analyse-Cookies",
+        "desc": "Helfen uns, die Nutzung zu verstehen und die Seite zu verbessern (z. B. Google Analytics)."
+      }
+    },
+    "live": {
+      "saved": "Ihre Cookie-Einstellungen wurden gespeichert."
+    }
+  },
 
 
 
@@ -420,7 +449,9 @@
     },
     "LOGOUT2": {
       "SUCCESS": "✅ Sie wurden abgemeldet."
-    }
+    },
+    "hide-product": "Produkte ausblenden",
+    "show-product": "Produkte anzeigen"
 },
 
 
@@ -461,6 +492,21 @@
       "BODY": "Ihre Zahlung war erfolgreich. Eine Bestätigung wurde an Ihre E-Mail gesendet.",
       "BACK": "Zur Startseite"
     }
+  },
+    "role": {
+    "admin": "Verwaltung",
+    "painter": "Maler / Malerin",
+    "jug_maker": "Krugmacher / Krugmacherin",
+    "production_master": "Produktionsmeister / Produktionsmeisterin"
+  },
+  "authors": {
+    "title": "Autor:innen",
+    "search": "Nach Namen suchen…",
+    "empty": "Keine Autor:innen gefunden.",
+    "loading": "Lade…",
+    "prev": "Zurück",
+    "next": "Weiter",
+    "page": "Seite {{page}} von {{total}}"
   }
 
    

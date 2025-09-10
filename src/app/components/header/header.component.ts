@@ -79,7 +79,7 @@ onResize(event: any) {
     { name: 'CATEGORIES.AKTUALITY', link: '/aktuality' },
     { name: 'CATEGORIES.PRODUCTS', link: '/eshop' },
     { name: 'CATEGORIES.WORKSHOPS', link: '/dielne' },
-    { name: 'CATEGORIES.TRADITION', link: '/tradicia' },
+    { name: 'CATEGORIES.TRADITION', link: '/article/historia-majoliky' },
     { name: 'CATEGORIES.ABOUT', link: '/o-nas' },
     // { name: 'CATEGORIES.ABOUT', link: '/article/kto-sme' },
     { name: 'CATEGORIES.KONTAKTY', link: '/article/informacie' },
@@ -252,7 +252,7 @@ onResize(event: any) {
   }
 
   onCategorySelect(slug: string): void {
-    this.router.navigate(['/eshop', 'categories', slug]);
+    this.router.navigate(['/produkt', 'kategoria', slug]);
     this.toggleSidebar();
     this.expanded = {};
   }

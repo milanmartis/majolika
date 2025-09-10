@@ -36,10 +36,10 @@ type DialogData = { id: number } | { autor: Autor };
       width: min(720px, 92vw);
       max-height: 90vh;
       overflow-y: auto;
-      overflow-x: hidden;                   /* ⬅️ požiadané */
+      overflow-x: hidden;                
       border-radius: var(--corners, 16px);
 
-      overflow-x: hidden; /* ⬅️ požiadané */
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       max-width: 100%;
@@ -52,7 +52,7 @@ type DialogData = { id: number } | { autor: Autor };
   width: 100%;
   aspect-ratio: 6 / 7;
   object-fit: cover;
-  // object-position: top center; /* alebo jednoducho: top; */
+
   border-top-left-radius: var(--corners, 16px);
   border-top-right-radius: var(--corners, 16px);
   display: block;

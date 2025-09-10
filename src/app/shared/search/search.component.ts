@@ -322,7 +322,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       this.isClosing = false;
       this.clearAllResults();
       this.renderer.removeClass(document.body, 'no-scroll');
-      this.router.navigate(['/eshop', p.slug]);
+      this.router.navigate(['/produkt', p.slug]);
     }, 300);
   }
 

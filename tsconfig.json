@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "types": ["google.maps"],
     "baseUrl": "./src",
     "paths": {
       "app/*": ["app/*"]

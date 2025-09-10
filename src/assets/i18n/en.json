@@ -88,6 +88,7 @@
     "ERROR_404": "The product was unfortunately not found",
     "CART":"Cart",
     "DO_POKLADNE":"Checkout",
+    "POKLADNA": "Checkout",
     "SUM_TOTAL":"Total",
     "CART_IS_EMPTY": "The cart is empty",
     "SELECT_CATEGORY": "Please select a category",
@@ -156,8 +157,11 @@
       "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
       "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
       "BANK_TRANSFER_BIC": "BANKSKBX",
-      "PAYMENT_FEE": "Payment surcharge"
-    
+      "PAYMENT_FEE": "Payment surcharge",
+        "LOGIN_TO_SAVE_FAV": "Sign in to save favorites",
+    "LOGIN": "Sign in",
+        "NOVINKA": "New",
+    "ZLAVA": "Discount"
 
 
   },
@@ -184,13 +188,14 @@
       "HOME": "Home",
       "AKTUALITY": "News",
       "PRODUCTS": "E-shop",
-      "WORKSHOPS": "Workshops",
+      "WORKSHOPS": "Tours & Workshops",
       "TRADITION": "Tradition",
       "ABOUT": "About",
       "KONTAKTY": "Contact",
       "PREHLIADKY": "Tours",
     "dekoracie-a-svietidla": "Decorations and Lighting",
     "hodiny": "Clocks",
+    "detska-kolekcia-s-mackom": "Children's Collection with Bear",
     "kosiky": "Baskets",
     "plakety-a-figurky": "Plaques and Figurines",
     "pokladnicky": "Piggy Banks",
@@ -269,6 +274,27 @@
   },
 
 
+    "cookie": {
+    "title": "Cookie Information",
+    "desc": "By clicking <strong>Accept all</strong> we will store technical and analytics cookies to improve your experience and measure performance. You can change your preferences in <em>Cookie settings</em>.",
+    "acceptAll": "Accept all",
+    "rejectAll": "Reject all",
+    "openSettings": "Cookie settings",
+    "save": "Save settings",
+    "categories": {
+      "necessary": {
+        "title": "Necessary cookies",
+        "desc": "Required for the site to function correctly (security, login, language)."
+      },
+      "analytics": {
+        "title": "Analytics cookies",
+        "desc": "Help us understand how the site is used and improve it (e.g. Google Analytics)."
+      }
+    },
+    "live": {
+      "saved": "Your cookie preferences have been saved."
+    }
+  },
 
 
 "AUTH": {
@@ -378,7 +404,7 @@
 
 "ACCOUNT2": {
   "TITLE": "My Account",
-  "USER_DATA": "User Information",
+  "USER_DATA": "My Data",
   "SAVE_CHANGES": "Save Changes",
   "FAVORITES": "My Favorite Products",
   "REMOVE_FAVORITE": "Remove",
@@ -419,7 +445,9 @@
     },
     "LOGOUT2": {
       "SUCCESS": "✅ You have been signed out."
-    }
+    },
+    "hide-product": "Hide products",
+    "show-product": "Show products"
 },
   "FOOTER": {
     "ABOUT": {
@@ -458,6 +486,23 @@
       "BODY": "Your payment was successful. A confirmation has been sent to your email.",
       "BACK": "Back to Home"
     }
+  },
+  
+  "role": {
+    "admin": "Administration",
+    "painter": "Painter",
+    "jug_maker": "Jug maker",
+    "production_master": "Production master"
+  },
+  "authors": {
+    "title": "Authors",
+    "search": "Search by name…",
+    "empty": "No authors found.",
+    "loading": "Loading…",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {{page}} of {{total}}"
   }
+
     
 }

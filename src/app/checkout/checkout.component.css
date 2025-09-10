@@ -6,11 +6,13 @@
 }
 
 .checkout-title {
-  text-align: center;
-  margin: 2rem 0;
+   text-align: center;
+  margin: 110px auto 30px;
+  font-size: 2.4rem;
   text-transform: uppercase;
-  font-weight: bold;
-  font-size: 2rem;
+  font-weight: 900;
+  color: var(--base-blue);
+
 }
 
 /* GRID PRE DVE KOLÓNY (nové HTML: form.checkout-form-grid + .left-col/.right-col) */
@@ -87,6 +89,22 @@ h2 {
   color: #444;
 }
 
+.consents .mat-mdc-checkbox { display:block; margin:.25rem 0; }
+.consents a { text-decoration: underline; }
+
+.grid-2 label{
+  font-weight: 600;
+  margin-top: 0.42rem;
+  margin-bottom: 0.84rem;
+  color: #444;
+}
+.grid-2 input{
+  font-weight: 600;
+  margin-top: -0.2rem;
+  margin-bottom: -0.4rem;
+  color: #444;
+}
+
 .spinner-inline{
    width:16px !important;
    height:16px !important;
@@ -95,6 +113,14 @@ h2 {
    /* farba indikátora (MDC) → biela */
   --mdc-circular-progress-active-indicator-color: #fff;
  }
+
+
+.post-office-block { margin-top: 8px; }
+.post-office-selected { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.post-office-selected .actions { display: flex; gap: 8px; }
+
+
+
 
 .form-row input,
 .right-col input,
@@ -140,10 +166,13 @@ h2 {
   color: #333;
 }
 
+legend  {
+  margin-top: 0.5rem;
+  color:#333
+}
 /* CHIPS (platba + doručenie) */
 .chips {
   display: block;
-  margin-top: -1.25rem;
 }
 .chips .mat-mdc-chip-option,
 .chips .mat-mdc-chip {

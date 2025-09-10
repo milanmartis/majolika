@@ -82,6 +82,7 @@
       "ERROR_404": "Produkt sa žiaľ nenašiel",
       "CART":"Košík",
       "DO_POKLADNE":"Do pokladne",
+      "POKLADNA": "Pokladňa",
       "SUM_TOTAL":"Spolu",
       "CART_IS_EMPTY": "Košík je prázdny",
       "SELECT_CATEGORY": "Vyberte si z kategórií",
@@ -103,8 +104,8 @@
     "FAVORITE_REMOVED": "Položka vyradená z obľúbených",
     "OK": "OK",
      "CHECKOUT_FORM_INVALID": "Prosím, vyplňte všetky povinné polia.",
-     "CHECKOUT_MY_ITEMS": "Moje položky",
-     "CHECKOUT_CUSTOMER_INFO": "Údaje o zákazníkovi",
+     "CHECKOUT_MY_ITEMS": "Položky, platba a doručenie",
+     "CHECKOUT_CUSTOMER_INFO": "Moje údaje",
      "CHECKOUT_PROCEED_PAYMENT": "Pokračovať k platbe",
 "TVAR_TANIER": "Tanier",
 "TVAR_VAZA": "Váza",
@@ -156,9 +157,18 @@
       "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
       "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
       "BANK_TRANSFER_BIC": "BANKSKBX",
-      "PAYMENT_FEE": "Poplatok za platbu"
-    
+      "PAYMENT_FEE": "Poplatok za platbu",    
+    "LOGIN_TO_SAVE_FAV": "Prihláste sa, aby ste si mohli ukladať obľúbené",
+    "LOGIN": "Prihlásiť sa",
+        "CONSENTS": "Súhlasy",
+    "CONSENT_TERMS": "Súhlasím s <a routerLink='/obchodne-podmienky'>Obchodnými podmienkami</a>.",
+    "CONSENT_PRIVACY": "Súhlasím so spracovaním osobných údajov podľa <a routerLink='/ochrana-osobnych-udajov'>Zásad ochrany súkromia</a>.",
+    "CONSENT_COOKIES": "Súhlasím s používaním cookies podľa <a routerLink='/cookies'>Pravidiel používania cookies</a>.",
+    "CONSENT_MARKETING": "Chcem dostávať novinky a marketingové ponuky e-mailom.",
+    "NOVINKA": "Novinka",
+    "ZLAVA": "Zľava"
 
+ 
     },
 
 
@@ -193,9 +203,10 @@
     "CITY": "Mesto",
     "ZIP": "PSČ",
     "COUNTRY": "Krajina",
-    "NOTES": "Poznámka",
+    "COPIED": "Skopírované do schránky!",
+    "CHANGE2": "Zmeniť",
     "COPY": "Kopírovať",
-    "COPIED": "Skopírované do schránky!"
+    "NOTES": "Poznámka"
     
     },
 
@@ -266,12 +277,12 @@
         "HOME": "Úvod",
         "AKTUALITY": "Aktuality",
         "PRODUCTS": "E-shop",
-        "WORKSHOPS": "Prehliadky/Dielne",
+        "WORKSHOPS": "Prehliadky & Dielne",
         "TRADITION": "Tradícia",
         "ABOUT": "O nás",
         "KONTAKTY": "Kontakt",
         "PREHLIADKY":"Prehliadky",
-        
+        "detska-kolekcia-s-mackom": "Detská kolekcia s mackom",
         "dekoracie-a-svietidla": "Dekorácie a svietidlá",
         "hodiny": "Hodiny",
         "kosiky": "Košíky",
@@ -332,7 +343,7 @@
         "taniere_s_figuralnu_tematikou": "Taniere s figúrálna tématikou",
         "vinohradnickycyklus": "Vinohradnícky cyklus",
         "ludovy-motiv": "Ľudový motív",
-        "supravy": "Praktické darčekové súpravy",
+        "supravy": "Darčekové súpravy",
         "pre-najkrajsie-chvile-roka": "Pre najkrajšie chvíle",
         "velka-noc": "Veľká Noc",
         "vianoce": "Vianoce",
@@ -355,7 +366,27 @@
       },
 
 
-
+"cookie": {
+    "title": "Informácie o cookies",
+    "desc": "Kliknutím na <strong>Súhlasím so všetkým</strong> uložíme technické a analytické súbory cookie, aby sme vám umožnili pohodlné používanie stránok a merať ich funkčnosť. Preferencie môžete zmeniť v <em>Nastavenie používania cookies</em>.",
+    "acceptAll": "Súhlasím so všetkým",
+    "rejectAll": "Odmietam všetko",
+    "openSettings": "Nastavenie používania cookies",
+    "save": "Uložiť nastavenia",
+    "categories": {
+      "necessary": {
+        "title": "Nevyhnutné cookies",
+        "desc": "Potrebné pre správne fungovanie webu (bezpečnosť, prihlásenie, výber jazyka)."
+      },
+      "analytics": {
+        "title": "Analytické cookies",
+        "desc": "Pomáhajú nám pochopiť používanie webu a zlepšovať ho (napr. Google Analytics)."
+      }
+    },
+    "live": {
+      "saved": "Nastavenia cookies boli uložené."
+    }
+  },
 
       
         "CATEGORIES2": {
@@ -391,7 +422,7 @@
             },
           "ACCOUNT2": {
             "TITLE": "Môj účet",
-            "USER_DATA": "Údaje používateľa",
+            "USER_DATA": "Moje údaje",
             "SAVE_CHANGES": "Uložiť zmeny",
             "FAVORITES": "Moje obľúbené produkty",
             "REMOVE_FAVORITE": "Odstrániť",
@@ -473,7 +504,10 @@
     },
     "LOGOUT2": {
       "SUCCESS": "✅ Boli ste odhlásený."
-    }
+    },
+    "hide-product": "Skryť produkty",
+    "show-product": "Zobraziť produkty"
+
 
             },
 
@@ -516,6 +550,23 @@
       "BODY": "Vaša platba prebehla úspešne. \n Potvrdenie vám príde e-mailom.",
       "BACK": "Späť na úvod"
     }
+  },
+
+
+    "role": {
+    "admin": "administratíva",
+    "painter": "maliar / maliarka",
+    "jug_maker": "džbánkár / džbánkárka",
+    "production_master": "majster / majsterka výroby"
+  },
+  "authors": {
+    "title": "Autori",
+    "search": "Hľadať podľa mena…",
+    "empty": "Nenašli sa žiadni autori.",
+    "loading": "Načítavam…",
+    "prev": "Predchádzajúca",
+    "next": "Ďalšia",
+    "page": "Strana {{page}} z {{total}}"
   }
   }
 

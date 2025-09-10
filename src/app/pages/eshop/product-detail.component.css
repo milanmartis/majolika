@@ -26,8 +26,7 @@
 /* Držiteľ pomeru pre hlavný obrázok */
 .main-image-wrapper {
   /* aspect-ratio: 4 / 3; */
-  overflow: hidden;
-  border-radius: var(--corners);
+position: relative;
 }
 
 /* Moderný shimmer loading pre obrázky */
@@ -533,6 +532,133 @@ button.favourite2:hover {
   }
 }
 /* product-detail.component.css */
+
+
+
+
+.btn-heart {
+  position: absolute; top: 8px; right: 8px;
+  z-index: 3;
+  border: 0; background: rgba(0,0,0,0.4);
+  color: #fff; width: 40px; height: 40px; border-radius: 9999px;
+  display: grid; place-items: center; cursor: pointer;
+}
+.btn-heart mat-icon { font-size: 24px; line-height: 24px; }
+.btn-heart.is-fav mat-icon { color: #e11d48; } /* výrazná farba pri obľúbenom */
+
+
+
+
+.main-image-wrapper { position: relative; }
+
+.main-image-wrapper .btn-heart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0;                 /* default: ukryté */
+  transition: opacity .2s ease;
+  z-index: 2;                 /* nad <img> */
+  padding: 0;
+  line-height: 1;
+}
+
+.grid-item:hover .btn-heart,
+.main-image-wrapper .btn-heart.is-fav {
+  opacity: 1;                 /* ukáž pri hoveri alebo ak je obľúbený */
+}
+
+.main-image-wrapper .btn-heart .mat-icon {
+  font-size: 32px;
+  color: var(--base-blue);
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}
+
+.main-image-wrapper .btn-heart.is-fav .mat-icon {
+  color: var(--base-blue);
+}
+
+
+
+
+
+.main-image-wrapper .badge-stack {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+  pointer-events: none; /* len info */
+  user-select: none;
+}
+
+/* Základ badge-u */
+.main-image-wrapper .badge-flag {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border: 1px solid var(--base-blue);
+  background: rgba(255,255,255,0.92);
+  color: var(--base-blue);
+  line-height: 1.1;
+}
+
+/* Farebné odlíšenie */
+.main-image-wrapper .badge-sale {
+  width: 118px;
+    height: 30px;
+    border: none;
+    outline: none;
+    background: transparent url(/assets/img/back2.webp) no-repeat center / cover;
+    background-size: 8rem auto;
+  color: #fff;
+  border-color: var(--base-blue);
+  font-size: 1rem;
+  padding: 6px 8px;
+}
+
+.main-image-wrapper .badge-new {
+  width: 118px;
+    height: 30px;
+    border: none;
+    outline: none;
+    background: transparent url(/assets/img/back2.webp) no-repeat center / cover;
+    background-size: 8rem auto;
+  color: #fff;
+  border-color: var(--base-blue);
+  font-size: 1rem;
+  padding: 6px 8px;
+}
+
+/* (voliteľné) na veľmi úzkych obrazovkách mierne zmenšíme */
+@media (max-width: 420px) {
+  .main-image-wrapper .badge-flag {
+    font-size: 1.0rem;
+    padding: 2px 6px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .category-breadcrumb {
   text-align: left;

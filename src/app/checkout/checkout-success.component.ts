@@ -25,7 +25,7 @@ import { FooterComponent } from 'app/components/footer/footer.component';
       background: #fff;
       padding: 2rem;
       border-radius: var(--corners);
-      // box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
     }
     .checkout-result h1 {
       color: var(--base-blue);

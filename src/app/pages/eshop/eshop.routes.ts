@@ -7,14 +7,14 @@ export const eshopRoutes: Routes = [
     path: '',
     pathMatch: 'full',
     loadComponent: () =>
-      import('app/components/landing-page/landing-page.component')
-        .then(m => m.LandingPageComponent),
-    data: { animation: 'LandingPage' }
+      import('./product-list.component')
+        .then(m => m.ProductListComponent),
+    data: { animation: 'EshopListPage' }
   },
 
   // 2) /eshop/categories/:categorySlug → filtrovaný výpis produktov
   {
-    path: 'categories/:categorySlug',
+    path: 'kategoria/:categorySlug',
     loadComponent: () =>
       import('./product-list.component')
         .then(m => m.ProductListComponent),

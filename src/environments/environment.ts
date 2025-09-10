@@ -9,4 +9,5 @@ export const environment = {
     // tvoja Angular adresa
     googleClientId: '441769394651-f3themfnuvjggolen6q232am1fqi102q.apps.googleusercontent.com',
     PACKETA_WIDGET_KEY: '2874b47059f1e7fc',
+    googleMapsApiKey: 'AIzaSyC57XSUvZIf3w9MJvA5pjfPxGlMY_jHZ70'
   };

@@ -67,6 +67,8 @@
   margin-bottom: 40px;
   padding: 1rem 1.5rem;
   color: #edeef1;
+    text-shadow: 0 2px 5px rgba(0,0,0,.420);
+
 }
 
 .slide-overlay h2 {
@@ -124,7 +126,7 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.67) 20%,
     rgba(0, 0, 0, 0) 60%
   );
 }

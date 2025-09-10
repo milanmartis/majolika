@@ -7,7 +7,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { map as rxMap, map, switchMap } from 'rxjs/operators';
 
 
@@ -31,11 +31,18 @@ export interface Category {
   category_name: string;
   category_slug: string;
   category_text: string;
+  category_image: string;
+  category_image_small?: string;
+  category_image_large?: string;
   parent?: {
     term_id: number;
     category_name: string;
     category_slug: string;
     category_text: string;
+    category_image: string;
+    category_image_small?: string;
+    category_image_large?: string;
+
   };
 }
 
@@ -51,12 +58,13 @@ export interface Product {
   ean: string;
   variations?: Product[];
   categories?: Category[];
-  isNew?: boolean;
+  isNew: boolean;
   picture_new?: any;
   pictures_new?: any;
 
   primaryImageUrl: string;
   galleryUrls: string[];
+  vatPercentage: number;
 }
 
 export interface StrapiResp<T = any> {
@@ -77,6 +85,7 @@ type FormatKey = 'thumbnail' | 'small' | 'medium' | 'large' | 'original';
 
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
+
 
   private readonly api = environment.apiUrl.replace(/\/\/+$/, '');
   private readonly host = this.api.replace(/\/api\/?$/, '');
@@ -191,6 +200,9 @@ export class ProductsService {
           category_name: pAttrs.category_name,
           category_slug: pAttrs.category_slug,
           category_text: pAttrs.category_text,
+          category_image: this.imageUrl(pAttrs.category_image, 'medium'),
+          category_image_small: this.imageUrl(pAttrs.category_image, 'small'),
+          category_image_large: this.imageUrl(pAttrs.category_image, 'large'),
         };
       }
       return {
@@ -198,6 +210,9 @@ export class ProductsService {
         category_name: catAttrs.category_name,
         category_slug: catAttrs.category_slug,
         category_text: catAttrs.category_text,
+        category_image: this.imageUrl(catAttrs.category_image, 'medium'),
+        category_image_small: this.imageUrl(catAttrs.category_image, 'small'),
+        category_image_large: this.imageUrl(catAttrs.category_image, 'large'),
         parent: parentObj
       };
     });
@@ -208,7 +223,9 @@ export class ProductsService {
       name: at.name,
       price: resolvedPrice,
       price_sale: resolvedPriceSale,
+      vatPercentage: Number.isFinite(+at.vatPercentage) ? +at.vatPercentage : 23,
       inSale: at.inSale,
+      isNew: at.isNew,
       short: at.short,
       describe: at.describe,
       ean: at.ean,
@@ -229,6 +246,49 @@ export class ProductsService {
   }));
 
   
+
+getAllProductsForCategoryDeepest(
+  slug: string
+): Observable<Product[]> {
+  return this.hasChildCategories(slug).pipe(
+    switchMap(hasChildren => {
+      if (hasChildren) {
+        // má podkategórie → na tejto úrovni produkty NEukazujeme
+        return of([] as Product[]);
+      }
+      const params = new HttpParams()
+        .set('filters[categories][category_slug][$eq]', slug)
+        .set('filters[parent][id][$null]', 'true') // iba parents
+        .set('filters[public][$eq]', '1')
+        .set('populate', this.populateList)
+        .set('pagination[page]', '1')
+        .set('pagination[pageSize]', '4000'); // „všetko“ pre klientské triedenie
+
+      return this.http
+        .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+        .pipe(this.mapResp, map(r => r.data));
+    })
+  );
+}
+
+
+
+getAllRootProducts(): Observable<Product[]> {
+  const params = new HttpParams()
+    .set('filters[parent][id][$null]', 'true')
+    .set('filters[public][$eq]', '1')
+    .set('populate', this.populateList)
+    .set('sort', 'name:asc')
+    .set('pagination[page]', '1')
+    .set('pagination[pageSize]', '1000');
+
+  return this.http
+    .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+    .pipe(this.mapResp, map(r => r.data));
+}
+
+
+
 /** GET produkt podľa ID (vracia normalizovaný Product[]) */
 getProductById(id: number): Observable<Product | null> {
   const params = new HttpParams()
@@ -262,7 +322,7 @@ getProductById(id: number): Observable<Product | null> {
     .set('sort', 'name:asc') // default sort
     .set('populate', this.populateList)
     .set('pagination[page]', '1')
-    .set('pagination[pageSize]', '1000');
+    .set('pagination[pageSize]', '4000');
   
     console.log(
       'ProductsService.searchProducts(): volám URL =',
@@ -273,42 +333,97 @@ getProductById(id: number): Observable<Product | null> {
       this.mapResp,
       map(r => r.data),
       map((products: Product[]) => {
-        // helper: zjemní reťazec (diakritika → ASCII, lower‑case)
-        const norm = (s: string | undefined) =>
-          (s ?? '')
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase();
-  
-        const qN = norm(query.trim());
-        const results: Product[] = [];
-  
-        for (const p of products) {
-          // najprv overíme zhodu na úrovni produktu
-          const prodFields = [p.name, p.short, p.describe, p.ean];
-          if (prodFields.some(f => norm(f).includes(qN))) {
-            results.push(p);
-          }
-  
-          // potom pridáme každú zodpovedajúcu variáciu ako samostatný záznam
-          for (const v of p.variations ?? []) {
-            const varFields = [v.name, v.short, v.describe, v.ean];
-            if (varFields.some(f => norm(f).includes(qN))) {
-              results.push(v as Product); // ak Variation dedí/implementuje Product
-            }
+      // helper: zjemní reťazec (diakritika → ASCII, lower-case)
+      const norm = (s?: string) =>
+        (s ?? '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase();
+
+      const qN = norm(query.trim());
+
+      const results: Product[] = [];
+      const seen = new Set<string>();
+      const keyOf = (x: Product) =>
+        x?.id != null ? `id:${x.id}` : `slug:${x.slug ?? ''}`;
+
+      for (const p of products) {
+        // 1) Zápas parenta
+        const prodFields = [p.name, p.short, p.describe, p.ean].map(norm);
+        const matchesProduct = prodFields.some(f => f.includes(qN));
+
+        // 2) Zápasy variácií
+        const matchedVars = (p.variations ?? []).filter(v => {
+          const varFields = [v.name, v.short, v.describe, v.ean].map(norm);
+          return varFields.some(f => f.includes(qN));
+        });
+
+        // 3) Push parent (ak sedí) – bez duplicít
+        if (matchesProduct && !seen.has(keyOf(p))) {
+          seen.add(keyOf(p));
+          results.push(p);
+        }
+
+        // 4) Push každú zodpovedajúcu variáciu – bez duplicít
+        for (const v of matchedVars) {
+          const k = keyOf(v as Product);
+          if (!seen.has(k)) {
+            seen.add(k);
+            results.push(v as Product);
           }
         }
-  
-        return results;
-      })
+      }
+
+      return results;
+    })
     );
   }
 
+
   getAllCategoriesFlat(): Observable<Category[]> {
-    const url = `${this.api}/categories?sort=category_name:asc&populate=parent&pagination[limit]=0`;
-    return this.http.get<StrapiResp<Category>>(url).pipe(map(r => r.data));
+    const url =
+      `${this.api}/categories` +
+      `?sort=category_name:asc` +
+      `&populate[0]=parent` +   // ⬅️ dôležité
+      `&populate[1]=category_image` +   // ⬅️ dôležité
+      `&pagination[limit]=-1`;
+
+    return this.http.get<StrapiResp>(url).pipe(
+      map(r => r.data.map(this.normalizeCategory))        // ⬅️ normalizácia
+    );
   }
 
+
+  private normalizeCategory = (raw: any): Category => {
+    const at = raw.attributes ?? raw;
+
+    const parentRaw = at.parent?.data ?? at.parent ?? null;
+    const parent = parentRaw
+      ? (() => {
+          const p = parentRaw.attributes ?? parentRaw;
+          return {
+            term_id: parentRaw.id ?? p.term_id,
+            category_name: p.category_name,
+            category_slug: p.category_slug,
+            category_text: p.category_text,
+            category_image: this.imageUrl(p.category_image, 'medium'), // URL
+            category_image_small: this.imageUrl(p.category_image, 'small'),
+            category_image_large: this.imageUrl(p.category_image, 'large'),
+          };
+        })()
+      : undefined;
+
+    return {
+      term_id: raw.id ?? at.term_id,
+      category_name: at.category_name,
+      category_slug: at.category_slug,
+      category_text: at.category_text,
+      category_image: this.imageUrl(at.category_image, 'medium'), // URL
+      category_image_small: this.imageUrl(at.category_image, 'small'),
+      category_image_large: this.imageUrl(at.category_image, 'large'),
+      parent,
+    };
+  };
 
   getRootProducts(
     sort: string,

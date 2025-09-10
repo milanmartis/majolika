@@ -13,12 +13,12 @@
       [@.disabled]="disableAnim"
       [ngClass]="{ 'new-item': isHighlighted(r) }">
 
-        <a [routerLink]="['/eshop', r.slug]" (click)="onProductClick()">
+        <a [routerLink]="['/produkt', r.slug]" (click)="onProductClick()">
           <img class="item-thumb" [src]="r.img" [alt]="r.name" />
         </a>
 
         <div class="item-details">
-          <a class="image-cart" [routerLink]="['/eshop', r.slug]" (click)="onProductClick()">
+          <a class="image-cart" [routerLink]="['/produkt', r.slug]" (click)="onProductClick()">
             <h2 class="item-name">{{ r.name }}</h2>
           </a>
           <div *ngIf="r.session && (r.session.type === 'tour' || r.session.type === 'workshop')">

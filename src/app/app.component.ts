@@ -27,13 +27,14 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ThemeService } from 'app/services/theme.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CartComponent } from 'app/pages/cart/cart.component';
+import { CookieConsentComponent } from 'app/components/cookie-consent/cookie-consent.component';
 
 // import { HeadingBlockComponent } from 'app/blocks/heading-block/heading-block.component';
 // import { LinkBlockComponent } from 'app/blocks/link-block/link-block.component';
 // import { VideoBlockComponent } from 'app/blocks/video-block/video-block.component';
 // import { ImageBlockComponent } from 'app/blocks/image-block/image-block.component';
 // import { TextBlockComponent } from 'app/blocks/text-block/text-block.component';
-
+type LatLng = google.maps.LatLngLiteral;
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -45,7 +46,7 @@ import { CartComponent } from 'app/pages/cart/cart.component';
     PopupLauncherComponent,
     CartComponent,
     MatDialogModule,          // ← sem
-
+    CookieConsentComponent
     // ColorPickerComponent,
    // ColorPickerDirective,
     // CartDrawerService
@@ -135,6 +136,7 @@ import { CartComponent } from 'app/pages/cart/cart.component';
   </div> -->
 </div>
       <!-- 3) Hlavný obsah (router-outlet) -->
+      <app-cookie-consent></app-cookie-consent>
       <router-outlet #outlet="outlet"></router-outlet>
 <!-- slide-out panel -->
 <aside

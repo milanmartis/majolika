@@ -15,7 +15,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule }    from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { switchMap,  map, filter } from 'rxjs/operators';
+import { switchMap,  map, filter, takeUntil } from 'rxjs/operators';
 import { interval, Subscription } from 'rxjs';
 import { take, skip } from 'rxjs/operators';
 import { ProductsService, Product, Category } from '../../services/products.service';
@@ -145,7 +145,7 @@ export class ProductDetailComponent implements OnInit {
   isFullscreen = false;
   fullscreenImage = '';
   fullscreenIndex = 0;
-
+  // favIds = new Set<number>();
   loading: boolean = true;
   totalCount = 0;
   loadingBaseText = '';
@@ -176,6 +176,10 @@ private destroyed$ = new Subject<void>();
   toggle() {
     this.isExpanded = !this.isExpanded;
   }
+
+  // isFav(p: Product): boolean {
+  //   return this.favIds.has(Number(p.id));
+  // }
 
   toggle_accordion(section: 'description' | 'short' | 'size') {
     this.openSection = this.openSection === section ? null : section;
@@ -310,7 +314,10 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
       )
       .subscribe();
   
-    this.favState.favorites$.subscribe(() => this.updateIsFavorite());
+    // this.favState.favorites$.subscribe(() => this.updateIsFavorite());
+    this.favState.favorites$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => this.updateIsFavorite());
   }
   
   ngOnDestroy(): void {
@@ -462,37 +469,20 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
   }
 
   onToggleFavorite(product: Product): void {
-    this.auth.currentUser$.pipe(take(1)).subscribe(user => {
-      if (!user) {
-        this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
-        return; // Ukončíme hneď, nič ďalej nerob
-      }
-  
-      // Logika s obľúbenými už vo vnútri subscribe
-      this.loadingFavorite = true;
-      const id = product.id;
-      const wasFav = this.favState.isFavorite(id);
-  
-      this.favState.toggle(product); // pošleme celý objekt
-  
-      this.favState.favorites$
-  .pipe(skip(1), take(1))
-  .subscribe({
-    next: () => {
-      this.loadingFavorite = false;
-      const msgKey = wasFav ? 'ESHOP.FAVORITE_REMOVED' : 'ESHOP.FAVORITE_ADDED';
-      this.translate.get([msgKey, 'ESHOP.OK']).subscribe(translations => {
-        this.snack.open(
-          translations[msgKey],
-          translations['ESHOP.OK'],
-          { duration: 3000 }
-        );
-      });
-    },
-    error: () => (this.loadingFavorite = false)
+  this.auth.currentUser$.pipe(take(1)).subscribe(user => {
+    if (!user) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+    if (this.loadingFavorite) return; // double-click guard v komponente
+    this.loadingFavorite = true;
+
+    // sledovanie skončí cez stream favorites$ (prepne UI) a po sieti cez inFlight
+    this.favState.toggle(product);
+    // malý timeout na odomknutie – alebo to rieš cez výstupy zo služby
+    setTimeout(() => (this.loadingFavorite = false), 600);
   });
-    });
-  }
+}
 
 
 
@@ -572,6 +562,7 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
 
     const today = new Date();
     this.loadSessionsForDate(today);
+    this.updateIsFavorite();
     }
 
     private loadSessionsForDate(date: Date) {
@@ -1087,26 +1078,37 @@ onTouchEnd(e: TouchEvent) {
    *  nevyhodili ten istý parent viackrát.
    */
   private buildBreadcrumbs(allCats: Category[]) {
-    const seen = new Set<string>();
-    const trail: Category[] = [];
-  
-    allCats.forEach(cat => {
-      // ak má kategória rodiča, vložíme ho ako prvého
+    const result: Category[] = [];
+    const parentsWithChildren = new Set<string>();
+    const seenPairs = new Set<string>();
+    const seenRoots = new Set<string>();
+
+    // 1) Zisti, ktorí parenti majú aspoň jedno dieťa
+    for (const cat of allCats) {
       if (cat.parent) {
-        const parent = cat.parent;
-        if (!seen.has(parent.category_slug)) {
-          seen.add(parent.category_slug);
-          trail.push(parent);
-        }
-        // potom vložíme samotnú (dieťa) kategóriu
-        if (!seen.has(cat.category_slug)) {
-          seen.add(cat.category_slug);
-          trail.push(cat);
-        }
+        parentsWithChildren.add(cat.parent.category_slug);
       }
-    });
-  
-    this.uniqueCategories = trail;
+    }
+
+    // 2) Pridaj unikátne páry (parent > child)
+    for (const cat of allCats) {
+      if (!cat.parent) continue;
+      const key = `${cat.parent.category_slug}→${cat.category_slug}`;
+      if (seenPairs.has(key)) continue;
+      seenPairs.add(key);
+      result.push(cat); // šablóna z tohto vykreslí "parent > child"
+    }
+
+    // 3) Pridaj root kategórie len ak nie sú parentom žiadneho dieťaťa
+    for (const cat of allCats) {
+      if (cat.parent) continue; // root only
+      if (parentsWithChildren.has(cat.category_slug)) continue; // potlač duplicitu
+      if (seenRoots.has(cat.category_slug)) continue;
+      seenRoots.add(cat.category_slug);
+      result.push(cat); // šablóna vykreslí len root
+    }
+
+    this.uniqueCategories = result;
   }
 
 

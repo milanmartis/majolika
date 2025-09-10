@@ -11,7 +11,7 @@ import {
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { ParallaxImgDirective} from 'app/shared/parallax.directive';
 import { CommonModule }    from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule }     from '@angular/forms';
@@ -21,7 +21,7 @@ import { CartService } from 'app/services/cart.service';
 import { ProductDetailComponent } from './product-detail.component';
 import { FavoriteStateService } from 'app/services/favorite-state.service';
 import { MatIconModule } from '@angular/material/icon';
-
+import { AuthService } from 'app/services/auth.service';
 import {
   ProductsService,
   Product,
@@ -30,6 +30,8 @@ import {
 } from '../../services/products.service';
 
 import { Subject, of } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
+import { NavigationEnd } from '@angular/router';
 import {
   debounceTime,
   switchMap,
@@ -54,7 +56,7 @@ interface FilterOption {
   standalone: true,
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
-  imports: [CommonModule, RouterModule, FormsModule, TranslateModule, MatIconModule   ],
+  imports: [CommonModule, RouterModule, FormsModule, TranslateModule, MatIconModule ],
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
@@ -112,7 +114,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   ];
   selectedDecors: string[] = [];
   selectedShapes: string[] = [];
-
+  
+  private wantScrollTop = false;
   products: Product[] = [];
   paginatedProducts: Product[] = [];
   loadingMap: Record<string, boolean> = {};
@@ -140,6 +143,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
     private favState: FavoriteStateService,
     private snack: MatSnackBar,
     private translate: TranslateService,
+    private auth: AuthService,
+
 
 
   ) {}
@@ -148,25 +153,49 @@ export class ProductListComponent implements OnInit, OnDestroy {
     return this.favIds.has(Number(p.id));
   }
 
-  addToFav(product: Product) {
-    const wasFav = this.favState.isFavorite(product.id);
-    this.favState.toggle(product);
-  
-    const msgKey = wasFav ? 'ESHOP.FAVORITE_REMOVED' : 'ESHOP.FAVORITE_ADDED';
-  
-    this.snack.open(
-      this.translate.instant(msgKey),
-      this.translate.instant('ESHOP.OK'),
-      { duration: 3000 }
-    );
+  addToFav(product: Product, btnEl?: HTMLButtonElement) {
+  // guard – len pre prihlásených
+  if (!this.auth.isLoggedIn()) {
+    this.promptLogin();
+    return;
   }
 
+  const wasFav = this.favState.isFavorite(product.id);
+  this.favState.toggle(product);
+
+  if (btnEl) {
+    btnEl.classList.remove('pop');
+    void btnEl.offsetWidth;
+    btnEl.classList.add('pop');
+    setTimeout(() => btnEl.classList.remove('pop'), 400);
+  }
+
+  const msgKey = wasFav ? 'ESHOP.FAVORITE_REMOVED' : 'ESHOP.FAVORITE_ADDED';
+  this.snack.open(
+    this.translate.instant(msgKey),
+    this.translate.instant('ESHOP.OK'),
+    { duration: 3000 }
+  );
+}
   /* =============================================================
    *  Lifecycle
    * ============================================================= */
 
   transformHtml(raw: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(raw);
+  }
+
+  promptLogin() {
+    this.snack.open(
+      this.translate.instant('ESHOP.LOGIN_TO_SAVE_FAV'), // napr. "Prihlás sa, aby si mohol ukladať obľúbené"
+      this.translate.instant('ESHOP.LOGIN'),              // napr. "Prihlásiť"
+      { duration: 4000 }
+    ).onAction().subscribe(() => {
+      this.router.navigate(
+        ['/login'],
+        { queryParams: { returnUrl: this.router.url } }
+      );
+    });
   }
 
 
@@ -183,14 +212,16 @@ export class ProductListComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
 
+
+
       this.refresh$
       .pipe(
         debounceTime(50),
         switchMap(() => this.fetchProducts()),
         takeUntil(this.destroyed$),)
       .subscribe({
-        next: () => { this.loaded = true; },
-        error: () => { this.loaded = true; }
+        next: () => { this.loaded = true;  this.maybeScrollTop();   },
+        error: () => { this.loaded = true;  this.maybeScrollTop();   }
       });
   
     /* 2️⃣ – až potom sleduj ?category= v URL */
@@ -200,19 +231,49 @@ export class ProductListComponent implements OnInit, OnDestroy {
         const slug = pm.get('categorySlug');
         this.applySlugFromUrl(slug);
         this.currentPage = 1;
+        this.wantScrollTop = true;
         this.triggerRefresh();
       });
   
     /* 3️⃣ – načítaj kategórie */
     this.loadCategories();
+    this.scrollToTopSmooth();
   }
 
   ngOnDestroy(): void {
     this.destroyed$.next(); this.destroyed$.complete();
   }
 
+  private scrollToTopSmooth(): void {
+    // moderné prehliadače
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch {
+      // fallback
+      window.scrollTo(0, 0);
+    }
+  }
+  private maybeScrollTop(): void {
+    if (this.wantScrollTop) {
+      this.wantScrollTop = false;
+      requestAnimationFrame(() => this.scrollToTopSmooth());
+    }
+  }
 
+  private scrollTopAfterNav(): void {
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd), take(1))
+      .subscribe(() => this.scrollToTopSmooth());
+  }
 
+  // private scrollTopAfterNav(): void {
+  //   this.router.events
+  //     .pipe(
+  //       filter(e => e instanceof NavigationEnd),
+  //       take(1)
+  //     )
+  //     .subscribe(() => this.scrollToTopSmooth());
+  // }
   /* =============================================================
    *  Obrázky – metódy vyžadované šablónou
    * ============================================================= */
@@ -276,9 +337,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
    * ============================================================= */
     private navigateBySlug(slug: string | null): void {
         if (slug) {
-          this.router.navigate(['/eshop', 'categories', slug]);
+          this.router.navigate(['/produkt', 'kategoria', slug]);
         } else {
-          this.router.navigate(['/eshop']);
+          this.router.navigate(['/produkt']);
         }
       }
 
@@ -286,19 +347,23 @@ export class ProductListComponent implements OnInit, OnDestroy {
     if (slug === this.selectedCategory) { return; }
     this.isLoading = true; 
     this.applySlugFromUrl(slug);
+    this.cdr.markForCheck(); 
     this.currentPage = 1;
+    this.wantScrollTop = true;
     this.navigateBySlug(slug);
     this.triggerRefresh();
   }
 
   resetCategory(): void {
     this.isLoading = true; 
+    this.cdr.markForCheck(); 
     if (
       this.selectedRootCategorySlug &&
       this.selectedCategory !== this.selectedRootCategorySlug
     ) {
       this.applySlugFromUrl(this.selectedRootCategorySlug);
       this.currentPage = 1;
+      this.wantScrollTop = true;
       this.navigateBySlug(this.selectedRootCategorySlug);
       this.triggerRefresh();
       return;
@@ -311,6 +376,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.selectedCategoryName =
     this.selectedCategoryText = undefined;
     this.currentPage = 1;
+    this.wantScrollTop = true;
     this.navigateBySlug(null);
     this.triggerRefresh();
   }
@@ -318,8 +384,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
   /* =============================================================
    *  Filtrovanie, triedenie, stránkovanie
    * ============================================================= */
-  onSortChange(s: string): void { this.selectedSort = s; this.triggerRefresh(); }
-
+onSortChange(s: string): void {
+  this.selectedSort = s;
+  this.currentPage = 1;
+  this.triggerRefresh();
+}
   onDecorToggle(slug: string, checked: boolean): void {
     this.toggleInArray(this.selectedDecors, slug, checked);
     this.currentPage = 1; this.triggerRefresh();
@@ -335,9 +404,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
 
   changePage(p: number): void {
-    if (p === this.currentPage || p < 1 || p > this.totalPages) { return; }
-    this.currentPage = p; this.triggerRefresh();
-  }
+  if (p === this.currentPage || p < 1 || p > this.totalPages) { return; }
+  this.currentPage = p;
+  this.wantScrollTop = true;     // <— pridaj toto
+  this.triggerRefresh();
+  // this.scrollTopAfterNav();    // <— toto zruš
+}
 
 
 
@@ -347,31 +419,116 @@ export class ProductListComponent implements OnInit, OnDestroy {
   /* =============================================================
    *  HTTP volania
    * ============================================================= */
-  private fetchProducts() {
-    this.isLoading = true;
-    this.error = false;
-  
-    return this.productsSrv.getFilteredProducts(
-      this.currentPage,
-      this.pageSize,
-      this.selectedSort,
-      this.selectedCategory,
-      this.selectedDecors,
-      this.selectedShapes
-    ).pipe(
-      tap((resp: StrapiResp<Product>) => this.handleResponse(resp)),
-      catchError(err => {
-        console.error('❌ Nepodarilo sa načítať produkty', err);
-        this.error = true;
-        this.handleResponse(null);
-        return of(null);
-      }),
-      tap(() => {
-        this.isLoading = false;
-        this.cdr.markForCheck();
-      })
-    );
+private fetchProducts() {
+  this.isLoading = true;
+  this.error = false;
+
+  // a) vybraná kategória → zobraz produkty len ak je NAJHLBŠIA úroveň
+  if (this.selectedCategory) {
+    // Triedenie podľa ceny – potrebujeme všetky produkty, triedime/paginujeme na fronte
+    if (this.selectedSort.startsWith('price:')) {
+      return this.productsSrv
+        .getAllProductsForCategoryDeepest(this.selectedCategory)
+        .pipe(
+          tap((all: Product[]) => {
+            const sorted = this.sortByEffectivePrice(all, this.selectedSort);
+            this.handleClientSorted(sorted);
+          }),
+          catchError(err => {
+            console.error('❌ Načítanie produktov (deepest, price-sort) zlyhalo', err);
+            this.error = true;
+            this.handleClientSorted([]); // prázdny výsledok
+            return of(null);
+          }),
+          tap(() => {
+            this.isLoading = false;
+            this.cdr.markForCheck();
+          })
+        );
+    }
+
+    // Ostatné sorty (napr. name:asc/desc) – nechaj na backende (server-side stránkovanie)
+    return this.productsSrv
+      .getProductsByCategorySlug(
+        this.selectedCategory,
+        this.selectedSort,
+        this.currentPage,
+        this.pageSize
+      )
+      .pipe(
+        tap((resp: StrapiResp<Product>) => this.handleResponse(resp)),
+        catchError(err => {
+          console.error('❌ Načítanie produktov (deepest, name-sort) zlyhalo', err);
+          this.error = true;
+          this.handleResponse(null);
+          return of(null);
+        }),
+        tap(() => {
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        })
+      );
   }
+
+  // b) ROOT VIEW – neťahaj produkty, zobraz len root kategórie
+  this.products = [];
+  this.paginatedProducts = [];
+  this.totalPages = 1;
+  this.totalCount = 0;
+  this.loadingMap = {};
+  this.isLoading = false;
+  this.cdr.markForCheck();
+ this.wantScrollTop = true;
+  // this.scrollTopAfterNav();
+
+
+  return of(null);
+}
+
+
+  private effectivePrice(p: Product): number {
+    const pick = (q: Product): number | null => {
+      if (q.inSale && q.price_sale != null) return q.price_sale!;
+      return q.price ?? null;
+    };
+
+    // 1) preferujeme cenu na parentovi (ak ju má)
+    const parentPrice = pick(p);
+    if (parentPrice != null) return parentPrice;
+
+    // 2) inak prvú variáciu, ktorá má cenu (alebo sale cenu s inSale)
+    const v = (p.variations ?? []).find(vv =>
+      (vv.inSale && vv.price_sale != null) || (vv.price != null)
+    );
+    const vPrice = v ? pick(v) : null;
+
+    return vPrice ?? Number.POSITIVE_INFINITY; // produkty bez ceny na koniec
+  }
+
+  private sortByEffectivePrice(list: Product[], order: string): Product[] {
+    const asc = order.endsWith(':asc');
+    return [...list].sort((a, b) => {
+      const pa = this.effectivePrice(a);
+      const pb = this.effectivePrice(b);
+      if (pa === pb) return (a.name || '').localeCompare(b.name || '');
+      return asc ? pa - pb : pb - pa;
+    });
+  }
+
+  private handleClientSorted(list: Product[]): void {
+    this.totalCount = list.length;
+    this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.pageSize));
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end   = start + this.pageSize;
+
+    this.products          = list.slice(start, end);
+    this.paginatedProducts = this.products;
+    this.loadingMap        = Object.fromEntries(this.products.map(p => [p.slug, true]));
+
+    this.buildPagination();
+    this.cdr.markForCheck();
+  }
+
 
   private handleResponse(resp: StrapiResp<Product> | null): void {
     if (!resp) { return; }
@@ -391,6 +548,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
   /* =============================================================
    *  Kategórie
    * ============================================================= */
+
+  get showCategoryGrid(): boolean {
+      // panel kategórií zobraz len keď nie je chyba, neloaduje sa a nie sú produkty
+      return !this.isLoading && !this.error && this.products.length === 0;
+  }
+  
   private loadCategories(): void {
     this.productsSrv.getAllCategoriesFlat()
       .pipe(

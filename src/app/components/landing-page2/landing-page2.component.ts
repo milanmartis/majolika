@@ -165,6 +165,24 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef<HTMLDivElement>;
   private autoSlideInterval?: number;
+  private resizeObserver?: ResizeObserver;
+  private sliderInitialized = false;
+
+  private initSliderIfReady(): void {
+    if (this.sliderInitialized) return;
+    const el = this.sliderScroll?.nativeElement;
+    if (!el) return;
+
+    // sync po resize
+    this.resizeObserver = new ResizeObserver(() => {
+      this.scrollToSlide(this.currentSlideIndex);
+    });
+    this.resizeObserver.observe(el);
+
+    this.sliderInitialized = true;
+  }
+  private scrollSyncTimeout?: number;
+
 
   /* ---------------- PRODUKTY & OSTATNÉ ---------------- */
   saleProducts: Product[] = [];
@@ -432,10 +450,28 @@ this.holdTimer = setTimeout(() => {
 
   ngOnInit(): void {
 
-    this.slide2sService.slides2$.subscribe(slides2 => {
-      this.slides = slides2;
-      this.resumeAuto(); // ak treba reštartovať auto-slide pri zmene
+    // this.slide2sService.slides2$.subscribe(slides2 => {
+    //   this.slides = slides2;
+    //   this.resumeAuto(); // ak treba reštartovať auto-slide pri zmene
+    // });
+
+    this.slide2sService.slides2$.subscribe(s => {
+      this.slides = s;
     });
+
+     this.slidesSub = this.slide2sService.getSlides()
+    .pipe(catchError(() => of([] as Slide2[])))
+    .subscribe(sl => {
+      this.slides = sl;
+      this.resumeAuto();
+      // Po tom, čo *ngIf* vloží element do DOM, nechaj Angular vykresliť a potom inicializuj
+      setTimeout(() => this.initSliderIfReady(), 0);
+    });
+
+
+
+
+
 
     this.eventSessionsService.bookingChanged$.subscribe(() => {
       if (this.selectedDay) {
@@ -489,15 +525,26 @@ this.holdTimer = setTimeout(() => {
     setTimeout(() => (this.imgState = 'visible'), 300);
   }
 
-  ngAfterViewInit(): void {
-    // this.startAutoSlide();
+      ngAfterViewInit(): void {
     setTimeout(() => (this.animationState = true), 0);
-    const el = this.slideVideo.nativeElement;
-    el.muted = true;      // property
-    el.volume = 0;        // rezerva
+    this.startAutoSlide();
+    this.initSliderIfReady();          
   }
 
+  public onSliderScroll = (): void => {
+    this.pauseAuto();
+    const el = this.sliderScroll?.nativeElement;
+    if (!el) return;
 
+    if (this.scrollSyncTimeout != null) clearTimeout(this.scrollSyncTimeout);
+    this.scrollSyncTimeout = window.setTimeout(() => {
+      const w = el.clientWidth || 1;
+      // posuň index až keď prejdeš ~30% ďalšieho slidu
+      const newIndex = Math.floor((el.scrollLeft + w * 0.3) / w);
+      if (newIndex !== this.currentSlideIndex) this.currentSlideIndex = newIndex;
+      this.resumeAuto();
+    }, 100);
+  };
 
   ngOnDestroy(): void {
     this.pauseAuto();
@@ -505,10 +552,9 @@ this.holdTimer = setTimeout(() => {
     this.slidesSub?.unsubscribe();
     this.saleSub?.unsubscribe();
     this.expSub?.unsubscribe();
-    this.cartSub?.unsubscribe();
-    this.cartBookingSub?.unsubscribe();
-
+    this.resizeObserver?.disconnect();
   }
+
 
   // Slider navigation
   public nextSlide(): void {
@@ -536,8 +582,10 @@ this.holdTimer = setTimeout(() => {
   }
 
   private scrollToSlide(index: number): void {
-    const el = this.sliderScroll.nativeElement;
-    el.scrollTo({ left: el.offsetWidth * index, behavior: 'smooth' });
+    const el = this.sliderScroll?.nativeElement;
+    if (!el) return;
+    el.scrollTo({ left: el.clientWidth * index, behavior: 'smooth' });
+    this.currentSlideIndex = index;
   }
 
   public pauseAuto(): void {
@@ -622,6 +670,13 @@ this.holdTimer = setTimeout(() => {
 
   public goToLink(url: string): void {
     this.router.navigateByUrl('/' + url);
+  }
+
+  public goToLogin(url: string): void {
+      this.router.navigate(
+        ['/login'],
+        { queryParams: { returnUrl: this.router.url } }
+      );
   }
 
 
@@ -747,7 +802,7 @@ this.holdTimer = setTimeout(() => {
   // Navigation cards
   public onSelect(option: 'optionA' | 'optionB'): void {
     const params = option === 'optionB' ? { category: 'zazitky' } : { category: 'kolekcie' };
-    this.router.navigate(['/eshop'], { queryParams: params });
+    this.router.navigate(['/produkt'], { queryParams: params });
   }
 
   // public selectDay(day: CalendarDay): void {

@@ -17,7 +17,7 @@
     text-align: center;
     border: none;
 
-    background: transparent url('/assets/img/back2.webp') no-repeat center/cover;
+    background: transparent url('assets/img/back2.webp') no-repeat center/cover;
     /* background-color: var(--base-blue);     */
     white-space: nowrap;
     overflow: hidden;
@@ -25,13 +25,13 @@
     color: var(--base-color);
     text-decoration: none;
     font-weight: 600;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 2rem;
   }
   
   .art-button a:hover {
     /* background-color: var(--base-blue-dark);  */
     color: var(--base-blue-thin);
-    background: transparent url('/assets/img/back.webp') no-repeat center/cover;
+    background: transparent url('assets/img/back.webp') no-repeat center/cover;
   }
   

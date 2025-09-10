@@ -29,8 +29,8 @@ export interface Category {
   term_id: number;
   category_name: string;
   category_slug: string;
-  parent?:   { term_id: number; category_name: string; category_slug: string };
-  children?: { term_id: number; category_name: string; category_slug: string }[];
+  parent?:   { term_id: number; category_name: string; category_slug: string; category_image: string };
+  children?: { term_id: number; category_name: string; category_slug: string; category_image: string }[];
 }
 
 export interface Product {

@@ -36,32 +36,39 @@ export const routes: Routes = [
 
   // zvyšok e‑shopu pod vlastným obalom
   {
-    path: 'eshop',
-    component: EshopComponent,
-    data: { animation: 'EshopPage' },
-    children: [
-      { path: 'categories/:categorySlug',
-        loadComponent: () =>
-          import('./pages/eshop/product-list.component')
-            .then(m => m.ProductListComponent),
-        data: { animation: 'EshopListPage' }
-      },
-      { path: 'cart',
-        loadComponent: () =>
-          import('./pages/cart/cart.component')
-            .then(m => m.CartComponent),
-        data: { animation: 'CartPage' }
-      },
-      { path: ':slug',
-        loadComponent: () =>
-          import('./pages/eshop/product-detail.component')
-            .then(m => m.ProductDetailComponent),
-        data: { animation: 'EshopDetailPage' }
-      }
-    ]
-  },
+  path: 'produkt',
+  component: EshopComponent,
+  data: { animation: 'EshopPage' },
+  children: [
+    { path: '', // /eshop -> ProductList (root)
+      loadComponent: () =>
+        import('./pages/eshop/product-list.component')
+          .then(m => m.ProductListComponent),
+      data: { animation: 'ProductListComponent' }
+    },
 
-  { path: 'eshop/categories/:categorySlug/dekor/:dekorSlug', loadComponent: () =>
+    { path: 'kategoria/:categorySlug',
+      loadComponent: () =>
+        import('./pages/eshop/product-list.component')
+          .then(m => m.ProductListComponent),
+      data: { animation: 'ProductListComponent' }
+    },
+    { path: 'cart',
+      loadComponent: () =>
+        import('./pages/cart/cart.component')
+          .then(m => m.CartComponent),
+      data: { animation: 'CartComponent' }
+    },
+    { path: ':slug',
+      loadComponent: () =>
+        import('./pages/eshop/product-detail.component')
+          .then(m => m.ProductDetailComponent),
+      data: { animation: 'ProductDetailComponent' }
+    }
+  ]
+},
+
+  { path: 'produkt/kategoria/:categorySlug/dekor/:dekorSlug', loadComponent: () =>
     import('./pages/eshop/product-list.component')
       .then(m => m.ProductListComponent) },
 

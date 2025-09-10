@@ -72,11 +72,13 @@
   margin-bottom: 40px;
   padding: 1rem 1.5rem;
   color: #edeef1;
+  text-shadow: 0 2px 5px rgba(0,0,0,.420);
+  
 }
 
 .slide-overlay h2 {
   margin: 0 0 0.5rem;
-
+  
   font-size: 2.8rem;
   line-height: 111%;
   font-weight: 650;
@@ -173,7 +175,7 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.67) 20%,
     rgba(0, 0, 0, 0) 60%
   );
 }
@@ -254,6 +256,136 @@ display: none;
     display: none;
   }
 }
+
+
+
+
+
+
+
+.child-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* toto zarovná obsah na stred */
+  gap: 1px;
+  margin-bottom: 22px;
+  text-align: center;
+  font-weight: 600;
+  background: var(--primary-color);
+}
+
+.child-button{
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;       /* vodorovne na stred (ponechaj) */
+  justify-content: flex-start; /* ⬅️ vertikálne hore */
+  gap: .9rem;
+
+  /* ostatné tvoje štýly... */
+  vertical-align: top;
+  font-weight: 700;
+  text-align: center;
+  margin: 4px;
+  color: var(--base-blue);
+  background: var(--primary-color);
+  border: 0;
+  padding: 12px 12px;        /* trošku väčší top padding, ak chceš */
+  border-radius: var(--corners);
+  cursor: pointer;
+  font-size: 1.18rem;
+  transition: transform .2s ease;
+  width: 266px;
+  height: 330px;             /* ak chceš fixnú výšku, nechaj */
+  perspective: 800px;
+    transition: transform .6s ease;
+  
+}
+
+.img-flip{
+  position:relative;
+  width:260px; 
+  height:260px;
+  transform-style: preserve-3d;
+  transition: transform .6s ease;
+}
+
+.img-flip img{
+  vertical-align: top;
+  position:absolute; inset:0;
+  width:100%; 
+  height:100%; 
+  object-fit:cover;
+  backface-visibility: hidden;
+}
+
+.img-flip .front{ 
+  opacity: 1;
+  /* //filter: var(--img-blue-filter);  */
+} 
+/* .img-flip .back{
+  transform: rotateY(180deg);
+  filter:none;
+} */
+
+/* preklopenie na farebnú stranu */
+/* .child-button:hover .img-flip,
+.child-button:focus-visible .img-flip,
+.child-button.is-selected .img-flip{
+  transform: rotateY(180deg);
+  color: var(--base-blue);
+
+} */
+
+@media (prefers-reduced-motion: reduce){
+  .img-flip{ transition:none; }
+}
+
+.child-button img{
+  vertical-align: top;
+  width: 260px;              /* uprav podľa potreby */
+  height: 260px;              /* uprav podľa potreby */
+  object-fit: cover;
+  opacity: 0.85;
+  /* filter: var(--img-blue-filter);         ⇦ modrý nádych default */
+  transition: all .625s ease;
+}
+
+/* na hover / focus / stlačenie bude farebný */
+.child-button:hover img,
+.child-button:focus-visible img,
+.child-button:active img,
+.child-button.is-selected img {           /* ⇦ ostane farebný pre aktívnu kategóriu */
+  filter: none;
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.child-button .label{
+  line-height: 1.15;
+  white-space: normal;
+}
+.child-button:hover .label{
+  color: var(--base-blue);
+  font-weight: 700;
+  text-decoration: underline;
+
+}
+
+.child-button:hover{
+
+    background-color: #e7ebec75;
+
+}
+
+
+
+
+
+
+
+
+
+
 
 
 /* ---------- OTHER LAYOUT & GLOBAL STYLES ---------- */
@@ -570,7 +702,7 @@ display: none;
 
 
 
-.child-button {
+/* .child-button {
   text-align: center;
   margin: 4px 4px;
   color:var(--base-blue);
@@ -588,7 +720,7 @@ display: none;
   background-color: var(--base-blue);
   color: #edeef1;
 }
-
+ */
 
 
 

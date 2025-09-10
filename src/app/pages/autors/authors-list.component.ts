@@ -8,7 +8,7 @@ import { map, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { FooterComponent } from 'app/components/footer/footer.component';
 import { LanguageService } from 'app/services/language.service';
-import { AuthorsService, Autor } from 'app/services/authors.service';
+import { AuthorsService, Autor, Rola } from 'app/services/authors.service';
 import { AuthorDialogComponent } from './author-dialog.component';
 
 @Component({
@@ -23,8 +23,27 @@ export class AuthorsListComponent implements OnInit, OnDestroy {
   loading = false;
   error: string | null = null;
 
+readonly ROLE_LABELS: Record<Rola, string> = {
+  'administratíva': 'office',
+  'maliar': 'maliar / maliarka',
+  'džbánkár': 'džbánkár / džbánkárka',
+  'majster výroby': 'majster / majsterka výroby',
+};
+
+roleLabel(r?: string | null): string {
+  if (!r) return '';
+  return (this.ROLE_LABELS as any)[r] ?? r;
+}
+
+  readonly ROLE_ORDER: Rola[] = [
+      'administratíva',
+      'maliar',
+      'džbánkár',
+      'majster výroby',
+  ];
+  grouped: { role: Rola; items: Autor[] }[] = [];
   page = 1;
-  pageSize = 12;
+  pageSize = 112;
   totalPages = 1;
   q = '';
 
@@ -112,18 +131,35 @@ export class AuthorsListComponent implements OnInit, OnDestroy {
     });
   }
 
+  private cmpPoradieMeno(a: Autor, b: Autor): number {
+    const pa = a.poradie ?? Number.POSITIVE_INFINITY;
+    const pb = b.poradie ?? Number.POSITIVE_INFINITY;
+    if (pa !== pb) return pa - pb;
+    return (a.meno || '').localeCompare(b.meno || '', 'sk', { sensitivity: 'base' });
+  }
+
+  private buildGroups(list: Autor[]) {
+    this.grouped = this.ROLE_ORDER.map(role => ({
+      role,
+      items: list
+        .filter(a => a.rola === role)
+        .sort(this.cmpPoradieMeno.bind(this)),
+    }));
+  }
+
   reload() {
     this.loading = true;
     this.error = null;
     this.authors.list({
-      page: this.page,
-      pageSize: this.pageSize,
-      sort: 'meno:asc',
+      page: 1,
+      pageSize: this.pageSize, // 112 alebo viac, aby prišlo všetko
+      sort: undefined,         // <— necháme prázdne (triedime na fronte)
       qMeno: this.q?.trim() || undefined,
-      locale: this.currentLocale(), // ⬅️ i18n
+      locale: this.currentLocale(),
     }).subscribe({
       next: res => {
         this.items = res.items;
+        this.buildGroups(this.items);            // <— vytvor skupiny
         const meta = res.meta;
         this.totalPages = meta?.pagination?.pageCount ?? 1;
         this.page = meta?.pagination?.page ?? 1;

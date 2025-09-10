@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from 'environments/environment';
 import { Product } from './products.service';
 
@@ -39,28 +39,63 @@ export interface Order {
 export class AuthService {
   private readonly TOKEN_KEY = 'jwt';
 
-  /** presne podľa tvojho environmentu */
-  private readonly API = environment.apiUrl.replace(/\/+$/, '');            // .../api
-  private readonly BASE = environment.strapiBaseUrl.replace(/\/+$/, '');    // bez /api
+  /** Normalized base URLs */
+  private readonly API = environment.apiUrl.replace(/\/+$/, '');         // .../api
+  private readonly BASE = environment.strapiBaseUrl.replace(/\/+$/, ''); // no /api
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   public userId: number | null = null;
 
+  /** Stream na rýchlu kontrolu prihlásenia v šablónach (voliteľné) */
+  public isLoggedIn$ = this.currentUser$.pipe(
+    map((u) => !!u || this.isAuthenticatedSync()),
+    distinctUntilChanged()
+  );
+
   constructor(private http: HttpClient, private router: Router) {
     if (this.isAuthenticatedSync()) this.loadCurrentUser();
-    this.currentUser$.subscribe(u => (this.userId = u?.id ?? null));
+    this.currentUser$.subscribe((u) => (this.userId = u?.id ?? null));
   }
 
-  // Helpers
-  isAuthenticatedSync(): boolean { return !!localStorage.getItem(this.TOKEN_KEY); }
-  get token(): string | null { return localStorage.getItem(this.TOKEN_KEY); }
+  // ───────── Helpers ─────────
+  get token(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  private setToken(jwt: string | null): void {
+    if (jwt) localStorage.setItem(this.TOKEN_KEY, jwt);
+    else localStorage.removeItem(this.TOKEN_KEY);
+  }
+
+  private isTokenValid(token: string): boolean {
+    try {
+      const payloadPart = token.split('.')[1];
+      if (!payloadPart) return true; // neočakávaný formát -> neblokuj
+      const payload = JSON.parse(atob(payloadPart));
+      if (!payload?.exp) return true;
+      return payload.exp * 1000 > Date.now();
+    } catch {
+      return true; // ak decode zlyhá, nerob tvrdý logout
+    }
+  }
+
+  isAuthenticatedSync(): boolean {
+    const t = this.token;
+    return !!t && this.isTokenValid(t);
+  }
+
+  /** Synchronous snapshot pre guards/handlery */
+  isLoggedIn(): boolean {
+    return this.isAuthenticatedSync();
+  }
+
   private authHeaders(): HttpHeaders {
     const t = this.token;
     return new HttpHeaders(t ? { Authorization: `Bearer ${t}` } : {});
   }
 
-  // ───────── Google OAuth (všetko ide na API s /api) ─────────
+  // ───────── Google OAuth (ide na API s /api) ─────────
   loginWithGoogle(): void {
     const redirect = `${environment.frontendUrl.replace(/\/+$/, '')}/signin/callback`;
     window.location.href = `${this.API}/connect/google?redirect_url=${encodeURIComponent(redirect)}`;
@@ -73,91 +108,92 @@ export class AuthService {
     );
     if (!res.ok) throw new Error('Google auth failed');
     const data = await res.json();
-    localStorage.setItem(this.TOKEN_KEY, data.jwt);
+    this.setToken(data.jwt);
     this.currentUserSubject.next(data.user);
     return data;
   }
 
   /** Ak používaš One Tap a vlastný endpoint na Strapi: POST /api/auth/google-token */
   handleGoogleCredential(credential: string): void {
-    this.http.post<{ jwt: string; user: User }>(
-      `${this.API}/auth/google-token`,
-      { token: credential }
-    ).pipe(
-      tap(res => {
-        localStorage.setItem(this.TOKEN_KEY, res.jwt);
-        this.currentUserSubject.next(res.user);
-      })
-    ).subscribe({
-      next: () => window.location.href = environment.frontendUrl,
-      error: () => window.location.href = '/login',
-    });
+    this.http
+      .post<{ jwt: string; user: User }>(`${this.API}/auth/google-token`, { token: credential })
+      .pipe(
+        tap((res) => {
+          this.setToken(res.jwt);
+          this.currentUserSubject.next(res.user);
+        })
+      )
+      .subscribe({
+        next: () => (window.location.href = environment.frontendUrl),
+        error: () => (window.location.href = '/login'),
+      });
   }
 
   handleThirdPartyLogin(jwt: string, user: User): void {
-    localStorage.setItem(this.TOKEN_KEY, jwt);
+    this.setToken(jwt);
     this.currentUserSubject.next(user);
   }
 
   // ───────── Core auth ─────────
   loadCurrentUser(): void {
-    if (!this.token) { this.currentUserSubject.next(null); return; }
-    this.http.get<User>(`${this.API}/users/me`, { headers: this.authHeaders() })
-      .subscribe({ next: u => this.currentUserSubject.next(u), error: () => this.logout() });
+    if (!this.token) {
+      this.currentUserSubject.next(null);
+      return;
+    }
+    this.http
+      .get<User>(`${this.API}/users/me`, { headers: this.authHeaders() })
+      .subscribe({ next: (u) => this.currentUserSubject.next(u), error: () => this.logout() });
   }
 
   login(identifier: string, password: string): Observable<{ jwt: string; user: User }> {
-    return this.http.post<{ jwt: string; user: User }>(
-      `${this.API}/auth/local`,
-      { identifier, password }
-    ).pipe(
-      tap(res => {
-        localStorage.setItem(this.TOKEN_KEY, res.jwt);
-        this.currentUserSubject.next(res.user);
-      })
-    );
+    return this.http
+      .post<{ jwt: string; user: User }>(`${this.API}/auth/local`, { identifier, password })
+      .pipe(
+        tap((res) => {
+          this.setToken(res.jwt);
+          this.currentUserSubject.next(res.user);
+        })
+      );
   }
 
   register(username: string, email: string, password: string): Observable<{ jwt: string; user: User }> {
-    return this.http.post<{ jwt: string; user: User }>(
-      `${this.API}/auth/local/register`,
-      { username, email, password }
-    ).pipe(
-      tap(res => {
-        // Pozn.: ak máš v Strapi zapnuté email confirmation, zváž neukladať token tu.
-        localStorage.setItem(this.TOKEN_KEY, res.jwt);
-        this.currentUserSubject.next(res.user);
-      })
-    );
+    return this.http
+      .post<{ jwt: string; user: User }>(`${this.API}/auth/local/register`, { username, email, password })
+      .pipe(
+        tap((res) => {
+          // Ak je v Strapi zapnuté email confirmation, zváž neukladať token tu.
+          this.setToken(res.jwt);
+          this.currentUserSubject.next(res.user);
+        })
+      );
   }
 
   updateProfile(id: number, data: Partial<User>): Observable<User> {
-    return this.http.put<User>(
-      `${this.API}/users/${id}`,
-      data,
-      { headers: this.authHeaders() }
-    ).pipe(tap(u => this.currentUserSubject.next(u)));
+    return this.http
+      .put<User>(`${this.API}/users/${id}`, data, { headers: this.authHeaders() })
+      .pipe(tap((u) => this.currentUserSubject.next(u)));
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    this.setToken(null);
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
 
   // ───────── Email confirmation ─────────
   resendConfirmation(email: string, redirectUrl?: string) {
-  const body: any = { email: String(email || '').trim() };
-  if (redirectUrl) body.url = redirectUrl;
-  return this.http.post(`${environment.apiUrl}/auth/send-email-confirmation`, body);
-}
+    const body: any = { email: String(email || '').trim() };
+    if (redirectUrl) body.url = redirectUrl;
+    return this.http.post(`${this.API}/auth/send-email-confirmation`, body);
+  }
 
   // ───────── (voliteľné) Google popup flow ─────────
   loginWithGooglePopup(): Promise<User> {
     const ORIGIN = new URL(environment.frontendUrl || location.origin).origin;
-    const w = 520, h = 640;
+    const w = 520,
+      h = 640;
     const left = window.screenX + (window.outerWidth - w) / 2;
-    const top  = window.screenY + (window.outerHeight - h) / 2;
+    const top = window.screenY + (window.outerHeight - h) / 2;
 
     const popup = window.open(
       `${this.API}/connect/google`,
@@ -171,17 +207,27 @@ export class AuthService {
         if (ev.origin !== ORIGIN) return;
         if (!ev.data || ev.data.type !== 'oauth-result') return;
         const { jwt, user } = ev.data.payload || {};
-        if (!jwt || !user) { cleanup(); reject(new Error('invalid_payload')); return; }
+        if (!jwt || !user) {
+          cleanup();
+          reject(new Error('invalid_payload'));
+          return;
+        }
         this.handleThirdPartyLogin(jwt, user);
-        cleanup(); resolve(user);
+        cleanup();
+        resolve(user);
       };
       const timer = setInterval(() => {
-        if (!popup || popup.closed) { cleanup(); reject(new Error('popup_closed')); }
+        if (!popup || popup.closed) {
+          cleanup();
+          reject(new Error('popup_closed'));
+        }
       }, 500);
       const cleanup = () => {
         window.removeEventListener('message', onMessage);
         clearInterval(timer);
-        try { popup?.close(); } catch {}
+        try {
+          popup?.close();
+        } catch {}
       };
       window.addEventListener('message', onMessage);
     });

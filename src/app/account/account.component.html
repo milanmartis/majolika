@@ -1,4 +1,4 @@
-<h1 class="checkout-title">{{ 'ACCOUNT22.TITLE' | translate }}</h1>
+<h1 class="checkout-title">{{ 'ACCOUNT2.TITLE' | translate }}</h1>
 
 <div class="account-wrapper">
 
@@ -14,25 +14,22 @@
         <button class="btn-primary btn-logout" (click)="logout()">{{ 'ACCOUNT2.LOGOUT' | translate }}</button>
       </div>
 
-      <div class="logout-wrapper" style="margin:auto;">
-      </div>
+      <div class="logout-wrapper" style="margin:auto;"></div>
     </form>
-
-
   </div>
 
   <!-- 🟦 Pravý stĺpec (2 menšie bloky pod sebou) -->
   <div class="right-column">
 
-
-     <!-- 3. blok – napr. ďalšie informácie -->
-     <div class="account-section">
+    <!-- Objednávky -->
+    <div class="account-section">
       <h2 class="section-title">{{ 'ACCOUNT2.ORDERS' | translate }}</h2>
 
-      <div *ngIf="ordersLoading" style="justify-content: center;" style="width:100%;text-align:center; margin:auto; padding:1.5rem 0">
+      <div *ngIf="ordersLoading" style="justify-content: center; width:100%; text-align:center; margin:auto; padding:1.5rem 0">
         <div class="spinner2"></div>
       </div>
-      <div class="orders-section" *ngIf="!ordersLoading && orders.length > 0;">
+
+      <div class="orders-section" *ngIf="!ordersLoading && orders.length > 0">
         <table class="order-table">
           <thead>
             <tr>
@@ -41,100 +38,158 @@
               <th>{{ 'table.status' | translate }}</th>
               <th>{{ 'table.payment' | translate }}</th>
               <th>{{ 'table.total' | translate }}</th>
+              <th></th>
             </tr>
           </thead>
+
           <tbody>
-            <tr *ngFor="let o of orders; let i = index">
-              <td>{{ i + 1 }}</td>
+            <ng-container *ngFor="let o of orders; let i = index">
+              <!-- Hlavný riadok objednávky -->
+              <tr>
+                <td class="index-cell">
+          
+                  <span class="index-num">{{ i + 1 }}</span>
+                </td>
+
               <td>{{ o.createdAt | date: 'short':undefined:lang.getCurrentLanguage()}}</td>
-              <td>{{ o.status === 'pending' ? ('table.pending' | translate) : ('table.completed' | translate) }}</td>
-              <td>
-                <span [ngClass]="{
-                    'badge-paid': o.paymentStatus === 'paid',
-                    'badge-unpaid': o.paymentStatus !== 'paid'
-                  }">
-                  {{ o.paymentStatus === 'paid'
-                    ? ('table.paid' | translate)
-                    : ('table.unpaid' | translate)
-                  }}
-                </span>
-              </td>
-              <td>{{ o.total | currency: 'EUR' }}</td>
-              <table><tr><td>{{ o.products}}</td></tr></table>
-            </tr>
+
+                <td>
+                  {{ o.status === 'pending'
+                      ? ('table.pending' | translate)
+                      : ('table.completed' | translate) }}
+                </td>
+
+                <td>
+                  <span
+                    [ngClass]="{
+                      'badge-paid': o.paymentStatus === 'paid',
+                      'badge-unpaid': o.paymentStatus !== 'paid'
+                    }"
+                  >
+                    {{ o.paymentStatus === 'paid'
+                        ? ('table.paid' | translate)
+                        : ('table.unpaid' | translate) }}
+                  </span>
+                </td>
+
+                <td>{{ o.total | currency: 'EUR' }}</td>
+                <td class="toggle-cell">
+                  <button
+                    type="button"
+                    class="expand-btn"
+                    (click)="toggleOrder(o)"
+                    [attr.aria-expanded]="isExpanded(o)"
+                    [attr.aria-controls]="'order-items-' + o.id"
+                    [title]="isExpanded(o) ? 'Skryť položky' : 'Zobraziť položky'"
+                  >
+                    {{ (isExpanded(o) ? 'ACCOUNT.hide-product' : 'ACCOUNT.show-product') | translate }} 
+                    <b style="font-size: 1.2rem; line-height: 1; margin-left: 0.3rem;font-weight: 700;">
+                      {{ isExpanded(o) ? '−' : '+' }}
+                    </b>
+
+                  </button>
+                  </td>
+
+              </tr>
+
+              <tr
+                *ngIf="isExpanded(o)"
+                [@fadeIn]
+                class="order-items-row"
+                [attr.id]="'order-items-' + o.id"
+              >
+                <td colspan="5" class="order-items-cell">
+                  <table class="order-items-table">
+
+                    <tbody>
+                      <tr *ngFor="let item of o.items">
+                        <td class="product-cell">
+                          <a
+                            *ngIf="item?.product?.slug; else nameOnly"
+                            [routerLink]="['/produkt', item.product.slug]"
+                          >
+                            {{ item.productName || item.product?.name }}
+                          </a>
+                          <ng-template #nameOnly>
+                            {{ item.productName || item.product?.name }}
+                          </ng-template>
+                        </td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unitPrice | currency: 'EUR' }}</td>
+                        <td>{{ (item.quantity || 0) * (item.unitPrice || 0) | currency: 'EUR' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
-        
-        <!-- <div class="orders-total">
-          <strong>Celková suma nákupov: </strong>
-          {{ totalSpent | currency: 'EUR' }}
-        </div> -->
       </div>
 
-
-      <p class="empty-msg" *ngIf="orders.length === 0">
+      <p class="empty-msg" *ngIf="!ordersLoading && orders.length === 0">
         <img class="favorites-placeholder"
-        src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
-        alt="Nakupene produkty" />
-        
-        {{ 'ACCOUNT2.NO_ORDERS' | translate }} <br><a [routerLink]="['/eshop']">{{ 'ACCOUNT2.ADD_ORDERS' | translate }}</a>
+             src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
+             alt="Nakupene produkty" />
+        {{ 'ACCOUNT2.NO_ORDERS' | translate }}
+        <br />
+        <a [routerLink]="['/produkt']">{{ 'ACCOUNT2.ADD_ORDERS' | translate }}</a>
       </p>
     </div>
 
-
-
-
-    <!-- 2. blok – obľúbené produkty -->
+    <!-- Obľúbené produkty -->
     <div class="account-section">
       <h2 class="section-title">{{ 'ACCOUNT2.FAVORITES' | translate }}</h2>
-      
-      <div *ngIf="favoritesLoading" style="justify-content: center;" style="width:100%;text-align:center; margin:auto; padding:1.5rem 0">
+
+      <div *ngIf="favoritesLoading" style="justify-content: center; width:100%; text-align:center; margin:auto; padding:1.5rem 0">
         <div class="spinner"></div>
       </div>
-      <ng-container *ngIf="!favoritesLoading">
-        
-        <div *ngIf="favorites$ | async as favs">
-        <div *ngIf="favs.length === 0" class="favorites-grid">
-          <img class="favorites-placeholder"
-               src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
-               alt="Obľúbené produkty" />
-         </div>
-        <div *ngIf="favs.length > 0; else noFavs" class="favorites-grid">
 
-          <div *ngFor="let product of favs; trackBy: trackBySlug" class="favorite-card">
-            <a class="fav-link" [routerLink]="['/eshop', product.slug]">
-              <div class="fav-img-wrapper">
-                <img
-                  class="fav-img"
-                  [src]="product.primaryImageUrl || '/assets/img/logo-SLM-modre.gif'"
-                  alt="{{ product.name }}"
-                  loading="lazy"
-                  title="{{ product.name }}"
-                  (load)="onFavImageLoad($event, product.primaryImageUrl)"
-                  (error)="onFavImageError($event)"
-                />
-              </div>
-              <div class="fav-info">
-                <span class="fav-name">{{ product.name }}</span>
-                <span class="fav-price">{{ product.price | currency:'EUR' }}</span>
-              </div>
-            </a>
-            <button class="btn-remove" (click)="removeFavorite(product)">{{ 'ACCOUNT2.REMOVE_FAVORITE' | translate }}</button>
+      <ng-container *ngIf="!favoritesLoading">
+        <div *ngIf="favorites$ | async as favs">
+          <div *ngIf="favs.length === 0" class="favorites-grid">
+            <img class="favorites-placeholder"
+                 src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
+                 alt="Obľúbené produkty" />
+          </div>
+
+          <div *ngIf="favs.length > 0; else noFavs" class="favorites-grid">
+            <div class="fav-card" *ngFor="let product of favoriteProducts; trackBy: trackBySlug" [@favLeave] >
+              <a class="fav-link" [routerLink]="['/produkt', product.slug]">
+                <div class="fav-img-wrapper">
+                  <img
+                    class="fav-img"
+                    [src]="product.primaryImageUrl || '/assets/img/logo-SLM-modre.gif'"
+                    alt="{{ product.name }}"
+                    loading="lazy"
+                    title="{{ product.name }}"
+                    (load)="onFavImageLoad($event, product.primaryImageUrl)"
+                    (error)="onFavImageError($event)"
+                  />
+                </div>
+                <div class="fav-info">
+                  <span class="fav-name">{{ product.name }}</span>
+                  <span class="fav-price">{{ product.price | currency:'EUR' }}</span>
+                </div>
+              </a>
+              <button class="btn-remove" (click)="removeFavorite(product)">
+                {{ 'ACCOUNT2.REMOVE_FAVORITE' | translate }}
+              </button>
+            </div>
           </div>
         </div>
-        </div>
+
         <ng-template #noFavs>
-          
-          <p class="empty-msg">{{ 'ACCOUNT2.NO_FAVORITES' | translate }}<br><a [routerLink]="['/eshop']">{{ 'ACCOUNT2.ADD_FAVORITES' | translate }}</a></p>
+          <p class="empty-msg">
+            {{ 'ACCOUNT2.NO_FAVORITES' | translate }}
+            <br />
+            <a [routerLink]="['/produkt']">{{ 'ACCOUNT2.ADD_FAVORITES' | translate }}</a>
+          </p>
         </ng-template>
-      
-    </ng-container>
+      </ng-container>
     </div>
 
-   
-
   </div>
-
 </div>
 
 <app-footer></app-footer>

@@ -288,12 +288,12 @@
 
     <ul class="mega-nav__list">
       <li *ngFor="let c of categories" class="mega-nav__item">
-        <a class="mega-nav__link" [routerLink]="['/eshop','categories', c.category_slug]">
+        <a class="mega-nav__link" [routerLink]="['/produkt','kategoria', c.category_slug]">
           {{ 'CATEGORIES.'+c.category_slug | translate }}
         </a>
         <ul class="mega-nav__sublist">
           <li *ngFor="let sub of c.children">
-            <a [routerLink]="['/eshop','categories', sub.category_slug]">
+            <a [routerLink]="['/produkt','kategoria', sub.category_slug]">
               {{ 'CATEGORIES.'+sub.category_slug | translate }}
             </a>
           </li>

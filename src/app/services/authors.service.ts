@@ -3,6 +3,13 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map, catchError, throwError } from 'rxjs';
 
+
+export type Rola =
+  | 'administratíva'
+  | 'maliar'
+  | 'džbánkár'
+  | 'majster výroby';
+
 export interface Autor {
   id: number;
   documentId?: string | null;
@@ -11,7 +18,10 @@ export interface Autor {
   bio?: string | null;
   fotoUrl?: string | null;
   fotoAlt?: string | null;
+  rola?: Rola | null;      
+  poradie?: number | null;
 }
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthorsService {
@@ -42,6 +52,8 @@ export class AuthorsService {
       bio: at?.bio ?? null,
       fotoUrl: this.absUrl(rawUrl),
       fotoAlt: media?.alternativeText ?? null,
+      rola: at?.rola ?? null,                                 // <— TU
+      poradie: typeof at?.poradie === 'number' ? at.poradie : null, // <— TU
     };
   };
 
@@ -60,8 +72,10 @@ export class AuthorsService {
       .set('fields[1]', 'meno')
       .set('fields[2]', 'pozicia')
       .set('fields[3]', 'bio')
+      .set('fields[4]', 'rola')        
+      .set('fields[5]', 'poradie')     
       .set('pagination[page]', String(opts.page ?? 1))
-      .set('pagination[pageSize]', String(opts.pageSize ?? 19));
+      .set('pagination[pageSize]', String(opts.pageSize ?? 112));
 
     if (opts.sort)  p = p.set('sort', opts.sort);
     if (opts.qMeno) p = p.set('filters[meno][$containsi]', opts.qMeno);
@@ -90,6 +104,7 @@ export class AuthorsService {
       .set('fields[1]', 'meno')
       .set('fields[2]', 'pozicia')
       .set('fields[3]', 'bio')
+
       .set('filters[id][$eq]', String(id))
       .set('pagination[pageSize]', '1');
 

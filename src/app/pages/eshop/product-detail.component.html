@@ -29,6 +29,21 @@
     <div class="gallery">
       <!-- hlavný obrázok s shimmer wrapperom -->
       <div class="main-image-wrapper" [class.loading]="loadingMap[currentImage]">
+      <button class="btn-heart"
+        [class.is-fav]="isFavorite"
+        [attr.aria-pressed]="isFavorite"
+        (click)="onToggleFavorite(product)"
+        type="button"
+        aria-label="Obľúbený produkt">
+        <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+      </button>
+
+
+      <div class="badge-stack" aria-hidden="true">
+        <span *ngIf="product.isNew"  class="badge-flag badge-new">{{ 'ESHOP.NOVINKA' | translate }}</span>
+        <span *ngIf="product.inSale" class="badge-flag badge-sale">{{ 'ESHOP.ZLAVA' | translate }}</span>
+      </div>
+
         <img
           [src]="currentImage"
           [alt]="product.name"
@@ -39,6 +54,7 @@
           (error)="onImageError(currentImage)"
           appZoomPan 
         />
+
       </div>
 
       <!-- miniatúry (bez primárneho) -->
@@ -71,7 +87,7 @@
             <!-- Rodič -->
             <ng-container *ngIf="cat.parent">
               <a
-                [routerLink]="['/eshop', 'categories', cat.parent.category_slug]"
+                [routerLink]="['/produkt', 'kategoria', cat.parent.category_slug]"
                 class="category-link"
               >
                 {{ cat.parent.category_name }}
@@ -81,7 +97,7 @@
       
             <!-- Aktuálna -->
             <a
-              [routerLink]="['/eshop', 'categories', cat.category_slug]"
+              [routerLink]="['/produkt', 'kategoria', cat.category_slug]"
               class="category-link"
             >
               {{ cat.category_name }}
@@ -282,13 +298,10 @@
       </div>
       <div class="cart-row">
 
-        <button
-        class="favourite2"
-        (click)="onToggleFavorite(product)"
-        [disabled]="loadingFavorite"
-      >
-      
-      <i class="fa" style="color:#f0f0f0;padding-right:6px;" [ngClass]="isFavorite ? 'fa-heart' : 'fa-heart'"></i> 
+        <button class="favourite2" (click)="onToggleFavorite(product)">
+  <mat-icon style="vertical-align:middle;margin-right:6px;">
+    {{ isFavorite ? 'favorite' : 'favorite_border' }}
+  </mat-icon>
   {{ isFavorite ? ('ESHOP.FAVORITE_REMOVE' | translate) : ('ESHOP.FAVORITE_ADD' | translate) }}
 </button>
       </div>
@@ -390,7 +403,7 @@
       class="card"
       style="border:0px"
       *ngFor="let p of featured"
-      [routerLink]="['/eshop', p.slug]"
+      [routerLink]="['/produkt', p.slug]"
     >
       <img
         [src]="p.primaryImageUrl"

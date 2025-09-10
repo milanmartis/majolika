@@ -13,7 +13,8 @@ export interface CartRow {
   img: string;
   session?: EventSessionWithCapacity;
   bookingId?: number;
-  holdExpires?: number; // timestamp ms
+  holdExpires?: number;
+  vatPercentage?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -58,6 +59,7 @@ export class CartService {
       list[idx] = { ...list[idx], qty: list[idx].qty + qty };
     } else {
       // Správne – pridáš všetko z row + qty + správnu cenu
+      // vatPercentage prichádza z DB už v 'row' – nechávame bez zásahu
       list.push({
         ...row,
         qty,
@@ -124,9 +126,28 @@ export class CartService {
     localStorage.setItem(this.LS_KEY, JSON.stringify(list));
   }
 
+  patchVat(productId: number, vatPercentage: number, sessionId?: number) {
+  const list = this.rows$.value.map(r =>
+      r.id === productId && (!sessionId || r.session?.id === sessionId)
+        ? { ...r, vatPercentage }
+        : r
+    );
+    this.update(list);
+  }
+
   private load(): CartRow[] {
-    try { return JSON.parse(localStorage.getItem(this.LS_KEY) || '[]'); }
-    catch { return []; }
+    try {
+      const parsed: CartRow[] = JSON.parse(localStorage.getItem(this.LS_KEY) || '[]');
+      // Bezpečne doplníme vatPercentage = 0, ak chýbalo v starších záznamoch
+      return Array.isArray(parsed)
+        ? parsed.map(r => ({ 
+          ...r, 
+          vatPercentage: Number.isFinite(r.vatPercentage) ? r.vatPercentage : 23
+        }))
+        : [];
+    } catch {
+      return [];
+    }
   }
 
   /** remove expired holds client-side; caller should cancel via backend separately if needed */
@@ -141,5 +162,4 @@ export class CartService {
     }
   }
 
-  
 }

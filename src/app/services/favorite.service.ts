@@ -7,28 +7,23 @@ import { environment } from '../../environments/environment';
 
 export interface Favorite {
   id: number;
-  product: { 
-    id: number
-      slug: string;
-      name: string;
-      price: number | null;
-      price_sale: number | null;
-      inSale: boolean;
-      short?: string;
-      describe?: string;
-      ean: string;
-  
-    
-      picture_new?: any;
-      pictures_new?: any;
-    
-      primaryImageUrl: string;
-      galleryUrls: string[];
+  product: {
+    id: number;
+    slug: string;
+    name: string;
+    price: number | null;
+    price_sale: number | null;
+    inSale: boolean;
+    short?: string;
+    describe?: string;
+    ean: string;
 
+    picture_new?: any;
+    pictures_new?: any;
 
-
-   } | null;
-  
+    primaryImageUrl: string;
+    galleryUrls: string[];
+  } | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -38,21 +33,25 @@ export class FavoriteService {
 
   constructor(private http: HttpClient) {}
 
-  /** GET /api/favorites?populate=product */
+  /** GET /favorites?populate=product */
   getAll(): Observable<Favorite[]> {
     return this.http
       .get<{ data: Favorite[] }>(`${this.base}?populate=product`)
       .pipe(map(r => r.data));
   }
 
-  /** POST /api/favorites */
-  add(productId: number) {
-    return this.http.post(this.base, { data: { product: productId } });
+  /** POST /favorites – vráti vytvorený Favorite */
+  add(productId: number): Observable<Favorite> {
+    return this.http
+      .post<{ data: Favorite }>(this.base, { data: { product: productId } })
+      .pipe(map(r => r.data));
   }
 
-  /** DELETE /api/favorites/:id */
-  remove(favId: number) {
-    return this.http.delete(`${this.base}/${favId}`);
+  /** DELETE /favorites/:id – nepotrebujeme payload, mapneme na void */
+  remove(favId: number): Observable<void> {
+    return this.http
+      .delete<{ data: unknown }>(`${this.base}/${favId}`)
+      .pipe(map(() => void 0));
   }
 
   /** Paralelne zmaže viac obľúbených záznamov */
@@ -60,5 +59,4 @@ export class FavoriteService {
     if (!favs.length) return EMPTY;
     return forkJoin(favs.map(f => this.remove(f.id)));
   }
-  
 }

@@ -357,6 +357,6 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
       option === 'optionB'
         ? { category: 'zazitky' }
         : { category: 'kolekcie' };
-    this.router.navigate(['/eshop'], { queryParams });
+    this.router.navigate(['/produkt'], { queryParams });
   }
 }

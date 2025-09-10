@@ -1,34 +1,51 @@
+  <!-- Root kategórie -->
+<div style="display: inline;" *ngIf="rootCategories?.length">
+  <ng-container *ngFor="let root of rootCategories">
+    <img class="catmainpic"
+      *ngIf="selectedRootCategorySlug === root.category_slug"
+      [src]="root.category_image_large"
+      [alt]="root.category_name" />
+  </ng-container>
+</div>
 <section
   #productList
   class="product-list"
   [@fadeIn]="'visible'"
   [@slideUp]="'visible'"
 >
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+  </div>
   <!-- Kategória nadpis -->
 <!-- Nadpis kategórií -->
 <div class="cat-heading" *ngIf="selectedRootCategorySlug">
   <h2>
     <!-- ROOT názov vždy -->
-    <strong (click)="onCategorySelect(selectedRootCategorySlug)" style="cursor: pointer;">{{ 'CATEGORIES.' + selectedRootCategorySlug | translate }}</strong>
+    <strong class="nadpis" (click)="onCategorySelect(selectedRootCategorySlug)">{{ 'CATEGORIES.' + selectedRootCategorySlug | translate }}</strong>
 
     <!-- keď sme na podkategórii → » názov child -->
     <ng-container *ngIf="selectedCategorySlug !== selectedRootCategorySlug">
       &nbsp;|&nbsp;
-      <strong>{{ 'CATEGORIES.' + selectedCategorySlug | translate }}</strong>
+    </ng-container>
+    <ng-container *ngIf="selectedCategorySlug !== selectedRootCategorySlug">
+      <strong class="nadpis">{{ 'CATEGORIES.' + selectedCategorySlug | translate }}</strong>
     </ng-container>
 
     <!-- tlačidlo × ostáva rovnaké -->
     <button
       (click)="resetCategory()"
       class="reset-button"
-      title="Zobraziť všetky hlavné kategórie"
+      title=""
     >
       X
     </button>
   </h2>
 
 </div>
-  
+    <!-- Text kategórie -->
+  <h4 [innerHTML]="selectedCategoryText" *ngIf="selectedCategoryText && selectedCategoryText.length > 0" class="category-text" 
+    style="width:100%;max-width:1000px;margin:auto;padding-bottom:40px;white-space: pre-line;">
+  </h4>
   <!-- Výzva na výber kategórie -->
   <div
   *ngIf="!selectedCategory"
@@ -37,10 +54,8 @@
 </div>
 
 <!-- Subkategórie ako buttony -->
-<div
+<div class="child-categories" *ngIf="showCategoryGrid && childCategories.length > 0" style="max-width:1000px;width:100%;margin:auto;">
 
-class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
->
 <div class="child-buttons">
     <button
     *ngFor="let child of childCategories"
@@ -48,15 +63,24 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
       class="child-button"
       [class.active]="selectedCategory === child.category_slug"
       >
-      {{ 'CATEGORIES.'+child.category_slug | translate }}
+<span class="img-flip">
+    <img class="front" [src]="child.category_image" [alt]="child.category_name" />
+    <img class="back"  [src]="child.category_image" [alt]="child.category_name" />
+  </span>
+        <span class="label">{{ 'CATEGORIES.' + child.category_slug | translate }}</span>
     </button>
+
+
+
+
+
+
+
+    
   </div>
 </div>
 
-  <!-- Text kategórie -->
-  <h4 [innerHTML]="selectedCategoryText" *ngIf="selectedCategoryText && selectedCategoryText.length > 0" class="category-text" 
-    style="width:100%;max-width:1000px;margin:auto;padding-bottom:40px;white-space: pre-line;">
-  </h4>
+
   <!-- Root kategórie -->
   <div
   *ngIf="rootCategories && rootCategories.length > 0"
@@ -64,13 +88,27 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
   [style.display]="!selectedCategory ? 'block' : 'none'"
 >
     <div class="child-buttons">
+      <div style="color:black" *ngFor="let root of rootCategories" >
+
+
       <button
-        *ngFor="let root of rootCategories"
-        (click)="onCategorySelect(root.category_slug)"
         class="child-button"
+        (click)="onCategorySelect(root.category_slug)"
+        [class.is-selected]="selectedCategory === root.category_slug"
       >
-        {{ 'CATEGORIES.'+root.category_slug | translate }} 
+ 
+
+      <span class="img-flip">
+          <img class="front" [src]="root.category_image" [alt]="root.category_name" />
+          <img class="back"  [src]="root.category_image" [alt]="root.category_name" />
+        </span>
+        <span class="label">{{ 'CATEGORIES.' + root.category_slug | translate }}</span>
       </button>
+
+
+
+
+    </div>
     </div>
   </div>
 
@@ -78,9 +116,9 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
   <div *ngIf="error" class="status error">
     {{ 'ESHOP.ERROR_LOADING_PRODUCTS' | translate }}
   </div>
-  <div *ngIf="loaded && !isLoading && !error && products.length === 0" class="status-text">
+  <div *ngIf="loaded && !onCategorySelect && !isLoading && !error && products.length === 0" class="status-text">
     <h3>
-      {{ 'ESHOP.NO_PRODUCTS_IN_CATEGORY' | translate }}
+      {{ 'ESHOP.NO_PRODUCTS_IN_CATEGORY' | translate }} 
     </h3>  
   </div>
 
@@ -167,18 +205,35 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
             <div class="img-wrapper" [class.loading]="loadingMap[p.slug]">
               {{ p.name }}
               <button
+                #heartBtn
                 class="btn-heart"
                 [class.is-fav]="isFav(p)"
                 [attr.aria-pressed]="isFav(p)"
-                (click)="addToFav(p)"
+                (click)="addToFav(p, heartBtn)"
                 type="button"
                 tabindex="0"
                 aria-label="Obľúbený produkt"
               >
                 <mat-icon>{{ isFav(p) ? 'favorite' : 'favorite_border' }}</mat-icon>
               </button>
+              <!-- neprihlásený = vyzva na login -->
+                  <ng-template #guestFav>
+                    <button
+                      class="btn-heart btn-heart--guest"
+                      type="button"
+                      tabindex="0"
+                      aria-label="Prihlás sa pre obľúbené"
+                      (click)="promptLogin()"
+                    >
+                      <mat-icon>favorite_border</mat-icon>
+                    </button>
+                  </ng-template>
+              <div class="badge-stack" aria-hidden="true">
+                <span *ngIf="p.isNew"  class="badge-flag badge-new">{{ 'ESHOP.NOVINKA' | translate }}</span>
+                <span *ngIf="p.inSale" class="badge-flag badge-sale">{{ 'ESHOP.ZLAVA' | translate }}</span>
+              </div>
               <!-- Klik na obrázok vedie na detail produktu -->
-              <a [routerLink]="['/eshop', p.slug]">
+              <a [routerLink]="['/produkt', p.slug]">
                 <img
                   [src]="p.primaryImageUrl || '/assets/img/gall/placeholder.jpg'"
                   alt="{{ p.name }}"
@@ -190,7 +245,7 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
         
             <div class="info">
               <h3>
-                <a [routerLink]="['/eshop', p.slug]">{{ p.name }}</a>
+                <a [routerLink]="['/produkt', p.slug]">{{ p.name }}</a>
               </h3>
               <!-- <p style="font-size: 1rem;" *ngIf="p.price !== null; else noPrice">
                 {{ p.price }} €
@@ -198,7 +253,7 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
 
         <div *ngIf="p.inSale === true;">
           <p style="font-size: 1rem; text-align: center;display:inline-flex;"> {{ p.price_sale }} € </p>
-          <p style="padding-left:12px;display: inline-flex;font-size: 1rem;text-decoration: line-through;" class="in-sale">  {{ p.price | number:'1.2-2' }} €</p>
+          <p style="padding-left:12pfhearx;display: inline-flex;font-size: 1rem;text-decoration: line-through;" class="in-sale">  {{ p.price | number:'1.2-2' }} €</p>
           
         </div>
         <div *ngIf="p.inSale === false" class="price-sale">
@@ -226,10 +281,10 @@ class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
         
   </div>
     <!-- overlay so spinnerom počas načítania -->
- <div class="loading-overlay" *ngIf="isLoading">
-      <div class="spinner"></div>
-    </div>
   </div>
+  <!-- <div class="loading-overlay" *ngIf="isLoading">
+       <div class="spinner"></div>
+     </div> -->
   
 
 <!-- Paginácia -->

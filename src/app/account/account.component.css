@@ -1,7 +1,7 @@
 /* ===== Nadpis stránky ===== */
 .checkout-title {
   text-align: center;
-  margin: 2rem 0;
+  margin: 110px auto 30px;
   text-transform: uppercase;
   font-weight: 900;
   font-size: 2.2rem;
@@ -22,7 +22,7 @@
 .form-block {
   background: #fff;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: var(--corners);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -36,7 +36,7 @@
 .account-section {
   background: #fff;
   padding: 1.5rem;
-  border-radius: 10px;
+  border-radius: var(--corners);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   height: fit-content;
 }
@@ -64,7 +64,7 @@
   font-size: 1rem;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--corners);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -82,19 +82,17 @@
 .favorites-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
+  gap: 2rem;
+  margin: 2px;
 }
 
 /* Karta obľúbeného produktu */
 .favorite-card {
-  /* background: #f8f9fa; */
-  border-radius: 8px;
+  border-radius: var(--corners);
   overflow: hidden;
   padding: 0.6rem;
   text-align: center;
-
 }
-
 
 /* Klikateľný blok (obrázok + info) */
 .fav-link {
@@ -112,21 +110,19 @@
   position: relative;
   margin-bottom: 10px;
 }
+
 .fav-img-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   margin-bottom: 0.4rem;
-  transition: transform 0.3s ease; /* opravene na transition */
+  transition: transform 0.3s ease;
   display: block;
 }
 
 .fav-img-wrapper img:hover {
   transform: scale(1.15);
 }
-
-
-
 
 .fav-info {
   display: flex;
@@ -138,9 +134,9 @@
   color: var(--base-blue);
   font-size: 0.8rem;
   font-weight: 600;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  max-width: 100%;   
+  /* white-space: nowrap;
+  text-overflow: ellipsis; */
+  max-width: 100%;
 }
 
 .fav-price {
@@ -157,7 +153,7 @@
   background: transparent;
   color: #d9534f;
   border: 1px solid #d9534f;
-  border-radius: 6px;
+  border-radius: var(--corners);
   cursor: pointer;
   transition: all 0.2s ease, color 0.2s ease;
 }
@@ -216,34 +212,31 @@
 
 .favorites-placeholder {
   margin: auto;
-  width: 100%;         
-  height: 100%;        /* pevná výška alebo použi aspect-ratio */
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: var(--corners);
   filter: grayscale(100%);
-  opacity: 0.4; 
+  opacity: 0.4;
   display: flex;
 }
 
 .favorites-placeholder img {
   width: 100%;
   height: 100%;
-  object-fit: cover;    /* správa sa ako background-size: cover */
+  object-fit: cover;
   display: block;
-  opacity: 0.3;        /* mierne priehľadné */
-
-  /* Čiernobiely filter */
+  opacity: 0.3;
   filter: grayscale(100%);
 }
 
-
-
+/* ===== Objednávky tabuľka ===== */
 .order-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   background: #fff;
-  border-radius: 14px;
+  border-radius: var(--corners);
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   overflow: hidden;
   margin: 0 auto 2rem;
@@ -263,21 +256,22 @@
 
 .order-table th:first-child,
 .order-table td:first-child {
-  border-top-left-radius: 12px;
+  border-top-left-radius: var(--corners);
 }
 
 .order-table th:last-child,
 .order-table td:last-child {
-  border-top-right-radius: 12px;
+  border-top-right-radius: var(--corners);
 }
 
 .order-table tbody tr {
-  transition: background 0.15s;
+  transition: all 0.15s;
 }
 
-.order-table tbody tr:hover {
-  background: rgba(45, 62, 175, 0.06); /* jemný modrý podklad na hover */
-}
+/* .order-table tbody tr:hover {
+ background: rgba(45, 62, 175, 0.06);
+} 
+*/
 
 .order-table td {
   border-top: 1px solid #f0f1f3;
@@ -287,22 +281,43 @@
 .order-table tbody tr:first-child td {
   border-top: none;
 }
+
+/* Badge */
 .badge-paid {
   background: #38d99a;
   color: #fff;
-  border-radius: 6px;
+  border-radius: var(--corners);
   padding: 0.2em 0.7em;
   font-size: 0.96em;
 }
 .badge-unpaid {
   background: #f6c343;
   color: #333;
-  border-radius: 6px;
+  border-radius: var(--corners);
   padding: 0.2em 0.7em;
   font-size: 0.96em;
 }
 
-.spinner {
+.expand-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.74rem;
+  cursor: pointer;
+  color: var(--base-blue);
+  font-weight: 600;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--corners);
+  transition: background 0.2s ease;
+}
+
+/* Spinnery */
+.spinner, .spinner2 {
   margin: auto;
   border: 4px solid rgba(0,0,0,0.1);
   width: 36px;
@@ -311,30 +326,13 @@
   border-left-color: var(--base-blue);
   animation: spin 1s ease infinite;
 }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.spinner2 {
-  margin: auto;
-  border: 4px solid rgba(0,0,0,0.1);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border-left-color: var(--base-blue);
-  animation: spin2 1s ease infinite;
-}
-
-@keyframes spin2 {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Mobile: stackuj riadky */
+/* Mobile: menšie paddingy */
 @media (max-width: 700px) {
   .order-table th, .order-table td {
     padding: 0.6rem 0.7rem;
     font-size: 0.98rem;
   }
 }
+

@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { importProvidersFrom, isDevMode } from '@angular/core';
+import { importProvidersFrom, isDevMode, ApplicationRef } from '@angular/core';
 import { MegaMenuModule } from 'primeng/megamenu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -23,12 +23,13 @@ import { AuthInterceptor } from 'app/interceptors/auth.interceptor';
 import { noCacheInterceptor } from 'app/interceptors/no-cache.interceptor'; // 👈 DOPLŇ
 
 import { environment } from './environments/environment';
-import { provideServiceWorker, SwUpdate } from '@angular/service-worker';
+import { provideServiceWorker, SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { registerLocaleData } from '@angular/common';
 import localeSk from '@angular/common/locales/sk';
 import localeEn from '@angular/common/locales/en';
 import localeDe from '@angular/common/locales/de';
 import { LOCALE_ID } from '@angular/core';
+import { filter } from 'rxjs/operators';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -73,15 +74,21 @@ bootstrapApplication(AppComponent, {
       registrationStrategy: 'registerImmediately'
     })
   ]
-}).then(appRef => {
-  const sw = appRef.injector.get(SwUpdate, null);
-  if (sw) {
-    // okamžitý prechod na novú verziu
-    sw.versionUpdates.subscribe(e => {
-      if (e.type === 'VERSION_READY') {
-        sw.activateUpdate().then(() => location.reload());
-      }
-    });
-    // voliteľné: pravidelne skontroluj novú verziu
-    // setInterval(() => sw.checkForUpdate(), 60_000);
-  }}).catch(err => console.error('Angular sa nespustil:', err));
+}).then((appRef: ApplicationRef) => {
+  const swUpdate = appRef.injector.get(SwUpdate, null);
+
+  if (swUpdate?.isEnabled) {
+    // keď je k dispozícii nová verzia, aktivuj a tvrdo refreshni
+    swUpdate.versionUpdates
+      .pipe(filter((e): e is VersionReadyEvent => e.type === 'VERSION_READY'))
+      .subscribe(() => {
+        swUpdate.activateUpdate().then(() => document.location.reload());
+      });
+
+    // skontroluj hneď po štarte
+    swUpdate.checkForUpdate();
+
+    // voliteľne: pravidelná kontrola (napr. raz za hodinu)
+    // setInterval(() => swUpdate.checkForUpdate(), 60 * 60 * 1000);
+  }
+}).catch(err => console.error('Angular sa nespustil:', err));

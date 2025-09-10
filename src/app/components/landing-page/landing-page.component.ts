@@ -12,7 +12,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, takeUntil } from 'rxjs/operators';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { LightboxModule } from 'ngx-lightbox';
 
@@ -119,18 +119,34 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
   /* ---------------- SLIDER ---------------- */
   @ViewChild('sliderScroll', { static: false })
   sliderScroll!: ElementRef<HTMLDivElement>;
+
   slides: Slide[] = [];
   currentSlideIndex = 0;
   private slidesSub?: Subscription;
   private autoId?: number;
   private scrollSyncTimeout?: number;
   private resizeObserver?: ResizeObserver;
+  private sliderInitialized = false;
 
+  private initSliderIfReady(): void {
+    if (this.sliderInitialized) return;
+    const el = this.sliderScroll?.nativeElement;
+    if (!el) return;
+
+    // sync po resize
+    this.resizeObserver = new ResizeObserver(() => {
+      this.scrollToSlide(this.currentSlideIndex);
+    });
+    this.resizeObserver.observe(el);
+
+    this.sliderInitialized = true;
+  }
   /* -------- FEATURED‐PRODUCTS SCROLLER -------- */
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef<HTMLDivElement>;
   private autoSlideInterval?: number;
-
+  rootCategories:  Category[] = [];
+  allCategories:   Category[] = [];
   saleProducts: Product[] = [];
   featured: Product[] = [];
   experiences: Product[] = [];
@@ -158,13 +174,14 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.slides = s;
     });
 
-    this.slidesSub = this.slidesService
-      .getSlides()
-      .pipe(catchError(() => of([] as Slide[])))
-      .subscribe(sl => {
-        this.slides = sl;
-        this.resumeAuto();
-      });
+     this.slidesSub = this.slidesService.getSlides()
+    .pipe(catchError(() => of([] as Slide[])))
+    .subscribe(sl => {
+      this.slides = sl;
+      this.resumeAuto();
+      // Po tom, čo *ngIf* vloží element do DOM, nechaj Angular vykresliť a potom inicializuj
+      setTimeout(() => this.initSliderIfReady(), 0);
+    });
 
     this.loadSaleAndFeatured();
     this.loadExperiences();
@@ -173,44 +190,39 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadCategories();
   }
 
-  private loadCategories(): void {
-    this.productsService.getAllCategoriesFlat()
-      .pipe(catchError(() => of([])))
-      .subscribe(all => {
-        this.categories = all.filter(cat => !cat.parent);
-      });
-  }
+    private loadCategories(): void {
+      this.productsService.getAllCategoriesFlat()
+
+        .subscribe(cats => {
+          this.allCategories  = cats;
+          this.rootCategories = cats.filter(c => !c.parent);
+  
+         
+  
+        });
+    }
 
   goToCategory(slug: string): void {
-    this.router.navigate(['/eshop', 'categories', slug]);
+    this.router.navigate(['/produkt', 'kategoria', slug]);
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.animationState = true, 0);
+    setTimeout(() => (this.animationState = true), 0);
     this.startAutoSlide();
-
-    // sync bullets when user swipes / scrolls
-    const el = this.sliderScroll.nativeElement;
-    el.addEventListener('scroll', this.onSliderScroll);
-    this.resizeObserver = new ResizeObserver(() => {
-      // keep alignment after resize
-      this.scrollToSlide(this.currentSlideIndex);
-    });
-    this.resizeObserver.observe(el);
+    this.initSliderIfReady();          
   }
 
-  private onSliderScroll = (): void => {
+  public onSliderScroll = (): void => {
     this.pauseAuto();
-    const el = this.sliderScroll.nativeElement;
-    if (this.scrollSyncTimeout != null) {
-      clearTimeout(this.scrollSyncTimeout);
-    }
+    const el = this.sliderScroll?.nativeElement;
+    if (!el) return;
+
+    if (this.scrollSyncTimeout != null) clearTimeout(this.scrollSyncTimeout);
     this.scrollSyncTimeout = window.setTimeout(() => {
-      const slideWidth = el.offsetWidth;
-      const newIndex = Math.round(el.scrollLeft / slideWidth);
-      if (newIndex !== this.currentSlideIndex) {
-        this.currentSlideIndex = newIndex;
-      }
+      const w = el.clientWidth || 1;
+      // posuň index až keď prejdeš ~30% ďalšieho slidu
+      const newIndex = Math.floor((el.scrollLeft + w * 0.3) / w);
+      if (newIndex !== this.currentSlideIndex) this.currentSlideIndex = newIndex;
       this.resumeAuto();
     }, 100);
   };
@@ -221,9 +233,6 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.slidesSub?.unsubscribe();
     this.saleSub?.unsubscribe();
     this.expSub?.unsubscribe();
-    if (this.sliderScroll?.nativeElement) {
-      this.sliderScroll.nativeElement.removeEventListener('scroll', this.onSliderScroll);
-    }
     this.resizeObserver?.disconnect();
   }
 
@@ -254,10 +263,11 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private scrollToSlide(index: number): void {
-    const el = this.sliderScroll.nativeElement;
-    el.scrollTo({ left: el.offsetWidth * index, behavior: 'smooth' });
-    this.currentSlideIndex = index;
-  }
+  const el = this.sliderScroll?.nativeElement;
+  if (!el) return;
+  el.scrollTo({ left: el.clientWidth * index, behavior: 'smooth' });
+  this.currentSlideIndex = index;
+}
 
   public pauseAuto(): void {
     if (this.autoId != null) {
@@ -411,7 +421,7 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
       option === 'optionB'
         ? { category: 'zazitky' }
         : { category: 'kolekcie' };
-    this.router.navigate(['/eshop'], { queryParams });
+    this.router.navigate(['/produkt'], { queryParams });
   }
 
   scrollToPonuka() {

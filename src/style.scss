@@ -1,0 +1,50 @@
+/* základný vzhľad kontajnera */
+.mat-mdc-snack-bar-container.snack {
+  border-radius: 12px;
+  padding: 0; /* necháme vnútornej vrstve */
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+
+/* vnútorný label (text) */
+.mat-mdc-snack-bar-container.snack .mdc-snackbar__label {
+  padding: 12px 16px;
+  font-weight: 500;
+}
+
+/* akcia (tlačidlo vpravo) */
+.mat-mdc-snack-bar-container.snack .mdc-snackbar__actions {
+  padding-right: 8px;
+}
+.mat-mdc-snack-bar-container.snack .mat-mdc-snack-bar-action {
+  text-transform: none;
+  font-weight: 600;
+}
+
+/* varianty */
+.mat-mdc-snack-bar-container.snack.snack--added {
+  background: #0d6efd;            /* napr. var(--base-blue) */
+  color: #fff;
+}
+.mat-mdc-snack-bar-container.snack.snack--added .mat-mdc-snack-bar-action {
+  color: #fff;
+  opacity: .9;
+}
+
+.mat-mdc-snack-bar-container.snack.snack--removed {
+  background: #dc3545;            /* červená */
+  color: #fff;
+}
+.mat-mdc-snack-bar-container.snack.snack--removed .mat-mdc-snack-bar-action {
+  color: #fff;
+  opacity: .9;
+}
+
+/* ak chceš „light“ variant */
+.mat-mdc-snack-bar-container.snack.snack--light {
+  background: #fff;
+  color: #111;
+  border: 1px solid rgba(0,0,0,.08);
+}
+.mat-mdc-snack-bar-container.snack.snack--light .mat-mdc-snack-bar-action {
+  color: #0d6efd;
+}

@@ -10,6 +10,9 @@
       #sliderScroll
       (mouseenter)="pauseAuto()"
       (mouseleave)="resumeAuto()"
+      (scroll)="onSliderScroll()"       
+      (touchstart)="pauseAuto()"         
+      (touchend)="resumeAuto()"    
     >
       <div
         class="slide"
@@ -96,7 +99,7 @@
   <!-- ---------- DVE KARTY ---------- -->
   <div class="choice-grid">
     <div class="choice-card">
-      <a routerLink="/eshop/categories/prehliadky">
+      <a routerLink="/produkt/kategoria/prehliadky">
 
       <div class="image-wrapper">
         <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_prehliadky_7be0195e2e.webp" alt="E-shop" />
@@ -106,7 +109,7 @@
     </div>
 
     <div class="choice-card" >
-      <a routerLink="/eshop/categories/dielne">
+      <a routerLink="/produkt/kategoria/dielne">
 
       <div class="image-wrapper">
         <img
@@ -226,7 +229,7 @@
                   [src]="sessionProductImages[productId]"
                   [alt]="session.product?.name"
                   class="session-img"
-                  (click)="goToLink('eshop/' + session.product?.slug)"
+                  (click)="goToLink('produkt/' + session.product?.slug)"
                   
                 />
               </ng-container>
@@ -247,7 +250,7 @@
                     class="btn"
                     type="button"
                     *ngIf="session.product?.slug"
-                    (click)="goToLink('eshop/' + session.product?.slug)">
+                    (click)="goToLink('produkt/' + session.product?.slug)">
                     {{ 'BASE.VIAC_INFO' | translate }}
                   </button>
                   <button class="btn"
@@ -267,7 +270,7 @@
           
             <div *ngIf="feedbackKey === 'login_required'">
               {{ 'feedback.login_required' | translate }}<br>
-              <a routerLink="/account"> {{ 'feedback.login_to_book' | translate }}</a> {{ 'BASE.OR' | translate }} <a routerLink="/register"> {{ 'feedback.register_to_book' | translate }}</a>
+              <a (click)="goToLogin('/login')" style="cursor:pointer"> {{ 'feedback.login_to_book' | translate }}</a> {{ 'BASE.OR' | translate }} <a routerLink="/register"> {{ 'feedback.register_to_book' | translate }}</a>
             </div>
           </div>
 
@@ -280,7 +283,7 @@
             <a
               class="experience-card"
               *ngFor="let p of experiences"
-              [routerLink]="['/eshop', p.slug]"
+              [routerLink]="['/produkt', p.slug]"
             >
               <img [src]="p.primaryImageUrl" [alt]="p.name" />
               <span>{{ p.name }}</span>

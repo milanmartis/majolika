@@ -80,6 +80,27 @@
   width: 222px; /* fixná šírka zodpovedajúca najdlhšiemu stavu */
 }
 
+
+
+.catmainpic{
+  display: block;
+  width: 100%;
+  height: 330px;
+  margin: 0px;
+  padding: 0px;
+position: relative;
+left: 0px;
+top:-40px;
+object-fit: cover;
+z-index: 0;
+/* border: 1px solid var(--base-blue-thin); */
+}
+
+.cat-heading{
+  z-index: 999;
+}
+
+
 .child-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -90,34 +111,139 @@
   font-weight: 600;
   background: var(--primary-color);
 }
-.child-button {
+
+.child-button{
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;       /* vodorovne na stred (ponechaj) */
+  justify-content: flex-start; /* ⬅️ vertikálne hore */
+  gap: .9rem;
+
+  /* ostatné tvoje štýly... */
+  vertical-align: top;
+  font-weight: 700;
+  text-align: center;
+  margin: 4px;
+  color: var(--base-blue);
+  background: var(--primary-color);
+  border: 0;
+  padding: 12px 12px;        /* trošku väčší top padding, ak chceš */
+  border-radius: var(--corners);
+  cursor: pointer;
+  font-size: 1.18rem;
+  transition: transform .2s ease;
+  width: 266px;
+  height: 330px;             /* ak chceš fixnú výšku, nechaj */
+  perspective: 800px;
+    transition: transform .6s ease;
+  
+}
+
+.img-flip{
+  position:relative;
+  width:260px; 
+  height:260px;
+  transform-style: preserve-3d;
+  transition: transform .6s ease;
+}
+
+.img-flip img{
+  vertical-align: top;
+  position:absolute; inset:0;
+  width:100%; 
+  height:100%; 
+  object-fit:cover;
+  backface-visibility: hidden;
+}
+
+.img-flip .front{ 
+  opacity: 1;
+  /* //filter: var(--img-blue-filter);  */
+} 
+/* .img-flip .back{
+  transform: rotateY(180deg);
+  filter:none;
+} */
+
+/* preklopenie na farebnú stranu */
+/* .child-button:hover .img-flip,
+.child-button:focus-visible .img-flip,
+.child-button.is-selected .img-flip{
+  transform: rotateY(180deg);
+  color: var(--base-blue);
+
+} */
+
+@media (prefers-reduced-motion: reduce){
+  .img-flip{ transition:none; }
+}
+
+.child-button img{
+  vertical-align: top;
+  width: 260px;              /* uprav podľa potreby */
+  height: 260px;              /* uprav podľa potreby */
+  object-fit: cover;
+  opacity: 0.85;
+  /* filter: var(--img-blue-filter);         ⇦ modrý nádych default */
+  transition: all .625s ease;
+}
+
+/* na hover / focus / stlačenie bude farebný */
+.child-button:hover img,
+.child-button:focus-visible img,
+.child-button:active img,
+.child-button.is-selected img {           /* ⇦ ostane farebný pre aktívnu kategóriu */
+  filter: none;
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.child-button .label{
+  line-height: 1.15;
+  white-space: normal;
+}
+.child-button:hover .label{
+  color: var(--base-blue);
+  font-weight: 700;
+  text-decoration: underline;
+
+}
+
+.child-button:hover{
+
+    background-color: #e7ebec75;
+
+}
+
+
+/* .child-button {
   text-align: center;
   margin: 4px 4px;
   color:var(--base-blue);
   background-color: var(--color-primary);
-  border: 1px solid var(--base-blue);
+  border: 0px solid var(--base-blue);
   padding: 4px 12px;
   border-radius: var(--corners);
   cursor: pointer;
   font-size: 0.8rem;
   transition: all 0.3s ease;
-}
+} */
 
-.child-button:hover{
+/* .child-button:hover{
   background-color: var(--base-blue);
   color: #edeef1;
 }
 .child-button.active {
   background-color: var(--base-blue);
   color: #edeef1;
-}
+} */
 
 :host {
   display: block;
-  padding: 1rem;
-  max-width: 1600px;    /* obsah komponentu (vrátane mega-nav a produktov) nebude širší než 1200px */
+  padding: 0rem;
+  /* max-width: 1600px;    obsah komponentu (vrátane mega-nav a produktov) nebude širší než 1200px */
   width: 100%;
-  margin: auto;         /* centrovanie priestorov na väčších obrazovkách */
+  margin: 0px;         /* centrovanie priestorov na väčších obrazovkách */
 }
 
 /* ================= HEADER-TRIGGER ================= */
@@ -661,7 +787,8 @@ font-size: 1.2rem;
 
 
 .sort-wrapper{
-  margin-top: -51px;
+
+  margin-top: -41px;
   float: left;
   
   position: absolute;
@@ -684,14 +811,30 @@ font-size: 1.2rem;
   padding: 0.0rem 0.71rem;
 }
 
+.nadpis{
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--base-blue);
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.35s ease;
+  cursor: pointer;
+}
 
+.nadpis:hover{
+  text-decoration: underline;
+}
 
 @media (max-width: 992px) {
 .sort-wrapper{
  margin-top: -8px; 
-  margin-bottom: -28px; 
+  margin-bottom: -18px; 
 position: relative;
 float: none;
+}
+.sort-wrapper option{
+ text-align: center;
 }
 }
 
@@ -757,16 +900,28 @@ float: none;
   background: transparent;
   border: none;
   cursor: pointer;
-  opacity: 0;                 /* default: ukryté */
-  transition: opacity .2s ease;
-  z-index: 2;                 /* nad <img> */
+  opacity: 0;                           /* default: skryté */
+  transform: scale(.9);                 /* jemne menšie, nech je pekný hide */
+  transition:
+    opacity .2s ease,
+    transform .28s cubic-bezier(.34,1.56,.64,1); /* pružné zväčšenie/zmensenie */
+  z-index: 2;
   padding: 0;
   line-height: 1;
+  pointer-events: none;                 /* keď je skryté, neklikateľné */
 }
 
 .grid-item:hover .btn-heart,
 .img-wrapper .btn-heart.is-fav {
-  opacity: 1;                 /* ukáž pri hoveri alebo ak je obľúbený */
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  animation: heartBounce .34s cubic-bezier(.34,1.56,.64,1); /* bounce pri zobrazení */
+}
+
+/* bounce pri hoveri (každý prechod cez hover) */
+.img-wrapper .btn-heart:hover .mat-icon {
+  animation: heartBounce .34s cubic-bezier(.34,1.56,.64,1);
 }
 
 .img-wrapper .btn-heart .mat-icon {
@@ -777,9 +932,122 @@ float: none;
   height: 30px;
 }
 
+/* kliknutím (toggle) si vieme vynútiť “pop” cez triedu .pop */
+.img-wrapper .btn-heart.pop .mat-icon {
+  animation: heartBounce .34s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ak je obľúbený, ikonka môže zostať rovnaká farba */
 .img-wrapper .btn-heart.is-fav .mat-icon {
   color: var(--base-blue);
 }
+
+/* kľúčové snímky pre pružný “bounce” */
+@keyframes heartBounce {
+  0%   { transform: scale(.6); }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* rešpektuj reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .img-wrapper .btn-heart {
+    transition: opacity .15s linear;
+  }
+  .img-wrapper .btn-heart,
+  .img-wrapper .btn-heart .mat-icon {
+    animation: none !important;
+    transform: none;
+  }
+}
+
+
+
+
+.img-wrapper .badge-stack {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+  pointer-events: none; /* len info */
+  user-select: none;
+}
+
+/* Základ badge-u */
+.img-wrapper .badge-flag {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border: 1px solid var(--base-blue);
+  background: rgba(255,255,255,0.92);
+  color: var(--base-blue);
+  line-height: 1.1;
+}
+
+/* Farebné odlíšenie */
+.img-wrapper .badge-sale {
+  width: 118px;
+    height: 30px;
+    border: none;
+    outline: none;
+    background: transparent url(/assets/img/back2.webp) no-repeat center / cover;
+    background-size: 8rem auto;
+  color: #fff;
+  border-color: var(--base-blue);
+  font-size: 1rem;
+  padding: 6px 8px;
+}
+
+.img-wrapper .badge-new {
+  width: 118px;
+    height: 30px;
+    border: none;
+    outline: none;
+    background: transparent url(/assets/img/back2.webp) no-repeat center / cover;
+    background-size: 8rem auto;
+  color: #fff;
+  border-color: var(--base-blue);
+  font-size: 1rem;
+  padding: 6px 8px;
+}
+
+/* (voliteľné) na veľmi úzkych obrazovkách mierne zmenšíme */
+@media (max-width: 420px) {
+  .img-wrapper .badge-stack {
+  position: absolute;
+  top: 4px;
+  left: 0px;
+    gap: 2px;
+  }
+  .img-wrapper .badge-flag {
+    font-size: 0.6rem;
+    padding: 2px 2px;
+  }
+  .img-wrapper .badge-sale {
+      width: 88px;
+    height: 20px;
+    font-size: 0.826rem;
+    padding: 3px 1px;
+    background-size: 5rem auto;
+
+  }
+  .img-wrapper .badge-new {
+          width: 88px;
+    height: 20px;
+    font-size: 0.826rem;
+    padding: 3px 1px;
+    background-size: 5rem auto;
+
+  }
+}
+
+
+
+
 /* 
 .grid-item:hover .btn-cart {
   background: var(--base-blue);
@@ -789,6 +1057,7 @@ float: none;
 
 /* ================= Pôvodné štýly produktu ================= */
 .product-list {
+  padding: 1.52rem;
   width: 100%;
 }
 .product-list h2 {
@@ -987,6 +1256,7 @@ input::after{
 
 .products-wrapper {
   position: relative;
+
 }
 
 /* keď sa načítava: zníži sa priehľadnosť grid-u */
