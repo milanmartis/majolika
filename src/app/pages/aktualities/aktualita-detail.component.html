@@ -48,7 +48,7 @@
       </header>
 
 
-      <section class="body" [innerHTML]="akt.content | nbspSmallWords | linkify"></section>
+      <section class="body" [innerHTML]="akt.content | markdownLite | nbspSmallWords | linkify"></section>
     </article>
     <br>
     <br>

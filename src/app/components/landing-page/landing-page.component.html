@@ -45,7 +45,7 @@
               <ng-template #imgTpl>
                 <img
                   class="slide-media"
-                  [src]="s.images[0] || '/assets/img/gall/placeholder.jpg'"
+                  [src]="stripSizePrefix(s.images[0]) || '/assets/img/gall/placeholder.jpg'"
                   alt="{{ s.title || 'Slide image' }}"
                 />
               </ng-template>
@@ -109,7 +109,7 @@
       </div>
 
       <div class="choice-card">
-        <a routerLink="/article/co-robime">
+        <a routerLink="/produkt">
           <div class="image-wrapper">
             <img
               src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_2_f5e2e3a292.jpg"
@@ -216,7 +216,7 @@
           {{ 'ONAS.MAJOLIKA_DOMA_TEXT' | translate }}
         </p>
         <button
-          [routerLink]="['/produkt/kategoria', 'na-stol']"
+          [routerLink]="['/produkt']"
           class="lp-hero__cta"
         >
           {{ 'KOMPLET.PONUKA' | translate }}
@@ -270,7 +270,7 @@
       <a routerLink="/dielne" style="display:block; width:100px; height:100px;">
         {{ 'HOME.DIELNE' | translate }}
       </a>
-      <a routerLink="/tradicia" style="display:block; width:100px; height:100px;">
+      <a routerLink="/article/historia-majoliky" style="display:block; width:100px; height:100px;">
         {{ 'HOME.TRADICIA' | translate }}
       </a>
     </div>

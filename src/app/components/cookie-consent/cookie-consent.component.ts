@@ -9,24 +9,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   selector: 'app-cookie-consent',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
-  styles: [`
-  .cm{position:fixed;inset:0;display:flex;align-items:flex-start;justify-content:center;padding:16px;z-index:9999; pointer-events:auto;}
-  .cm--bar{background:rgba(0,0,0,0.6);
-  .cm__body{pointer-events:auto;max-width:720px;width:100%;border-radius:var(--corners);background:#fff;padding:20px;font:14px/1.4 system-ui,Segoe UI,Roboto,Arial}
-  .cm__title{margin:0 0 2px;font-size:18px}
-  .cm__desc{margin:0 0 6px;color:#444}
-  .cm__btns{display:flex;gap:2px;flex-wrap:wrap;justify-content:space-between;align-items:center}
-  .cm__btn-group{display:flex;gap:8px;flex-wrap:wrap}
-  .cm__btn{border:1px solid #ddd;border-radius:var(--corners);background:#f6f6f6;padding:8px 12px;cursor:pointer}
-  .cm__btn:hover{background:#eee;color:var(--base-blue);}
-  .cm__btn--primary{background:var(--base-blue);color:#fff;border-color:var(--base-blue);}
-
-  .cm__btn--secondary{background:#fff}
-  .cm__panel{margin-top:12px;border-top:1px solid #eee;padding-top:12px}
-  .cm__row{display:flex;align-items:flex-start;gap:8px;margin:8px 0}
-  .cm__row label{font-weight:600}
-  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
-  `],
+  styleUrls: ['./cookie-consent.component.css'],
   template: `
   <div
     *ngIf="visible()"

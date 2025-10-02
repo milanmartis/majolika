@@ -15,6 +15,9 @@ import { CartService } from 'app/services/cart.service';
 import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
 import { ActivatedRoute } from '@angular/router';
 import { GoogleOneTapService } from './core/google-one-tap.service';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
+
 
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet, Router } from '@angular/router';
@@ -28,6 +31,12 @@ import { ThemeService } from 'app/services/theme.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CartComponent } from 'app/pages/cart/cart.component';
 import { CookieConsentComponent } from 'app/components/cookie-consent/cookie-consent.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { NavigationEnd, UrlTree } from '@angular/router';
+import { filter, take, pairwise } from 'rxjs/operators';
+import { Location } from '@angular/common';
+import { AuthService } from 'app/services/auth.service';
 
 // import { HeadingBlockComponent } from 'app/blocks/heading-block/heading-block.component';
 // import { LinkBlockComponent } from 'app/blocks/link-block/link-block.component';
@@ -46,7 +55,8 @@ type LatLng = google.maps.LatLngLiteral;
     PopupLauncherComponent,
     CartComponent,
     MatDialogModule,          // ← sem
-    CookieConsentComponent
+    CookieConsentComponent,
+    MatSnackBarModule,
     // ColorPickerComponent,
    // ColorPickerDirective,
     // CartDrawerService
@@ -92,6 +102,8 @@ type LatLng = google.maps.LatLngLiteral;
       <!-- <app-header [isAtTop]="isAtTop" [hidden]="headerHidden"></app-header> -->
 <br>
       <!-- 2) Popup (ak je) -->
+       
+
       <app-popup-launcher></app-popup-launcher>
   
   <div
@@ -145,7 +157,7 @@ type LatLng = google.maps.LatLngLiteral;
   (@slideIn.done)="onAnimationDone()"
   [@slideIn]="isCartOpen ? 'open' : 'closed'"
 >
-<app-cart (productClicked)="closeSidebar()"></app-cart>
+<app-cart (linkClicked)="closeSidebar()"  (checkoutClicked)="closeSidebar()"></app-cart>
 </aside>
 <!-- <button class="close-btn" (click)="closeCart()">✕</button> -->
 <div
@@ -161,7 +173,9 @@ type LatLng = google.maps.LatLngLiteral;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
+  
+  private platformId = inject(PLATFORM_ID);
+  private get isBrowser() { return isPlatformBrowser(this.platformId); }
   isOpen = false;
   @ViewChild(CartComponent) cartComponent!: CartComponent;
   private oneTap = inject(GoogleOneTapService);
@@ -192,13 +206,17 @@ export class AppComponent implements OnInit {
     private el: ElementRef,
     private bo: BreakpointObserver,
     private route: ActivatedRoute,
+    private location: Location,
+    private snack: MatSnackBar,
+    private translate: TranslateService,
+    private auth: AuthService
   ) {
     // Otvoriť sidebar pri prvom pridaní položky do košíka
     this.cart.cart$
       .pipe(skip(1))
       .subscribe(rows => {
         if (rows.length) {
-          this.openCart();
+         // this.openCart();
         }
       });
 
@@ -235,16 +253,16 @@ export class AppComponent implements OnInit {
     this.isCartOpen = false;
   }
   openCart()  { 
-    this.isCartOpen = true;   
-    
-    // ✅ posun na vrch pri otvorení
-  
-    setTimeout(() => {
-      const sidebar = document.querySelector('.cart-sidebar');
-      if (sidebar) sidebar.scrollTop = 0;
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }); 
-  }
+  this.isCartOpen = true;
+
+  if (!this.isBrowser) return; // SSR guard
+
+  setTimeout(() => {
+    const sidebar = document.querySelector('.cart-sidebar') as HTMLElement | null;
+    if (sidebar) sidebar.scrollTop = 0;
+    window.scrollTo?.({ top: 0, behavior: 'instant' as ScrollBehavior });
+  });
+}
 
   closeCart() { 
     this.isCartOpen = false;
@@ -260,46 +278,66 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // simulácia načítania
+  // simulácia načítania – bezpečné pre SSR
+  setTimeout(() => {
+    this.isLoading = false;
+    this.cdRef.detectChanges();
+  }, 2000);
+
+  // ↓↓↓ browser-only blok
+  if (this.isBrowser) {
     this.lastScrollY = window.scrollY;
     this.isAtTop = window.scrollY <= this.scrollThreshold;
-
-   
 
     const stored = localStorage.getItem('color-primary');
     if (stored) {
       this.currentColor = stored;
       this.theme.setColor('--color-primary', stored);
     } else {
-      // 2) Ak nič nebolo uložené, načítaj default (alebo prvu z palety)
       this.currentColor = this.theme.getColor('--color-primary') || this.palette[0];
       this.theme.setColor('--color-primary', this.currentColor);
     }
 
     const saved = localStorage.getItem('border-radius');
-    this.currentCorner = saved !== null
-      ? +saved
-      : this.corners[0];           // default 0px
-
+    this.currentCorner = saved !== null ? +saved : this.corners[0];
     this.theme.setBorderRadius(`${this.currentCorner}px`);
-
-
-    setTimeout(() => {
-      this.isLoading = false;
-      this.cdRef.detectChanges();
-    }, 2000);
-
-    // this.route.queryParamMap.subscribe(params => {
-    //   const token = params.get('confirmation');
-    //   if (token) {
-    //     console.log('✅ Zachytený token v root URL:', token);
-    //     this.router.navigate(['/confirm-email'], {
-    //       queryParams: { confirmation: token },
-    //       replaceUrl: true // aby sa v histórii nezobrazovala táto medzizastávka
-    //     });
-    //   }
-    // });
   }
+}
+
+
+    // private showLoginSnackOnce() {
+    //   if (sessionStorage.getItem('loginSnackShown')) return;
+    //   sessionStorage.setItem('loginSnackShown', '1');
+    //   this.snack.open(
+    //     this.translate.instant('AUTH.LOGIN.SUCCESS') || 'Prihlásenie prebehlo úspešne.',
+    //     this.translate.instant('COMMON.OK') || 'OK',
+    //     { duration: 4000 }
+    //   );
+    // }
+
+  // private checkLoginSnackFromUrl() {
+  //   const tree: UrlTree = this.router.parseUrl(this.router.url);
+  //   const qp = tree.queryParams;
+
+  //   // podpora aj pre prípad, že token je vo fragmente: #access_token=...
+  //   const frag = this.route.snapshot.fragment ?? '';
+  //   const fragParams = new URLSearchParams(frag);
+  //   const accessToken = qp['access_token'] || fragParams.get('access_token');
+  //   const loginSuccess = qp['login'] === 'success' || fragParams.get('login') === 'success';
+
+  //   if (accessToken || loginSuccess) {
+  //     this.showLoginSnackOnce();
+
+  //     // očisti URL bez reloadu
+  //     delete tree.queryParams['access_token'];
+  //     delete tree.queryParams['refresh_token'];
+  //     delete tree.queryParams['login'];
+  //     this.router.navigateByUrl(tree, { replaceUrl: true });
+  //   }
+  // }
+
+
+
 
   onPrimaryChange(newColor: string) {
     this.currentColor = newColor;
@@ -308,13 +346,13 @@ export class AppComponent implements OnInit {
   onSelect(color: string) {
     this.currentColor = color;
     this.theme.setColor('--color-primary', color);
-    localStorage.setItem('color-primary', color);
-
+    if (this.isBrowser) localStorage.setItem('color-primary', color);
   }
+
   onChecked(corner: number) {
     this.currentCorner = corner;
     this.theme.setBorderRadius(`${corner}px`);
-    localStorage.setItem('border-radius', corner.toString());
+    if (this.isBrowser) localStorage.setItem('border-radius', corner.toString());
   }
 
   // Vráti hodnotu z route.data['animation'] pre daný outlet
@@ -326,20 +364,18 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:scroll')
   onWindowScroll() {
-   // if (!this.isMobile) return;
+    if (!this.isBrowser) return; // SSR guard
+
     const currentY = window.scrollY;
     this.isAtTop = currentY <= this.scrollThreshold;
 
     if (!this.isAtTop) {
       if (currentY > this.lastScrollY && currentY > this.scrollThreshold) {
-        // scroll nadol: schovať header
         this.headerHidden = false;
       } else if (currentY < this.lastScrollY) {
-        // scroll nahor: zobraziť header
         this.headerHidden = false;
       }
     } else {
-      // pri vrchu stránky vždy zobraziť header
       this.headerHidden = false;
     }
 

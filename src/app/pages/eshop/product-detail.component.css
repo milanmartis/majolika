@@ -797,10 +797,62 @@ margin: 0px 0px 0px 0px;
 }
 
 .variant-radio:checked + .variant-button .fa {
-  color: #fff;  /* biela */
+  color: var(--base-blue);  /* biela */
 }
 
 .accordion__item.is-open .accordion__content {
   max-height: 500px; /* or enough to fit your content */
   padding: 1rem;
 }
+
+:host ::ng-deep .fc-daygrid-day.fc-day-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+
+/* === bunky bez eventov: malé, sivasté, kompaktné === */
+:host ::ng-deep .fc-daygrid-day.no-ev .fc-daygrid-day-frame {
+  padding: 4px 6px;
+}
+:host ::ng-deep .fc-daygrid-day.no-ev {
+  background: #f8fafc;
+}
+:host ::ng-deep .fc-daygrid-day.no-ev .fc-daygrid-day-number {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+:host ::ng-deep .fc-daygrid-day.no-ev .fc-daygrid-day-events {
+  min-height: 0;
+}
+
+/* === bunky s eventmi: nech sa zväčšia podľa obsahu === */
+:host ::ng-deep .fc-daygrid-day.has-ev .fc-daygrid-day-frame {
+  padding: 2px 2px;
+}
+:host ::ng-deep .fc-daygrid-day.has-ev .fc-daygrid-day-number {
+  font-size: 12px;
+  color: #0f172a;
+}
+:host ::ng-deep .fc-toolbar-title {
+  font-size: 16px;
+  color: #0f172a;
+}
+
+/* už existujúci štýl z predchádzajúceho kroku – výrazné badge */
+:host ::ng-deep .fc-daygrid-event { background: transparent; border: 0; padding: 0; }
+:host ::ng-deep .m-ev {margin-bottom: 2px; cursor: pointer;
+  display: inline-flex; flex-direction: column; gap: 4px;
+  padding: 8px 10px; border-radius: 10px; background: #0e29a0; color: #fff;
+  text-transform: uppercase; letter-spacing: .03em; font-weight: 800; line-height: 1.15;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+:host ::ng-deep .m-ev .t { font-size: 13px;  }
+:host ::ng-deep .m-ev .cap { align-self: flex-start; font-size: 11px; font-weight: 800; padding: 2px 4px;
+  border-radius: 999px; background: green; color: #fff;width: 100%; text-align: center; }
+:host ::ng-deep .m-ev .cap.cap-sold { background: #d92d20; color: #fff; width: 100%; text-align: center; }
+
+/* zvýraznenie dostupnosti z eventClassNames */
+:host ::ng-deep .fc-event.low-availability .m-ev { outline: 2px solid #f59e0b; }
+:host ::ng-deep .fc-event.sold-out .m-ev { background: #475569; }

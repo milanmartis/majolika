@@ -21,13 +21,14 @@ import {
   import { LinkifyPipe }        from 'app/pipes/linkify.pipe';
   import { ShareButtonsComponent } from 'app/shared/share-buttons/share-buttons.component'; 
   import { Router } from '@angular/router';
+  import { MarkdownLitePipe } from 'app/pipes/markdown-lite.pipe';
 
 
 
   @Component({
     selector: 'app-aktualita-detail',
     standalone: true,
-    imports: [CommonModule, RouterModule, FooterComponent, TranslateModule, NbspSmallWordsPipe, LinkifyPipe, ShareButtonsComponent],
+    imports: [CommonModule, RouterModule, FooterComponent, TranslateModule, NbspSmallWordsPipe, LinkifyPipe, ShareButtonsComponent, MarkdownLitePipe ],
     templateUrl: './aktualita-detail.component.html',
     styleUrls: ['./aktualita-detail.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush

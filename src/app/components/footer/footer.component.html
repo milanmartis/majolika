@@ -15,19 +15,17 @@
         {{ 'FOOTER.SUPPORT.MY_ACCOUNT' | translate }} <i class="fa fa-user"></i>
       </a>
     </li>
-    <li><a href="#">{{ 'FOOTER.SUPPORT.FAQ' | translate }}</a></li>
-    <li><a href="#">{{ 'FOOTER.SUPPORT.SHIPPING' | translate }}</a></li>
-    <li><a href="#">{{ 'FOOTER.SUPPORT.RETURNS' | translate }}</a></li>
-    <li><a href="#">{{ 'FOOTER.SUPPORT.CONTACT' | translate }}</a></li>
+
+    <li><a href="article/informacie">{{ 'FOOTER.SUPPORT.CONTACT' | translate }}</a></li>
   </ul>
 </div>
 
 <div class="footer-col">
   <h4>{{ 'FOOTER.INFO.TITLE' | translate }}</h4>
   <ul>
-    <li><a href="#">{{ 'FOOTER.INFO.ABOUT_COMPANY' | translate }}</a></li>
-    <li><a href="#">{{ 'FOOTER.INFO.CAREERS' | translate }}</a></li>
-    <li><a href="#">{{ 'FOOTER.INFO.BLOG' | translate }}</a></li>
+    <li><a href="o-nas">{{ 'FOOTER.INFO.ABOUT_COMPANY' | translate }}</a></li>
+      <!-- <li><a href="#">{{ 'FOOTER.INFO.CAREERS' | translate }}</a></li> -->
+    <!-- <li><a href="#">{{ 'FOOTER.INFO.BLOG' | translate }}</a></li> -->
     <li><a [routerLink]="['/article/vseobecne-obchodne-podmienky']">{{ 'FOOTER.INFO.TERMS' | translate }}</a></li>
     <li><a [routerLink]="['/article/ochrana-a-spracovanie-osobnych-udajov']">{{ 'FOOTER.INFO.PRIVACY' | translate }}</a></li>
   </ul>

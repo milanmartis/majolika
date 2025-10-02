@@ -1,9 +1,9 @@
-  <!-- Root kategórie -->
+<!-- Root kategórie -->
 <div style="display: inline;" *ngIf="rootCategories?.length">
   <ng-container *ngFor="let root of rootCategories">
     <img class="catmainpic"
       *ngIf="selectedRootCategorySlug === root.category_slug"
-      [src]="root.category_image_large"
+      [src]="root.category_image_banner_large"
       [alt]="root.category_name" />
   </ng-container>
 </div>
@@ -42,10 +42,14 @@
   </h2>
 
 </div>
+
     <!-- Text kategórie -->
-  <h4 [innerHTML]="selectedCategoryText" *ngIf="selectedCategoryText && selectedCategoryText.length > 0" class="category-text" 
-    style="width:100%;max-width:1000px;margin:auto;padding-bottom:40px;white-space: pre-line;">
-  </h4>
+ <h4
+  *ngIf="getSelectedCategoryText(translate.currentLang) as text"
+  [innerHTML]="text"
+  class="category-text"
+  style="width:100%;max-width:1000px;margin:auto;padding-bottom:40px;white-space: pre-line;">
+</h4>
   <!-- Výzva na výber kategórie -->
   <div
   *ngIf="!selectedCategory"

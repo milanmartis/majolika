@@ -312,8 +312,11 @@ private loadSessionsForDay(date: string | Date | CalendarDay, forceReload = fals
   });
 }
 
-
-
+public stripSizePrefix(url?: string): string {
+    if (!url) return '/assets/img/gall/placeholder.jpg';
+    // odstráni prefix len v POSLEDNOM segmente cesty (teda v názve súboru)
+    return url.replace(/(^|\/)(?:large_|medium_|small_|thumbnail_)(?=[^/]*$)/, '$1');
+  }
   startBooking(session: EventSessionWithCapacity) {
     this.selectedSession = session;
     this.feedback = '';
@@ -356,7 +359,7 @@ private loadSessionsForDay(date: string | Date | CalendarDay, forceReload = fals
   
         // Načítaj produkt, ak je k session priradený
         const slug = session.product?.slug;
-        console.log('Session product slug:', slug);
+        //console.log('Session product slug:', slug);
         if (slug) {
           this.productsService.getProductWithVariations(slug).pipe(
             catchError(() => of(null))
@@ -424,7 +427,7 @@ this.holdTimer = setTimeout(() => {
       error: (err) => {
         this.loadingSessions = false;
         this.feedback = 'Booking failed.';
-        console.error(err);
+       // console.error(err);
       }
     });
   }
@@ -696,53 +699,61 @@ this.holdTimer = setTimeout(() => {
 
 
   private generateCalendar(reference: Date): void {
-    // 1. deň mesiaca v UTC
-    const first = new Date(Date.UTC(reference.getUTCFullYear(), reference.getUTCMonth(), 1));
-    const startMonday = new Date(first);
-    startMonday.setUTCDate(first.getUTCDate() - ((first.getUTCDay() + 6) % 7));
-    
-    // Dnes v UTC (polnoc)
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-  
-    this.calendarDays = [];
-    for (let i = 0; i < 42; i++) {
-      const d = new Date(startMonday);
-      d.setUTCDate(startMonday.getUTCDate() + i);
-      d.setUTCHours(0, 0, 0, 0); // UTC polnoc!
-  
-      const inMonth = d.getUTCMonth() === reference.getUTCMonth() && d.getUTCFullYear() === reference.getUTCFullYear();
-      const isToday = d.getTime() === today.getTime();
-      this.calendarDays.push({
-        date: d,
-        dayOfMonth: d.getUTCDate(),
-        isOccupied: false,
-        isToday,
-        isInCurrentMonth: inMonth,
-        isSelectable: inMonth,
-      });
-    }
-  
-    // Tu volaj nový endpoint podľa aktuálneho zobrazeného mesiaca
-    const start = this.toUTCDateString(this.calendarDays[0].date);            // prvý deň v kalendári
-    const end = this.toUTCDateString(this.calendarDays[this.calendarDays.length - 1].date);  // posledný deň
-  
-    this.eventSessionsService.listForRange(start, end).subscribe({
-      next: (sessions) => {
-        for (let day of this.calendarDays) {
-          day.isOccupied = sessions.some((session: any) => {
-            const eventDateStr = this.toUTCDateString(session.startDateTime);
-            const calendarDateStr = this.toUTCDateString(day.date);
-            return eventDateStr === calendarDateStr;
-          });
-        }
-      },
-      error: (err) => {
-        // príp. log/feedback
-        console.warn('Chyba pri načítaní sessions:', err);
-      }
+  // 1. deň mesiaca v UTC
+  const first = new Date(Date.UTC(reference.getUTCFullYear(), reference.getUTCMonth(), 1));
+  const startMonday = new Date(first);
+  startMonday.setUTCDate(first.getUTCDate() - ((first.getUTCDay() + 6) % 7));
+
+  // Dnes v UTC (polnoc)
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+
+  this.calendarDays = [];
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(startMonday);
+    d.setUTCDate(startMonday.getUTCDate() + i);
+    d.setUTCHours(0, 0, 0, 0); // UTC polnoc!
+
+    const inMonth = d.getUTCMonth() === reference.getUTCMonth() && d.getUTCFullYear() === reference.getUTCFullYear();
+    const isToday = d.getTime() === today.getTime();
+
+    this.calendarDays.push({
+      date: d,
+      dayOfMonth: d.getUTCDate(),
+      isOccupied: false,
+      isToday,
+      isInCurrentMonth: inMonth,
+      // ✅ selektovateľné len dni v tomto mesiaci, ktoré sú >= dnes
+      isSelectable: inMonth && d.getTime() >= today.getTime(),
     });
   }
+
+  // Orež range tak, aby začínal najneskôr dnes
+  const startRaw = this.toUTCDateString(this.calendarDays[0].date); // prvý deň v gride
+  const end = this.toUTCDateString(this.calendarDays[this.calendarDays.length - 1].date); // posledný deň
+  const todayStr = this.toUTCDateString(today);
+  const start = startRaw < todayStr ? todayStr : startRaw;
+
+  this.eventSessionsService.listForRange(start, end).subscribe({
+    next: (sessions) => {
+      for (let day of this.calendarDays) {
+        const dayStr = this.toUTCDateString(day.date);
+        // ✅ „obsadenosť“ len pre dni od dnes (staré dni ignorujeme)
+        if (dayStr >= todayStr) {
+          day.isOccupied = sessions.some((session: any) => {
+            const eventDateStr = this.toUTCDateString(session.startDateTime);
+            return eventDateStr === dayStr;
+          });
+        } else {
+          day.isOccupied = false;
+        }
+      }
+    },
+    error: (err) => {
+    //  console.warn('Chyba pri načítaní sessions:', err);
+    }
+  });
+}
   
 
 

@@ -137,7 +137,7 @@ export class LoginComponent implements OnInit {
         this.isSubmitting = false;
       },
       error: (err) => {
-        console.error('Login failed', err);
+        //console.error('Login failed', err);
         this.isSubmitting = false;
 
         const key = this.mapLoginErrorKey(err);

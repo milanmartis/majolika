@@ -16,9 +16,6 @@
     "TRVANIE": "Dauer",
     "WHO_WE_ARE": "Wer wir sind",
     "WHO_WE_ARE_PEREX": "Wir stellen Ihnen unser Team vor, das sich um die Bewahrung und Entwicklung der traditionellen slowakischen Keramik kümmert."
-
-
-
   },
 
   "FORM": {
@@ -60,7 +57,7 @@
   },
 
   "ONAS": { 
-    "CO_ROBIME": "Was wir tun",
+    "CO_ROBIME": "Unser Angebot",
     "KTO_SME": "Wer wir sind",
     "HISTORIA": "Geschichte",
     "INFO": "Informationen",
@@ -134,6 +131,7 @@
 "SEARCH": "Suche",
 "NO_RESULTS":"Keine Ergebnisse gefunden",
 "POCET_VOLNYCH_MIEST": "Plätze",
+"INCLUDING_VAT": "Inklusive MwSt.",
 
     "CHECKOUT_FAILED": "Zahlung fehlgeschlagen.",
     "PAYMENT": "Zahlung",
@@ -148,7 +146,7 @@
     "DELIVERY_PACKETA_BOX": "Packeta Paketbox",
     "DELIVERY_POST_COURIER": "Postkurier an Adresse",
     "SHIPPING_FEE": "Versand",
-    "PAYMENT_FEE": "Zahlungszuschlag",
+    "PAYMENT_FEE": "Nachnahmegebühr",
     "GRAND_TOTAL": "Gesamtsumme",
     "POST_OFFICE_ID": "Postfiliale-ID",
     "PACKETA_BOX_ID": "Packeta-Box-ID",
@@ -166,7 +164,21 @@
       "LOGIN_TO_SAVE_FAV": "Melden Sie sich an, um Favoriten zu speichern",
     "LOGIN": "Anmelden",
         "NOVINKA": "Neuheit",
-    "ZLAVA": "Rabatt"
+    "ZLAVA": "Rabatt",
+"CONSENT_TERMS": "Ich stimme den <a href='../article/vseobecne-obchodne-podmienky'>Allgemeinen Geschäftsbedingungen</a> zu.",
+
+"CONSENT_PRIVACY": "Ich stimme der Verarbeitung personenbezogener Daten gemäß den <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Datenschutzbestimmungen</a> zu.",
+"CONSENT_COOKIES": "Ich stimme der Verwendung von Cookies gemäß den <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Cookie-Richtlinien</a> zu.",
+"CONSENT_MARKETING": "Ich möchte Neuigkeiten und Marketingangebote per E-Mail erhalten.",
+    "label_created": "Bestellung erhalten",
+    "in_transit": "Unterwegs",
+    "at_pickup": "Zur Abholung bereit",
+    "delivered": "Zugestellt",
+    "returned": "Zurückgesendet",
+    "unpaid": "Warte auf Zahlung",
+    "paid": "Bezahlt",
+    "refunded": "Erstattet",
+    "ONSITE_ONLY_PICKUP": "Zahlung vor Ort ist nur bei Abholung im Geschäft möglich."
   
   },
 
@@ -176,7 +188,6 @@
     "BACK_TO_CHECKOUT": "Zur Kasse zurück",
     "CONTINUE_SHOPPING": "Weiter einkaufen"
   },
-
 
   "DIELNE": { 
     "WELCOME": "Führungen und kreative Werkstätten",
@@ -301,9 +312,39 @@
     }
   },
 
-
+  "set": {
+    "title": "Neues Passwort festlegen",
+    "missingCode": "Wiederherstellungscode fehlt. Überprüfe den Link in der E-Mail oder fordere die Wiederherstellung erneut an.",
+    "password": {
+      "label": "Neues Passwort",
+      "hint": "Mindestens 8 Zeichen",
+      "required": "Gib das Passwort ein.",
+      "minlength": "Das Passwort muss mindestens 8 Zeichen lang sein."
+    },
+    "password2": {
+      "label": "Passwort bestätigen",
+      "required": "Bestätige das Passwort.",
+      "minlength": "Das Passwort muss mindestens 8 Zeichen lang sein.",
+      "nomatch": "Passwörter stimmen nicht überein."
+    },
+    "submit": "Neues Passwort speichern",
+    "saving": "Speichere…",
+    "success": "Das Passwort wurde geändert. Ich leite zur Anmeldung weiter…"
+  },
+    "reset": {
+    "title": "Passwort zurücksetzen",
+    "email": {
+      "label": "E-Mail",
+      "required": "Gib deine E-Mail ein.",
+      "invalid": "Ungültiges E-Mail-Format."
+    },
+    "submit": "Passwort zurücksetzen",
+    "sending": "Sende…",
+    "sentInfo": "Wir haben dir eine E-Mail mit Anweisungen geschickt."
+  },
 
   "AUTH": {
+    "RESET_PASSWORD":"Reset password",
        "ERRORS":{
 "INVALID_CREDENTIALS":"Ungültige E-Mail oder Passwort."
    },
@@ -339,7 +380,12 @@
     "LOGIN": {
       "TITLE": "Anmelden",
       "SUBMIT": "Anmelden",
-      "SUCCESS": "Erfolgreich angemeldet!"
+      "SUCCESS": "Erfolgreich angemeldet!",
+      "ERRORS": {
+      "EMAIL_NOT_CONFIRMED": "Musíte najprv potvrdiť e-mail. Skontrolujte si schránku.",
+      "INVALID_CREDENTIALS": "Nesprávny e-mail alebo heslo.",
+      "GENERIC": "Prihlásenie zlyhalo. Skúste to znova."
+      }
     },
     "REGISTER": {
       "TITLE": "Registrieren",

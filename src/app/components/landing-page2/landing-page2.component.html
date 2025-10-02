@@ -52,7 +52,7 @@
           <ng-template #imgTpl>
             <img
               class="slide-media"
-              [src]="s.images[0] || '/assets/img/gall/placeholder.jpg'"
+              [src]="stripSizePrefix(s.images[0]) || '/assets/img/gall/placeholder.jpg'"
               alt="{{ s.title || 'Slide image' }}"
             />
           </ng-template>
@@ -251,16 +251,16 @@
                     type="button"
                     *ngIf="session.product?.slug"
                     (click)="goToLink('produkt/' + session.product?.slug)">
-                    {{ 'BASE.VIAC_INFO' | translate }}
+                   {{ 'BASE.VIAC_INFO' | translate }} ({{ 'BASE.LABEL' | translate }} {{ session.capacity?.available }})
                   </button>
-                  <button class="btn"
+                  <!-- <button class="btn"
                     type="button"
                     [disabled]="session.capacity?.available === 0"
                     (click)="startBooking(session)">
                     {{ session.capacity?.available
                       ? ('BASE.ADD_TO_CART_HOLD' | translate:{ available: session.capacity?.available })
                       : ('BASE.FULL' | translate) }}
-                  </button>
+                  </button> -->
                 </div>
                 <div style="position:relative; top:0px;margin-top:-10px;margin-bottom:-40px;">
                   <img src="/assets/img/back_dekor_black2.png" alt="dekor" width="64" style="transform: rotate(90deg);">
@@ -319,7 +319,7 @@
       >{{ 'HOME.DIELNE' | translate }}</a
     >
     <a
-      routerLink="/tradicia"
+      routerLink="/article/historia-majoliky"
       style="display:block; width:100px;height:100px;"
       >{{ 'HOME.TRADICIA' | translate }}</a
     >

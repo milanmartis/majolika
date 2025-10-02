@@ -50,7 +50,7 @@
 
     
       "ONAS": { 
-      "CO_ROBIME": "Čo robíme",
+      "CO_ROBIME": "Naša ponuka",
       "KTO_SME": "Kto sme",
       "HISTORIA": "História",
       "INFO": "Informácie",
@@ -67,6 +67,7 @@
 },
 
     "ESHOP": { 
+      "CONSENT_REQUIRED":"Povinná položka",
       "WELCOME": "E-SHOP",
       "FIRST_TEXT": "Slovenská ľudová majolika patrí k nositeľom tradície modranskej majoliky a majolikovej ornamentiky a  zároveň je priestorom pre realizáciu kreativity a  inovatívnych postupov vo výrobe modranskej keramiky. Cieľom podpory z projektu je rozvoj kreatívneho talentu a  inovácií v  oblasti tradičného remesla formou záchrany, zachovania a obnovy významnej časti kultúrneho dedičstva Slovenska. ",
       "MNOZSTVO": "Množstvo",
@@ -100,13 +101,13 @@
       "ZELENY_DEKOR": "Zelený dekór",
       "FAVORITE_ADD": "Pridať do obľúbených",
     "FAVORITE_REMOVE": "Odstrániť z obľúbených",
-    "FAVORITE_ADDED": "Položka pridaná do obľúbených",
-    "FAVORITE_REMOVED": "Položka vyradená z obľúbených",
+    "FAVORITE_ADDED": "Položka pridaná do obľúbených",
+    "FAVORITE_REMOVED": "Položka vyradená zobľúbených",
     "OK": "OK",
      "CHECKOUT_FORM_INVALID": "Prosím, vyplňte všetky povinné polia.",
-     "CHECKOUT_MY_ITEMS": "Položky, platba a doručenie",
+     "CHECKOUT_MY_ITEMS": "Rekapitulácia",
      "CHECKOUT_CUSTOMER_INFO": "Moje údaje",
-     "CHECKOUT_PROCEED_PAYMENT": "Pokračovať k platbe",
+     "CHECKOUT_PROCEED_PAYMENT": "Dokončiť objednávku",
 "TVAR_TANIER": "Tanier",
 "TVAR_VAZA": "Váza",
 "TVAR_DZBAN": "Džbán",
@@ -129,7 +130,7 @@
       "BUTTON": "Objavte teraz",
       "POCET_VOLNYCH_MIEST": "Miesta",
 
-    "CHECKOUT_FAILED": "Platba zlyhala.",
+    "CHECKOUT_FAILED": "Objednávka zlyhala.",
     "PAYMENT": "Platba",
     "PAYMENT_CARD": "Platba kartou",
     "PAYMENT_COD": "Dobierka",
@@ -157,17 +158,31 @@
       "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
       "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
       "BANK_TRANSFER_BIC": "BANKSKBX",
-      "PAYMENT_FEE": "Poplatok za platbu",    
+      "PAYMENT_FEE": "Poplatok za dobierku",    
     "LOGIN_TO_SAVE_FAV": "Prihláste sa, aby ste si mohli ukladať obľúbené",
     "LOGIN": "Prihlásiť sa",
         "CONSENTS": "Súhlasy",
-    "CONSENT_TERMS": "Súhlasím s <a routerLink='/obchodne-podmienky'>Obchodnými podmienkami</a>.",
-    "CONSENT_PRIVACY": "Súhlasím so spracovaním osobných údajov podľa <a routerLink='/ochrana-osobnych-udajov'>Zásad ochrany súkromia</a>.",
-    "CONSENT_COOKIES": "Súhlasím s používaním cookies podľa <a routerLink='/cookies'>Pravidiel používania cookies</a>.",
+
+    
+        "CONSENT_TERMS": "Súhlasím s <a href='../article/vseobecne-obchodne-podmienky'>Obchodnými podmienkami</a> a so spracovaním osobných údajov podľa <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Zásad ochrany súkromia</a>.",
+
+    "CONSENT_PRIVACY": "Súhlasím so spracovaním osobných údajov podľa <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Zásad ochrany súkromia</a>.",
+    "CONSENT_COOKIES": "Súhlasím s používaním cookies podľa <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Pravidiel používania cookies</a>.",
     "CONSENT_MARKETING": "Chcem dostávať novinky a marketingové ponuky e-mailom.",
     "NOVINKA": "Novinka",
-    "ZLAVA": "Zľava"
+    "ZLAVA": "Zľava",
+    "INCLUDING_VAT": "Z toho DPH",
+    "label_created": "Prijatá objednávka",
+    "in_transit": "Na ceste",
+    "at_pickup": "Na vyzdvihnutie",
 
+    "delivered": "Doručené",
+    "returned": "Vrátené",
+
+    "unpaid": "Čakáme na platbu",
+    "paid": "Zaplatené",
+    "refunded": "Vrátené peniaze",
+    "ONSITE_ONLY_PICKUP": "Platba na mieste je možná len pri osobnom odbere."
  
     },
 
@@ -210,9 +225,39 @@
     
     },
 
-
-
+  "set": {
+    "title": "Nastaviť nové heslo",
+    "missingCode": "Chýba kód obnovy. Skontroluj odkaz v e-maile alebo požiadaj o obnovu znova.",
+    "password": {
+      "label": "Nové heslo",
+      "hint": "Minimálne 8 znakov",
+      "required": "Zadajte heslo.",
+      "minlength": "Heslo musí mať aspoň 8 znakov."
+    },
+    "password2": {
+      "label": "Potvrdenie hesla",
+      "required": "Potvrďte heslo.",
+      "minlength": "Heslo musí mať aspoň 8 znakov.",
+      "nomatch": "Heslá sa nezhodujú."
+    },
+    "submit": "Uložiť nové heslo",
+    "saving": "Ukladám…",
+    "success": "Heslo bolo zmenené. Presmerujem na prihlásenie…"
+  },
+  "reset": {
+    "title": "Obnova hesla",
+    "email": {
+      "label": "E-mail",
+      "required": "Zadajte e-mail.",
+      "invalid": "Neplatný formát e-mailu."
+    },
+    "submit": "Obnoviť heslo",
+    "sending": "Odosielam…",
+    "sentInfo": "Poslali sme Vám e-mail s inštrukciami."
+  },
+  
 "AUTH": {
+  "RESET_PASSWORD":"Obnoviť heslo",
    "ERRORS":{
 "INVALID_CREDENTIALS":"Nesprávny e-mail alebo heslo."
    },
@@ -528,7 +573,7 @@
     },
     "INFO": {
       "TITLE": "Informácie",
-      "ABOUT_COMPANY": "O spoločnosti",
+      "ABOUT_COMPANY": "O nás",
       "CAREERS": "Kariéra",
       "BLOG": "Blog",
       "TERMS": "Obchodné podmienky",

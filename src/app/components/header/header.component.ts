@@ -137,6 +137,7 @@ onResize(event: any) {
     this.cart.openCart();
   }
   ngOnInit(): void {
+    this.closePromo();
     this.megaSub = this.megaMenuService.isOpen$.subscribe((open) => {
       this.isMegaOpen = open;
     });
@@ -265,7 +266,7 @@ onResize(event: any) {
   // }
 
   search(): void {
-    console.log('Searching for:', this.searchQuery);
+   // console.log('Searching for:', this.searchQuery);
   }
 
   get showLogo(): boolean {

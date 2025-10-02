@@ -5,13 +5,13 @@ import { LandingPageComponent }      from './components/landing-page/landing-pag
 import { LandingPage2Component }     from './components/landing-page2/landing-page2.component';
 import { EshopComponent }            from './pages/eshop/eshop.component';
 import { TradiciaComponent }         from './pages/tradicia/tradicia.component';
-import { KontaktComponent }          from './pages/kontakt/kontakt.component';
+// import { KontaktComponent }          from './pages/kontakt/kontakt.component';
 import { DielneComponent }           from './pages/dielne/dielne.component';
 import { LoginComponent }            from 'app/auth/login.component';
 import { RegisterComponent }         from 'app/auth/register.component';
 import { ArticlePageComponent }      from 'app/article-page/article-page.component';
 import { eshopRoutes }               from './pages/eshop/eshop.routes';
-import { galleryRoutes }             from './pages/gallery/gallery.routes';
+// import { galleryRoutes }             from './pages/gallery/gallery.routes';
 import { ConfirmEmailComponent }     from './pages/confirm-email/confirm-email.component';
 import { SigninCallbackComponent }     from './signin-callback/signin-callback.component';
 import { AktualityListComponent } from './pages/aktualities/aktuality-list.component';
@@ -77,7 +77,7 @@ export const routes: Routes = [
       .then(m => m.ProductListComponent), },
 
   { path: 'tradicia', component: TradiciaComponent, data: { animation: 'TradiciaPage' } },
-  { path: 'kontakt',  component: KontaktComponent, data: { animation: 'KontaktPage'  } },
+  // { path: 'kontakt',  component: KontaktComponent, data: { animation: 'KontaktPage'  } },
 
 
 
@@ -105,8 +105,9 @@ export const routes: Routes = [
       import('app/auth/login.component').then(m => m.LoginComponent)
   },
 
-
-
+{ path: 'tradicia', redirectTo: 'article/historia-majoliky', pathMatch: 'full' },
+  { path: 'auth/forgot-password', loadComponent: () => import('./auth/pages/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent) },
+  { path: 'auth/reset-password', loadComponent: () => import('./auth/pages/reset-password/reset-password.component').then(m => m.ResetPasswordComponent) },
 
   { path: 'register', component: RegisterComponent, data: { animation: 'RegisterPage' } },
 

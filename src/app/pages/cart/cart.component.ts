@@ -2,11 +2,10 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
 import { CartService, CartRow } from 'app/services/cart.service';
 import { EventSessionsService } from 'app/services/event-sessions.service';
 import { CartHoldTimerComponent } from './cart-hold-timer.component';
-import { take } from 'rxjs';
+import { of, finalize, mapTo, Observable, take } from 'rxjs';
 import { interval, Subscription } from 'rxjs';
 
 import {
@@ -43,6 +42,11 @@ import {
 })
 export class CartComponent {
   @Output() productClicked = new EventEmitter<void>();
+  @Output() linkClicked = new EventEmitter<void>();     
+  @Output() checkoutClicked = new EventEmitter<void>(); 
+  onLinkClick() { this.linkClicked.emit(); }
+  onCheckoutClick() { this.checkoutClicked.emit(); }
+  
   disableAnim = false;
   private holdCleanupSub?: Subscription;
 
@@ -87,15 +91,20 @@ export class CartComponent {
   
     // **TU**: cleanup expirovaných holdov raz pri inicializácii
     this.cart.cart$.pipe(take(1)).subscribe(rows => {
-      rows.forEach(r => {
-        if (r.bookingId && r.holdExpires && r.holdExpires < Date.now()) {
-          // zrušíme backend pending a odstránime z košíka
-          this.eventSessionsService.patchBooking(r.bookingId, { status: 'cancelled' }).subscribe({
-            complete: () => this.cart.removeByBooking(r.bookingId!)
-          });
+  rows.forEach(r => {
+    if (r.bookingId && r.holdExpires && r.holdExpires < Date.now()) {
+      this.eventSessionsService.patchBooking(r.bookingId, { status: 'cancelled' }).subscribe({
+        complete: () => {
+          this.cart.removeByBooking(r.bookingId!);
+          if (r.session?.capacity?.available != null) {
+            r.session.capacity.available = r.session.capacity.available + (r.qty || 1);
+          }
+          this.eventSessionsService.notifyBookingChanged();
         }
       });
-    });
+    }
+  });
+});
     
   }
 
@@ -108,32 +117,48 @@ export class CartComponent {
     return this.highlightedIds.has(row.id);
   }
 
+
+  private updating = new Set<number>(); // per-row lock
+
   inc(row: CartRow) {
+    if (this.updating.has(row.id)) return;
+
     const session = row.session;
-    if (session && session.capacity?.available != null) {
-      if (session.capacity.available <= 0) {
-        return; // nič voľné → stop
-      }
-    }
+    if (session?.capacity?.available != null && session.capacity.available <= 0) return;
 
     const newQty = row.qty + 1;
+
+    this.updating.add(row.id);
+    const prevAvailable = session?.capacity?.available ?? null;
+
+    // optimistická zmena
     this.cart.updateQty(row.id, newQty, row.session?.id);
+    if (prevAvailable != null) row.session!.capacity!.available = Math.max(0, prevAvailable - 1);
 
+    let patch$: Observable<void>;
     if (row.bookingId) {
-      this.eventSessionsService.patchBooking(row.bookingId, { peopleCount: newQty }).subscribe({
-        next: () => {
-          this.eventSessionsService.notifyBookingChanged();
+      patch$ = this.eventSessionsService
+        .patchBooking(row.bookingId, { peopleCount: newQty })
+        .pipe(mapTo(void 0)); // => Observable<void>
+    } else {
+      patch$ = of(void 0);     // => Observable<void>
+    }
 
-          // (voliteľné, ale praktické) drž dostupné miesta v UI v synchronizácii:
-          if (row.session?.capacity?.available != null) {
-            row.session.capacity.available = Math.max(0, row.session.capacity.available - 1);
-          }
+    patch$
+      .pipe(finalize(() => this.updating.delete(row.id))) // vždy odomkni
+      .subscribe({
+        next: () => {
+          // spusti len pri úspechu
+          this.eventSessionsService.notifyBookingChanged();
         },
-        error: (err) => {
-          // TODO: ošetriť chybu (409 Conflict, capacity full...)
+        error: (err: unknown) => {
+          console.error(err);
+          // revert UI
+          this.cart.updateQty(row.id, newQty - 1, row.session?.id);
+          if (prevAvailable != null) row.session!.capacity!.available = prevAvailable;
+          // TODO: toast „Kapacita plná“
         }
       });
-    }
   }
 
 
@@ -158,18 +183,35 @@ export class CartComponent {
     }
   }
   
-  remove(row: CartRow) {
-    if (row.bookingId) {
-      this.eventSessionsService.patchBooking(row.bookingId, { status: 'cancelled' }).subscribe({
+remove(row: CartRow) {
+  const releaseCapacity = () => {
+    // navýš kapacitu lokálne (UI feedback okamžite)
+    if (row.session?.capacity?.available != null) {
+      row.session.capacity.available = row.session.capacity.available + (row.qty || 1);
+    }
+    // daj ostatným komponentom vedieť, nech si dotiahnu fresh dáta
+    this.eventSessionsService.notifyBookingChanged();
+  };
+
+  if (row.bookingId) {
+    this.eventSessionsService
+      .patchBooking(row.bookingId, { status: 'cancelled' })
+      .subscribe({
         next: () => {
           this.cart.removeByBooking(row.bookingId!);
-          this.eventSessionsService.notifyBookingChanged();
+          releaseCapacity();
+        },
+        error: () => {
+          // aj pri chybe chceme košík vyčistiť a UI uvoľniť kapacitu
+          this.cart.removeByBooking(row.bookingId!);
+          releaseCapacity();
         }
       });
-    } else {
-      this.cart.remove(row.id, row.session?.id);
-    }
+  } else {
+    this.cart.remove(row.id, row.session?.id);
+    releaseCapacity();
   }
+}
 
   clear() {
     this.disableAnim = true;

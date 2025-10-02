@@ -56,7 +56,7 @@ export class LoginSuccessComponent implements OnInit {
             this.router.navigate(['/']);
           },
           error: err => {
-            console.error('OAuth callback error', err);
+           // console.error('OAuth callback error', err);
             this.router.navigate(['/login']);
           }
         });

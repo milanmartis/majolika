@@ -34,7 +34,7 @@
           <thead>
             <tr>
               <th>{{ 'table.index' | translate }}</th>
-              <th>{{ 'table.date' | translate }}</th>
+              <th class="table_date">{{ 'table.date' | translate }}</th>
               <th>{{ 'table.status' | translate }}</th>
               <th>{{ 'table.payment' | translate }}</th>
               <th>{{ 'table.total' | translate }}</th>
@@ -44,45 +44,64 @@
 
           <tbody>
             <ng-container *ngFor="let o of orders; let i = index">
+
+              
               <!-- Hlavný riadok objednávky -->
-              <tr>
+              <tr (click)="toggleOrder(o)" class="order-row">
                 <td class="index-cell">
           
                   <span class="index-num">{{ i + 1 }}</span>
                 </td>
 
-              <td>{{ o.createdAt | date: 'short':undefined:lang.getCurrentLanguage()}}</td>
+              <td class="table_date">{{ o.createdAt | date: 'short':undefined:lang.getCurrentLanguage()}}</td>
+
+              <td [ngSwitch]="o.deliveryStatus">
+  <span *ngSwitchCase="'label_created'">{{ 'ESHOP.label_created' | translate }}</span>
+  <span *ngSwitchCase="'in_transit'">{{ 'ESHOP.in_transit' | translate }}</span>
+  <span *ngSwitchCase="'at_pickup'">{{ 'ESHOP.at_pickup' | translate }}</span>
+  <span *ngSwitchCase="'delivered'">{{ 'ESHOP.delivered' | translate }}</span>
+  <span *ngSwitchCase="'returned'">{{ 'ESHOP.returned' | translate }}</span>
+  <span *ngSwitchDefault>{{ o.deliveryStatus }}</span> <!-- fallback -->
+</td>
+
+
+
+
+
 
                 <td>
-                  {{ o.status === 'pending'
-                      ? ('table.pending' | translate)
-                      : ('table.completed' | translate) }}
+  <span
+    [ngClass]="{
+      'badge-paid': o.paymentStatus === 'paid',
+      'badge-unpaid': o.paymentStatus === 'unpaid' || o.paymentStatus === 'refunded' || o.paymentStatus === 'waiting_for_payment'
+    }"
+    [ngSwitch]="o.paymentStatus"
+  >
+    <ng-container *ngSwitchCase="'unpaid'">
+      {{ 'ESHOP.unpaid' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchCase="'paid'">
+      {{ 'ESHOP.paid' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchCase="'refunded'">
+      {{ 'ESHOP.refunded' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      {{ o.paymentStatus }}
+    </ng-container>
+  </span>
                 </td>
 
-                <td>
-                  <span
-                    [ngClass]="{
-                      'badge-paid': o.paymentStatus === 'paid',
-                      'badge-unpaid': o.paymentStatus !== 'paid'
-                    }"
-                  >
-                    {{ o.paymentStatus === 'paid'
-                        ? ('table.paid' | translate)
-                        : ('table.unpaid' | translate) }}
-                  </span>
-                </td>
-
-                <td>{{ o.total | currency: 'EUR' }}</td>
-                <td class="toggle-cell">
+                <td>{{ o.totalWithShipping | currency: 'EUR' }}</td>
+                <td class="toggle-cell row-mobile-hidden">
                   <button
                     type="button"
                     class="expand-btn"
-                    (click)="toggleOrder(o)"
                     [attr.aria-expanded]="isExpanded(o)"
                     [attr.aria-controls]="'order-items-' + o.id"
                     [title]="isExpanded(o) ? 'Skryť položky' : 'Zobraziť položky'"
                   >
-                    {{ (isExpanded(o) ? 'ACCOUNT.hide-product' : 'ACCOUNT.show-product') | translate }} 
+                    <!-- {{ (isExpanded(o) ? 'ACCOUNT.hide-product' : 'ACCOUNT.show-product') | translate }}  -->
                     <b style="font-size: 1.2rem; line-height: 1; margin-left: 0.3rem;font-weight: 700;">
                       {{ isExpanded(o) ? '−' : '+' }}
                     </b>
@@ -102,7 +121,9 @@
                   <table class="order-items-table">
 
                     <tbody>
+                      <tr class="row-wide-hidden"><td class="row-wide-hidden">{{ o.createdAt | date: 'short':undefined:lang.getCurrentLanguage()}}</td></tr>
                       <tr *ngFor="let item of o.items">
+                      
                         <td class="product-cell">
                           <a
                             *ngIf="item?.product?.slug; else nameOnly"
@@ -118,6 +139,8 @@
                         <td>{{ item.unitPrice | currency: 'EUR' }}</td>
                         <td>{{ (item.quantity || 0) * (item.unitPrice || 0) | currency: 'EUR' }}</td>
                       </tr>
+                      <tr *ngIf="o.shippingFee>0"><td>{{ 'ESHOP.SHIPPING_FEE' | translate }} </td><td>{{ o.shippingFee | currency: 'EUR' }}</td></tr>
+                      <tr *ngIf="o.paymentFee>0"><td>{{ 'ESHOP.PAYMENT_FEE' | translate }} </td><td>{{ o.paymentFee | currency: 'EUR' }}</td></tr>
                     </tbody>
                   </table>
                 </td>

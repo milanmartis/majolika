@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription, of } from 'rxjs';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { NgxMasonryModule } from 'ngx-masonry';
+// import { NgxMasonryModule } from 'ngx-masonry';
 import { LightboxModule } from 'ngx-lightbox';
 
 import { ProductsService, Product, Category } from 'app/services/products.service';
@@ -50,7 +50,7 @@ interface CalendarDay {
     FooterComponent,
     SafeUrlPipe,
     LightboxModule,
-    NgxMasonryModule
+    // NgxMasonryModule
   ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css'],
@@ -201,6 +201,13 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
   
         });
     }
+  
+  public stripSizePrefix(url?: string): string {
+    if (!url) return '/assets/img/gall/placeholder.jpg';
+    // odstráni prefix len v POSLEDNOM segmente cesty (teda v názve súboru)
+    return url.replace(/(^|\/)(?:large_|medium_|small_|thumbnail_)(?=[^/]*$)/, '$1');
+  }
+
 
   goToCategory(slug: string): void {
     this.router.navigate(['/produkt', 'kategoria', slug]);

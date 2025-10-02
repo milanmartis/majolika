@@ -29,6 +29,7 @@ export interface Category {
   term_id: number;
   category_name: string;
   category_slug: string;
+  category_poradie: number;
   parent?:   { term_id: number; category_name: string; category_slug: string; category_image: string };
   children?: { term_id: number; category_name: string; category_slug: string; category_image: string }[];
 }
@@ -70,6 +71,7 @@ export class ProductsService {
   private readonly populateList = [
     'picture_new',
     'pictures_new',
+    'category_poradie',
     'variations',
     'variations.picture_new',
     'variations.pictures_new'

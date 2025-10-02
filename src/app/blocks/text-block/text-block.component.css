@@ -11,74 +11,95 @@
 
 /* ─────────────────────────────────────────
    Text block – základ
-   (pri rich HTML nepoužívaj pre-line)
 ────────────────────────────────────────── */
 .text-block {
-
   color: #000;
   padding-bottom: 10px;
-  white-space: normal;               /* ← žiadne umelé <br> z whitespace */
+  white-space: normal;
   max-width: 1000px;
   float: none;
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: -30px;              /* zachované z tvojej verzie */
-  text-shadow: var(--primary-color) 0 1px 0;
 
-  /* centrálne riadenie zarovnania */
+  margin-top: 30px;
+  margin-bottom: -30px;
+  text-shadow: var(--primary-color) 0 1px 0;
   text-align: var(--text-align, start);
+
+  /* reset columns shorthand a nastav gap s prefixom */
+  columns: auto;
+  -webkit-columns: auto;
+  column-gap: 2rem;
+  -webkit-column-gap: 2rem;
 }
 
-/* Ak niekde renderuješ čistý plain text bez HTML, použij toto: */
-.text-block.is-plain { white-space: pre-line; }
-
-/* ─────────────────────────────────────────
-   Užívateľské zarovnanie
-   (prepínané triedou aj cez CSS premennú)
-────────────────────────────────────────── */
+/* zarovnanie */
 .text-block.align-left   { --text-align: left; }
 .text-block.align-center { --text-align: center; }
 .text-block.align-right  { --text-align: right; }
 
-/* ─────────────────────────────────────────
-   Médiá v texte – responzívne a zarovnanie
-────────────────────────────────────────── */
+/* stĺpce – s prefixom; 3 stĺpce dávam s !important, aby prebil staré MQ */
+.text-block.cols-1 { column-count: 1 !important; -webkit-column-count: 1 !important; }
+.text-block.cols-2 { column-count: 2 !important; -webkit-column-count: 2 !important; }
+.text-block.cols-3 { column-count: 3 !important; -webkit-column-count: 3 !important; }
+
+/* nelámať niektoré bloky cez stĺpce */
+.text-block :is(h1,h2,h3,h4,h5,h6,figure,blockquote,pre,table,ul,ol) {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* obrázky & spol. – nech sedia v stĺpci */
 .text-block img,
 .text-block picture,
 .text-block figure,
 .text-block video {
-  max-width: 390px;
-  width: 100%;
+  max-width: 290px;     /* v rámci stĺpca */
   height: auto;
+  width: 100%;
   display: block;
 }
 
-/* centrovanie/zarovnanie médií podľa textu */
+/* ak chceš mať menšie médiá aj pri jednom stĺpci, uprav si podľa potreby
+.text-block.cols-1 img,
+.text-block.cols-1 picture,
+.text-block.cols-1 figure,
+.text-block.cols-1 video {
+  max-width: 270px;
+}
+*/
+
+.text-block h1{
+  padding-top: 33px;
+  color: var(--base-blue);
+}
+
+/* Centrovanie/zarovnanie médií podľa textu */
 .text-block.align-center img,
 .text-block.align-center picture,
 .text-block.align-center figure,
 .text-block.align-center video {
-  margin-inline: auto;               /* center */
+  margin-inline: auto;
 }
 
 .text-block.align-right img,
 .text-block.align-right picture,
 .text-block.align-right figure,
 .text-block.align-right video {
-  margin-left: auto;                 /* right */
+  margin-left: auto;
 }
 
 .text-block.align-left img,
 .text-block.align-left picture,
 .text-block.align-left figure,
 .text-block.align-left video {
-  margin-right: auto;                /* left (default) */
+  margin-right: auto;
 }
 
 /* figcaption dedí zarovnanie rodiča */
 .text-block figure { text-align: inherit; }
 
-/* figcaption (ak nechceš žiadny, odkomentuj display:none) */
 figure > figcaption {
   font-size: 0.9rem;
   opacity: 0.8;
@@ -105,10 +126,13 @@ figure > figcaption {
   line-height: 1.2;
 }
 
-/* Špecificky ak chceš menšie medzery na h4 (voliteľné) */
-/* .article-content h4 { margin: .8rem 0 .4rem; } */
+.article-content br + br {
+  display: block;
+  margin-bottom: 0.9rem;
+  margin-top: 2.9rem;
+}
 
-/* prvý element bez horného okraja (eliminuje "veľkú medzeru" hore) */
+/* prvý element bez horného okraja */
 .article-content > :is(h1,h2,h3,h4,h5,h6,p,ul,ol,figure,blockquote):first-child {
   margin-top: 0 !important;
 }
@@ -120,17 +144,8 @@ figure > figcaption {
   padding: 0;
 }
 
-
-.article-content br + br {
-  display: block;
-  margin-bottom: 0.9rem;
-  margin-top: 2.9rem;
-}
-
 /* ─────────────────────────────────────────
-   Odstránenie "falošných" prázdnych odsekov od editorov
-   (vyhladzuje veľké skoky po Enter)
-   Pozn.: :has() vyžaduje moderný prehliadač
+   Odstránenie "falošných" prázdnych odsekov
 ────────────────────────────────────────── */
 .text-block p:empty {
   display: none;
@@ -151,34 +166,31 @@ figure > figcaption {
   margin-top: 20px;
 }
 
-/* ─────────────────────────────────────────
-   Fallback zarovnanie (ak triedy používaš inde)
-────────────────────────────────────────── */
+/* Fallback zarovnanie (ak triedy používaš inde) */
 .align-left   { text-align: left; }
 .align-center { text-align: center; }
 .align-right  { text-align: right; }
 
-
-/* 🔧 Zjemnenie medzier v rich bloku s .prose */
+/* ─────────────────────────────────────────
+   Zjemnenie medzier v rich bloku s .prose
+────────────────────────────────────────── */
 .prose.article-content :where(h1,h2,h3,h4,h5,h6) {
   margin-block-start: .6rem !important;   /* nad nadpisom */
-  margin-block-end:   .35rem !important;  /* POD nadpisom – tu to zmenšuje medzeru */
+  margin-block-end:   .35rem !important;  /* pod nadpisom */
   line-height: 1.2 !important;
 }
 
 .prose.article-content :where(p,ul,ol,figure,blockquote) {
-  margin-block: 0.75rem !important;      /* odseky & spol. – bežná „medzera po Entere“ */
+  margin-block: 0.75rem !important;
 }
 
-/* menšia medzera ak po nadpise hneď nasleduje text/zoznam/obrázok */
-.prose.article-content :where(h1,h2,h3,h4,h5,h6)
-   {
+.prose.article-content :where(h1,h2,h3,h4,h5,h6) {
   margin-top: 1.4rem !important;
-  margin-bottom: 1.075rem !important; /* zmenšená medzera pod nadpisom */
+  margin-bottom: 1.075rem !important;
 }
 .prose.article-content :where(p,ul,ol,figure,blockquote) {
   margin-top: .4rem !important;
-  margin-bottom: -1.075rem !important; /* zmenšená medzera pod nadpisom */
+  margin-bottom: -1.075rem !important;
 }
 
 /* prvý blok bez horného okraja */
@@ -186,10 +198,28 @@ figure > figcaption {
   margin-top: 0 !important;
 }
 
-/* skry „prázdne“ odseky, ktoré robia veľké skoky */
+/* skry „prázdne“ odseky */
 .prose.article-content p:empty,
 .prose.article-content p:has(br:only-child) {
   display: none !important;
   margin: 0 !important;
   padding: 0 !important;
 }
+
+/* ─────────────────────────────────────────
+   Responsivita multi-column layoutu
+   - na úzkych displejoch zredukuj stĺpce, aby boli čitateľné
+────────────────────────────────────────── */
+/* z 3 -> 2 až pod 900px */
+@media (max-width: 1024px) {
+  .text-block.cols-3 { column-count: 3 !important; -webkit-column-count: 3 !important; }
+}
+
+
+.text-block.cols-3 { column-count: 3 !important; -webkit-column-count: 3 !important; }
+
+
+
+
+
+

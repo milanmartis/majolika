@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc/server",
+    "types": ["node"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "paths": {
+      "ngx-masonry": ["src/stubs/ngx-masonry.ts"],
+      "masonry-layout": ["src/stubs/masonry-layout.ts"],
+      "imagesloaded": ["src/stubs/imagesloaded.ts"]
+    }
+  },
+  "files": ["src/main.server.ts", "src/server.ts"]
+}

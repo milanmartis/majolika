@@ -21,7 +21,10 @@
 
 
 
-html, body {     background: var(--color-primary);
+html, body {     
+  background: var(--color-primary);
+  overflow-x: hidden;     
+  width: 100%;
 }
 
 .article-content figure > figcaption {

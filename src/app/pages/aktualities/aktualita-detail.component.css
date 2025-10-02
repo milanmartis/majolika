@@ -7,6 +7,14 @@
   color: var(--base-blue);
 }
 
+.body img {
+  max-width: 100%;
+  height: auto;
+  float: left;
+  margin: 0.75rem auto;
+  border-radius: 0.5rem;
+}
+
 .detail-page {
   display: flex;
   flex-direction: column;

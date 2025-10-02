@@ -2,7 +2,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import {
   provideHttpClient,
-  withInterceptors,          // 👈 DOPLŇ TOTO
+  withFetch,
+  withInterceptors,      
   withInterceptorsFromDi,
   HTTP_INTERCEPTORS
 } from '@angular/common/http';
@@ -15,6 +16,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateLoader, TranslateService, TranslateStore, TranslateCompiler, TranslateFakeCompiler } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { localeInterceptor } from 'app/interceptors/locale.interceptor';
 
 import { AppComponent } from 'app/app.component';
 import { routes } from 'app/app.routes';
@@ -30,6 +32,8 @@ import localeEn from '@angular/common/locales/en';
 import localeDe from '@angular/common/locales/de';
 import { LOCALE_ID } from '@angular/core';
 import { filter } from 'rxjs/operators';
+import { CacheInterceptor } from 'app/interceptors/cache.interceptor';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -42,10 +46,12 @@ bootstrapApplication(AppComponent, {
   providers: [
     // Funkčný interceptor + DI interceptory
     provideHttpClient(
-      withInterceptors([noCacheInterceptor]), // 👈 tu ho pridáš
+      withFetch(), 
+      withInterceptors([noCacheInterceptor, localeInterceptor]),
       withInterceptorsFromDi()
     ),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor,  multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
 
     provideRouter(routes),
     provideAnimations(),
@@ -59,8 +65,7 @@ bootstrapApplication(AppComponent, {
       MegaMenuModule
     ),
 
-    TranslateService,
-    TranslateStore,
+
     { provide: TranslateCompiler, useClass: TranslateFakeCompiler },
     LanguageService,
     { provide: LOCALE_ID, useValue: 'sk' },

@@ -1,20 +1,22 @@
 <!-- full-screen backdrop -->
-<div
-  class="popup-backdrop"
-  *ngIf="popup && isOpen"
-></div>
+<div class="popup-backdrop" *ngIf="popup && isOpen"></div>
 
 <!-- sliding popup panel with background cover -->
-<div
-  *ngIf="popup && isOpen"
-  class="popup-panel"
-  [@slideIn]
-  [ngStyle]="{ 'background-image': 'url(' + firstImageUrl() + ')' }"
->
+<div *ngIf="popup && isOpen"
+     class="popup-panel"
+     [@slideIn]>
+
+  <!-- background slides (stacked) -->
+  <ng-container *ngIf="imageUrls.length">
+    <div class="bg-slide"
+         *ngFor="let url of imageUrls; let i = index"
+         [style.background-image]="'url(' + url + ')'"
+         [class.active]="i === currentIndex">
+    </div>
+  </ng-container>
+
   <!-- close button -->
   <button class="close-btn" (click)="close()">✕</button>
-
-
 
   <!-- radial overlay under text -->
   <div class="overlay"></div>
@@ -22,22 +24,17 @@
   <!-- footer with header and button -->
   <div class="footer">
     <h1>{{ popup.header }}</h1>
-        <ng-container *ngFor="let block of popup.text">
-          <ng-container *ngIf="block.type === 'paragraph'">
-            <ng-container *ngFor="let child of block.children">
-              <p *ngIf="child.text">{{ child.text }}</p>
-            </ng-container>
-          </ng-container>
+
+    <ng-container *ngFor="let block of popup.text">
+      <ng-container *ngIf="block.type === 'paragraph'">
+        <ng-container *ngFor="let child of block.children">
+          <p *ngIf="child.text">{{ child.text }}</p>
         </ng-container>
-      <!-- text blocks container -->
-      <button
-        class="btn"
-        *ngIf="popup.url_link"
-        (click)="goToLink()"
-      >
-                  <h3>{{ 'BASE.VIAC_INFO' | translate }}</h3>
+      </ng-container>
+    </ng-container>
 
+    <button class="btn" *ngIf="popup.url_link" (click)="goToLink()">
+      <h3>{{ 'BASE.VIAC_INFO' | translate }}</h3>
     </button>
-      </div>
-
+  </div>
 </div>

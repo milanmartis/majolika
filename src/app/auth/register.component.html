@@ -60,7 +60,12 @@
       ></mat-progress-spinner>
     </button>
   </form>
+  <br>
+  <div style="width: 100%; text-align:center;">
 
+    <a [routerLink]="['/login']"> {{ 'AUTH.ACCOUNT_LOGIN' | translate }}</a><br>
+    <a [routerLink]="['/auth/forgot-password']"> {{ 'AUTH.RESET_PASSWORD' | translate }}</a>
+  </div>
   <mat-card-actions class="auth-actions">
         <button (click)="auth.loginWithGoogle()" class="gsi-material-button">
         <div class="gsi-material-button-state"></div>
@@ -80,7 +85,6 @@
       </button>
     </mat-card-actions>
 
-    <a mat-button [routerLink]="['/login']"> {{ 'AUTH.ACCOUNT_LOGIN' | translate }}</a>
 </mat-card>
 
 <app-footer class="mt-8"></app-footer>

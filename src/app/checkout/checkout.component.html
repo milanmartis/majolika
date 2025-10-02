@@ -1,5 +1,6 @@
-<h1 class="checkout-title">Pokladňa</h1>
 
+<app-google-login-prompt></app-google-login-prompt>
+<h1 class="checkout-title">{{ 'ESHOP.POKLADNA' | translate }}</h1>
 <div class="checkout-wrapper two-col" *ngIf="cartItems$ | async as items">
   <form class="checkout-form-grid" [formGroup]="checkoutForm" (ngSubmit)="submitCheckout()">
 
@@ -17,12 +18,23 @@
       <div *ngFor="let row of items" class="cart-item">
         <img [src]="row.img" alt="{{ row.name }}" />
         <div class="cart-item-info">
-          <div>
-              <a [routerLink]="['/produkt', row.slug]">
-                {{ row.name }}
-              </a></div>
-          <div>{{ row.qty }} × {{ row.price | currency:'EUR' }}</div>
-        </div>
+  <div>
+    <a [routerLink]="['/produkt', row.slug]">
+      {{ row.name }}
+    </a>
+  </div>
+
+  <!-- 🔹 Termín a počet osôb pre tour/workshop -->
+  <div *ngIf="row.session && (row.session.type === 'tour' || row.session.type === 'workshop')"
+       class="cart-item-session">
+    <span>
+      {{ row.session.startDateTime | date:'d.M.yyyy HH:mm' }}
+    </span>
+    <span> • {{ row.qty }} os.</span>
+  </div>
+
+  <div>{{ row.qty }} × {{ row.price | currency:'EUR' }}</div>
+</div>
         <div class="cart-item-total">
           {{ (row.price * row.qty) | currency:'EUR' }}
         </div>
@@ -190,15 +202,15 @@
 
       <!-- DPH – CELKOM -->
       <div class="line">
-        <span>DPH</span>
+        <span>{{ 'ESHOP.INCLUDING_VAT' | translate }}</span>
         <span>{{ taxIncluded((total$ | async) ?? 0) | currency:'EUR' }}</span>
       </div>
 
       <!-- Rozpis podľa sadzieb -->
-      <div class="line" *ngFor="let r of vatSummary.byRate">
+      <!-- <div class="line" *ngFor="let r of vatSummary.byRate">
         <span class="fee-note">— DPH ({{ r.rate }}%)</span>
         <span class="fee-note">{{ r.tax | currency:'EUR' }}</span>
-      </div>
+      </div> -->
 
       <div class="line total">
         <strong>{{ 'ESHOP.GRAND_TOTAL' | translate }}</strong>
@@ -222,9 +234,9 @@
           </p>
         </div>
 
-        <mat-checkbox formControlName="privacy">
+        <!-- <mat-checkbox formControlName="privacy">
           <span [innerHTML]="'ESHOP.CONSENT_PRIVACY' | translate"></span>
-        </mat-checkbox>
+        </mat-checkbox> -->
 
         <!-- <mat-checkbox formControlName="cookies">
           <span [innerHTML]="'ESHOP.CONSENT_COOKIES' | translate"></span>

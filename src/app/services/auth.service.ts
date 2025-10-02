@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -47,6 +48,18 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   public userId: number | null = null;
 
+  /** SSR guard helpers */
+  private platformId = inject(PLATFORM_ID);
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
+  private get storage(): Storage | null {
+    return this.isBrowser ? localStorage : null;
+  }
+  private get win(): Window | null {
+    return this.isBrowser ? window : null;
+  }
+
   /** Stream na rýchlu kontrolu prihlásenia v šablónach (voliteľné) */
   public isLoggedIn$ = this.currentUser$.pipe(
     map((u) => !!u || this.isAuthenticatedSync()),
@@ -58,21 +71,54 @@ export class AuthService {
     this.currentUser$.subscribe((u) => (this.userId = u?.id ?? null));
   }
 
+  forgotPassword(email: string) {
+    return this.http.post(`${this.API}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(code: string, password: string) {
+    return this.http.post(`${this.API}/auth/reset-password`, {
+      code,
+      password,
+      passwordConfirmation: password,
+    });
+  }
+
+  // voliteľné: zmena hesla pre prihláseného
+  changePassword(currentPassword: string, password: string, jwt: string) {
+    return this.http.post(
+      `${this.API}/auth/change-password`,
+      {
+        currentPassword,
+        password,
+        passwordConfirmation: password,
+      },
+      { headers: { Authorization: `Bearer ${jwt}` } }
+    );
+  }
+
   // ───────── Helpers ─────────
   get token(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return this.storage?.getItem(this.TOKEN_KEY) ?? null;
   }
 
   private setToken(jwt: string | null): void {
-    if (jwt) localStorage.setItem(this.TOKEN_KEY, jwt);
-    else localStorage.removeItem(this.TOKEN_KEY);
+    if (!this.storage) return; // SSR no-op
+    if (jwt) this.storage.setItem(this.TOKEN_KEY, jwt);
+    else this.storage.removeItem(this.TOKEN_KEY);
   }
 
   private isTokenValid(token: string): boolean {
     try {
       const payloadPart = token.split('.')[1];
       if (!payloadPart) return true; // neočakávaný formát -> neblokuj
-      const payload = JSON.parse(atob(payloadPart));
+
+      // atob na klientovi, Buffer na serveri
+      const json =
+        this.isBrowser
+          ? atob(payloadPart)
+          : (globalThis as any).Buffer.from(payloadPart, 'base64').toString('utf-8');
+
+      const payload = JSON.parse(json);
       if (!payload?.exp) return true;
       return payload.exp * 1000 > Date.now();
     } catch {
@@ -81,6 +127,7 @@ export class AuthService {
   }
 
   isAuthenticatedSync(): boolean {
+    if (!this.isBrowser) return false; // na serveri nemáme storage
     const t = this.token;
     return !!t && this.isTokenValid(t);
   }
@@ -97,8 +144,10 @@ export class AuthService {
 
   // ───────── Google OAuth (ide na API s /api) ─────────
   loginWithGoogle(): void {
+    const win = this.win;
+    if (!win) return; // SSR guard
     const redirect = `${environment.frontendUrl.replace(/\/+$/, '')}/signin/callback`;
-    window.location.href = `${this.API}/connect/google?redirect_url=${encodeURIComponent(redirect)}`;
+    win.location.href = `${this.API}/connect/google?redirect_url=${encodeURIComponent(redirect)}`;
   }
 
   async finishGoogleLogin(accessToken: string): Promise<{ jwt: string; user: User }> {
@@ -115,6 +164,7 @@ export class AuthService {
 
   /** Ak používaš One Tap a vlastný endpoint na Strapi: POST /api/auth/google-token */
   handleGoogleCredential(credential: string): void {
+    const win = this.win; // kvôli následnému redirectu
     this.http
       .post<{ jwt: string; user: User }>(`${this.API}/auth/google-token`, { token: credential })
       .pipe(
@@ -124,8 +174,12 @@ export class AuthService {
         })
       )
       .subscribe({
-        next: () => (window.location.href = environment.frontendUrl),
-        error: () => (window.location.href = '/login'),
+        next: () => {
+          if (win) win.location.href = environment.frontendUrl;
+        },
+        error: () => {
+          if (win) win.location.href = '/login';
+        },
       });
   }
 
@@ -189,13 +243,15 @@ export class AuthService {
 
   // ───────── (voliteľné) Google popup flow ─────────
   loginWithGooglePopup(): Promise<User> {
-    const ORIGIN = new URL(environment.frontendUrl || location.origin).origin;
-    const w = 520,
-      h = 640;
-    const left = window.screenX + (window.outerWidth - w) / 2;
-    const top = window.screenY + (window.outerHeight - h) / 2;
+    const win = this.win;
+    if (!win) return Promise.reject(new Error('not_browser')); // SSR guard
 
-    const popup = window.open(
+    const ORIGIN = new URL(environment.frontendUrl || win.location.origin).origin;
+    const w = 520, h = 640;
+    const left = win.screenX + (win.outerWidth - w) / 2;
+    const top  = win.screenY + (win.outerHeight - h) / 2;
+
+    const popup = win.open(
       `${this.API}/connect/google`,
       'google_oauth',
       `width=${w},height=${h},left=${left},top=${top},noopener,noreferrer`
@@ -207,29 +263,19 @@ export class AuthService {
         if (ev.origin !== ORIGIN) return;
         if (!ev.data || ev.data.type !== 'oauth-result') return;
         const { jwt, user } = ev.data.payload || {};
-        if (!jwt || !user) {
-          cleanup();
-          reject(new Error('invalid_payload'));
-          return;
-        }
+        if (!jwt || !user) { cleanup(); reject(new Error('invalid_payload')); return; }
         this.handleThirdPartyLogin(jwt, user);
-        cleanup();
-        resolve(user);
+        cleanup(); resolve(user);
       };
       const timer = setInterval(() => {
-        if (!popup || popup.closed) {
-          cleanup();
-          reject(new Error('popup_closed'));
-        }
+        if (!popup || popup.closed) { cleanup(); reject(new Error('popup_closed')); }
       }, 500);
       const cleanup = () => {
-        window.removeEventListener('message', onMessage);
+        win.removeEventListener('message', onMessage);
         clearInterval(timer);
-        try {
-          popup?.close();
-        } catch {}
+        try { popup?.close(); } catch {}
       };
-      window.addEventListener('message', onMessage);
+      win.addEventListener('message', onMessage);
     });
   }
 }

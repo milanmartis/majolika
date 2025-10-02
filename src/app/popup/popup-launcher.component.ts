@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import { trigger, style, animate, transition } from '@angular/animations';
 import { PopupService, Popup } from 'app/services/popup.service';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-popup-launcher',
@@ -24,9 +24,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     ])
   ]
 })
-export class PopupLauncherComponent implements OnInit {
+export class PopupLauncherComponent implements OnInit, OnDestroy {
   popup: Popup | null = null;
   isOpen = false;
+  currentIndex = 0;
+  readonly SLIDE_MS = 5000;          // interval medzi snímkami
+  private timerId: any = null;
   private readonly STORAGE_KEY = 'popupClosedTime';
 
   constructor(
@@ -34,45 +37,39 @@ export class PopupLauncherComponent implements OnInit {
     private router: Router
   ) {}
 
-  goToLink(): void {
-    // 1) zavri popup
-    this.close();
-
-    // 2) naviguj cez Angular router
-    //    popup.url_link je napr. "eshop/darcekovy-poukaz-vaza-a-pohar"
-    this.router.navigateByUrl('/' + this.popup!.url_link);
-  }
-
   ngOnInit(): void {
     this.popupService.getActivePopups().subscribe(list => {
       if (!list.length) return;
       this.popup = list[0];
+
+      // reset index pri novej popup definícii
+      this.currentIndex = 0;
+
       if (this.canShowNow()) {
         setTimeout(() => this.open(), 5000);
       }
     });
   }
 
-firstImageUrl(): string {
-  if (!this.popup?.media?.length) {
-    return '';
-  }
-  const m = this.popup.media[0];
-
-  // Strapi vráti pod `formats` rôzne varianty obrázka
-  const large = (m as any).formats?.large;
-  if (large && large.url) {
-    // ak je to ôk, použime full URL
-    return large.url.startsWith('http')
-      ? large.url
-      : `${environment.apiUrl}${large.url}`;
+  ngOnDestroy(): void {
+    this.stopSlideshow();
   }
 
-  // fallback na pôvodnú URL (napr. originál)
-  return m.url.startsWith('http')
-    ? m.url
-    : `${environment.apiUrl}${m.url}`;
-}
+  get imageUrls(): string[] {
+    if (!this.popup?.media?.length) return [];
+    return this.popup.media
+      .map(m => {
+        const large = (m as any).formats?.large;
+        const url = large?.url ?? m.url;
+        return url?.startsWith('http') ? url : `${environment.apiUrl}${url}`;
+      })
+      .filter(Boolean);
+  }
+
+  goToLink(): void {
+    this.close();
+    this.router.navigateByUrl('/' + this.popup!.url_link);
+  }
 
   private canShowNow(): boolean {
     const ts = localStorage.getItem(this.STORAGE_KEY);
@@ -84,10 +81,33 @@ firstImageUrl(): string {
 
   open(): void {
     this.isOpen = true;
+    this.startSlideshow(); // spustiť len keď otvorené
   }
 
   close(): void {
     this.isOpen = false;
+    this.stopSlideshow();
     localStorage.setItem(this.STORAGE_KEY, new Date().toISOString());
+  }
+
+  private startSlideshow(): void {
+    // spúšťame len ak je viac ako 1 obrázok
+    if (this.timerId || this.imageUrls.length < 2) return;
+
+    // (voliteľné) prednačítanie
+    this.imageUrls.forEach(u => { const img = new Image(); img.src = u; });
+
+    this.timerId = setInterval(() => {
+      // ak popup medzičasom zatvorený, pauzni
+      if (!this.isOpen || this.imageUrls.length < 2) return;
+      this.currentIndex = (this.currentIndex + 1) % this.imageUrls.length;
+    }, this.SLIDE_MS);
+  }
+
+  private stopSlideshow(): void {
+    if (this.timerId) {
+      clearInterval(this.timerId);
+      this.timerId = null;
+    }
   }
 }

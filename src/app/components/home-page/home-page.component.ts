@@ -46,8 +46,7 @@ interface CalendarDay {
     RouterModule,
     TranslateModule,
     FormsModule,
-    FooterComponent,
-    NbspSmallWordsPipe
+    FooterComponent
   ],
   animations: [
     trigger('fadeIn', [

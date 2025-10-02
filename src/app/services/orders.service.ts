@@ -5,11 +5,16 @@ import { environment } from '../../environments/environment';
 export interface Order {
   id: number;
   createdAt: string;
-  status: string;
+  orderStatus: string;
   paymentStatus: string;
+  deliveryStatus: string;
+  fulfillmentStatus: string;
   total: number;
+  totalWithShipping: number;
   items: any[];
   products: any[];
+  shippingFee: number;
+  paymentFee: number;  
 }
 
 @Injectable({ providedIn: 'root' })

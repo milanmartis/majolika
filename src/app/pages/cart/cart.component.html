@@ -35,6 +35,7 @@
             <button (click)="dec(r)">−</button>
             <span>{{ r.qty }}</span>
             <button (click)="inc(r)">+</button>
+            
           </div>
 
 
@@ -56,13 +57,16 @@
 
     <!-- pokracovat -->
     <button class="continue-shopping"
-    (click)="onProductClick()">
+    (click)="onLinkClick()">
     {{ 'ESHOP.POKRACOVAT_SHOPPING' | translate }}
   </button>
   <!-- k pokladni -->
-    <button class="checkout"
-            [disabled]="rows.length === 0"
-            [routerLink]="['/checkout']" (click)="onProductClick()">
+  <button 
+  class="checkout"        
+  [disabled]="rows.length === 0"
+  [routerLink]="['/checkout']"
+  (click)="onCheckoutClick()"
+  >
       {{ 'ESHOP.DO_POKLADNE' | translate }}
     </button>
 

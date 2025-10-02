@@ -1,6 +1,10 @@
-.image-block { box-sizing: border-box; }
+.image-block { 
+  box-sizing: border-box; 
+ margin-top: 10px;
+}
 
 .image-wrapper {
+  
   width: 100%;
   aspect-ratio: 16 / 9;   /* zmeň napr. na 4/3 alebo 1/1 */
   overflow: hidden;       /* oreže prebytok */

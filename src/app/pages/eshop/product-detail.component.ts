@@ -8,13 +8,14 @@ import {
   ElementRef,
   HostListener,
 } from '@angular/core';
-import { CommonModule }   from '@angular/common';
+import { CommonModule, DOCUMENT }   from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NgZone } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule }    from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
 import { switchMap,  map, filter, takeUntil } from 'rxjs/operators';
 import { interval, Subscription } from 'rxjs';
 import { take, skip } from 'rxjs/operators';
@@ -37,8 +38,21 @@ import { catchError, tap } from 'rxjs/operators';
 import { EventSessionsService, EventSessionWithCapacity, BookingPayload } from 'app/services/event-sessions.service';
 import { Subject } from 'rxjs';
 
-
-
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
+import { CalendarOptions, EventInput } from '@fullcalendar/core';
+import skLocale from '@fullcalendar/core/locales/sk';
+import enGbLocale from '@fullcalendar/core/locales/en-gb';
+import deLocale from '@fullcalendar/core/locales/de'; 
+// this.calendarOptions = { locale: 'sk', locales: [skLocale], /* ... */ };
+import { Meta, Title } from '@angular/platform-browser';
+import { Inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import {
   trigger,
   state,
@@ -46,6 +60,8 @@ import {
   transition,
   animate,
 } from '@angular/animations';
+
+type FCSessionProps = { session: EventSessionWithCapacity };
 
 @Component({
   selector: 'app-product-detail',
@@ -58,7 +74,8 @@ import {
     MaterialModule,
     ZoomPanDirective,
     MatProgressSpinnerModule,
-    ShareButtonsComponent
+    ShareButtonsComponent,
+    FullCalendarModule,
     ],
   animations: [slideFullscreenAnimation,
     trigger('expandCollapse', [
@@ -109,7 +126,120 @@ import {
 })
 export class ProductDetailComponent implements OnInit {
 
-  articleUrl = window.location.href; 
+  isBrowser = false;
+
+  articleUrl = '';
+
+private mapLangToFcLocale(lang?: string): string {
+  const norm = (lang || 'sk').toLowerCase();
+  if (norm.startsWith('en')) return 'en-gb';
+  if (norm.startsWith('de')) return 'de';
+  return 'sk'; // default
+}
+private getLocalDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+private todayStr = this.getLocalDateStr(new Date());
+
+private applyCalendarLocale(lang?: string): void {
+  const fcLocale = this.mapLangToFcLocale(lang);
+  this.calendarOptions = {
+    ...this.calendarOptions,
+    locale: fcLocale,
+    firstDay: 1,
+    // ✅ zablokuj všetky dátumy pred dneškom (budú sivé a neklikateľné)
+    validRange: { start: this.todayStr },
+  };
+}
+
+// helper na kľúč dátumu v lokálnom čase
+private dateKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+private dayCellEls = new Map<string, HTMLElement>();
+
+calendarOptions: CalendarOptions = {
+  plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
+  initialView: 'dayGridMonth',
+  locales: [skLocale, enGbLocale, deLocale],
+  firstDay: 1,
+  height: 'auto',
+  expandRows: false,                 // ⬅️ riadky podľa obsahu (dôležité)
+  dayMaxEvents: true,
+  stickyHeaderDates: true,
+  headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+  buttonText: { today: 'Dnes', month: 'Mesiac', week: 'Týždeň', day: 'Deň', list: 'Zoznam' },
+
+  // mapuj bunky podľa dátumu
+  dayCellDidMount: (arg) => {
+    const key = this.dateKey(arg.date);
+    this.dayCellEls.set(key, arg.el as HTMLElement);
+    arg.el.classList.add('no-ev'); // default: prázdna
+  },
+
+  // po načítaní eventov označ dni s eventom
+  eventsSet: (events) => {
+    const withEvents = new Set<string>();
+    events.forEach(e => {
+      if (e.start) withEvents.add(this.dateKey(e.start));
+      // ak by boli viacdňové eventy, tu by sa doplnili aj medzidni
+    });
+
+    for (const [key, el] of this.dayCellEls.entries()) {
+      if (withEvents.has(key)) {
+        el.classList.add('has-ev');
+        el.classList.remove('no-ev');
+      } else {
+        el.classList.add('no-ev');
+        el.classList.remove('has-ev');
+      }
+    }
+  },
+
+  // pri zmene mesiaca premapuj bunky nanovo
+  datesSet: () => { this.dayCellEls.clear(); },
+
+  eventClick: (arg) => this.onCalendarEventClick(arg),
+
+  eventClassNames: (arg) => {
+    const s = (arg.event.extendedProps as FCSessionProps)['session'];
+    const cls: string[] = [];
+    if (s) {
+      const avail = s.capacity?.available ?? 0;
+      if (avail === 0) cls.push('sold-out');
+      else if (avail <= 3) cls.push('low-availability');
+    }
+    return cls;
+  },
+
+  eventContent: (arg) => {
+    const s = (arg.event.extendedProps as FCSessionProps)['session'];
+    const startStr = this.formatTime(arg.event.start!);
+    const timeHtml = `<span class="t">${startStr}</span>`;
+    const avail = s?.capacity?.available;
+
+    if (arg.view.type === 'dayGridMonth') {
+      const capHtml = (avail ?? null) !== null
+        ? `<span class="cap ${avail! > 0 ? '' : 'cap-sold'}">${avail! > 0 ? (avail + '') : 'X'}</span>`
+        : '';
+      return { html: `<div class="m-ev">${timeHtml}${capHtml}</div>` };
+    }
+
+    const safeTitle = (arg.event.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return {
+      html: `
+        <div class="w-ev">
+          ${timeHtml}
+          ${safeTitle ? `<span class="ttl">${safeTitle}</span>` : ''}
+          ${ (avail ?? null) !== null ? `<span class="cap ${avail! > 0 ? '' : 'cap-sold'}">${avail! > 0 ? (avail + ' voľ.') : 'Vypredané'}</span>` : '' }
+        </div>`
+    };
+  },
+
+  events: [],
+};
+
+  // articleUrl = window.location.href; 
 
   @ViewChild('contentContainer') contentEl!: ElementRef<HTMLElement>;
   openSection: 'description' | 'short' | 'size' | null = null;
@@ -173,6 +303,41 @@ bookingSuccess = '';
 holdTimer?: any; // for auto release
 private destroyed$ = new Subject<void>();
 
+
+
+
+private toCalendarEvents(sessions: EventSessionWithCapacity[]): EventInput[] {
+  return sessions.map((s) => {
+    const startISO = s.startDateTime;
+    const durationMin = s.durationMinutes ?? 60;
+    const endISO = this.addMinutes(startISO, durationMin);
+
+    return {
+      id: String(s.id),
+      // nechajme krátky názov (alebo prázdny) – mesiac view ho aj tak neukáže
+      title: s.title || s.product?.name || '',
+      start: startISO,
+      end: endISO,
+      display: 'block',
+      extendedProps: { session: s },
+    };
+  });
+}
+
+private addMinutes(start: string | Date, minutes: number): Date {
+  const d = new Date(start);
+  d.setMinutes(d.getMinutes() + minutes);
+  return d;
+}
+
+private formatTime(d: string | Date): string {
+  const date = new Date(d);
+  const hh = String(date.getHours()).padStart(2, '0');
+  const mm = String(date.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}`;
+}
+
+
   toggle() {
     this.isExpanded = !this.isExpanded;
   }
@@ -197,7 +362,11 @@ private destroyed$ = new Subject<void>();
     private snack: MatSnackBar,
     private zone: NgZone,
     private sessionsService: EventSessionsService,
-    public cal: CalendarLinkService
+    public cal: CalendarLinkService,
+      private meta: Meta,
+  private titleSvc: Title,
+  @Inject(PLATFORM_ID) private platformId: Object,
+  @Inject(DOCUMENT) private doc: Document
     
     
   ) {
@@ -208,6 +377,7 @@ private destroyed$ = new Subject<void>();
     this.sanitizedDescription = this.sanitizer.bypassSecurityTrustHtml(rawDesc);
     this.sanitizedShort       = this.sanitizer.bypassSecurityTrustHtml(rawShort);
     this.sanitizedSize        = this.sanitizer.bypassSecurityTrustHtml(rawSize);
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
 
@@ -259,17 +429,33 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
   
   
 
-  ngOnInit(): void {
-    this.loading = true;
+ngOnInit(): void {
 
-    this.sessionsService.bookingChanged$
+if (this.isBrowser) {
+  window.scrollTo({ top: 0 });
+}
+
+
+
+  this.loading = true;
+
+this.applyCalendarLocale(this.translate.currentLang);
+
+// pri zmene
+this.translate.onLangChange
+  .pipe(takeUntil(this.destroyed$))
+  .subscribe(e => this.applyCalendarLocale(e.lang));
+
+  // Reakcia na zmenu bookingov
+  this.sessionsService.bookingChanged$
+    .pipe(takeUntil(this.destroyed$))
     .subscribe(() => {
-      // Znovu načítaj sessions pre vybraný produkt
       if (this.product) {
         this.sessionsService.getSessionsForProduct(this.product.slug)
-          .subscribe(list => {
+          .subscribe((list: EventSessionWithCapacity[]) => {
             this.sessions = list;
-            // Ak máš vybraný session a medzitým sa zmenil (vypršal, zrušil) → precheck
+
+            // Uprav vybraný session, ak sa medzičasom zmenil/naplnil
             if (this.selectedSession) {
               const updated = list.find(s => s.id === this.selectedSession!.id);
               if (!updated || (updated.capacity?.available ?? 0) <= 0) {
@@ -278,47 +464,129 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
                 this.selectedSession = updated;
               }
             }
-            this.cd.markForCheck(); // ak máš OnPush
+
+            // Refresh FullCalendar eventov
+            this.calendarOptions = {
+              ...this.calendarOptions,
+              events: this.toCalendarEvents(this.sessions),
+            };
+
+            this.cd.markForCheck(); // ak používaš OnPush
           });
       }
     });
 
+  // Hlavný tok: načítaj produkt → potom jeho sessions
+  this.route.paramMap
+    .pipe(
+      map(params => params.get('slug')),
+      filter((slug): slug is string => !!slug),
 
-    this.route.paramMap
-      .pipe(
-        map(params => params.get('slug')),
-        filter((slug): slug is string => !!slug),
-        switchMap(slug =>
-          this.productsService.getProductWithVariations(slug).pipe(
-            map(rawResp => ({ product: rawResp.data[0], slug }))
-          )
-        ),
-        tap(({ product, slug }) => {
-          if (product) {
-            this.loadProduct(product);
-            this.buildBreadcrumbs(product.categories ?? []);
-            this.updateIsFavorite();
-          }
-        }),
-        switchMap(({ product, slug }) =>
-          product ? this.sessionsService.getSessionsForProduct(slug) : of([])
-        ),
-        tap(list => {
-          this.sessions = list;
-          this.loading = false;
-        }),
-        catchError(() => {
-          this.loading = false;
-          return of([]);
-        })
-      )
-      .subscribe();
-  
-    // this.favState.favorites$.subscribe(() => this.updateIsFavorite());
-    this.favState.favorites$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(() => this.updateIsFavorite());
+      switchMap(slug =>
+        this.productsService.getProductWithVariations(slug).pipe(
+          map(rawResp => ({ product: rawResp.data[0], slug }))
+        )
+      ),
+
+      tap(({ product }) => {
+        if (product) {
+          this.loadProduct(product);
+          this.buildBreadcrumbs(product.categories ?? []);
+          this.updateIsFavorite();
+          this.setSeo(product, product.slug);
+        }
+      }),
+
+      switchMap(({ product, slug }) =>
+        product
+          ? this.sessionsService.getSessionsForProduct(slug)
+          : of<EventSessionWithCapacity[]>([]) // ⬅️ dôležité
+      ),
+
+      tap((list: EventSessionWithCapacity[]) => {
+        this.sessions = list;
+
+        // Refresh FullCalendar eventov
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          events: this.toCalendarEvents(this.sessions),
+        };
+
+        this.loading = false;
+      }),
+
+      catchError(() => {
+        this.loading = false;
+        return of<EventSessionWithCapacity[]>([]); // ⬅️ dôležité
+      }),
+
+      takeUntil(this.destroyed$)
+    )
+    .subscribe();
+
+  // Obľúbené
+  this.favState.favorites$
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe(() => this.updateIsFavorite());
+}
+
+
+/** Nastaví <title>, OG/Twitter meta a canonical tak, aby to videl aj SSR/crawleri */
+private setSeo(product: Product, slug: string): void {
+  const siteUrl = (environment.frontendUrl || '').replace(/\/$/, '');
+  const apiUrl  = (environment.apiUrl  || '').replace(/\/$/, '');
+
+  // URL detailu – uprav, ak máš inú routu (napr. '/produkt/')
+  const url  = `${siteUrl}/product/${slug}`;
+
+  // Názov/desc/obrázok – fallbacky, aby nikdy neboli prázdne
+  const name = (product.seoTitle || product.name || '').trim();
+  const desc = (product.seoDescription || product.short || '')
+                .replace(/<[^>]+>/g, '') // strip HTML
+                .trim()
+                .slice(0, 160);
+
+  // preferuj SEO obrázok; ak nemáš, skús primaryImageUrl
+  const rawImg = (product as any).seoImageUrl || product.primaryImageUrl || '';
+  const img = this.absUrl(rawImg, apiUrl);
+
+  // title
+  if (name) this.titleSvc.setTitle(name);
+
+  // Open Graph
+  this.meta.updateTag({ property: 'og:type',        content: 'product' });
+  if (name) this.meta.updateTag({ property: 'og:title',       content: name });
+  if (desc) this.meta.updateTag({ property: 'og:description', content: desc });
+  if (img)  this.meta.updateTag({ property: 'og:image',       content: img });
+  this.meta.updateTag({ property: 'og:url',         content: url });
+
+  // Twitter
+  this.meta.updateTag({ name: 'twitter:card',        content: 'summary_large_image' });
+  if (name) this.meta.updateTag({ name: 'twitter:title',       content: name });
+  if (desc) this.meta.updateTag({ name: 'twitter:description', content: desc });
+  if (img)  this.meta.updateTag({ name: 'twitter:image',       content: img });
+
+  // canonical
+  let linkEl = this.doc.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!linkEl) {
+    linkEl = this.doc.createElement('link');
+    linkEl.setAttribute('rel', 'canonical');
+    this.doc.head.appendChild(linkEl);
   }
+  linkEl.setAttribute('href', url);
+
+  // pre ShareButtons a pod.
+  this.articleUrl = url;
+}
+
+/** Absolutizuje URL (Strapi často vracia relatívne /uploads/...) */
+private absUrl(u: string | null | undefined, apiBase: string): string {
+  if (!u) return '';
+  if (/^https?:\/\//i.test(u)) return u;
+  const base = apiBase || '';
+  const sep  = u.startsWith('/') ? '' : '/';
+  return `${base}${sep}${u}`;
+}
   
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -326,6 +594,29 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
   }
 
   
+
+/** Pomôcka: bezpečne nastaví available pre daný session + zosynchronizuje pole sessions a FullCalendar */
+private setCapacityAvailable(sess: EventSessionWithCapacity, nextAvail: number): void {
+  // 1) prepíš referenciu, ktorú drží FullCalendar/extendedProps
+  if (sess.capacity) {
+    sess.capacity.available = nextAvail; // non-null v našom modeli, ale pre istotu guard
+  }
+
+  // 2) prepíš záznam v sessions[] tak, aby ostal typ EventSessionWithCapacity
+  this.sessions = this.sessions.map((s): EventSessionWithCapacity =>
+    s.id === sess.id
+      ? ({ ...s, capacity: { ...s.capacity!, available: nextAvail } })
+      : s
+  );
+
+  // 3) refresh FullCalendar eventov
+  this.calendarOptions = {
+    ...this.calendarOptions,
+    events: this.toCalendarEvents(this.sessions),
+  };
+  this.cd.markForCheck();
+}
+
   private loadSessionsForProduct(product: Product) {
     // Ak máš endpoint na všetky sessions pre produkt, použijeme ho.
     // Ak nie, tak načítame sessions pre dnes a vyfiltrujeme podľa slugu:
@@ -354,69 +645,91 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
   }
 
 
-  startBooking(session: EventSessionWithCapacity, qty: number = 1) {
-    this.selectedSession = session;
-    this.bookingError = '';
-    this.bookingSuccess = '';
-  
-    // Meno/email ťahaj z loginu, alebo vypýtaj od usera
-    const name = this.booking.name || 'Návštevník';
-    const email = this.booking.email || 'test@test.sk';
-  
-    if (!name || !email) { this.bookingError = 'Meno a email sú povinné.'; return; }
-    if ((session.capacity?.available ?? 0) < qty) { this.bookingError = 'Kapacita je plná.'; return; }
-  
-    this.bookingLoading = true;
-    const payload: BookingPayload = {
-      session: session.id,
-      peopleCount: qty,
-      customerName: name,
-      customerEmail: email,
-      status: 'pending',
-    };
-  
-    this.sessionsService.createBooking(payload).subscribe({
-      next: bookingRes => {
-        this.bookingLoading = false;
-        this.bookingSuccess = 'Rezervácia vytvorená!';
-        // Zníž capacity na fronte
-        if (session.capacity) session.capacity.available = Math.max(0, session.capacity.available - qty);
-  
-        // Pridaj do cartu s bookingId
-        const expireAt = Date.now() + 10 * 60 * 1000;
-        this.cart.add(
-          {
-            id: this.selectedVariation?.id ?? this.product?.id ?? session.id,
-            name: this.product?.name ?? session.title,
-            slug: this.selectedVariation?.slug ?? this.product?.slug ?? '',
-            img: this.currentImage,
-            price: this.getSessionPrice(session),
-            price_sale: undefined, // alebo cenu ak vieš
-            inSale: false, // alebo true podľa logiky, session zvyčajne false
-            qty: qty,
-            session,
-            bookingId: bookingRes.id,
-            holdExpires: expireAt,
-          } as any,
-          qty
-        );
-  
-        // Automaticky zrušiť po 10 min
-        this.holdTimer && clearTimeout(this.holdTimer);
-        this.holdTimer = setTimeout(() => {
-          this.sessionsService.patchBooking(bookingRes.id, { status: 'cancelled' }).subscribe();
-          this.cart.removeByBooking(bookingRes.id);
-          this.bookingError = 'Rezervácia vypršala.';
-          this.bookingSuccess = '';
-          if (session.capacity) session.capacity.available += qty;
-        }, 10 * 60 * 1000);
-      },
-      error: err => {
-        this.bookingLoading = false;
-        this.bookingError = 'Chyba pri vytváraní rezervácie.';
-      }
-    });
+
+onCalendarEventClick(arg: any) {
+  const s: EventSessionWithCapacity | undefined = arg?.event?.extendedProps?.session;
+  if (!s) return;
+
+  this.selectedSession = s;
+  const qty = Math.min(this.sessionQty || 1, s.capacity?.available ?? 1);
+
+  if ((s.capacity?.available ?? 0) < 1) {
+    this.snack.open(this.translate.instant('Termín je vypredaný'), 'OK', { duration: 2500 });
+    return;
   }
+
+  // vytvor pending booking a hneď uprav lokálnu kapacitu
+  this.startBooking(s, qty);
+}
+
+startBooking(session: EventSessionWithCapacity, qty: number = 1) {
+  this.selectedSession = session;
+  this.bookingError = '';
+  this.bookingSuccess = '';
+
+  const name = this.booking.name || 'Návštevník';
+  const email = this.booking.email || 'test@test.sk';
+
+  if (!name || !email) { this.bookingError = 'Meno a email sú povinné.'; return; }
+  if ((session.capacity?.available ?? 0) < qty) { this.bookingError = 'Kapacita je plná.'; return; }
+
+  this.bookingLoading = true;
+  const payload: BookingPayload = {
+    session: session.id,
+    peopleCount: qty,
+    customerName: name,
+    customerEmail: email,
+    status: 'pending',
+  };
+
+  this.sessionsService.createBooking(payload).subscribe({
+    next: bookingRes => {
+      this.bookingLoading = false;
+      this.bookingSuccess = 'Rezervácia vytvorená!';
+
+      // --- okamžite zníž kapacitu lokálne (bez straty booked/max) ---
+      const currentAvail = session.capacity?.available ?? 0;
+      const newAvail = Math.max(0, currentAvail - qty);
+      this.setCapacityAvailable(session, newAvail);
+
+      // vlož do košíka (s bookingId + expiráciou)
+      const expireAt = Date.now() + 10 * 60 * 1000;
+      this.cart.add(
+        {
+          id: this.selectedVariation?.id ?? this.product?.id ?? session.id,
+          name: this.product?.name ?? session.title,
+          slug: this.selectedVariation?.slug ?? this.product?.slug ?? '',
+          img: this.currentImage,
+          price: this.getSessionPrice(session),
+          price_sale: undefined,
+          inSale: false,
+          qty,
+          session,
+          bookingId: bookingRes.id,
+          holdExpires: expireAt,
+        } as any,
+        qty
+      );
+
+      // auto-cancel po 10 min – vráť kapacitu späť a refreshni kalendár
+      this.holdTimer && clearTimeout(this.holdTimer);
+      this.holdTimer = setTimeout(() => {
+        this.sessionsService.patchBooking(bookingRes.id, { status: 'cancelled' }).subscribe();
+        this.cart.removeByBooking(bookingRes.id);
+        this.bookingError = 'Rezervácia vypršala.';
+        this.bookingSuccess = '';
+
+        // zober aktuálny available (ak sa medzičasom menil), inak použi newAvail
+        const nowAvail = this.sessions.find(s => s.id === session.id)?.capacity?.available ?? newAvail;
+        this.setCapacityAvailable(session, nowAvail + qty);
+      }, 10 * 60 * 1000);
+    },
+    error: _err => {
+      this.bookingLoading = false;
+      this.bookingError = 'Chyba pri vytváraní rezervácie.';
+    }
+  });
+}
 
   private updateIsFavorite(): void {
     this.isFavorite = this.product ? this.favState.isFavorite(this.product.id) : false;
@@ -689,6 +1002,7 @@ addSessionToCart(session: EventSessionWithCapacity, qty: number) {
    * (medium i large), aby sme neskôr nemuseli zakaždým shimmerovať.
    */
   private preloadAllVariationImages(src: Product) {
+    if (!this.isBrowser) return;
     const allUrls = new Set<string>();
 
     const gatherUrls = (prod: Product) => {
@@ -916,13 +1230,28 @@ onTouchEnd(e: TouchEvent) {
 
   /** ---------- VARIANTY ---------- */
   onVariationChange(v: Product) {
-    this.selectedVariation = v;
-    if (!this.product) return;
+  // uchovaj si pôvodné celkové ceny (pre plynulú animáciu)
+  const fromReg  = this.animatedTotalPrice;
+  const fromSale = this.animatedTotalPriceSale;
 
-    // Pri prepnutí variácie meníme len currentImage, galériu nerezetujeme
-    const pair = this.collectImagePair(v, this.product);
-    this.currentImage = pair.medium;
-  }
+  this.selectedVariation = v;
+  if (!this.product) return;
+
+  // Pri prepnutí variácie meníme len currentImage, galériu nerezetujeme
+  const pair = this.collectImagePair(v, this.product);
+  this.currentImage = pair.medium;
+
+  // spočítaj nové (cieľové) celkové ceny podľa vybranej variácie a množstva
+  const toReg  = this.displayPrice * this.quantity;
+  const toSale = this.IfProductInSale ? this.displayPriceSale * this.quantity : 0;
+
+  // pusti plynulú animáciu sumárov
+  this.runTotalsAnimation(fromReg, toReg, fromSale, toSale);
+
+  // ak filtruješ termíny podľa slugu variácie, refreshni sessions pre aktuálny deň
+  const today = new Date();
+  this.loadSessionsForDate(today);
+}
 
   // incQuantity() {
   //   if (this.quantity < 99) this.quantity++;

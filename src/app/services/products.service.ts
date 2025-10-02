@@ -31,17 +31,26 @@ export interface Category {
   category_name: string;
   category_slug: string;
   category_text: string;
+  category_text_en: string;
+  category_text_de: string;
+  category_poradie: number;
   category_image: string;
   category_image_small?: string;
   category_image_large?: string;
+  category_image_banner_large?: string;
   parent?: {
     term_id: number;
     category_name: string;
     category_slug: string;
     category_text: string;
+    category_text_en: string;
+    category_text_de: string;
+    category_poradie: number;
     category_image: string;
     category_image_small?: string;
+    category_image_banner?: string;
     category_image_large?: string;
+    category_image_banner_large?: string;
 
   };
 }
@@ -61,7 +70,8 @@ export interface Product {
   isNew: boolean;
   picture_new?: any;
   pictures_new?: any;
-
+  seoTitle?: string;
+  seoDescription?: string;
   primaryImageUrl: string;
   galleryUrls: string[];
   vatPercentage: number;
@@ -93,6 +103,62 @@ export class ProductsService {
 
   // Populate všetky polia a všetky polia variácií, aby slug/name/price boli k dispozícii
   private readonly populateList = ['*', 'variations.*'].join(',');
+
+  private readonly listFields = [
+    'slug','name','price','price_sale','inSale','vatPercentage',
+    'isNew','short','ean'
+  ].join(',');
+
+
+  private get locale(): string {
+  return localStorage.getItem('language') || 'sk'; // z 'locale' → 'language'
+  }
+  private withLocale(p: HttpParams): HttpParams {
+    return p.set('locale', this.locale);
+  }
+
+  
+  /** Pre zoznamy (karty produktov) – iba to, čo zobrazuješ v liste */
+  private readonly listPopulate = [
+    // 1 obrázok stačí; Strapi vráti aj formats
+    'picture_new',
+    // kategórie pre breadcrumb/názov
+    'categories',
+    'categories.parent'
+  ].join(',');
+
+  /** Pre detail produktu – bohatšie dáta, vrátane variácií a galérie */
+  private readonly detailPopulate = [
+    'picture_new',
+    'pictures_new',
+    'variations',
+    'variations.picture_new',
+    'categories',
+    'categories.parent'
+  ].join(',');
+
+  /** Pre kategórie – ľahká verzia (bez zbytočných polí) */
+  private readonly categoryFields = [
+    'category_name','category_slug','category_text'
+  ].join(',');
+
+  private readonly categoryPopulate = [
+    'parent',
+    'category_image',
+    'category_image_banner'
+  ].join(',');
+
+
+  private listParams(page: number, pageSize: number, sort: string): HttpParams {
+    return new HttpParams()
+      .set('fields', this.listFields)
+      .set('populate', this.listPopulate)
+      .set('pagination[page]', String(page))
+      .set('pagination[pageSize]', String(pageSize))
+      .set('sort', sort)
+      .set('filters[parent][id][$null]', 'true') // len parent produkty
+      .set('filters[public][$eq]', '1');
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -145,6 +211,40 @@ export class ProductsService {
     return this.placeholder;
   };
 
+
+private stripFormatPrefix = (url: string): string =>
+  // odstráni 'large_' | 'medium_' | 'small_' | 'thumbnail_' tesne pred názvom
+  url.replace(/\/(large|medium|small|thumbnail)_([^/]+)$/i, '/$2');
+
+public imageUrlBanner = (
+  rawBanner: any,
+  fallbackRaw: any
+): string => {
+  // 1) Banner je priamo string (URL)
+  if (typeof rawBanner === 'string' && rawBanner.trim()) {
+    return this.absolutize(this.stripFormatPrefix(rawBanner));
+  }
+
+  // 2) Banner je Strapi media objekt → vezmi originál (a.url)
+  const a = this.attr(rawBanner);
+  if (a?.url) {
+    return this.absolutize(this.stripFormatPrefix(a.url));
+  }
+
+  // 3) Fallback na category_image (originál)
+  if (typeof fallbackRaw === 'string' && fallbackRaw.trim()) {
+    return this.absolutize(this.stripFormatPrefix(fallbackRaw));
+  }
+  const fb = this.attr(fallbackRaw)?.url;
+  if (fb) {
+    return this.absolutize(this.stripFormatPrefix(fb));
+  }
+
+  // 4) Posledná istota
+  return this.placeholder;
+};
+
+
   public gallery = (raw: any, preferred: FormatKey = 'thumbnail'): string[] => {
     const arr: any[] =
       raw?.data?.map?.((d: any) => d.attributes) ??
@@ -166,7 +266,7 @@ export class ProductsService {
     const primaryPicObj = at.picture_new ?? at.primaryImageUrl ?? 'assets/img/logo-SLM-modre.gif';
     const primaryGalleryObj = at.pictures_new ?? [];
   
-    const primaryImg = this.imageUrl(primaryPicObj, 'small');
+    const primaryImg = this.imageUrl(primaryPicObj, 'medium');
   
     if (!primaryImg || primaryImg === this.placeholder) {
       console.warn(
@@ -199,20 +299,36 @@ export class ProductsService {
           term_id: parentRaw.id ?? pAttrs.term_id,
           category_name: pAttrs.category_name,
           category_slug: pAttrs.category_slug,
+          category_poradie: pAttrs.category_poradie,
           category_text: pAttrs.category_text,
-          category_image: this.imageUrl(pAttrs.category_image, 'medium'),
+          category_text_en: pAttrs.category_text_en,
+          category_text_de: pAttrs.category_text_de,
+          category_image: this.imageUrl(pAttrs.category_image, 'small'),
           category_image_small: this.imageUrl(pAttrs.category_image, 'small'),
           category_image_large: this.imageUrl(pAttrs.category_image, 'large'),
+          category_image_banner_large: this.imageUrlBanner(
+            pAttrs.category_image_banner,            // banner
+            pAttrs.category_image,                   // fallback -> large
+
+          ),
         };
       }
       return {
         term_id: c.id ?? catAttrs.term_id,
         category_name: catAttrs.category_name,
         category_slug: catAttrs.category_slug,
+        category_poradie: catAttrs.category_poradie,
         category_text: catAttrs.category_text,
-        category_image: this.imageUrl(catAttrs.category_image, 'medium'),
+        category_text_en: catAttrs.category_text_en,
+        category_text_de: catAttrs.category_text_de,
+        category_image: this.imageUrl(catAttrs.category_image, 'small'),
         category_image_small: this.imageUrl(catAttrs.category_image, 'small'),
         category_image_large: this.imageUrl(catAttrs.category_image, 'large'),
+        category_image_banner_large: this.imageUrlBanner(
+          catAttrs.category_image_banner,          // banner
+          catAttrs.category_image,                 // fallback -> large
+    
+        ),
         parent: parentObj
       };
     });
@@ -265,7 +381,7 @@ getAllProductsForCategoryDeepest(
         .set('pagination[pageSize]', '4000'); // „všetko“ pre klientské triedenie
 
       return this.http
-        .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+        .get<StrapiResp<Product>>(`${this.api}/products?locale=${this.locale}`, { params })
         .pipe(this.mapResp, map(r => r.data));
     })
   );
@@ -283,7 +399,7 @@ getAllRootProducts(): Observable<Product[]> {
     .set('pagination[pageSize]', '1000');
 
   return this.http
-    .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+    .get<StrapiResp<Product>>(`${this.api}/products?locale=${this.locale}`, { params })
     .pipe(this.mapResp, map(r => r.data));
 }
 
@@ -298,16 +414,26 @@ getProductById(id: number): Observable<Product | null> {
     .set('pagination[page]', '1')
     .set('pagination[pageSize]', '1');
   return this.http
-    .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+    .get<StrapiResp<Product>>(`${this.api}/products?locale=${this.locale}`, { params })
     .pipe(
       this.mapResp,
       map(resp => (resp.data.length ? resp.data[0] : null))
     );
 }
   /* ---------- verejné API ------------------------------------ */
+// private readonly listFields =
+//   'slug,name,price,price_sale,inSale,vatPercentage,isNew,short,ean';
+
+private readonly searchPopulate =
+  'picture_new,categories,categories.parent,variations,variations.picture_new';
+
 
   searchProducts(query: string): Observable<Product[]> {
-    const params = new HttpParams()
+  const params = new HttpParams()
+    // ⬇️ menší payload
+    .set('fields', this.listFields)
+    .set('populate', this.searchPopulate)
+    // ⬇️ filtre
     .set('filters[public][$eq]', 'true')
     .set('filters[$or][0][name][$containsi]', query)
     .set('filters[$or][1][variations][name][$containsi]', query)
@@ -317,22 +443,21 @@ getProductById(id: number): Observable<Product | null> {
     .set('filters[$or][5][slug][$containsi]', query)
     .set('filters[$or][6][categories][category_slug][$containsi]', query)
     .set('filters[$or][7][variations][slug][$containsi]', query)
-    // .set('filters[$or][8][dekory][slug][$containsi]', query)
-    // .set('filters[$or][9][tvar][slug][$containsi]', query)
-    .set('sort', 'name:asc') // default sort
-    .set('populate', this.populateList)
+    // ⬇️ sort + rozumné stránkovanie (už nie 4000)
+    .set('sort', 'name:asc')
     .set('pagination[page]', '1')
     .set('pagination[pageSize]', '4000');
-  
-    console.log(
-      'ProductsService.searchProducts(): volám URL =',
-      `${this.api}/products?${params.toString()}`
-    );
-  
-    return this.http.get<StrapiResp>(`${this.api}/products`, { params }).pipe(
-      this.mapResp,
-      map(r => r.data),
-      map((products: Product[]) => {
+    // .set('pagination[pageSize]', String(this.SEARCH_PAGE_SIZE));
+
+  // console.log(
+  //   'ProductsService.searchProducts(): volám URL =',
+  //   `${this.api}/products?locale=${this.locale}?${params.toString()}`
+  // );
+
+  return this.http.get<StrapiResp>(`${this.api}/products?locale=${this.locale}`, { params }).pipe(
+    this.mapResp,
+    map(r => r.data),
+    map((products: Product[]) => {
       // helper: zjemní reťazec (diakritika → ASCII, lower-case)
       const norm = (s?: string) =>
         (s ?? '')
@@ -352,7 +477,7 @@ getProductById(id: number): Observable<Product | null> {
         const prodFields = [p.name, p.short, p.describe, p.ean].map(norm);
         const matchesProduct = prodFields.some(f => f.includes(qN));
 
-        // 2) Zápasy variácií
+        // 2) Zápasy variácií (variácie máme ľahko popnuté)
         const matchedVars = (p.variations ?? []).filter(v => {
           const varFields = [v.name, v.short, v.describe, v.ean].map(norm);
           return varFields.some(f => f.includes(qN));
@@ -376,21 +501,28 @@ getProductById(id: number): Observable<Product | null> {
 
       return results;
     })
-    );
-  }
+  );
+}
 
 
   getAllCategoriesFlat(): Observable<Category[]> {
     const url =
       `${this.api}/categories` +
-      `?sort=category_name:asc` +
+      `?sort=category_poradie:asc&sort=category_name:asc` +
       `&populate[0]=parent` +   // ⬅️ dôležité
       `&populate[1]=category_image` +   // ⬅️ dôležité
+      `&populate[2]=category_image_banner` +   // ⬅️ dôležité
       `&pagination[limit]=-1`;
 
     return this.http.get<StrapiResp>(url).pipe(
-      map(r => r.data.map(this.normalizeCategory))        // ⬅️ normalizácia
-    );
+        map(r => 
+   r.data
+      .map(this.normalizeCategory)                     // normalizácia
+      .sort((a, b) =>
+        (a.category_poradie ?? 0) - (b.category_poradie ?? 0) ||
+        a.category_name.localeCompare(b.category_name, 'sk', { sensitivity: 'base' })
+      )))
+  
   }
 
 
@@ -405,10 +537,18 @@ getProductById(id: number): Observable<Product | null> {
             term_id: parentRaw.id ?? p.term_id,
             category_name: p.category_name,
             category_slug: p.category_slug,
+            category_poradie: p.category_poradie,
             category_text: p.category_text,
-            category_image: this.imageUrl(p.category_image, 'medium'), // URL
+            category_text_en: p.category_text_en,
+            category_text_de: p.category_text_de,
+            category_image: this.imageUrl(p.category_image, 'small'),
             category_image_small: this.imageUrl(p.category_image, 'small'),
             category_image_large: this.imageUrl(p.category_image, 'large'),
+            category_image_banner_large: this.imageUrlBanner(
+              p.category_image_banner,
+              p.category_image,
+              
+            ),
           };
         })()
       : undefined;
@@ -417,31 +557,44 @@ getProductById(id: number): Observable<Product | null> {
       term_id: raw.id ?? at.term_id,
       category_name: at.category_name,
       category_slug: at.category_slug,
+      category_poradie: at.category_poradie,
       category_text: at.category_text,
-      category_image: this.imageUrl(at.category_image, 'medium'), // URL
+      category_text_en: at.category_text_en,
+      category_text_de: at.category_text_de,
+      category_image: this.imageUrl(at.category_image, 'small'),
       category_image_small: this.imageUrl(at.category_image, 'small'),
       category_image_large: this.imageUrl(at.category_image, 'large'),
+      category_image_banner_large: this.imageUrlBanner(
+        at.category_image_banner,
+        at.category_image,
+        
+      ),
       parent,
     };
   };
 
+
   getRootProducts(
-    sort: string,
-    page: number = 1,
-    pageSize: number = 20
-  ): Observable<StrapiResp<Product>> {
-    const params = new HttpParams()
-      .set('filters[parent][id][$null]', 'true')
-      .set('filters[public][$eq]', '1')
-      .set('populate', this.populateList)
-      .set('sort', sort)
-      .set('pagination[page]', page.toString())
-      .set('pagination[pageSize]', pageSize.toString());
-  
-    return this.http
-      .get<StrapiResp<Product>>(`${this.api}/products`, { params })
-      .pipe(this.mapResp);
-  }
+  sort: string,
+  page: number = 1,
+  pageSize: number = 20
+): Observable<StrapiResp<Product>> {
+  const params = new HttpParams()
+    // ⬇️ menší payload pre list
+    .set('fields', this.listFields)
+    .set('populate', this.listPopulate)
+    // ⬇️ iba parent produkty, len public
+    .set('filters[parent][id][$null]', 'true')
+    .set('filters[public][$eq]', '1')
+    // ⬇️ sort + stránkovanie
+    .set('sort', sort)
+    .set('pagination[page]', String(page))
+    .set('pagination[pageSize]', String(pageSize));
+
+  return this.http
+    .get<StrapiResp<Product>>(`${this.api}/products?locale=${this.locale}`, { params })
+    .pipe(this.mapResp);
+}
 
 
 
@@ -471,17 +624,22 @@ getProductById(id: number): Observable<Product | null> {
           meta: { pagination: { page, pageSize, pageCount: 0, total: 0 } }
         } as StrapiResp<Product>);
       }
+
       const params = new HttpParams()
+        // ⬇️ menší payload pre list
+        .set('fields', this.listFields)
+        .set('populate', this.listPopulate)
+        // ⬇️ filtre
         .set('filters[categories][category_slug][$eq]', slug)
-        .set('filters[parent][id][$null]', 'true') // iba parents
+        .set('filters[parent][id][$null]', 'true')   // iba parent produkty
         .set('filters[public][$eq]', '1')
-        .set('populate', this.populateList)
+        // ⬇️ sort + stránkovanie
         .set('sort', sort)
-        .set('pagination[page]', page.toString())
-        .set('pagination[pageSize]', pageSize.toString());
+        .set('pagination[page]', String(page))
+        .set('pagination[pageSize]', String(pageSize));
 
       return this.http
-        .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+        .get<StrapiResp<Product>>(`${this.api}/products?locale=${this.locale}`, { params })
         .pipe(this.mapResp);
     })
   );
@@ -509,7 +667,7 @@ getProductById(id: number): Observable<Product | null> {
       ].join(','));
   
     return this.http
-      .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+      .get<StrapiResp<Product>>(`${this.api}/products?locale=${this.locale}`, { params })
       .pipe(this.mapResp);
   }
 
@@ -534,7 +692,7 @@ getProductById(id: number): Observable<Product | null> {
   }
 
   return this.http
-    .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+    .get<StrapiResp<Product>>(`${this.api}/products?locale=${this.locale}`, { params })
     .pipe(
       this.mapResp,
       map(resp => ({
@@ -577,7 +735,7 @@ getFeaturedProducts(): Observable<Product[]> {
     .set('pagination[pageSize]', '1000');
 
   return this.http
-    .get<StrapiResp<Product>>(`${this.api}/products`, { params })
+    .get<StrapiResp<Product>>(`${this.api}/products?locale=${this.locale}`, { params })
     .pipe(
       this.mapResp,
       map(resp => resp.data.map(p => ({

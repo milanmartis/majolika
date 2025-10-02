@@ -85,10 +85,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedRootCategorySlug: string | null = null;
   selectedCategorySlug:     string | null = null;
   selectedRootCategoryName?: string;                 // ➊ nový
-  selectedRootCategoryText?: string;                 // ➊ nový
+  selectedRootCategoryText_sk?: string;                 // ➊ nový
+  selectedRootCategoryText_en?: string;                 // ➊ nový
+  selectedRootCategoryText_de?: string;                 // ➊ nový
 
   selectedCategoryName?: string;
-  selectedCategoryText?: string;
+  selectedCategoryText_sk?: string;
+  selectedCategoryText_en?: string;
+  selectedCategoryText_de?: string;
 
   sortOptions: SelectOption[] = [
     { value: 'name:asc',       label: 'ESHOP.SORT_NAME_ASC'   },
@@ -142,7 +146,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     private cart: CartService,
     private favState: FavoriteStateService,
     private snack: MatSnackBar,
-    private translate: TranslateService,
+    public translate: TranslateService,
     private auth: AuthService,
 
 
@@ -239,6 +243,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.loadCategories();
     this.scrollToTopSmooth();
   }
+  
+
+  getSelectedCategoryText(lang: string): string {
+    const key = `selectedCategoryText_${lang}`;
+    return (this as any)[key] ?? '';
+  }
+
 
   ngOnDestroy(): void {
     this.destroyed$.next(); this.destroyed$.complete();
@@ -304,7 +315,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
       // => root klik / URL
       this.selectedRootCategorySlug = cat.category_slug;
       this.selectedRootCategoryName = cat.category_name;   // ➋
-      this.selectedRootCategoryText = cat.category_text;   // ➋
+      this.selectedRootCategoryText_sk = cat.category_text;   // ➋
+      this.selectedRootCategoryText_en = cat.category_text_en;   // ➋
+      this.selectedRootCategoryText_de = cat.category_text_de;   // ➋
   
       this.childCategories = this.allCategories.filter(
         c => c.parent?.category_slug === cat.category_slug,
@@ -319,7 +332,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
       );
       if (parent) {
         this.selectedRootCategoryName = parent.category_name; // ➋
-        this.selectedRootCategoryText = parent.category_text; // ➋
+        this.selectedRootCategoryText_sk = parent.category_text; // ➋
+        this.selectedRootCategoryText_en = parent.category_text_en; // ➋
+        this.selectedRootCategoryText_de = parent.category_text_de; // ➋
       }
   
       this.childCategories = this.allCategories.filter(
@@ -329,7 +344,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
   
     /* údaje o aktuálnej (root alebo child) */
     this.selectedCategoryName = cat.category_name;
-    this.selectedCategoryText = cat.category_text;
+    this.selectedCategoryText_sk = cat.category_text;
+    this.selectedCategoryText_en = cat.category_text_en;
+    this.selectedCategoryText_de = cat.category_text_de;
     this.selectedCategorySlug = cat.category_slug;
   }
   /* =============================================================
@@ -374,7 +391,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.selectedCategorySlug = null;
     this.childCategories = [];
     this.selectedCategoryName =
-    this.selectedCategoryText = undefined;
+    this.selectedCategoryText_sk = undefined;
+    this.selectedCategoryText_en = undefined;
+    this.selectedCategoryText_de = undefined;
     this.currentPage = 1;
     this.wantScrollTop = true;
     this.navigateBySlug(null);
@@ -577,7 +596,9 @@ private fetchProducts() {
     const sel = this.allCategories.find(c => c.category_slug === this.selectedCategory);
     if (sel) {
       this.selectedCategoryName  = sel.category_name;
-      this.selectedCategoryText  = sel.category_text;
+      this.selectedCategoryText_sk  = sel.category_text;
+      this.selectedCategoryText_en  = sel.category_text_en;
+      this.selectedCategoryText_de  = sel.category_text_de;
       this.selectedCategorySlug  = sel.category_slug;
     }
   }

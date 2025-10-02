@@ -6,5 +6,5 @@ import { CheckoutCancelComponent } from './checkout-cancel.component';
 export const checkoutRoutes: Routes = [
   { path: '', component: CheckoutComponent },
   { path: 'success', component: CheckoutSuccessComponent },
-  { path: 'cancel', component: CheckoutCancelComponent }
+  { path: 'cancelled', component: CheckoutCancelComponent }
 ];

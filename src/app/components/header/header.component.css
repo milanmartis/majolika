@@ -500,6 +500,11 @@ li {
   .mobile-menu {
     display: inline-block;
   }
+  .usericon{
+    display: none;
+
+  }
+
   .header-text{
     float: left;
     text-align: left;
@@ -581,7 +586,7 @@ button:focus:not(:focus-visible) {
   column-width: 200px;
   column-gap: 0;           /* žiadna medzera medzi stĺpcami */
   
-  max-height: 440px;       /* tvoje vyššie požadované ohraničenie */
+  max-height: 490px;       /* tvoje vyššie požadované ohraničenie */
   overflow-y: auto;        /* vertikálny scroll, keď položiek pribudne viac */
   margin: 0;
   padding: 1rem;

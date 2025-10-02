@@ -42,7 +42,14 @@
 
     </button>
   </form>
+  <br>
+  <div style="width: 100%; text-align:center;">
 
+  <a [routerLink]="['/register']">
+    {{ 'AUTH.NO_ACCOUNT_REGISTER' | translate }}
+  </a><br>
+      <a [routerLink]="['/auth/forgot-password']"> {{ 'AUTH.RESET_PASSWORD' | translate }}</a>
+</div>
    <mat-card-actions class="auth-actions">
               <button (click)="auth.loginWithGoogle()" class="gsi-material-button">
         <div class="gsi-material-button-state"></div>
@@ -61,11 +68,7 @@
         </div>
       </button> 
 
-<br>
 
 </mat-card-actions>
-<a mat-button [routerLink]="['/register']">
-  {{ 'AUTH.NO_ACCOUNT_REGISTER' | translate }}
-</a>
 </mat-card>
 <app-footer class="mt-8"></app-footer>

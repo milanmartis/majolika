@@ -56,7 +56,7 @@
   },
 
   "ONAS": { 
-    "CO_ROBIME": "What we do",
+    "CO_ROBIME": "Our Offer",
     "KTO_SME": "Who we are",
     "HISTORIA": "History",
     "INFO": "Information",
@@ -116,6 +116,7 @@
      "CHECKOUT_MY_ITEMS": "My Items",
      "CHECKOUT_CUSTOMER_INFO": "Customer Information",
      "CHECKOUT_PROCEED_PAYMENT": "Proceed to Payment",
+     "INCLUDING_VAT": "Including VAT",
      
 "FAREBNY_DEKOR": "Colorful decor",
 "PESTRY_DEKOR": "Vivid decor",
@@ -157,12 +158,27 @@
       "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
       "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
       "BANK_TRANSFER_BIC": "BANKSKBX",
-      "PAYMENT_FEE": "Payment surcharge",
+      "PAYMENT_FEE": "Cash on delivery fee",
         "LOGIN_TO_SAVE_FAV": "Sign in to save favorites",
     "LOGIN": "Sign in",
         "NOVINKA": "New",
-    "ZLAVA": "Discount"
+    "ZLAVA": "Discount",
+"CONSENT_TERMS": "I agree to the <a href='../article/vseobecne-obchodne-podmienky'>Terms and Conditions</a>.",
 
+"CONSENT_PRIVACY": "I agree to the processing of personal data according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Privacy Policy</a>.",
+"CONSENT_COOKIES": "I agree to the use of cookies according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Cookie Policy</a>.",
+"CONSENT_MARKETING": "I would like to receive news and marketing offers by email.",
+    "label_created": "Order received",
+    "in_transit": "In transit",
+    "at_pickup": "At pickup point",
+
+    "delivered": "Delivered",
+    "returned": "Returned",
+
+    "unpaid": "Waiting for payment",
+    "paid": "Paid",
+    "refunded": "Refunded",
+    "ONSITE_ONLY_PICKUP": "Pay on site is available only for in-store pickup."
 
   },
 
@@ -296,8 +312,39 @@
     }
   },
 
+  "set": {
+    "title": "Set a new password",
+    "missingCode": "Recovery code is missing. Check the link in the email or request a password reset again.",
+    "password": {
+      "label": "New password",
+      "hint": "At least 8 characters",
+      "required": "Enter the password.",
+      "minlength": "The password must be at least 8 characters long."
+    },
+    "password2": {
+      "label": "Confirm password",
+      "required": "Please confirm your password.",
+      "minlength": "The password must be at least 8 characters long.",
+      "nomatch": "Passwords do not match."
+    },
+    "submit": "Save new password",
+    "saving": "Saving…",
+    "success": "The password has been changed. Redirecting to sign in…"
+  },
+    "reset": {
+    "title": "Password reset",
+    "email": {
+      "label": "Email",
+      "required": "Enter your email.",
+      "invalid": "Invalid email format."
+    },
+    "submit": "Reset password",
+    "sending": "Sending…",
+    "sentInfo": "We’ve sent you an email with instructions."
+  },
 
 "AUTH": {
+  "RESET_PASSWORD":"Reset password",
      "ERRORS":{
 "INVALID_CREDENTIALS":"Invalid email or password."
    },
@@ -332,7 +379,12 @@
     "LOGIN": {
       "TITLE": "Sign in",
       "SUBMIT": "Sign in",
-      "SUCCESS": "Signed in successfully!"
+      "SUCCESS": "Signed in successfully!",
+      "ERRORS": {
+      "EMAIL_NOT_CONFIRMED": "Musíte najprv potvrdiť e-mail. Skontrolujte si schránku.",
+      "INVALID_CREDENTIALS": "Nesprávny e-mail alebo heslo.",
+      "GENERIC": "Prihlásenie zlyhalo. Skúste to znova."
+      }
     },
     "REGISTER": {
       "TITLE": "Sign up",

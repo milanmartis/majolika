@@ -17,6 +17,7 @@ import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { LOCALE_ID } from '@angular/core';
 import { LanguageService } from 'app/services/language.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 import { keyframes, trigger, transition, style, animate } from '@angular/animations';
 
@@ -132,8 +133,20 @@ export class AccountComponent implements OnInit, OnDestroy {
       phone: [''],
       street: ['', Validators.required],
       city: ['', Validators.required],
-      zip: ['', Validators.required],
+      zip: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
+
       country: ['Slovensko', Validators.required]
+    });
+
+      const zipCtrl = this.accountForm.get('zip') as FormControl;
+
+  zipCtrl.valueChanges
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((val: string) => {
+      const cleaned = (val ?? '').replace(/\D+/g, ''); // vyhodí medzery aj všetko nečíselné
+      if (val !== cleaned) {
+        zipCtrl.setValue(cleaned, { emitEvent: false }); // žiadny re-loop
+      }
     });
 
     // 5) patch user -> form
@@ -177,14 +190,14 @@ export class AccountComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         tap(favs => {
-          console.log(
-            'Favorites detailed:',
-            favs.map(p => ({
-              slug: p.slug,
-              primaryImageUrl: p.primaryImageUrl,
-              price: p.price
-            }))
-          );
+          // console.log(
+          //   'Favorites detailed:',
+          //   favs.map(p => ({
+          //     slug: p.slug,
+          //     primaryImageUrl: p.primaryImageUrl,
+          //     price: p.price
+          //   }))
+          // );
         })
       )
       .subscribe();
@@ -238,7 +251,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     const updated = this.accountForm.value;
-    console.log('📤 PUT /users/' + user.id, updated);
+    //console.log('📤 PUT /users/' + user.id, updated);
 
     this.auth.updateProfile(user.id, updated).subscribe({
       next: () => {
