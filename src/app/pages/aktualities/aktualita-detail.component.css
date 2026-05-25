@@ -120,11 +120,28 @@
   text-decoration: underline;
 }
 
+/* =========================
+   RELATED (ĎALŠIE AKTUALITY)
+   max 360px + zalamovanie
+========================= */
+
 .related {
   background: #f9f9f9;
   border-radius: 0.5rem;
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  width: 100%;
+  max-width: 360px;
+  flex: 0 0 360px;     /* desktop: drž šírku */
+  align-self: flex-start;
+}
+
+@media (max-width: 767px) {
+  .related {
+    max-width: 100%;
+    flex: 1 1 auto;
+  }
 }
 
 .related h2 {
@@ -144,7 +161,7 @@
 
 .related a {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* lepšie keď je h3 na viac riadkoch */
   text-decoration: none;
   color: inherit;
   transition: background 0.2s;
@@ -162,15 +179,29 @@
   margin-right: 0.75rem;
 }
 
+.related .info {
+  min-width: 0; /* dôležité vo flexe, inak sa text nezalomí */
+}
+
 .related .info h3 {
   margin: 0;
   font-size: 1rem;
+  line-height: 1.2;
+
+  white-space: normal;
+  overflow-wrap: anywhere; /* zalom aj dlhé slová */
+  word-break: break-word;  /* fallback */
 }
 
 .related .info .date {
   font-size: 0.8rem;
   color: #888;
 }
+
+/* =========================
+   FULLSCREEN OVERLAY (gallery)
+========================= */
+
 .overlay {
   touch-action: none;
   position: fixed;
@@ -201,8 +232,8 @@
   color: #ffffff9f;
   cursor: pointer;
   transition: all 0.6s ease;
-
 }
+
 .close-btn:hover{
   color: #ffffff;
 }
@@ -226,6 +257,9 @@
   margin: 0 15px;
 }
 
+/* =========================
+   THUMBS sizing override
+========================= */
 
 .gallery .thumb {
   width: 80px;            /* or whatever fixed size you want */
@@ -247,6 +281,10 @@
 .gallery .thumb:hover {
   transform: scale(1.05);
 }
+
+/* =========================
+   ARTICLE 2-column layout
+========================= */
 
 /* Základ: na mobiloch bude stĺpcový layout */
 .detail-content article {

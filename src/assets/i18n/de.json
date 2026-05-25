@@ -3,6 +3,9 @@
     "HOME": "Startseite",
     "OR": "oder",
     "VIAC_INFO": "Weitere Informationen",
+    "REZERVOVAT": "Buchen",
+    "VEDIETVIAC": "Details anzeigen",
+
     "POPISKY_KAT_VYROBKOV": "Produktkategorien",
     "VYBERTE_KATEGORIU": "Kategorie auswählen",
     "ADD_TO_CART_HOLD": "In den Warenkorb legen (frei {{available}})",
@@ -74,6 +77,26 @@
 },
 
   "ESHOP": { 
+    "VOUCHER": {
+    "TITLE": "Geschenkgutschein einlösen",
+    "PLACEHOLDER": "Gutscheincode eingeben",
+    "APPLY": "Einlösen",
+    "APPLIED": "Eingelöster Gutschein: {{code}}",
+    "LINE": "Geschenkgutschein",
+    "DELETE": "Entfernen",
+    "ERROR_EMPTY": "Bitte geben Sie einen Gutscheincode ein.",
+    "ERROR_INVALID": "Der Gutschein ist nicht gültig.",
+    "ERROR_NOT_VALUE": "Dieser Gutschein ist kein Wertgutschein.",
+    "ERROR_NO_BALANCE": "Dieser Gutschein hat kein Restguthaben mehr.",
+    "ERROR_INVALID_OR_USED": "Der Gutschein ist ungültig oder wurde bereits verwendet.",
+    "SUCCESS_APPLIED": "Der Gutschein wurde eingelöst. Rabatt {{discount}} €.",
+    "SNACK_APPLIED": "Gutschein eingelöst: -{{discount}} €",
+    "ERROR_NOT_APPLIED": "Sie haben einen Gutscheincode eingegeben, ihn aber noch nicht eingelöst."
+  },
+          "SELECT_VARIATION": "Wählen Sie eine Variante",
+    "ADDED_TO_CART": "Zum Warenkorb hinzugefügt",
+
+    "CANCEL": "Abbrechen",
     "WELCOME": "Shop mit unserer Produktion",
     "FIRST_TEXT": "Die Slowakische Volksmajolika ist ein Träger der Tradition der Modra Majolika und der Majolika-Ornamentik und gleichzeitig ein Raum für Kreativität und innovative Verfahren in der Herstellung der Modra-Keramik. Ziel der Projektförderung ist die Entwicklung kreativer Talente und Innovationen im Bereich des traditionellen Handwerks durch die Bewahrung, den Erhalt und die Wiederherstellung eines bedeutenden Teils des slowakischen Kulturerbes.",
     "MNOZSTVO": "Menge",
@@ -92,12 +115,12 @@
     "CART_IS_EMPTY": "Der Warenkorb ist leer",
     "SELECT_CATEGORY": "Bitte wählen Sie eine Kategorie aus",
     "SORT_BY": "Aussortieren",
-    "SORT_NAME_ASC": "Názov A-Z",
-    "SORT_NAME_DESC": "Názov Z-A",
-    "SORT_PRICE_ASC": "Od najlacnejšieho",
-    "SORT_PRICE_DESC": "Od najdrahšieho",
-    "SORT_NEWEST": "Najnovšie",
-    "SORT_OLDEST": "Najstaršie",
+    "SORT_NAME_ASC": "Name A-Z",
+    "SORT_NAME_DESC": "Name Z-A",
+    "SORT_PRICE_ASC": "Preis niedrig-hoch",
+    "SORT_PRICE_DESC": "Preis hoch-niedrig",
+    "SORT_NEWEST": "Neueste",
+    "SORT_OLDEST": "Älteste",
     "FILTER_BY": "Filter",
     "POKRACOVAT_SHOPPING": "Weiter einkaufen",
     "SIZES_TEXT": "Spezifikationen",
@@ -145,6 +168,10 @@
     "DELIVERY_POST_OFFICE": "An die Postfiliale liefern",
     "DELIVERY_PACKETA_BOX": "Packeta Paketbox",
     "DELIVERY_POST_COURIER": "Postkurier an Adresse",
+    "DELIVERY_DIGITAL_PRODUCT": "Digitales Produkt",
+         "WORKSHOPANOTHERS":"Termine für Führungen und Workshops können auch individuell außerhalb des veröffentlichten Zeitplans vereinbart werden.",
+"BEGIN": "Beginnt am ",
+"KAPACITA": "freie Plätze: ",
     "SHIPPING_FEE": "Versand",
     "PAYMENT_FEE": "Nachnahmegebühr",
     "GRAND_TOTAL": "Gesamtsumme",
@@ -165,6 +192,10 @@
     "LOGIN": "Anmelden",
         "NOVINKA": "Neuheit",
     "ZLAVA": "Rabatt",
+    "VYPREDANE": "Ausverkauft",
+    "NEDOSTUPNE": "Nicht verfügbar",
+    "PRODUCT_UNAVAILABLE_HINT": "Dieser Artikel ist derzeit nicht verfügbar. Für weitere Informationen können Sie uns kontaktieren.",
+    "PRODUCT_SOLDOUT_HINT": "Dieser Artikel ist derzeit ausverkauft. Für weitere Informationen können Sie uns kontaktieren.",
 "CONSENT_TERMS": "Ich stimme den <a href='../article/vseobecne-obchodne-podmienky'>Allgemeinen Geschäftsbedingungen</a> zu.",
 
 "CONSENT_PRIVACY": "Ich stimme der Verarbeitung personenbezogener Daten gemäß den <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Datenschutzbestimmungen</a> zu.",
@@ -178,14 +209,48 @@
     "unpaid": "Warte auf Zahlung",
     "paid": "Bezahlt",
     "refunded": "Erstattet",
-    "ONSITE_ONLY_PICKUP": "Zahlung vor Ort ist nur bei Abholung im Geschäft möglich."
+    "ONSITE_ONLY_PICKUP": "Zahlung vor Ort ist nur bei Abholung im Geschäft möglich.",
+    "ALL": "Alle",
+    "DELIVERY_URGENCY": "Lieferzeit",
+    "DELIVERY_URGENCY_STANDARD": "Die Standardlieferzeit ist für mich in Ordnung (ungefähr zwei Wochen)",
+    "DELIVERY_URGENCY_RUSH": "Meine Bestellung eilt",
+    "COD_NOT_FOR_PICKUP": "Nachnahme ist bei Abholung nicht verfügbar.",
+        "BILLING": {
+      "TITLE": "Rechnungsdaten",
+      "COMPANY_PURCHASE": "Ich kaufe als Firma",
+      "COMPANY_NAME": "Firmenname",
+      "ICO": "Firmen-ID",
+      "DIC": "Steuernummer",
+      "IC_DPH": "USt-IdNr.",
+      "ADDRESS_TITLE": "Rechnungsadresse",
+      "ADDRESS_SAME_AS_SHIPPING": "Gleich wie Lieferadresse",
+      "ADDRESS_DIFFERENT": "Andere Rechnungsadresse"
+    },
+    "GIFTWRAP": {
+      "TITLE": "Geschenkverpackung",
+      "LOADING_PRICE": "Preis wird geladen…",
+      "HOW_MANY": "Wie viele Stück sollen verpackt werden?",
+      "SELECTED_OF": "Ausgewählt: {{selected}} von {{total}} Stk.",
+      "RULES_TITLE": "Geschenkverpackung – wie sollen wir verpacken?",
+      "MODE_EACH_ITEM": "Jedes Stück einzeln",
+      "MODE_EACH_ITEM_HINT": "",
+      "MODE_BY_PRODUCT": "Nach Produkt",
+      "MODE_BY_PRODUCT_HINT": "– ein Produkt = ein Paket",
+      "MODE_ALL_TOGETHER": "Alles zusammen (1 Paket)",
+      "MODE_ALL_TOGETHER_HINT": "– wenn die Größe es erlaubt",
+      "NOTE_LABEL": "Hinweis zur Verpackung (optional)",
+      "NOTE_PLACEHOLDER": "Z.B. bitte Preisschilder entfernen / kurze Notiz hinzufügen..."
+    },
+    "SHIPPING_FREE": "kostenloser Versand"
+
   
   },
 
-  "CHECKOUT_CANCEL": {
-    "TITLE": "Zahlung wurde abgebrochen ❌",
-    "DESCRIPTION": "Sie können es erneut versuchen oder zum Warenkorb zurückkehren.",
-    "BACK_TO_CHECKOUT": "Zur Kasse zurück",
+    "CHECKOUT_CANCEL": {
+    "TITLE": "Zahlung abgebrochen",
+    "DESCRIPTION": "Ihre Zahlung wurde nicht abgeschlossen oder wurde abgebrochen. Falls dies ein Versehen war, können Sie den Checkout erneut versuchen.",
+    "ORDER": "Bestellung: {{id}}",
+    "BACK_TO_CHECKOUT": "Zurück zur Kasse",
     "CONTINUE_SHOPPING": "Weiter einkaufen"
   },
 
@@ -284,8 +349,13 @@
     "tasky": "Taschen",
     "prehliadky": "Führungen",
     "tvorive-dielne": "Kreativ-Workshops",
-    "WHO_WE_ARE": "Wer wir sind",
-    "WHO_WE_ARE_PEREX": "Wir stellen Ihnen unser Team vor, das sich um die Bewahrung und Entwicklung der traditionellen slowakischen Keramik kümmert."
+    "WHO_WE_ARE": "Über uns",
+    "WHO_WE_ARE_PEREX": "Hinter jedem Produkt aus Modra steht ein Mensch – seine Hände, seine Erfahrung und sein Gespür für Details.",
+    "WHO_WE_ARE_PEREX2": "Das Team der Slowakischen Volksmajolika besteht aus Meistern, Kunstmalern, Handwerkern, Dozenten und Mitarbeitern des Managements, die gemeinsam die Tradition der Modra-Majolika am Leben erhalten und weiterentwickeln. Jeder von uns trägt dazu bei, dass die Majolika mit demselben Respekt geschaffen wird, wie sie von den Generationen vor uns hergestellt wurde, und dass sie auch in der heutigen Welt ihren Platz behält.",
+    "fragmenty":"Fragmente",
+    "prehliadky-vyroby": "Fabrikführungen",
+    "masterclass": "Masterclass",
+    "katkine-vzory": "Katkas Muster"
     
     },
 
@@ -420,7 +490,14 @@
     "COUNTRY": "Land",
     "NOTES": "Hinweis",
     "COPY": "Kopieren",
-    "COPIED": "In die Zwischenablage kopiert!"
+    "COPIED": "In die Zwischenablage kopiert!",
+        "REMOVE_ITEM": "Artikel entfernen",
+    "PEOPLE_SHORT": "Pers.",
+    "PIECE_SHORT": "Stk.",
+    "STREET_AND_NUMBER": "Straße und Hausnummer",
+    "COUNTRY_SK": "Slowakei",
+    "COUNTRY_CZ": "Tschechische Republik",
+    "COUNTRY_WORLD_CONTACT": "Rest der Welt (bitte kontaktieren Sie uns)"
   },
 
 
@@ -446,7 +523,7 @@
   "CANCEL": "Abbrechen"
 },
 "PREHLIADKY2": {
-  "INFO": "Information",
+  "INFO": "Geschenkgutscheine",
   "MAJOLIKA_NA_AKCII": "Majolica at the event",
   "DIELNE2": "Workshops",
   "PREHLIADKY2": "Tours"
@@ -520,24 +597,64 @@
       "CAREERS": "Karriere",
       "BLOG": "Blog",
       "TERMS": "Geschäftsbedingungen",
-      "PRIVACY": "Datenschutz"
+      "PRIVACY": "Datenschutz",
+      "NEW_MODELS": "Neue Muster"
     },
     "NEWSLETTER": {
       "TITLE": "Newsletter",
       "TEXT": "Melde dich an und erhalte 10 % Rabatt auf deine erste Bestellung.",
       "EMAIL_PLACEHOLDER": "Deine E-Mail-Adresse",
-      "SUBMIT": "Abonnieren"
-    },
+      "SUBMIT": "Abonnieren",
+      "DONE": "Danke für dein Abonnement",
+      "OK": "Danke für dein Abonnement",
+      "ERROR": "Hoppla, bitte versuche es später noch einmal."
+     },
     "SOCIAL": {
       "TITLE": "Folge uns"
     }
   },
-    "CHECKOUT": {
+      "CHECKOUT": {
     "SUCCESS": {
-      "TITLE": "Danke für Ihre Bestellung! 🎉",
-      "BODY": "Ihre Zahlung war erfolgreich. Eine Bestätigung wurde an Ihre E-Mail gesendet.",
-      "BACK": "Zur Startseite"
+      "TITLE": "Vielen Dank für Ihre Bestellung",
+      "BODY": "Ihre Bestellung wurde erfolgreich erstellt.",
+      "BACK": "Zur Startseite",
+      "CHECKING": "Zahlungsstatus wird geprüft...",
+      "ORDER_SUMMARY": "Bestellübersicht",
+
+      "PAID_TITLE": "Vielen Dank, Zahlung erhalten",
+      "PAID_BODY": "Die Zahlung für Ihre Bestellung war erfolgreich. Bestätigung und Details wurden an Ihre E-Mail gesendet.",
+
+      "PENDING_TITLE": "Zahlung läuft",
+      "PENDING_BODY": "Die Zahlung für Ihre Bestellung ist noch nicht bestätigt. Wir prüfen den Status automatisch. Wenn die Seite sich nicht aktualisiert, prüfen Sie bitte Ihre E-Mail.",
+
+      "REFUNDED_TITLE": "Zahlung zurückerstattet",
+      "REFUNDED_BODY": "Die Zahlung für Ihre Bestellung wurde zurückerstattet. Weitere Informationen wurden an Ihre E-Mail gesendet.",
+
+      "ORDER_OK_TITLE": "Bestellung eingegangen",
+      "ORDER_OK_BODY": "Ihre Bestellung ist eingegangen. Bestätigung und weitere Informationen wurden an Ihre E-Mail gesendet."
     }
+  },
+
+  "ORDER": {
+    "NO": "Bestellung",
+    "DATE": "Datum",
+    "EMAIL": "E-Mail",
+    "TOTAL": "Gesamtbetrag",
+    "DOWNLOAD_INVOICE": "Rechnung herunterladen",
+
+    "GIFTWRAP": "Geschenkverpackung",
+    "GIFTWRAP_QTY": "Anzahl der Verpackungen",
+    "GIFTWRAP_MODE": "Verpackungsart",
+    "NOTE": "Notiz",
+
+    "GIFTWRAP_MODE_EACH_ITEM": "Jeden Artikel einzeln",
+    "GIFTWRAP_MODE_BY_PRODUCT": "Nach Produkt",
+    "GIFTWRAP_MODE_ALL_TOGETHER": "Alles zusammen",
+    "GIFTWRAP_MODE_ALL": "Alles (eine Verpackung pro Artikel)",
+    "GIFTWRAP_MODE_SELECTED": "Ausgewählte Produkte",
+
+    "BADGE_GIFTWRAP": "Geschenkverpackung",
+    "BADGE_DIGITAL": "Digitales Produkt"
   },
     "role": {
     "admin": "Verwaltung",
@@ -554,6 +671,65 @@
     "next": "Weiter",
     "page": "Seite {{page}} von {{total}}"
   }
+,
 
-   
+  "LOADING": {
+    "CATEGORIES": "Kategorien werden geladen...",
+    "CONTENT": "Inhalt wird geladen..."
+  
+
+
+  },
+
+"ICONS": {
+      "TANIER": "Teller",
+      "DZBAN": "Krug",
+      "VAZA": "Vase",
+      "POHAR": "Glas",
+      "MISKA": "Schale"
+    } ,
+
+      "AKTUALITY": {
+    "NOT_FOUND": {
+      "TITLE": "Artikel nicht gefunden",
+      "TEXT": "Überprüfen Sie den Link oder kehren Sie zur Übersicht der Neuigkeiten zurück.",
+      "BACK": "← Zurück zu den Neuigkeiten"
+    }
+  },
+
+    "SESSION_PICKER": {
+    "TITLE": "Choose a session",
+    "SUBTITLE": "Click a day in the calendar to see available times.",
+    "CLOSE": "Close",
+
+    "LEGEND_HAS": "Days with sessions",
+    "LEGEND_NONE": "No sessions",
+
+    "SELECTED_DAY": "Selected day",
+    "SESSION": "Time",
+    "SESSION_PLACEHOLDER": "-- choose time --",
+
+    "QTY": "People",
+    "ADD_TO_CART": "Add to cart",
+    "HELP_SELECT": "Select a day and time.",
+
+    "NO_SESSIONS_DAY": "No sessions available on this day.",
+
+    "AVAILABLE": "available",
+    "START": "Start",
+    "DURATION": "Duration",
+    "MINUTES": "min",
+
+    "HINT": "Pick a day in the calendar. Days with sessions are highlighted.",
+
+    "WD_MON": "Mon",
+    "WD_TUE": "Tue",
+    "WD_WED": "Wed",
+    "WD_THU": "Thu",
+    "WD_FRI": "Fri",
+    "WD_SAT": "Sat",
+    "WD_SUN": "Sun"
+  }
+  
+  
   }

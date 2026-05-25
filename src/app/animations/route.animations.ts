@@ -76,13 +76,14 @@ export const slideAnimation = trigger('slideAnimation', [
 export const slideLeftAnimation = trigger('routeAnimations', [
   transition('* <=> *', [
     query(':enter, :leave', style({ 
-      position: 'fixed', 
+      position: 'relative', 
       width: '100%', 
       height: '100%', 
       top: 0, 
       left: 0, 
       margin: 0,
-      padding: 0
+      padding: 0,
+      background: '#f0f0f0'
     }), { optional: true }),
 
     group([
@@ -91,13 +92,13 @@ export const slideLeftAnimation = trigger('routeAnimations', [
 
       // Animácia odchádzajúcej stránky (posun hore + fade out)
       query(':leave', [
-        animate('400ms ease-in', style({ opacity: 0.8, transform: 'translateY(-100%)' }))
+        animate('400ms ease-in', style({ opacity: 0.0, transform: 'translateY(-10%)' }))
       ], { optional: true }),
 
       // Animácia prichádzajúcej stránky (príchod zdola + fade in)
       query(':enter', [
         style({ opacity: 0, transform: 'translateY(100%)' }),
-        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0%)' }))
+        animate('250ms ease-out', style({ opacity: 1, transform: 'translateY(0%)' }))
       ], { optional: true }),
 
 

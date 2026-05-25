@@ -120,11 +120,16 @@ p  { margin: 0 0 10px 0; }
   top: 10px; right: 10px;
   background: transparent;
   border: none;
-  color: #fff;
-  font-size: 1.2rem;
+  color: var(--base-blue);
+  font-size: 1.52rem;
+  font-weight: 800;
   width: 32px; height: 32px;
   border-radius: 50%;
   cursor: pointer;
   z-index: 4; /* úplne navrchu */
 }
-.close-btn:hover { color: #839ef5fd; }
+.close-btn:hover { 
+  color: #6b7ebbfd; 
+  
+
+}

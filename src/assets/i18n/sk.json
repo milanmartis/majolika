@@ -4,6 +4,8 @@
       "HOME2": "Domov",
       "OR": "alebo",
       "VIAC_INFO": "Viac informácií",
+      "REZERVOVAT": "Rezervovať",
+      "VEDIETVIAC": "Detail ponuky",
       "POPISKY_KAT_VYROBKOV": "Kategórie výrobkov",
       "VYBERTE_KATEGORIU": "Vyberte kategóriu",
       "ADD_TO_CART_HOLD": "Do košíka (voľné miesta: {{available}})",
@@ -15,8 +17,13 @@
         "STATUS": "{{booked}} rezervované / {{max}} max ({{available}} k dispozícii)",
         "LOADING": "— načítava sa kapacita…",
         "TRVANIE": "Trvanie",
-        "WHO_WE_ARE": "Kto sme",
-        "WHO_WE_ARE_PEREX": "Predstavujeme vám náš tím, ktorý sa stará o zachovanie a rozvoj tradičnej slovenskej keramiky."
+        "WHO_WE_ARE": "O nás",
+        "WHO_WE_ARE_PEREX": "Za každým výrobkom z Modry stojí človek, jeho ruky, skúsenosť a cit pre detail.",
+        "WHO_WE_ARE_PEREX2": "Tím Slovenskej ľudovej majoliky tvoria majstri, umelecký maliari, remeselníci, lektori aj ľudia z manažmentu, ktorí spoločne udržiavajú pri živote tradíciu modranskej majoliky a posúvajú ju ďalej. Každý z nás prispieva k tomu, aby majolika vznikala s rovnakou úctou, akou ju tvorili generácie pred nami, a aby mala svoje miesto aj v dnešnom svete."
+
+        
+
+
        
     },
     "FORM": {
@@ -29,7 +36,7 @@
       "CITY": "Mesto",
       "ZIP": "PSČ",
       "COUNTRY": "Krajina",
-      "ADRRESS": "Adresa"
+      "ADRRESS": "Doručovacia adresa"
     },
 
     "HOME": {
@@ -53,7 +60,7 @@
       "CO_ROBIME": "Naša ponuka",
       "KTO_SME": "Kto sme",
       "HISTORIA": "História",
-      "INFO": "Informácie",
+      "INFO": "Kontakt",
       "MAJOLIKA_DOMA_HEADER": "Majolika u vás doma",
       "MAJOLIKA_DOMA_TEXT": "Slovenská ľudová majolika patrí k nositeľom tradície modranskej majoliky a majolikovej ornamentiky a zároveň je priestorom pre realizáciu kreativity a inovatívnych postupov vo výrobe modranskej keramiky. Cieľom podpory z projektu je rozvoj kreatívneho talentu a inovácií v oblasti tradičného remesla formou záchrany, zachovania a obnovy významnej časti kultúrneho dedičstva Slovenska.\n\nObjavte unikátne ručne maľované vázy z dielne Majolika. Perfektný doplnok do vášho interiéru."
    
@@ -67,6 +74,26 @@
 },
 
     "ESHOP": { 
+        "VOUCHER": {
+    "TITLE": "Uplatniť darčekovú poukážku",
+    "PLACEHOLDER": "Zadajte kód poukážky",
+    "APPLY": "Uplatniť",
+    "APPLIED": "Uplatnená poukážka: {{code}}",
+    "LINE": "Darčeková poukážka",
+    "DELETE": "Odstranit",
+     "ERROR_EMPTY": "Zadajte kód darčekovej poukážky.",
+  "ERROR_INVALID": "Poukážka nie je platná.",
+  "ERROR_NOT_VALUE": "Táto poukážka nie je kreditová poukážka.",
+  "ERROR_NO_BALANCE": "Táto poukážka už nemá žiadny zostatok.",
+  "ERROR_INVALID_OR_USED": "Poukážka je neplatná alebo už použitá.",
+  "SUCCESS_APPLIED": "Poukážka bude uplatnená. Zľava {{discount}} €.",
+  "SNACK_APPLIED": "Poukážka uplatnená: -{{discount}} €",
+  "ERROR_NOT_APPLIED": "Zadali ste kód poukážky, ale ešte ste neklikli na Uplatniť."
+  },
+      "SELECT_VARIATION": "Vyberte variant",
+    "ADDED_TO_CART": "Pridané do košíka",
+
+    "CANCEL": "Zrušiť",
       "CONSENT_REQUIRED":"Povinná položka",
       "WELCOME": "E-SHOP",
       "FIRST_TEXT": "Slovenská ľudová majolika patrí k nositeľom tradície modranskej majoliky a majolikovej ornamentiky a  zároveň je priestorom pre realizáciu kreativity a  inovatívnych postupov vo výrobe modranskej keramiky. Cieľom podpory z projektu je rozvoj kreatívneho talentu a  inovácií v  oblasti tradičného remesla formou záchrany, zachovania a obnovy významnej časti kultúrneho dedičstva Slovenska. ",
@@ -142,6 +169,7 @@
     "DELIVERY_POST_OFFICE": "Doručiť na poštu",
     "DELIVERY_PACKETA_BOX": "Packeta box",
     "DELIVERY_POST_COURIER": "Kuriér na adresu",
+    "DELIVERY_DIGITAL_PRODUCT": "Elektronicky",
     "SHIPPING_FEE": "Doprava",
     "POST_OFFICE_ID": "ID pošty",
     "PACKETA_BOX_ID": "ID Packeta boxu",
@@ -171,6 +199,10 @@
     "CONSENT_MARKETING": "Chcem dostávať novinky a marketingové ponuky e-mailom.",
     "NOVINKA": "Novinka",
     "ZLAVA": "Zľava",
+    "VYPREDANE": "Vypredané",
+    "NEDOSTUPNE": "Nedostupné",
+    "PRODUCT_UNAVAILABLE_HINT": "Tento produkt momentálne nie je dostupný. Môžete nás kontaktovať pre viac informácií.",
+    "PRODUCT_SOLDOUT_HINT": "Tento produkt je momentálne vypredaný. Môžete nás kontaktovať pre viac informácií.",
     "INCLUDING_VAT": "Z toho DPH",
     "label_created": "Prijatá objednávka",
     "in_transit": "Na ceste",
@@ -182,15 +214,52 @@
     "unpaid": "Čakáme na platbu",
     "paid": "Zaplatené",
     "refunded": "Vrátené peniaze",
-    "ONSITE_ONLY_PICKUP": "Platba na mieste je možná len pri osobnom odbere."
+    "ONSITE_ONLY_PICKUP": "Platba na mieste je možná len pri osobnom odbere.",
+    "BEGIN": "Začína o ",
+    "KAPACITA": "voľné miesta: ",
+    "WORKSHOPANOTHERS":"Termíny prehliadok a dielní je možné dohodnúť aj individuálne mimo zverejneného kalendára.",
+    "ALL": "Všetko",
+    "DELIVERY_URGENCY": "Doba dodania",
+    "DELIVERY_URGENCY_STANDARD": "Vyhovuje mi štandardná doba dodania (približne dva týždne)",
+    "DELIVERY_URGENCY_RUSH": "Objednávka mi ponáhľa",
+    "COD_NOT_FOR_PICKUP": "Dobierka nie je dostupná pri vyzdvihnutí na mieste.",
+      "BILLING": {
+      "TITLE": "Fakturačné údaje",
+      "COMPANY_PURCHASE": "Nakupujem na firmu",
+      "COMPANY_NAME": "Názov firmy",
+      "ICO": "IČO",
+      "DIC": "DIČ",
+      "IC_DPH": "IČ DPH",
+      "ADDRESS_TITLE": "Fakturačná adresa",
+      "ADDRESS_SAME_AS_SHIPPING": "Rovnaká ako doručovacia adresa",
+      "ADDRESS_DIFFERENT": "Iná fakturačná adresa"
+    },
+    "GIFTWRAP": {
+      "TITLE": "Darčekové balenie",
+      "LOADING_PRICE": "načítavam cenu…",
+      "HOW_MANY": "Koľko kusov zabaliť?",
+      "SELECTED_OF": "Vybraté: {{selected}} z {{total}} ks.",
+      "RULES_TITLE": "Darčekové balenie – ako zabaliť?",
+      "MODE_EACH_ITEM": "Každý kus zvlášť",
+      "MODE_EACH_ITEM_HINT": "",
+      "MODE_BY_PRODUCT": "Podľa produktov",
+      "MODE_BY_PRODUCT_HINT": "– jeden produkt = jeden balíček",
+      "MODE_ALL_TOGETHER": "Všetko spolu (1 balíček)",
+      "MODE_ALL_TOGETHER_HINT": "– ak to veľkosť umožní",
+      "NOTE_LABEL": "Odkaz k baleniu (voliteľné)",
+      "NOTE_PLACEHOLDER": "Napr. prosím odstrániť cenovky / pridať krátky odkaz..."
+    },
+    "SHIPPING_FREE": "doprava zdarma"
+
  
     },
 
 
- "CHECKOUT_CANCEL": {
-    "TITLE": "Platba bola zrušená ❌",
-    "DESCRIPTION": "Môžete skúsiť znova alebo sa vrátiť do košíka.",
-    "BACK_TO_CHECKOUT": "Späť na pokladňu",
+  "CHECKOUT_CANCEL": {
+    "TITLE": "Platba bola zrušená",
+    "DESCRIPTION": "Platba neprebehla alebo bola zrušená. Ak ste platbu zrušili omylom, môžete skúsiť objednávku dokončiť znova.",
+    "ORDER": "Objednávka: {{id}}",
+    "BACK_TO_CHECKOUT": "Späť do pokladne",
     "CONTINUE_SHOPPING": "Pokračovať v nákupe"
   },
 
@@ -214,6 +283,8 @@
      "COMMON": { 
       "OK": "OK",
       "CHANGE": "Zmeniť Packeta box",
+      "CHANGE_POSTA": "Zmeniť poštu",
+
         "STREET": "Ulica",
     "CITY": "Mesto",
     "ZIP": "PSČ",
@@ -221,7 +292,14 @@
     "COPIED": "Skopírované do schránky!",
     "CHANGE2": "Zmeniť",
     "COPY": "Kopírovať",
-    "NOTES": "Poznámka"
+    "NOTES": "Poznámka",
+        "REMOVE_ITEM": "Odstrániť položku",
+    "PEOPLE_SHORT": "os.",
+    "PIECE_SHORT": "ks",
+    "STREET_AND_NUMBER": "Ulica a číslo",
+    "COUNTRY_SK": "Slovensko",
+    "COUNTRY_CZ": "Česká republika",
+    "COUNTRY_WORLD_CONTACT": "Zvyšok sveta (prosím, kontaktujte nás)"
     
     },
 
@@ -257,6 +335,7 @@
   },
   
 "AUTH": {
+  "CONFIRM_PASSWORD":"Potvrdiť heslo",
   "RESET_PASSWORD":"Obnoviť heslo",
    "ERRORS":{
 "INVALID_CREDENTIALS":"Nesprávny e-mail alebo heslo."
@@ -407,7 +486,16 @@
         "prstene": "Prstene",
         "tasky": "Tašky",
         "prehliadky": "Prehliadky",
-        "tvorive-dielne": "Tvorivé dielne"
+        "tvorive-dielne": "Tvorivé dielne",
+        "dielne":"Dielne",
+        "mlada-majolika":"Mladá Majolika",
+        "fragmenty":"Fragmenty",
+        "taniere-s-figuralnou-tematikou": "Taniere s figurálnou tématikou",
+        "dzbany-s-figuralnou-tematikou": "Džbány s figurálnou tématikou",
+        "obkladacky-s-figuralnou-tematikou": "Obkladačky s figurálnou tématikou",
+        "prehliadky-vyroby": "Prehliadky výroby",
+        "masterclass": "Masterclass",
+        "katkine-vzory": "Katkine vzory"
       },
 
 
@@ -460,7 +548,7 @@
 
           
             "PREHLIADKY2": {
-              "INFO": "Informácie",
+              "INFO": "Darčekové poukazy",
               "MAJOLIKA_NA_AKCII": "Majolika na akcii",
               "DIELNE2": "Dielne",
               "PREHLIADKY2": "Prehliadky"
@@ -560,7 +648,7 @@
           
           "FOOTER": {
     "ABOUT": {
-      "TITLE": "O príbehu menom Majolike",
+      "TITLE": "O príbehu menom Majolika",
       "TEXT": "V Slovenskej ľudovej majolike už 140 rokov majstri remesla rozvíjajú zdedené tradície, rukami a srdcom tvoria keramickú dušu regiónu. Všetky výrobky sú ručne vyrobené a maľované. Každý kus je jedinečné dielo. Modranská majolika a majoliková ornamentika sú zapísané v Reprezentatívnom zozname nehmotného kultúrneho dedičstva Slovenska. <a href='o-nas'>Kliknite a dozviete sa viac</a>"
     },
     "SUPPORT": {
@@ -577,26 +665,65 @@
       "CAREERS": "Kariéra",
       "BLOG": "Blog",
       "TERMS": "Obchodné podmienky",
-      "PRIVACY": "Ochrana osobných údajov"
+      "PRIVACY": "Ochrana osobných údajov",
+      "NEW_MODELS": "Nové vzory"
     },
     "NEWSLETTER": {
       "TITLE": "Newsletter",
       "TEXT": "Prihlás sa na odber a získaj 10% zľavu na prvú objednávku.",
-      "EMAIL_PLACEHOLDER": "Tvoja e-mailová adresa",
-      "SUBMIT": "Odber"
+      "EMAIL_PLACEHOLDER": "Váš e-mail",
+      "SUBMIT": "Odoberať",
+      "DONE": "Ďakujeme, ste prihlásený",
+      "OK": "Ďakujeme, ste prihlásený",
+      "ERROR": "Ups, zrejme chybný formát emailu."
     },
     "SOCIAL": {
       "TITLE": "Sleduj nás"
     }
+
   },
     "CHECKOUT": {
     "SUCCESS": {
-      "TITLE": "Ďakujeme za objednávku! 🎉",
-      "BODY": "Vaša platba prebehla úspešne. \n Potvrdenie vám príde e-mailom.",
-      "BACK": "Späť na úvod"
+      "TITLE": "Ďakujeme za objednávku",
+      "BODY": "Vaša objednávka bola úspešne vytvorená.",
+      "BACK": "Späť na úvod",
+      "CHECKING": "Overujeme stav platby...",
+      "ORDER_SUMMARY": "Sumár objednávky",
+
+      "PAID_TITLE": "Ďakujeme, platba prijatá",
+      "PAID_BODY": "Platba za vašu objednávku prebehla úspešne. Potvrdenie a detaily sme poslali na e-mail.",
+
+      "PENDING_TITLE": "Platba prebieha",
+      "PENDING_BODY": "Platba za objednávku ešte nie je potvrdená. Skúšame overiť stav automaticky. Ak sa stránka sama neobnoví, skontrolujte prosím e-mail.",
+
+      "REFUNDED_TITLE": "Platba bola vrátená",
+      "REFUNDED_BODY": "Platba za objednávku bola vrátená. Viac informácií sme poslali na e-mail.",
+
+      "ORDER_OK_TITLE": "Objednávka bola prijatá",
+      "ORDER_OK_BODY": "Vaša objednávka bola prijatá. Potvrdenie a ďalšie informácie sme poslali na e-mail."
     }
   },
+  "ORDER": {
+    "NO": "Objednávka",
+    "DATE": "Dátum",
+    "EMAIL": "E-mail",
+    "TOTAL": "Spolu na úhradu",
+    "DOWNLOAD_INVOICE": "Stiahnuť faktúru",
 
+    "GIFTWRAP": "Darčekové balenie",
+    "GIFTWRAP_QTY": "Počet balení",
+    "GIFTWRAP_MODE": "Ako zabaliť",
+    "NOTE": "Poznámka",
+
+    "GIFTWRAP_MODE_EACH_ITEM": "Každý kus zvlášť",
+    "GIFTWRAP_MODE_BY_PRODUCT": "Podľa produktov",
+    "GIFTWRAP_MODE_ALL_TOGETHER": "Všetko spolu",
+    "GIFTWRAP_MODE_ALL": "Všetko (1 balenie na kusy)",
+    "GIFTWRAP_MODE_SELECTED": "Vybrané produkty",
+
+    "BADGE_GIFTWRAP": "Darčekové balenie",
+    "BADGE_DIGITAL": "Digitálny produkt"
+  },
 
     "role": {
     "admin": "administratíva",
@@ -608,11 +735,68 @@
     "title": "Autori",
     "search": "Hľadať podľa mena…",
     "empty": "Nenašli sa žiadni autori.",
-    "loading": "Načítavam…",
+    "loading": "Načítava sa…",
     "prev": "Predchádzajúca",
     "next": "Ďalšia",
     "page": "Strana {{page}} z {{total}}"
+  },
+
+  "LOADING": {
+    "CATEGORIES": "Načítavajú sa kategórie…",
+    "CONTENT": "Načítava sa obsah…"
+  
+
+  },
+
+"ICONS": {
+      "TANIER": "Tanier",
+      "VAZA": "Váza",
+      "DZBAN": "Džbán",
+      "POHAR": "Pohár",
+      "MISKA": "Miska"
+    },
+
+      "AKTUALITY": {
+    "NOT_FOUND": {
+      "TITLE": "Aktualita neexistuje",
+      "TEXT": "Skontroluj odkaz alebo sa vráť späť na zoznam aktualít.",
+      "BACK": "← Späť na aktuality"
+    }
+  },
+
+  "SESSION_PICKER": {
+    "TITLE": "Vyberte termín",
+    "SUBTITLE": "Kliknite na deň v kalendári – zobrazia sa termíny.",
+    "CLOSE": "Zavrieť",
+
+    "LEGEND_HAS": "Dni s termínmi",
+    "LEGEND_NONE": "Bez termínov",
+
+    "SELECTED_DAY": "Vybraný deň",
+    "SESSION": "Termín",
+    "SESSION_PLACEHOLDER": "-- vyber hodinu --",
+
+    "QTY": "Počet osôb",
+    "ADD_TO_CART": "Pridať do košíka",
+    "HELP_SELECT": "Vyberte deň a termín.",
+
+    "NO_SESSIONS_DAY": "V tento deň nie sú dostupné termíny.",
+
+    "AVAILABLE": "voľné",
+    "START": "Začiatok",
+    "DURATION": "Trvanie",
+    "MINUTES": "min",
+
+    "HINT": "Vyberte deň v kalendári. Dni s termínmi sú zvýraznené.",
+
+    "WD_MON": "Po",
+    "WD_TUE": "Ut",
+    "WD_WED": "St",
+    "WD_THU": "Št",
+    "WD_FRI": "Pi",
+    "WD_SAT": "So",
+    "WD_SUN": "Ne"
   }
-  }
+  } 
 
   

@@ -33,7 +33,7 @@
 
         <!-- interné video / obrázok -->
         <ng-template #localMedia>
-          <ng-container *ngIf="s.videos?.length; else imgTpl">
+          <ng-container *ngIf="s.videos.length; else imgTpl">
             <video
             #slideVideo
             class="slide-media"
@@ -43,7 +43,7 @@
             [muted]="true"
             (loadedmetadata)="onVideoReady($event)"
             [volume]="0"  
-            poster="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_placeholder_6982996b8f.jpg"
+            poster="https://d1hbdvlfav95nt.cloudfront.net/products/medium_placeholder_6982996b8f.jpg"
           >
             <source [src]="s.videos[0]" type="video/mp4" />
             {{ 'VIDEO.NOT_SUPPORTED' | translate }}
@@ -99,21 +99,21 @@
   <!-- ---------- DVE KARTY ---------- -->
   <div class="choice-grid">
     <div class="choice-card">
-      <a routerLink="/produkt/kategoria/prehliadky">
+      <a routerLink="/produkt/kategoria/prehliadky-vyroby">
 
       <div class="image-wrapper">
-        <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_prehliadky_7be0195e2e.webp" alt="E-shop" />
+        <img src="https://d1hbdvlfav95nt.cloudfront.net/products/large_prehliadky_7be0195e2e.webp" alt="E-shop" />
       </div>
       <button class="choice-button">{{ 'PREHLIADKY2.PREHLIADKY2' | translate }}</button>
       </a>
     </div>
 
     <div class="choice-card" >
-      <a routerLink="/produkt/kategoria/dielne">
+      <a routerLink="/produkt/kategoria/tvorive-dielne">
 
       <div class="image-wrapper">
         <img
-          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_info_majolika_18fd542a5c.jpg"
+          src="https://d1hbdvlfav95nt.cloudfront.net/products/large_info_majolika_18fd542a5c.jpg"
           alt="Prehliadky/dielne"
         />
       </div>
@@ -121,18 +121,31 @@
 </a>
       <!-- <button class="choice-button">{{ 'CALENDAR.TITLE' | translate }}</button> -->
     </div>
+  </div>
+  
+  <div class="choice-grid" [@fadeInStagger]="animationState">
+  
+  <div class="choice-card" (click)="onSelect('optionB')">
+    <a routerLink="/produkt/kategoria/darcekove-poukazy">
+
+    <div class="image-wrapper">
+      <img
+        src="https://d1hbdvlfav95nt.cloudfront.net/products/medium_DSC_2995_scaled_9cdb265b2c.jpg"
+        alt="{{ 'PREHLIADKY2.INFO' | translate }}"
+      />
     </div>
+    <button class="choice-button">{{ 'PREHLIADKY2.INFO' | translate }}</button>
+    <!-- <button class="choice-button">{{ 'CALENDAR.TITLE' | translate }}</button> -->
+     </a>
+  </div>
 
 
-
-
-      <div class="choice-grid" [@fadeInStagger]="animationState">
         <div class="choice-card">
           <a routerLink="/article/majolika-na-akcii">
           <div class="image-wrapper">
 
         <img
-          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_Bannery_lennaskok_sk_960x540_keramika_6996533b29.png"
+          src="https://d1hbdvlfav95nt.cloudfront.net/products/medium_Bannery_lennaskok_sk_960x540_keramika_6996533b29.png"
           alt="Prehliadky/dielne"
         />
           </div>
@@ -142,19 +155,6 @@
     </a>
     </div>
 
-    <div class="choice-card" (click)="onSelect('optionB')">
-      <a routerLink="/article/informacie">
-
-      <div class="image-wrapper">
-        <img
-          src="/assets/img/gall/slovenska_ludova_majolika_2.webp"
-          alt="Prehliadky/dielne"
-        />
-      </div>
-      <button class="choice-button">{{ 'PREHLIADKY2.INFO' | translate }}</button>
-      <!-- <button class="choice-button">{{ 'CALENDAR.TITLE' | translate }}</button> -->
-       </a>
-    </div>
   </div>
 
 
@@ -163,7 +163,7 @@
     class="calendar-section"
     [@fadeIn]="'visible'"
     [@slideUp]="'visible'"
-    style="margin-top:34px;"
+    style="margin-top:34px;display: none;"
   >
     <h2
       style="text-align:center;font-weight:600; font-size:2.8rem; color:#2943ba59;"
@@ -223,15 +223,13 @@
               <ng-container *ngIf="loadProductImageForSession(session) === undefined"></ng-container>
               
               <!-- Obrázok vľavo (bez erroru) -->
-              <ng-container *ngIf="session.product?.id as productId">
-                <img
-                  *ngIf="sessionProductImages[productId]"
-                  [src]="sessionProductImages[productId]"
-                  [alt]="session.product?.name"
-                  class="session-img"
-                  (click)="goToLink('produkt/' + session.product?.slug)"
-                  
-                />
+             <ng-container *ngIf="session.product?.documentId as pd">
+              <img
+                class="session-img"
+                [src]="sessionProductImages[session.product?.documentId || ''] || '/assets/img/mobile.jpg'"
+                [alt]="session.product?.name"
+                (click)="goToSession(session, $event)"
+              />
               </ng-container>
             
               <!-- Ostatné vpravo -->
@@ -241,8 +239,9 @@
                 </div>
                   <div style="padding-left: 10px;margin-top:-15px;">
                     <span>
-                      <i class="fa fa-clock"></i> {{ session.startDateTime | date:'HH:mm':undefined:lang.getCurrentLanguage() }}
-                      ( {{ 'BASE.TRVANIE' | translate }}: {{ session.durationMinutes }} min)
+                      <i class="fa fa-clock"></i>
+                       <!-- {{ session.startDateTime | date:'HH:mm':undefined:lang.getCurrentLanguage() }} -->
+                       {{ 'BASE.TRVANIE' | translate }}: {{ session.durationMinutes }} min /
                     </span><span>{{ getSessionPrice(session) | number:'1.2-2' }} €</span>
                 </div>
                     <div class="session-actions" style="padding: 0px;margin-top:-20px;">
@@ -250,8 +249,9 @@
                     class="btn"
                     type="button"
                     *ngIf="session.product?.slug"
-                    (click)="goToLink('produkt/' + session.product?.slug)">
-                   {{ 'BASE.VIAC_INFO' | translate }} ({{ 'BASE.LABEL' | translate }} {{ session.capacity?.available }})
+                    (click)="goToSession(session, $event)">
+                   {{ 'BASE.VEDIETVIAC' | translate }} 
+                   <!-- ({{ 'BASE.LABEL' | translate }} {{ session.capacity?.available }}) -->
                   </button>
                   <!-- <button class="btn"
                     type="button"
@@ -262,9 +262,9 @@
                       : ('BASE.FULL' | translate) }}
                   </button> -->
                 </div>
-                <div style="position:relative; top:0px;margin-top:-10px;margin-bottom:-40px;">
+                <!-- <div style="position:relative; top:0px;margin-top:-10px;margin-bottom:-40px;">
                   <img src="/assets/img/back_dekor_black2.png" alt="dekor" width="64" style="transform: rotate(90deg);">
-                </div>
+                </div> -->
               </div>
              </div>
           
@@ -280,11 +280,7 @@
 
         <ng-template #expTpl>
           <div class="experience-list" *ngIf="experiences.length">
-            <a
-              class="experience-card"
-              *ngFor="let p of experiences"
-              [routerLink]="['/produkt', p.slug]"
-            >
+           <a class="experience-card" *ngFor="let p of experiences" (click)="openExperienceByDocumentId(p)">
               <img [src]="p.primaryImageUrl" [alt]="p.name" />
               <span>{{ p.name }}</span>
             </a>

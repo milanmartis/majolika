@@ -1,4 +1,4 @@
-<footer>
+
     <footer class="footer">
         <div class="container">
           <!-- O nás -->
@@ -28,29 +28,25 @@
     <!-- <li><a href="#">{{ 'FOOTER.INFO.BLOG' | translate }}</a></li> -->
     <li><a [routerLink]="['/article/vseobecne-obchodne-podmienky']">{{ 'FOOTER.INFO.TERMS' | translate }}</a></li>
     <li><a [routerLink]="['/article/ochrana-a-spracovanie-osobnych-udajov']">{{ 'FOOTER.INFO.PRIVACY' | translate }}</a></li>
+    <li><a [routerLink]="['/article/majolika-as']">Slovenská Ľudová Majolika, a. s.</a></li>
+    <li><a [routerLink]="['/article/oz-slm']">OZ Slovenská Ľudová Majolika</a></li>
+    <li><a [routerLink]="['/article/nove-vzory']">{{ 'FOOTER.INFO.NEW_MODELS' | translate }}</a></li>
   </ul>
 </div>
 
 <div class="footer-col footer-newsletter">
   <h4>{{ 'FOOTER.NEWSLETTER.TITLE' | translate }}</h4>
   <p>{{ 'FOOTER.NEWSLETTER.TEXT' | translate }}</p>
-  <form>
-    <input
-      type="email"
-      [placeholder]="'FOOTER.NEWSLETTER.EMAIL_PLACEHOLDER' | translate"
-      required
-    />
-    <button type="submit">{{ 'FOOTER.NEWSLETTER.SUBMIT' | translate }}</button>
-  </form>
+<app-footer-newsletter></app-footer-newsletter>
 </div>
 
 <div class="footer-col">
   <h4>{{ 'FOOTER.SOCIAL.TITLE' | translate }}</h4>
             <div class="social-links">
 
-              <a href="#" aria-label="Facebook"><i  style="font-size:1.8rem;" class="fa-brands fa-facebook"></i></a>
-              <a href="#" aria-label="Instagram"><i  style="font-size:1.8rem;" class="fa-brands fa-instagram"></i></a>
-              <a href="#" aria-label="Twitter"><i  style="font-size:1.8rem;" class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.facebook.com/majolikamodra" aria-label="Facebook"><i  style="font-size:1.8rem;" class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.instagram.com/majolikamodra.sk" aria-label="Instagram"><i  style="font-size:1.8rem;" class="fa-brands fa-instagram"></i></a>
+              <!-- <a href="#" aria-label="Twitter"><i  style="font-size:1.8rem;" class="fa-brands fa-youtube"></i></a> -->
           </div>
           </div>
           <div class="payment-icons" style="margin:auto;">
@@ -90,17 +86,30 @@
  </div> -->
                </div>
                    <!-- 🌍 Prepínač jazykov -->
+                   <div class="iconz footer-col">
+                   
+                             <a  style="padding: 4px;" href="https://www.tripadvisor.ie/Attraction_Review-g2337222-d19944851-Reviews-Slovenska_L_udova_Majolika_Modra-Modra_Bratislava_Region.html">
+                               <img src="../assets/img/icons/wordmark.svg" width="124" alt="tripadvisor">
+                             </a>
+                             <a  style="padding: 4px;" href="http://www.sphere.sk/">
+                               <img src="../assets/img/icons/sphere_card_110x47px.png" width="84" alt="sphere">
+                             </a>
+                             <a  style="padding: 4px;" href="https://www.kayak.de/">
+                               <img src="../assets/img/icons/ORANGE_LARGE_LOGO_KAYAK.png" width="124" alt="kayak">
+                             </a>
+                           </div>
         </div>
     
         <!-- Spodný riadok -->
+
+
+
+
         <div class="footer-bottom">
 
+        
+
        
-          <p style="margin:auto;">© 2025 Slovenská ľudová majolika | Powered by <a href="https://appdesign.sk">appDesign.sk</a></p>
+          <p>© 2025 Slovenská ľudová majolika | Powered by <a href="https://appdesign.sk" target="_blank">appDesign.sk</a></p>
         </div>
       </footer>
-
-    <br>
-
-
-</footer>

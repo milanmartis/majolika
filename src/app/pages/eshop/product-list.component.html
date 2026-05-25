@@ -1,295 +1,296 @@
 <!-- Root kategórie -->
-<div style="display: inline;" *ngIf="rootCategories?.length">
-  <ng-container *ngFor="let root of rootCategories">
-    <img class="catmainpic"
-      *ngIf="selectedRootCategorySlug === root.category_slug"
-      [src]="root.category_image_banner_large"
-      [alt]="root.category_name" />
-  </ng-container>
+<div
+  *ngIf="currentBannerUrl as banner"
+  class="catmainpic-wrapper"
+  [class.loading]="bannerLoading"
+>
+  <img
+    class="catmainpic"
+    [src]="banner"
+    [alt]="(selectedCategoryObj ? catLabel(selectedCategoryObj) : catLabel(selectedRootCategory)) || ''"
+    fetchpriority="high"
+    decoding="async"
+    (load)="onBannerLoad()"
+    (error)="onBannerError()"
+  />
 </div>
+
 <section
   #productList
   class="product-list"
   [@fadeIn]="'visible'"
   [@slideUp]="'visible'"
 >
-  <div class="loading-overlay" *ngIf="isLoading">
-    <div class="spinner"></div>
-  </div>
-  <!-- Kategória nadpis -->
-<!-- Nadpis kategórií -->
+
+<!-- Nadpis / breadcrumbs kategórií -->
 <div class="cat-heading" *ngIf="selectedRootCategorySlug">
-  <h2>
-    <!-- ROOT názov vždy -->
-    <strong class="nadpis" (click)="onCategorySelect(selectedRootCategorySlug)">{{ 'CATEGORIES.' + selectedRootCategorySlug | translate }}</strong>
+  <h2 class="sr-only">Navigácia v kategóriách</h2>
 
-    <!-- keď sme na podkategórii → » názov child -->
-    <ng-container *ngIf="selectedCategorySlug !== selectedRootCategorySlug">
-      &nbsp;|&nbsp;
-    </ng-container>
-    <ng-container *ngIf="selectedCategorySlug !== selectedRootCategorySlug">
-      <strong class="nadpis">{{ 'CATEGORIES.' + selectedCategorySlug | translate }}</strong>
-    </ng-container>
+  <div class="cat-bar">
+    <nav class="cat-crumbs" aria-label="Breadcrumb">
+      <!-- ALL -->
+      <a class="crumb"
+         [routerLink]="['/produkt']">
+        {{ 'ESHOP.ALL' | translate }}
+      </a>
 
-    <!-- tlačidlo × ostáva rovnaké -->
-    <button
-      (click)="resetCategory()"
-      class="reset-button"
-      title=""
-    >
-      X
-    </button>
-  </h2>
+      <span class="sep" aria-hidden="true"></span>
 
+      <!-- ROOT -->
+      <button class="crumb"
+              type="button"
+              (click)="onCategorySelect(selectedRootCategorySlug)"
+              [ngClass]="{'crumb--current': selectedCategorySlug === selectedRootCategorySlug}">
+        {{ catLabel(selectedRootCategory) }}
+      </button>
+
+      <!-- CHILD (iba ak je iný než ROOT) -->
+      <ng-container *ngIf="selectedCategorySlug !== selectedRootCategorySlug">
+        <span class="sep" aria-hidden="true"></span>
+        <span class="crumb crumb--current">
+          {{ catLabel(selectedCategoryObj) }}
+        </span>
+      </ng-container>
+    </nav>
+  </div>
 </div>
 
-    <!-- Text kategórie -->
- <h4
-  *ngIf="getSelectedCategoryText(translate.currentLang) as text"
-  [innerHTML]="text"
-  class="category-text"
-  style="width:100%;max-width:1000px;margin:auto;padding-bottom:40px;white-space: pre-line;">
+<!-- Text kategórie -->
+<h4 *ngIf="currentCategoryText"
+    [innerHTML]="currentCategoryText"
+    class="category-text"
+    style="width:100%;max-width:1000px;margin:auto;padding-bottom:40px;white-space: pre-line;">
 </h4>
-  <!-- Výzva na výber kategórie -->
-  <div
-  *ngIf="!selectedCategory"
-  >
+
+<!-- Výzva na výber kategórie -->
+<div *ngIf="!selectedCategory">
   <h2>{{ 'ESHOP.SELECT_CATEGORY' | translate }}</h2>
 </div>
 
+<ng-container *ngIf="isContentLoading">
+  <div class="content-loader">
+    <div class="spinner"></div>
+    <div class="content-loader__text">{{ 'LOADING.CONTENT' | translate }}</div>
+  </div>
+</ng-container>
+
 <!-- Subkategórie ako buttony -->
-<div class="child-categories" *ngIf="showCategoryGrid && childCategories.length > 0" style="max-width:1000px;width:100%;margin:auto;">
+<div class="child-categories" *ngIf="showCategoryGrid && childCategories.length > 0" style="margin:auto;">
 
-<div class="child-buttons">
-    <button
-    *ngFor="let child of childCategories"
-      (click)="onCategorySelect(child.category_slug)"
-      class="child-button"
-      [class.active]="selectedCategory === child.category_slug"
-      >
-<span class="img-flip">
-    <img class="front" [src]="child.category_image" [alt]="child.category_name" />
-    <img class="back"  [src]="child.category_image" [alt]="child.category_name" />
+  <div class="child-buttons">
+    <a
+  *ngFor="let child of childCategories; trackBy: trackByCat"
+  class="child-button"
+  [class.active]="selectedCategory === child.category_slug"
+  [routerLink]="['/produkt', 'kategoria', child.category_slug]"
+  (click)="onCategorySelect(child.category_slug)"
+>
+  <span class="img-flip" [class.loading]="categoryImgLoadingMap[child.category_slug]">
+    <img
+      class="front"
+      [src]="child.category_image"
+      [alt]="catLabel(child)"
+      (load)="onCategoryImageLoad(child.category_slug)"
+      (error)="onCategoryImageError(child.category_slug)"
+    />
+    <img class="back" [src]="child.category_image" [alt]="catLabel(child)" />
   </span>
-        <span class="label">{{ 'CATEGORIES.' + child.category_slug | translate }}</span>
-    </button>
 
+  <span class="label">{{ catLabel(child) }}</span>
+</a>
 
-
-
-
-
-
-    
   </div>
 </div>
 
-
-  <!-- Root kategórie -->
-  <div
+<!-- Root kategórie -->
+<div
   *ngIf="rootCategories && rootCategories.length > 0"
-  class="child-categories"  style="max-width:1000px;width:100%;margin:auto;"
+  class="child-categories"
+  style="margin:auto;"
   [style.display]="!selectedCategory ? 'block' : 'none'"
 >
-    <div class="child-buttons">
-      <div style="color:black" *ngFor="let root of rootCategories" >
+  <div class="child-buttons">
+    <div style="color:black" *ngFor="let root of rootCategories; trackBy: trackByCat">
 
-
-      <button
-        class="child-button"
-        (click)="onCategorySelect(root.category_slug)"
-        [class.is-selected]="selectedCategory === root.category_slug"
-      >
- 
-
-      <span class="img-flip">
-          <img class="front" [src]="root.category_image" [alt]="root.category_name" />
-          <img class="back"  [src]="root.category_image" [alt]="root.category_name" />
-        </span>
-        <span class="label">{{ 'CATEGORIES.' + root.category_slug | translate }}</span>
-      </button>
-
-
-
-
-    </div>
-    </div>
-  </div>
-
-  <!-- Chyba / prázdny výpis -->
-  <div *ngIf="error" class="status error">
-    {{ 'ESHOP.ERROR_LOADING_PRODUCTS' | translate }}
-  </div>
-  <div *ngIf="loaded && !onCategorySelect && !isLoading && !error && products.length === 0" class="status-text">
-    <h3>
-      {{ 'ESHOP.NO_PRODUCTS_IN_CATEGORY' | translate }} 
-    </h3>  
-  </div>
-
-  <!-- *** SORTOVANIE *** -->
-  <div
-    class="sort-wrapper"
-    *ngIf="!error && products.length > 0"
-  >
-    <label for="sortSelect"><p>{{ 'ESHOP.SORT_BY' | translate }}: </p></label>
-<!-- header alebo product-list.component.html -->
-<select id="sortSelect"
-        class="sort-select"
-        [(ngModel)]="selectedSort"
-        (ngModelChange)="onSortChange($event)"
+      <a
+  class="child-button"
+  [class.is-selected]="selectedCategory === root.category_slug"
+  [routerLink]="['/produkt', 'kategoria', root.category_slug]"
+  (click)="onCategoryClick($event, root.category_slug)"
 >
-  <option *ngFor="let opt of sortOptions"
-          [ngValue]="opt.value">   <!-- ← ngValue je bezpečnejšie pri stringoch -->
-    {{ opt.label | translate }}    <!-- tu rovno pipuj preklad -->
-  </option>
-</select>
+  <span class="img-flip" [class.loading]="categoryImgLoadingMap[root.category_slug]">
+    <img
+      class="front"
+      [src]="root.category_image"
+      [alt]="catLabel(root)"
+      (load)="onCategoryImageLoad(root.category_slug)"
+      (error)="onCategoryImageError(root.category_slug)"
+    />
+    <img class="back" [src]="root.category_image" [alt]="catLabel(root)" />
+  </span>
+
+  <span class="label">{{ catLabel(root) }}</span>
+</a>
+
+    </div>
+  </div>
+</div>
+
+<!-- Chyba / prázdny výpis -->
+<div *ngIf="error" class="status error">
+  {{ 'ESHOP.ERROR_LOADING_PRODUCTS' | translate }}
+</div>
+<div *ngIf="loaded && !isLoading && !error && products.length === 0 && selectedCategory" class="status no-results">
+  <h3>
+    {{ 'ESHOP.NO_PRODUCTS_IN_CATEGORY' | translate }}
+  </h3>
+</div>
+
+<!-- *** SORTOVANIE *** -->
+<div class="sort-wrapper" style="z-index: 9;" *ngIf="!error && products.length > 0">
+  <label for="sortSelect"><p>{{ 'ESHOP.SORT_BY' | translate }}: </p></label>
+
+  <select id="sortSelect"
+          class="sort-select"
+          [(ngModel)]="selectedSort"
+          (ngModelChange)="onSortChange($event)">
+    <option *ngFor="let opt of sortOptions"
+            [ngValue]="opt.value">
+      {{ opt.label | translate }}
+    </option>
+  </select>
+</div>
+
+<!-- Dekory (aktuálne hidden) -->
+<div class="flex" style="display: none;">
+
+  <div class="filter-group">
+    <div class="chip-container">
+      <button
+        *ngFor="let opt of decorOptions"
+        class="chip"
+        [class.selected]="selectedDecors.includes(opt.slug)"
+        (click)="onDecorToggle(opt.slug, !selectedDecors.includes(opt.slug))"
+      >
+        {{ opt.label }}
+      </button>
+    </div>
   </div>
 
-<!-- Dekory -->
- <div class="flex" style="display: none;">
+  <div class="filter-group">
+    <div class="chip-container">
+      <button
+        *ngFor="let opt of shapeOptions"
+        class="chip"
+        [class.selected]="selectedShapes.includes(opt.slug)"
+        (click)="onShapeToggle(opt.slug, !selectedShapes.includes(opt.slug))"
+      >
+        {{ opt.label }}
+      </button>
+    </div>
+  </div>
 
-   <!-- Dekory ako chips -->
-<div class="filter-group">
-  <!-- <p>{{ 'HOME.DECOR_FILTER' | translate }}</p> -->
-  <div class="chip-container">
+  <div class="filter-actions">
     <button
-      *ngFor="let opt of decorOptions"
-      class="chip"
-      [class.selected]="selectedDecors.includes(opt.slug)"
-      (click)="onDecorToggle(opt.slug, !selectedDecors.includes(opt.slug))"
+      *ngIf="selectedDecors.length || selectedShapes.length"
+      class="btn-clear-filters"
+      (click)="clearAllDecorFilters()"
     >
-      {{ opt.label }}
+      {{ 'ESHOP.CANCEL_ALL_DECORS' | translate }}
     </button>
   </div>
 </div>
-    
 
-<!-- Tvarové filtre -->
-<div class="filter-group">
-  <!-- <p>{{ 'HOME.SHAPE_FILTER' | translate }}</p> -->
-  <div class="chip-container">
-    <button
-      *ngFor="let opt of shapeOptions"
-      class="chip"
-      [class.selected]="selectedShapes.includes(opt.slug)"
-      (click)="onShapeToggle(opt.slug, !selectedShapes.includes(opt.slug))"
-    >
-      {{ opt.label }}
-    </button>
-  </div>
-</div>
+<!-- Produkty -->
+<div class="products-wrapper" [class.loading]="isLoading">
+  <div class="grid">
+    <ng-container *ngFor="let p of paginatedProducts; trackBy: trackBySlug">
+      <div class="grid-item">
 
+        <div class="img-wrapper" [class.loading]="loadingMap[p.slug]">
 
-<div class="filter-actions">
-  <button
-    *ngIf="selectedDecors.length || selectedShapes.length"
-    class="btn-clear-filters"
-    (click)="clearAllDecorFilters()"
-  >
-    {{ 'ESHOP.CANCEL_ALL_DECORS' | translate }}
-  </button>
-</div>
-</div> 
+          <button
+            #heartBtn
+            class="btn-heart"
+            [class.is-fav]="isFav(p)"
+            [attr.aria-pressed]="isFav(p)"
+            (click)="addToFav(p, heartBtn)"
+            type="button"
+            tabindex="0"
+            aria-label="Obľúbený produkt"
+          >
+            <mat-icon>{{ isFav(p) ? 'favorite' : 'favorite_border' }}</mat-icon>
+          </button>
 
-  <!-- Loader -->
-  <!-- <div *ngIf="isLoading" class="loading-message-wrapper"> -->
-    <!-- <span class="loading-message">{{ loadingText }}</span> -->
-  <!-- </div> -->
-  <!-- <div *ngIf="isLoading" class="grid">
-    <div class="grid-item shimmer" *ngFor="let _ of loadingPlaceholders"></div>
-  </div>-->
-<!-- ⬇️ Full‑screen overlay -->
-
-
-  <!-- <div class="grid" *ngIf="!isLoading && !error && products.length > 0"> -->
-    <div class="products-wrapper" [class.loading]="isLoading">
-      <div class="grid">
-        <ng-container *ngFor="let p of paginatedProducts">
-          <div class="grid-item">
-            <div class="img-wrapper" [class.loading]="loadingMap[p.slug]">
-              {{ p.name }}
-              <button
-                #heartBtn
-                class="btn-heart"
-                [class.is-fav]="isFav(p)"
-                [attr.aria-pressed]="isFav(p)"
-                (click)="addToFav(p, heartBtn)"
-                type="button"
-                tabindex="0"
-                aria-label="Obľúbený produkt"
-              >
-                <mat-icon>{{ isFav(p) ? 'favorite' : 'favorite_border' }}</mat-icon>
-              </button>
-              <!-- neprihlásený = vyzva na login -->
-                  <ng-template #guestFav>
-                    <button
-                      class="btn-heart btn-heart--guest"
-                      type="button"
-                      tabindex="0"
-                      aria-label="Prihlás sa pre obľúbené"
-                      (click)="promptLogin()"
-                    >
-                      <mat-icon>favorite_border</mat-icon>
-                    </button>
-                  </ng-template>
-              <div class="badge-stack" aria-hidden="true">
-                <span *ngIf="p.isNew"  class="badge-flag badge-new">{{ 'ESHOP.NOVINKA' | translate }}</span>
-                <span *ngIf="p.inSale" class="badge-flag badge-sale">{{ 'ESHOP.ZLAVA' | translate }}</span>
-              </div>
-              <!-- Klik na obrázok vedie na detail produktu -->
-              <a [routerLink]="['/produkt', p.slug]">
-                <img
-                  [src]="p.primaryImageUrl || '/assets/img/gall/placeholder.jpg'"
-                  alt="{{ p.name }}"
-                  (load)="onImageLoad(p.slug)"
-                  (error)="onImageError(p.slug)"
-                />
-              </a>
-            </div>
-        
-            <div class="info">
-              <h3>
-                <a [routerLink]="['/produkt', p.slug]">{{ p.name }}</a>
-              </h3>
-              <!-- <p style="font-size: 1rem;" *ngIf="p.price !== null; else noPrice">
-                {{ p.price }} €
-              </p> -->
-
-        <div *ngIf="p.inSale === true;">
-          <p style="font-size: 1rem; text-align: center;display:inline-flex;"> {{ p.price_sale }} € </p>
-          <p style="padding-left:12pfhearx;display: inline-flex;font-size: 1rem;text-decoration: line-through;" class="in-sale">  {{ p.price | number:'1.2-2' }} €</p>
-          
-        </div>
-        <div *ngIf="p.inSale === false" class="price-sale">
-          <p style="font-size: 1rem;">{{ p.price| number:'1.2-2' }} €</p>
-        </div>
-              <ng-template #noPrice>
-                <p>{{ 'ESHOP.PRICE_NOT_SET' | translate }}</p>
-
-              </ng-template>
-
-            </div>
-        
-            <!-- Add to cart button full-width pod produktom -->
+          <ng-template #guestFav>
             <button
-              class="btn-cart"
-              (click)="addProductToCart(p)"
+              class="btn-heart btn-heart--guest"
               type="button"
+              tabindex="0"
+              aria-label="Prihlás sa pre obľúbené"
+              (click)="promptLogin()"
             >
-           
-              <span class="icon" id="cart_image"></span>
-              {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
+              <mat-icon>favorite_border</mat-icon>
             </button>
+          </ng-template>
+
+          <div class="badge-stack" aria-hidden="true">
+            <span *ngIf="p.isNew"  class="badge-flag badge-new">{{ 'ESHOP.NOVINKA' | translate }}</span>
+            <span *ngIf="p.inSale" class="badge-flag badge-sale">{{ 'ESHOP.ZLAVA' | translate }}</span>
+            <span *ngIf="p.isSoldOut" class="badge-flag badge-soldout">{{ 'ESHOP.VYPREDANE' | translate }}</span>
+            <span *ngIf="!p.isSoldOut && p.isUnavailable === true" class="badge-flag badge-unavailable">{{ 'ESHOP.NEDOSTUPNE' | translate }}</span>
           </div>
-        </ng-container>
-        
+
+          <a [routerLink]="['/produkt', p.slug]">
+            <img
+              [src]="p.primaryImageUrl || '/assets/img/gall/placeholder.jpg'"
+              [alt]="p.name"
+              (load)="onImageLoad(p.slug)"
+              (error)="onImageError(p.slug)"
+            />
+          </a>
+        </div>
+
+        <div class="info">
+          <h3>
+            <a [routerLink]="['/produkt', p.slug]">{{ p.name }}</a>
+          </h3>
+
+          <div *ngIf="p.inSale === true">
+            <p style="font-size: 1rem; text-align: center;display:inline-flex;padding-right: 6px;font-weight: 700;">
+              {{ p.price_sale }} €
+            </p>
+            <p style="padding-left:12;display: inline-flex;font-size: 1rem;text-decoration: line-through;color: rgb(110, 110, 110);" class="in-sale">
+              {{ p.price | number:'1.2-2' }} €
+            </p>
+          </div>
+
+          <div *ngIf="p.inSale === false" class="price-sale">
+            <p style="font-size: 1rem;font-weight: 700;">
+              {{ p.price | number:'1.2-2' }} €
+            </p>
+          </div>
+
+          <ng-template #noPrice>
+            <p>{{ 'ESHOP.PRICE_NOT_SET' | translate }}</p>
+          </ng-template>
+
+        </div>
+
+        <button
+          class="btn-cart"
+          (click)="addProductToCart(p)"
+          type="button"
+          [disabled]="p.isSoldOut || p.isUnavailable === true"
+        >
+          <span class="icon" id="cart_image"></span>
+          {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
+        </button>
+
+      </div>
+    </ng-container>
   </div>
-    <!-- overlay so spinnerom počas načítania -->
-  </div>
-  <!-- <div class="loading-overlay" *ngIf="isLoading">
-       <div class="spinner"></div>
-     </div> -->
-  
+</div>
 
 <!-- Paginácia -->
 <div class="pagination" *ngIf="totalPages > 1 && !isLoading">
@@ -300,6 +301,7 @@
   >
     «
   </button>
+
   <button
     *ngFor="let page of pagesToDisplay"
     [disabled]="page === -1"
@@ -309,6 +311,7 @@
     <span *ngIf="page === -1">…</span>
     <span *ngIf="page !== -1">{{ page }}</span>
   </button>
+
   <button
     [disabled]="currentPage === totalPages"
     (click)="changePage(currentPage + 1)"
@@ -316,4 +319,5 @@
     »
   </button>
 </div>
+
 </section>

@@ -4,6 +4,8 @@ html, body{
   background: var(--color-primary);
   /* background: linear-gradient(45deg, #f5f4f1, #eee1c1); */
 }
+.app-wrapper { min-height: 100vh; }
+
 
 .content-container {
   position: relative; /* zabezpečí, že fixed/absolute pozície v routovaných komponentoch sa pri animácii budú renderovať správne */
@@ -12,6 +14,9 @@ html, body{
 
 /* Prípadne niečo ako: */
 .loading-container {
+  z-index: 10000; /* pre istotu nad všetkým */
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;

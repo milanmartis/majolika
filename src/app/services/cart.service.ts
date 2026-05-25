@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject, map } from 'rxjs';
-import { EventSessionWithCapacity, EventSessionsService } from './event-sessions.service'; // <- pridaj EventSessionsService
+import { EventSessionWithCapacity, EventSessionsService } from './event-sessions.service';
 
 export interface CartRow {
   id: number;
   name: string;
   slug: string;
   price: number;
-  price_sale?: number; // optional, môže byť bez zľavy
+  price_sale?: number;
   inSale: boolean;
   qty: number;
   img: string;
@@ -15,21 +15,29 @@ export interface CartRow {
   bookingId?: number;
   holdExpires?: number;
   vatPercentage?: number;
+
+  isGiftVoucher?: boolean;
+  voucherType?: 'value' | 'service';
+  voucherValue?: number | null;
+  type?: 'product' | 'gift_voucher' | 'event' | 'service';
+  // ✅ NOVÉ:
+  isDigitalProduct?: boolean;   // = "má možnosť byť digitálny"
+  digitalSelected?: boolean;    // = "užívateľ zvolil digitálne"
 }
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
 
   constructor(
-    private eventSessionsService: EventSessionsService, // <- pridaj
+    private eventSessionsService: EventSessionsService,
   ) {}
+
   private readonly LS_KEY = 'eshop.cart.v1';
   private rows$ = new BehaviorSubject<CartRow[]>(this.load());
   cart$ = this.rows$.asObservable();
   count$ = this.rows$.pipe(map(list => list.reduce((sum, r) => sum + r.qty, 0)));
   total$ = this.rows$.pipe(map(list => list.reduce((s, r) => s + r.price * r.qty, 0)));
 
-  // Opravené - súkromný subject a verejný observable
   private _bookingRemoved$ = new Subject<number>();
   public get bookingRemoved$() {
     return this._bookingRemoved$.asObservable();
@@ -43,23 +51,19 @@ export class CartService {
   add(row: Omit<CartRow, 'qty'>, qty = 1) {
     this.cleanupExpiredHolds();
     const list = [...this.rows$.value];
-  
-    // Vyber správnu cenu podľa inSale a price_sale
+
     const shouldUseSale =
       row.inSale === true &&
-      row.price_sale != null &&  // !== null alebo !== undefined
+      row.price_sale != null &&
       row.price_sale !== 0;
-  
-    // Tu nemusíš riešiť qty, pridáš to nižšie
+
     const idx = row.session
       ? list.findIndex(r => r.session?.id === row.session?.id)
       : list.findIndex(r => r.id === row.id);
-  
+
     if (idx > -1) {
       list[idx] = { ...list[idx], qty: list[idx].qty + qty };
     } else {
-      // Správne – pridáš všetko z row + qty + správnu cenu
-      // vatPercentage prichádza z DB už v 'row' – nechávame bez zásahu
       list.push({
         ...row,
         qty,
@@ -71,17 +75,15 @@ export class CartService {
   }
 
   updateQty(id: number, qty: number, sessionId?: number) {
-    // Mapuj len tú položku, ktorá má rovnaké id aj session.id
     const list = this.rows$.value.map(r =>
       r.id === id && (!sessionId || r.session?.id === sessionId)
         ? { ...r, qty }
         : r
     );
-    // Nájdi konkrétny row podľa id a sessionId
     const row = this.rows$.value.find(r =>
       r.id === id && (!sessionId || r.session?.id === sessionId)
     );
-  
+
     if (row && row.bookingId) {
       if (qty === 0) {
         this.eventSessionsService.patchBooking(row.bookingId, { status: 'cancelled' }).subscribe({
@@ -99,12 +101,11 @@ export class CartService {
         });
       }
     }
-  
+
     this.update(list);
   }
-  
+
   remove(id: number, sessionId?: number) {
-    // Odstráň len položku s konkrétnym id + sessionId
     this.update(this.rows$.value.filter(r =>
       !(r.id === id && (!sessionId || r.session?.id === sessionId))
     ));
@@ -114,7 +115,7 @@ export class CartService {
     const filtered = this.rows$.value.filter(r => r.bookingId !== bookingId);
     if (filtered.length !== this.rows$.value.length) {
       this.update(filtered);
-      this._bookingRemoved$.next(bookingId);  // Emitni event pre landing-page2!
+      this._bookingRemoved$.next(bookingId);
     }
   }
 
@@ -127,7 +128,7 @@ export class CartService {
   }
 
   patchVat(productId: number, vatPercentage: number, sessionId?: number) {
-  const list = this.rows$.value.map(r =>
+    const list = this.rows$.value.map(r =>
       r.id === productId && (!sessionId || r.session?.id === sessionId)
         ? { ...r, vatPercentage }
         : r
@@ -135,22 +136,36 @@ export class CartService {
     this.update(list);
   }
 
-  private load(): CartRow[] {
-    try {
-      const parsed: CartRow[] = JSON.parse(localStorage.getItem(this.LS_KEY) || '[]');
-      // Bezpečne doplníme vatPercentage = 0, ak chýbalo v starších záznamoch
-      return Array.isArray(parsed)
-        ? parsed.map(r => ({ 
-          ...r, 
-          vatPercentage: Number.isFinite(r.vatPercentage) ? r.vatPercentage : 23
-        }))
-        : [];
-    } catch {
-      return [];
-    }
-  }
+  toggleDigital(productId: number, checked: boolean, sessionId?: number) {
+  const list = this.rows$.value.map(r =>
+    r.id === productId && (!sessionId || r.session?.id === sessionId)
+      ? { ...r, digitalSelected: checked }
+      : r
+  );
+  this.update(list);
+}
 
-  /** remove expired holds client-side; caller should cancel via backend separately if needed */
+  private load(): CartRow[] {
+  try {
+    const parsed: CartRow[] = JSON.parse(localStorage.getItem(this.LS_KEY) || '[]');
+    return Array.isArray(parsed)
+  ? parsed.map(r => ({
+      ...r,
+      vatPercentage: Number.isFinite(r.vatPercentage) ? r.vatPercentage : 23,
+      isGiftVoucher: !!r.isGiftVoucher,
+      voucherType: (r as any).voucherType,
+      voucherValue: (r as any).voucherValue ?? null,
+
+      // ✅ nové
+      isDigitalProduct: !!(r as any).isDigitalProduct,
+      digitalSelected: !!(r as any).digitalSelected,       // user voľba
+    }))
+  : [];
+  } catch {
+    return [];
+  }
+}
+
   cleanupExpiredHolds() {
     const now = Date.now();
     const filtered = this.rows$.value.filter(r => {
@@ -161,5 +176,4 @@ export class CartService {
       this.update(filtered);
     }
   }
-
 }

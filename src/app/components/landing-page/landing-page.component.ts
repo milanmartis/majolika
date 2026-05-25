@@ -15,6 +15,7 @@ import { Subscription, of } from 'rxjs';
 import { catchError, map, takeUntil } from 'rxjs/operators';
 // import { NgxMasonryModule } from 'ngx-masonry';
 import { LightboxModule } from 'ngx-lightbox';
+import { finalize } from 'rxjs/operators'; // už máš rxjs/operators, ale pre istotu
 
 import { ProductsService, Product, Category } from 'app/services/products.service';
 import { SlidesService, Slide } from 'app/services/slides.service';
@@ -104,9 +105,9 @@ interface CalendarDay {
   ],
 })
 export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
-
-  defaultImage = 'https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_ktosme1_a1dc30edf2.jpg';
-  hoverImage = 'https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/large_ktosme2_16d5651d8b.jpg';
+  isLoadingCategories = false;
+  defaultImage = 'https://d1hbdvlfav95nt.cloudfront.net/products/large_ktosme1_a1dc30edf2.jpg';
+  hoverImage = 'https://d1hbdvlfav95nt.cloudfront.net/products/large_ktosme2_16d5651d8b.jpg';
   imageSrc = this.defaultImage;
 
   onHover(isHover: boolean) {
@@ -190,17 +191,24 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadCategories();
   }
 
-    private loadCategories(): void {
-      this.productsService.getAllCategoriesFlat()
-
-        .subscribe(cats => {
+  private loadCategories(): void {
+    this.isLoadingCategories = true;
+    this.productsService
+      .getAllCategoriesFlat()
+      .pipe(
+        finalize(() => (this.isLoadingCategories = false))
+      )
+      .subscribe({
+        next: (cats) => {
           this.allCategories  = cats;
           this.rootCategories = cats.filter(c => !c.parent);
-  
-         
-  
-        });
-    }
+        },
+        error: () => {
+          this.allCategories = [];
+          this.rootCategories = [];
+        }
+      });
+  }
   
   public stripSizePrefix(url?: string): string {
     if (!url) return '/assets/img/gall/placeholder.jpg';

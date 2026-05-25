@@ -1,7 +1,12 @@
 <!-- src/app/pages/eshop/product-detail.component.html -->
 <!-- © 2025 – Slovenská ľudová majolika -->
 
-
+  <ng-container *ngIf="isContentLoadingDetail">
+    <div class="content-loader">
+      <div class="spinner"></div>
+      <div class="content-loader__text">{{ 'LOADING.CONTENT' | translate }}</div>
+    </div>
+  </ng-container>
 
 <!-- ========= FULLSCREEN PREVIEW ========== -->
 <div *ngIf="isFullscreen" class="overlay" (click)="closeFullscreen()" [@slideFullscreen]>
@@ -16,9 +21,9 @@
 
   <!-- Nový footer pod obrázkem -->
   <div class="nav-footer" (click)="$event.stopPropagation()">
-    <button *ngIf="largeImages.length > 1" class="nav-btn prev" (click)="prev($event)">‹</button>
+    <button *ngIf="largeImages.length > 1" class="nav-btn prev" (click)="prev()">‹</button>
     <span class="counter">{{ currentIndex + 1 }}/{{ largeImages.length }}</span>
-    <button *ngIf="largeImages.length > 1" class="nav-btn next" (click)="next($event)">›</button>
+    <button *ngIf="largeImages.length > 1" class="nav-btn next" (click)="next()">›</button>
   </div>
 </div>
 
@@ -40,8 +45,21 @@
 
 
       <div class="badge-stack" aria-hidden="true">
-        <span *ngIf="product.isNew"  class="badge-flag badge-new">{{ 'ESHOP.NOVINKA' | translate }}</span>
-        <span *ngIf="product.inSale" class="badge-flag badge-sale">{{ 'ESHOP.ZLAVA' | translate }}</span>
+        <span *ngIf="isSoldOut" class="badge-flag badge-soldout">
+          {{ 'ESHOP.VYPREDANE' | translate }}
+        </span>
+
+        <span *ngIf="!isSoldOut && isUnavailable" class="badge-flag badge-unavailable">
+          {{ 'ESHOP.NEDOSTUPNE' | translate }}
+        </span>
+
+        <span *ngIf="!isSoldOut && !isUnavailable && product.inSale" class="badge-flag badge-sale">
+          {{ 'ESHOP.ZLAVA' | translate }}
+        </span>
+
+        <span *ngIf="!isSoldOut && !isUnavailable && product.isNew" class="badge-flag badge-new">
+          {{ 'ESHOP.NOVINKA' | translate }}
+        </span>
       </div>
 
         <img
@@ -80,46 +98,52 @@
     <!-- ========== INFO ========== -->
     <div class="info" [@fadeInOut]="'visible'">
 
-      <!-- ========= BREADCRUMB (unikátne parent→child) ========== -->
-      <ng-container *ngIf="uniqueCategories.length; else noCats">
-        <nav class="category-breadcrumb">
-          <ng-container *ngFor="let cat of uniqueCategories; let isLast = last">
-            <!-- Rodič -->
-            <ng-container *ngIf="cat.parent">
-              <a
-                [routerLink]="['/produkt', 'kategoria', cat.parent.category_slug]"
-                class="category-link"
-              >
-          
-            {{ 'CATEGORIES.'+cat.parent.category_slug | translate }}
+<!-- ========= BREADCRUMB (Strapi názvy podľa jazyka) ========== -->
+<ng-container *ngIf="uniqueCategories.length; else noCats">
+  <nav class="category-breadcrumb" aria-label="Breadcrumb">
+    <ng-container *ngFor="let item of uniqueCategories; let isLast = last">
 
-              </a>
-              &nbsp;>&nbsp;
-            </ng-container>
-      
-            <!-- Aktuálna -->
-            <a
-              [routerLink]="['/produkt', 'kategoria', cat.category_slug]"
-              class="category-link"
-            >
-              {{ 'CATEGORIES.'+cat.category_slug | translate }}
-            </a>
-      
-            <span *ngIf="!isLast">,&nbsp;</span>
-          </ng-container>
-        </nav>
+      <!-- Parent -->
+      <ng-container *ngIf="item.parent">
+        <a
+          [routerLink]="['/produkt', 'kategoria', item.parent.category_slug]"
+          class="category-link"
+        >
+          {{ catLabel(item.parent) }}
+        </a>
+        &nbsp;>&nbsp;
       </ng-container>
-      <ng-template #noCats></ng-template>
+
+      <!-- Child / Root -->
+      <a
+        [routerLink]="['/produkt', 'kategoria', item.child.category_slug]"
+        class="category-link"
+      >
+        {{ catLabel(item.child) }}
+      </a>
+
+      <span *ngIf="!isLast">,&nbsp;</span>
+    </ng-container>
+  </nav>
+</ng-container>
+<ng-template #noCats></ng-template>
+
+   
 <br>
       <h1>{{ product.name }}</h1>
 
 
       
       <!-- Nahrádza doterajší .session-group -->
-      <div *ngIf="sessions?.length" class="calendar-wrapper">
-        <full-calendar [options]="calendarOptions"></full-calendar>
+      <div *ngIf="sessions.length" class="calendar-wrapper" style="width: 100%; display: none; flex-direction: column; align-items: center; gap: 16px;">
+  
+        <button type="button" class="btn variant-button" style="font-size: 200%;" (click)="openSessionPicker()">
+          {{ 'BASE.REZERVOVAT' | translate }}
+        </button>
+
       </div>
-<!-- 
+      <!-- 
+        <full-calendar #fc [options]="calendarOptions"></full-calendar>
       <div *ngIf="sessions.length">
         <a *ngIf="product?.id"
           [href]="cal.buildProductIcsUrl(product.id)"
@@ -132,18 +156,28 @@
       <div *ngIf="isExperienceProduct(product) && !sessions.length">
         <h4>Momentálne nie sú dostupné žiadne termíny.</h4>
       </div> -->
+<br>
+<div *ngIf="sessions.length || (isExperienceProduct(product) && !sessions.length)" class="intro-text">
+  {{ 'ESHOP.WORKSHOPANOTHERS' | translate }}
 
+  <h3>
+    <a [routerLink]="['../../article/informacie']">{{ 'FOOTER.SUPPORT.CONTACT' | translate }}</a>
+  </h3>
+</div>
+<br>
+
+<!-- 
       <div *ngIf="sessions.length">
-        <a *ngIf="product?.id"
+        <a *ngIf="product.id"
           [href]="cal.buildProductIcsUrl(product.id)"
           target="_blank" rel="noopener">
           Odoberať termíny (google calendar)
         </a>
       </div>
-<!-- Ak nemáš sessions, môžeš ukázať: -->
-<div *ngIf="isExperienceProduct(product) && !sessions.length">
-  <h4>Momentálne nie sú dostupné žiadne termíny.</h4>
-</div>
+  <div *ngIf="isExperienceProduct(product) && !sessions.length">
+    <h4>Momentálne nie sú dostupné žiadne termíny.</h4>
+  </div>
+  Ak nemáš sessions, môžeš ukázať: -->
 
 
 
@@ -182,9 +216,9 @@
           <span>{{ animatedTotalPrice | number:'1.2-2' }} €</span>
         </div>
       </div>
-      
-      <div class="cart-row" *ngIf="sessions?.length === 0">
-        <div class="qty-control">kk
+    
+      <div class="cart-row" *ngIf="sessions.length === 0">
+        <div class="qty-control">
           <button
           class="qty-btn"
           (click)="decQuantity()"
@@ -213,9 +247,23 @@
           </button>
         </div>
 
-        <button class="addtocart" (click)="addToCart()">
-          {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
+        <button
+          class="addtocart"
+          (click)="addToCart()"
+          [disabled]="!canAddToCart"
+        >
+          <ng-container *ngIf="canAddToCart; else cantBuy">
+            {{ 'ESHOP.VLOZ_DO_KOSIKA' | translate }}
+          </ng-container>
+          <ng-template #cantBuy>
+            {{ isSoldOut ? ('ESHOP.VYPREDANE' | translate) : ('ESHOP.NEDOSTUPNE' | translate) }}
+          </ng-template>
         </button>
+      </div>
+        <div class="cart-row">
+        <div *ngIf="!canAddToCart" style="color: var(--base-blue); font-size: .85rem;">
+          {{ isSoldOut ? ('ESHOP.PRODUCT_SOLDOUT_HINT' | translate) : ('ESHOP.PRODUCT_UNAVAILABLE_HINT' | translate) }}
+        </div>
       </div>
       <div class="cart-row">
 
@@ -252,6 +300,11 @@
             </button>
             <div class="accordion__content">
               <div [innerHTML]="sanitizedShort"></div>
+              <br>
+              
+             <span *ngIf="product.ean && product.ean.trim()">
+              <b>EAN:</b> {{ product.ean }}
+            </span>
             </div>
           </div>
 
@@ -289,6 +342,8 @@
         <br>
         <br>
         <app-share-buttons [title]="product.name" [url]="articleUrl"></app-share-buttons>
+
+        
 
       </div>
       

@@ -64,12 +64,8 @@
   <span *ngSwitchDefault>{{ o.deliveryStatus }}</span> <!-- fallback -->
 </td>
 
-
-
-
-
-
-                <td>
+<td>
+                 
   <span
     [ngClass]="{
       'badge-paid': o.paymentStatus === 'paid',
@@ -152,7 +148,7 @@
 
       <p class="empty-msg" *ngIf="!ordersLoading && orders.length === 0">
         <img class="favorites-placeholder"
-             src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
+             src="https://d1hbdvlfav95nt.cloudfront.net/products/vaza_majolika_8a469cae88.png"
              alt="Nakupene produkty" />
         {{ 'ACCOUNT2.NO_ORDERS' | translate }}
         <br />
@@ -172,7 +168,7 @@
         <div *ngIf="favorites$ | async as favs">
           <div *ngIf="favs.length === 0" class="favorites-grid">
             <img class="favorites-placeholder"
-                 src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/vaza_majolika_8a469cae88.png"
+                 src="https://d1hbdvlfav95nt.cloudfront.net/products/vaza_majolika_8a469cae88.png"
                  alt="Obľúbené produkty" />
           </div>
 

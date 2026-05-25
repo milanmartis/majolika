@@ -8,12 +8,12 @@
         class="card"
         @fadeSlideIn              
       >
-        <img
+        <a [routerLink]="['/aktuality', akt.slug]"><img
           *ngIf="akt.featuredImage"
           class="akt-image"
           [src]="getMediaUrl(akt.featuredImage)"
           [alt]="akt.title"
-        />
+        /></a>
         <div class="content">
           <h2>
             <a [routerLink]="['/aktuality', akt.slug]" [innerHTML]="akt.title | nbspSmallWords | linkify"></a>

@@ -7,6 +7,7 @@
   position: relative;
   top: -36px;
   width: 100%;
+  height: fit-content;
   overflow: hidden;
   border-radius: var(--corners);
   margin-bottom: 0rem;
@@ -15,7 +16,7 @@
 .slider-scroll {
   display: flex;
   width: 100%;
-  height: clamp(250px, 56vw, 760px);
+  height: clamp(250px, 56vw, 650px);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -54,7 +55,7 @@
   display: block;
   object-fit: cover;
   object-position: center;
-  background: #000;
+  background: transparent;
 }
 
 .slide-overlay {

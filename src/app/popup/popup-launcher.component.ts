@@ -5,11 +5,13 @@ import { PopupService, Popup } from 'app/services/popup.service';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
+  import { NbspSmallWordsPipe } from 'app/pipes/nbsp-small-words.pipe';
+  import { LinkifyPipe }        from 'app/pipes/linkify.pipe';
 
 @Component({
   selector: 'app-popup-launcher',
   standalone: true,
-  imports: [ CommonModule, TranslateModule ],
+  imports: [ CommonModule, TranslateModule, NbspSmallWordsPipe, LinkifyPipe ],
   templateUrl: './popup-launcher.component.html',
   styleUrls: ['./popup-launcher.component.css'],
   animations: [
@@ -46,7 +48,7 @@ export class PopupLauncherComponent implements OnInit, OnDestroy {
       this.currentIndex = 0;
 
       if (this.canShowNow()) {
-        setTimeout(() => this.open(), 5000);
+        setTimeout(() => this.open(), 8000);
       }
     });
   }
@@ -72,12 +74,12 @@ export class PopupLauncherComponent implements OnInit, OnDestroy {
   }
 
   private canShowNow(): boolean {
-    const ts = localStorage.getItem(this.STORAGE_KEY);
-    if (!ts) return true;
-    const closedAt = new Date(ts);
-    const hoursPassed = (Date.now() - closedAt.getTime()) / (1000 * 60 * 60);
-    return hoursPassed >= 24;
-  }
+  const ts = localStorage.getItem(this.STORAGE_KEY);
+  if (!ts) return true;
+
+  const diff = Date.now() - new Date(ts).getTime();
+  return diff >= 1000 * 60 * 60 * 24 * 3; // 3 dni
+}
 
   open(): void {
     this.isOpen = true;

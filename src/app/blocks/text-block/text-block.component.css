@@ -12,37 +12,17 @@
 /* ─────────────────────────────────────────
    Text block – základ
 ────────────────────────────────────────── */
+
+
 .text-block {
-  color: #000;
-  padding-bottom: 10px;
-  white-space: normal;
-  max-width: 1000px;
-  float: none;
-  width: 100%;
-  box-sizing: border-box;
-
-  margin-top: 30px;
-  margin-bottom: -30px;
-  text-shadow: var(--primary-color) 0 1px 0;
-  text-align: var(--text-align, start);
-
-  /* reset columns shorthand a nastav gap s prefixom */
-  columns: auto;
-  -webkit-columns: auto;
   column-gap: 2rem;
   -webkit-column-gap: 2rem;
+  column-width: 320px;           /* cieľová šírka stĺpca */
+  -webkit-column-width: 320px;
 }
 
-/* zarovnanie */
-.text-block.align-left   { --text-align: left; }
-.text-block.align-center { --text-align: center; }
-.text-block.align-right  { --text-align: right; }
-
-/* stĺpce – s prefixom; 3 stĺpce dávam s !important, aby prebil staré MQ */
-.text-block.cols-1 { column-count: 1 !important; -webkit-column-count: 1 !important; }
-.text-block.cols-2 { column-count: 2 !important; -webkit-column-count: 2 !important; }
-.text-block.cols-3 { column-count: 3 !important; -webkit-column-count: 3 !important; }
-
+.text-block.cols-2 { column-count: 2; -webkit-column-count: 2; } /* max 2 */
+.text-block.cols-3 { column-count: 3; -webkit-column-count: 3; } /* max 3 */
 /* nelámať niektoré bloky cez stĺpce */
 .text-block :is(h1,h2,h3,h4,h5,h6,figure,blockquote,pre,table,ul,ol) {
   break-inside: avoid;

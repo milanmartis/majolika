@@ -11,6 +11,7 @@
   position: relative;
   top: -36px;
   width: 100%;
+  height: fit-content;
   overflow: hidden;
   border-radius: var(--corners);
   margin-bottom: 0rem;
@@ -19,7 +20,7 @@
 .slider-scroll {
   display: flex;
   width: 100%;
-  height: clamp(250px, 56vw, 760px);
+  height: clamp(250px, 56vw, 650px);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -58,7 +59,7 @@
   display: block;
   object-fit: cover;
   object-position: center;
-  background: #000;
+  background: transparent;
 }
 
 .slide-overlay {
@@ -260,9 +261,6 @@ display: none;
 
 
 
-
-
-
 .child-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -281,30 +279,31 @@ display: none;
   justify-content: flex-start; /* ⬅️ vertikálne hore */
   gap: .9rem;
 
+  text-decoration: none;
   /* ostatné tvoje štýly... */
   vertical-align: top;
   font-weight: 700;
   text-align: center;
-  margin: 4px;
+  margin-bottom: 11px;
   color: var(--base-blue);
   background: var(--primary-color);
   border: 0;
-  padding: 12px 12px;        /* trošku väčší top padding, ak chceš */
+  padding: 2px 2px;        /* trošku väčší top padding, ak chceš */
   border-radius: var(--corners);
   cursor: pointer;
   font-size: 1.18rem;
   transition: transform .2s ease;
   width: 266px;
-  height: 330px;             /* ak chceš fixnú výšku, nechaj */
-  perspective: 800px;
+  height: 310px;             /* ak chceš fixnú výšku, nechaj */
+  /* perspective: 800px; */
     transition: transform .6s ease;
   
 }
 
 .img-flip{
   position:relative;
-  width:260px; 
-  height:260px;
+  width:286px; 
+  height:286px;
   transform-style: preserve-3d;
   transition: transform .6s ease;
 }
@@ -320,7 +319,7 @@ display: none;
 
 .img-flip .front{ 
   opacity: 1;
-  /* //filter: var(--img-blue-filter);  */
+  filter: var(--img-blue-filter); 
 } 
 /* .img-flip .back{
   transform: rotateY(180deg);

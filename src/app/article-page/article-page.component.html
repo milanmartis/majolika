@@ -50,6 +50,6 @@
   </app-gallery>
 </main>
 
-<app-map style="margin-bottom: 80px;" *ngIf="showMap()"></app-map>
+<app-map style="margin-bottom: 80px;" *ngIf="showMap() && mapsReady"></app-map>
 
 <app-footer class="mt-8"></app-footer>

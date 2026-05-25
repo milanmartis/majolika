@@ -1,6 +1,7 @@
-
+<!-- checkout.component.html -->
 <app-google-login-prompt></app-google-login-prompt>
 <h1 class="checkout-title">{{ 'ESHOP.POKLADNA' | translate }}</h1>
+
 <div class="checkout-wrapper two-col" *ngIf="cartItems$ | async as items">
   <form class="checkout-form-grid" [formGroup]="checkoutForm" (ngSubmit)="submitCheckout()">
 
@@ -8,6 +9,103 @@
     <div class="left-col">
       <h2>{{ 'ESHOP.CHECKOUT_CUSTOMER_INFO' | translate }}</h2>
       <app-user-form [form]="checkoutForm"></app-user-form>
+
+      <!-- 🔹 FAKTURAČNÉ ÚDAJE (firma + fakturačná adresa) -->
+      <fieldset class="section billing" formGroupName="billing">
+        <legend>{{ 'ESHOP.BILLING.TITLE' | translate }}</legend>
+
+        <mat-checkbox formControlName="companyPurchase">
+          {{ 'ESHOP.BILLING.COMPANY_PURCHASE' | translate }}
+        </mat-checkbox>
+
+        <div *ngIf="checkoutForm.get('billing.companyPurchase')?.value" class="billing-company">
+          <div class="form-row">
+            <label>{{ 'ESHOP.BILLING.COMPANY_NAME' | translate }}</label>
+            <input
+              type="text"
+              formControlName="companyName"
+              [placeholder]="'ESHOP.BILLING.COMPANY_NAME' | translate"
+            />
+          </div>
+          <div class="form-row">
+            <label>{{ 'ESHOP.BILLING.ICO' | translate }}</label>
+            <input
+              type="text"
+              formControlName="ico"
+              [placeholder]="'ESHOP.BILLING.ICO' | translate"
+            />
+          </div>
+          <div class="form-row">
+            <label>{{ 'ESHOP.BILLING.DIC' | translate }}</label>
+            <input
+              type="text"
+              formControlName="dic"
+              [placeholder]="'ESHOP.BILLING.DIC' | translate"
+            />
+          </div>
+          <div class="form-row">
+            <label>{{ 'ESHOP.BILLING.IC_DPH' | translate }}</label>
+            <input
+              type="text"
+              formControlName="icDph"
+              [placeholder]="'ESHOP.BILLING.IC_DPH' | translate"
+            />
+          </div>
+        </div>
+
+        <div *ngIf="checkoutForm.get('billing.companyPurchase')?.value" class="section billing-address-wrapper">
+          <legend>{{ 'ESHOP.BILLING.ADDRESS_TITLE' | translate }}</legend>
+
+          <mat-chip-listbox formControlName="useDifferentAddress" class="chips">
+            <mat-chip-option [value]="false">
+              {{ 'ESHOP.BILLING.ADDRESS_SAME_AS_SHIPPING' | translate }}
+            </mat-chip-option>
+            <mat-chip-option [value]="true">
+              {{ 'ESHOP.BILLING.ADDRESS_DIFFERENT' | translate }}
+            </mat-chip-option>
+          </mat-chip-listbox>
+
+          <div
+            formGroupName="address"
+            *ngIf="checkoutForm.get('billing.useDifferentAddress')?.value"
+            class="billing-address-fields"
+          >
+            <div class="form-row">
+              <label>{{ 'COMMON.STREET_AND_NUMBER' | translate }}</label>
+              <input
+                type="text"
+                formControlName="street"
+                [placeholder]="'COMMON.STREET_AND_NUMBER' | translate"
+              />
+            </div>
+            <div class="form-row">
+              <label>{{ 'COMMON.CITY' | translate }}</label>
+              <input
+                type="text"
+                formControlName="city"
+                [placeholder]="'COMMON.CITY' | translate"
+              />
+            </div>
+            <div class="form-row">
+              <label>{{ 'COMMON.ZIP' | translate }}</label>
+              <input
+                type="text"
+                formControlName="zip"
+                [placeholder]="'COMMON.ZIP' | translate"
+              />
+            </div>
+            <div class="form-row">
+              <label>{{ 'COMMON.COUNTRY' | translate }}</label>
+              <select formControlName="country">
+                <option value="SK">{{ 'COMMON.COUNTRY_SK' | translate }}</option>
+                <option value="CZ">{{ 'COMMON.COUNTRY_CZ' | translate }}</option>
+                <option value="WORLD">{{ 'COMMON.COUNTRY_WORLD_CONTACT' | translate }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <!-- /FAKTURACNE UDAJE -->
     </div>
 
     <!-- PRAVÝ BOX: položky + platba + doručenie + grand total -->
@@ -15,68 +113,154 @@
       <h2>{{ 'ESHOP.CHECKOUT_MY_ITEMS' | translate }}</h2>
 
       <!-- položky -->
-      <div *ngFor="let row of items" class="cart-item">
-        <img [src]="row.img" alt="{{ row.name }}" />
-        <div class="cart-item-info">
-  <div>
-    <a [routerLink]="['/produkt', row.slug]">
-      {{ row.name }}
-    </a>
-  </div>
+      <div *ngFor="let row of items" class="cart-item" [@cartItemAnim]>
 
-  <!-- 🔹 Termín a počet osôb pre tour/workshop -->
-  <div *ngIf="row.session && (row.session.type === 'tour' || row.session.type === 'workshop')"
-       class="cart-item-session">
-    <span>
-      {{ row.session.startDateTime | date:'d.M.yyyy HH:mm' }}
-    </span>
-    <span> • {{ row.qty }} os.</span>
-  </div>
+  <!-- 1) ONE LINE -->
+  <div class="cart-row-1">
+    <img [src]="row.img" alt="{{ row.name }}" class="cart-thumb" />
 
-  <div>{{ row.qty }} × {{ row.price | currency:'EUR' }}</div>
-</div>
-        <div class="cart-item-total">
-          {{ (row.price * row.qty) | currency:'EUR' }}
-        </div>
+    <div class="cart-title-wrap">
+      <a [routerLink]="['/produkt', row.slug]" class="cart-title">
+        {{ row.name }}
+      </a>
+
+      <div class="cart-sub" *ngIf="row.session && (row.session.type === 'tour' || row.session.type === 'workshop')">
+        {{ row.session.startDateTime | date:'d.M.yyyy HH:mm' }} • {{ row.qty }} {{ 'COMMON.PEOPLE_SHORT' | translate }}
       </div>
+    </div>
+
+    <div class="cart-mini-price">
+      {{ row.qty }} × {{ (row.inSale ? row.price_sale : row.price) | currency:'EUR' }}
+    </div>
+
+    <div class="cart-sum">
+      {{ (row.price * row.qty) | currency:'EUR' }}
+    </div>
+
+    <button
+      type="button"
+      class="cart-x"
+      (click)="removeItem(row)"
+      [attr.aria-label]="'COMMON.REMOVE_ITEM' | translate"
+    >
+      ✕
+    </button>
+  </div>
+
+  <!-- 2) THIN OPTIONS LINE -->
+  <div class="cart-row-2" *ngIf="row.isDigitalProduct === true || row.isGiftVoucher === true || isWrappable(row)">
+
+    <!-- Digitál (len ak produkt umožňuje digitál) -->
+    <label class="mini-option" *ngIf="row.isDigitalProduct === true || row.isGiftVoucher === true">
+      <mat-checkbox
+        class="digital-toggle"
+        [checked]="row.digitalSelected === true"
+        [disabled]="digitalDisabled(row)"
+        (change)="toggleRowDigital(row, $event.checked)"
+      >
+        Elektronicky (bez dopravy)
+      </mat-checkbox>
+    </label>
+
+    <!-- Darčekové balenie (len ak je wrappable) -->
+    <label class="mini-option" *ngIf="isWrappable(row)">
+<mat-checkbox
+          class="giftwrap-toggle"
+          [checked]="giftWrapQty(row) > 0"
+          [disabled]="giftWrapDisabled(row)"
+          (change)="toggleGiftWrap(row, $event.checked)"
+        >
+        {{ 'ESHOP.GIFTWRAP.TITLE' | translate }}
+        <span class="mini-muted" *ngIf="giftWrapUnitPrice() > 0">
+          + {{ giftWrapUnitPrice() | number:'1.2-2' }} €
+        </span>
+      </mat-checkbox>
+    </label>
+
+  </div>
+
+  <!-- (voliteľné) výber množstva balenia pod tým -->
+  <div class="giftwrap-qty" *ngIf="giftWrapQty(row) > 0">
+    <label class="giftwrap-label">{{ 'ESHOP.GIFTWRAP.HOW_MANY' | translate }}</label>
+
+    <mat-chip-listbox
+      class="chips giftwrap-chips"
+      [value]="giftWrapQty(row)"
+      (change)="setGiftWrapQty(row, $event.value)"
+    >
+      <mat-chip-option *ngFor="let q of qtyRange(row.qty)" [value]="q">
+        {{ q }}
+      </mat-chip-option>
+    </mat-chip-listbox>
+
+    <p class="giftwrap-hint" *ngIf="row.qty > 1">
+      {{ 'ESHOP.GIFTWRAP.SELECTED_OF' | translate:{ selected: giftWrapQty(row), total: row.qty } }}
+    </p>
+  </div>
+
+</div>
+
+      <!-- 🎁 Globálne pravidlá balenia (len ak je zabalených viac ako 1 ks) -->
+      <fieldset class="section giftwrap-section" *ngIf="giftWrapTotalQty() > 1">
+        <legend>{{ 'ESHOP.GIFTWRAP.RULES_TITLE' | translate }}</legend>
+
+        <mat-radio-group formControlName="giftWrapMode" class="vertical-radio">
+          <mat-radio-button value="each_item">
+            {{ 'ESHOP.GIFTWRAP.MODE_EACH_ITEM' | translate }}
+            <span class="giftwrap-sub">{{ 'ESHOP.GIFTWRAP.MODE_EACH_ITEM_HINT' | translate }}</span>
+          </mat-radio-button>
+
+          <mat-radio-button value="by_product">
+            {{ 'ESHOP.GIFTWRAP.MODE_BY_PRODUCT' | translate }}
+            <span class="giftwrap-sub">{{ 'ESHOP.GIFTWRAP.MODE_BY_PRODUCT_HINT' | translate }}</span>
+          </mat-radio-button>
+
+          <mat-radio-button value="all_together">
+            {{ 'ESHOP.GIFTWRAP.MODE_ALL_TOGETHER' | translate }}
+            <span class="giftwrap-sub">{{ 'ESHOP.GIFTWRAP.MODE_ALL_TOGETHER_HINT' | translate }}</span>
+          </mat-radio-button>
+        </mat-radio-group>
+
+        <div class="giftwrap-note">
+          <label>{{ 'ESHOP.GIFTWRAP.NOTE_LABEL' | translate }}</label>
+          <input
+            type="text"
+            formControlName="giftWrapNote"
+            [placeholder]="'ESHOP.GIFTWRAP.NOTE_PLACEHOLDER' | translate"
+          >
+        </div>
+      </fieldset>
 
       <!-- PLATBA (chips) -->
       <fieldset class="section">
         <legend>{{ 'ESHOP.PAYMENT' | translate }}</legend>
         <mat-chip-listbox formControlName="paymentMethod" class="chips">
-          <mat-chip-option value="card">{{ 'ESHOP.PAYMENT_CARD' | translate }}</mat-chip-option>
-          <mat-chip-option value="cod">{{ 'ESHOP.PAYMENT_COD' | translate }}</mat-chip-option>
-          <mat-chip-option value="bank">{{ 'ESHOP.PAYMENT_BANK' | translate }}</mat-chip-option>
-          <mat-chip-option value="onsite">{{ 'ESHOP.PAYMENT_ONSITE' | translate }}</mat-chip-option>
-          <!-- <mat-chip-option value="post">{{ 'ESHOP.PAYMENT_POST' | translate }}</mat-chip-option> -->
+          <mat-chip-option value="card">
+            {{ 'ESHOP.PAYMENT_CARD' | translate }}
+          </mat-chip-option>
+
+          <mat-chip-option
+            value="cod"
+            [disabled]="onlyGiftVouchersInCart || selectedDeliveryMethod() === 'pickup' || selectedDeliveryMethod() === 'digital_product'"
+          >
+            {{ 'ESHOP.PAYMENT_COD' | translate }}
+          </mat-chip-option>
+
+          <mat-chip-option value="bank">
+            {{ 'ESHOP.PAYMENT_BANK' | translate }}
+          </mat-chip-option>
+
+          <mat-chip-option
+            value="onsite"
+            [disabled]="onlyGiftVouchersInCart || selectedDeliveryMethod() !== 'pickup'"
+          >
+            {{ 'ESHOP.PAYMENT_ONSITE' | translate }}
+          </mat-chip-option>
         </mat-chip-listbox>
+
         <p class="fee-note" *ngIf="paymentFee() > 0">
           {{ 'ESHOP.PAYMENT_FEE' | translate }}: {{ paymentFee() | number:'1.2-2' }} €
         </p>
-
-        <!-- 🔹 IBAN box – zobrazí sa len pri "bank transfer" -->
-        <div class="bank-box" *ngIf="selectedPaymentMethod() === 'bank'">
-          <!-- <h3>{{ 'ESHOP.BANK_TRANSFER_TITLE' | translate }}</h3> -->
-          <div class="bank-row">
-            <!-- <span>{{ 'ESHOP.BANK_TRANSFER_ACCOUNT' | translate }}</span> -->
-            <!-- <strong>{{ BANK_INFO.accountName }}</strong> -->
-          </div>
-          <div class="bank-row">
-            <!-- <span>{{ 'ESHOP.BANK_TRANSFER_IBAN' | translate }}</span> -->
-            <strong>{{ BANK_INFO.iban }}</strong>
-            <button type="button" style="background-color: #dcdcdc80;border:1px solid #000;" (click)="copy(BANK_INFO.iban)">
-              {{ 'COMMON.COPY' | translate }}
-            </button>
-          </div>
-          <div class="bank-row">
-            <span>{{ 'ESHOP.BANK_TRANSFER_BIC' | translate }}</span>
-            <!-- <strong>{{ BANK_INFO.bic }}</strong> -->
-            <button type="button" style="background-color: #dcdcdc80;border:1px solid #000;" (click)="copy(BANK_INFO.bic)">
-              {{ 'COMMON.COPY' | translate }}
-            </button>
-          </div>
-          <p class="fee-note">{{ BANK_INFO.note }}</p>
-        </div>
       </fieldset>
 
       <!-- DORUČENIE (chips) -->
@@ -84,10 +268,23 @@
         <legend>{{ 'ESHOP.DELIVERY' | translate }}</legend>
 
         <mat-chip-listbox formControlName="method" class="chips">
-          <mat-chip-option value="pickup">{{ 'ESHOP.DELIVERY_PICKUP' | translate }}</mat-chip-option>
-          <mat-chip-option value="post_office">{{ 'ESHOP.DELIVERY_POST_OFFICE' | translate }}</mat-chip-option>
-          <mat-chip-option value="packeta_box">{{ 'ESHOP.DELIVERY_PACKETA_BOX' | translate }}</mat-chip-option>
-          <mat-chip-option value="post_courier">{{ 'ESHOP.DELIVERY_POST_COURIER' | translate }}</mat-chip-option>
+          <mat-chip-option value="pickup" [disabled]="onlyGiftVouchersInCart">
+            {{ 'ESHOP.DELIVERY_PICKUP' | translate }}
+          </mat-chip-option>
+
+          <mat-chip-option value="post_office" [disabled]="onlyGiftVouchersInCart || !canUseSkPickupServices()">
+            {{ 'ESHOP.DELIVERY_POST_OFFICE' | translate }}
+          </mat-chip-option>
+
+          <mat-chip-option value="packeta_box" [disabled]="onlyGiftVouchersInCart || !canUseSkPickupServices()">
+            {{ 'ESHOP.DELIVERY_PACKETA_BOX' | translate }}
+          </mat-chip-option>
+
+          <mat-chip-option value="post_courier" [disabled]="onlyGiftVouchersInCart">
+            {{ 'ESHOP.DELIVERY_POST_COURIER' | translate }}
+          </mat-chip-option>
+
+   
         </mat-chip-listbox>
 
         <!-- „iná adresa“ – len pre kuriéra -->
@@ -97,8 +294,8 @@
             <mat-chip-option [value]="false">{{ 'ESHOP.DELIVERY_ADDRESS_SAME' | translate }}</mat-chip-option>
             <mat-chip-option [value]="true">{{ 'ESHOP.DELIVERY_ADDRESS_OTHER' | translate }}</mat-chip-option>
           </mat-chip-listbox>
-          <!-- Adresa sa zobrazí len ak: kuriér + „iná adresa“ -->
-          <div formGroupName="address" 
+
+          <div formGroupName="address"
                *ngIf="selectedDeliveryMethod() === 'post_courier' && checkoutForm.get('delivery.useDifferentAddress')?.value"
                class="grid-2">
             <div>
@@ -115,13 +312,16 @@
             </div>
             <div>
               <label>{{ 'COMMON.COUNTRY' | translate }}</label>
-              <input type="text" formControlName="country">
+              <select formControlName="country">
+                <option value="SK">{{ 'COMMON.COUNTRY_SK' | translate }}</option>
+                <option value="CZ">{{ 'COMMON.COUNTRY_CZ' | translate }}</option>
+                <option value="WORLD">{{ 'COMMON.COUNTRY_WORLD_CONTACT' | translate }}</option>
+              </select>
             </div>
           </div>
         </div>
 
-
-        <!-- Detaily pre poštu / packetu (s výberovým tlačidlom) -->
+        <!-- Detaily pre poštu / packetu -->
         <div formGroupName="details" class="grid-2">
           <!-- Pošta -->
           <div *ngIf="selectedDeliveryMethod() === 'post_office'">
@@ -143,88 +343,162 @@
                 </mat-chip-set>
 
                 <button type="button" class="btn-primary" (click)="changePostOffice()">
-                  {{ 'COMMON.CHANGE' | translate }}
+                  {{ 'COMMON.CHANGE_POSTA' | translate }}
                 </button>
-                <!-- <button type="button" class="btn-link" (click)="clearPostOffice()">
-                  {{ 'COMMON.CLEAR' | translate }}
-                </button> -->
               </div>
-              <!-- ponechaj ukrytý readonly input, ak ho niekde vyžaduješ cez formControl -->
               <input type="text" formControlName="postOfficeId" readonly style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
             </ng-template>
           </div>
 
           <!-- Packeta box -->
-          <div *ngIf="selectedDeliveryMethod() === 'packeta_box'" >
-            <!-- <label>{{ 'ESHOP.PACKETA_BOX_ID' | translate }}</label> -->
-
+          <div *ngIf="selectedDeliveryMethod() === 'packeta_box'">
             <ng-container *ngIf="!checkoutForm.get('delivery.details.packetaBoxId')?.value; else packetaSelected">
               <button type="button" class="btn-primary" (click)="choosePacketaBox()">
                 {{ 'ESHOP.SELECT_PACKETA_BOX' | translate }}
               </button>
-              <!-- <p class="fee-note">{{ 'ESHOP.SELECT_REQUIRED' | translate }}</p> -->
             </ng-container>
 
             <ng-template #packetaSelected>
-              <!-- <input type="text" formControlName="packetaBoxId" readonly> -->
               <button type="button" class="btn-primary" (click)="choosePacketaBox()">
                 {{ 'COMMON.CHANGE' | translate }} #{{ checkoutForm.get('delivery.details.packetaBoxId')?.value }}
               </button>
             </ng-template>
           </div>
-
         </div>
       </fieldset>
-      
+
       <!-- SUMÁR + GRAND TOTAL -->
       <div class="cart-summary">
-        <!-- Poznámka -->
-        <fieldset class="section" >
+        <fieldset class="section">
           <legend>{{ 'COMMON.NOTES' | translate }}</legend>
           <textarea formControlName="notes"></textarea>
         </fieldset>
         <br>
-<div class="line">
-  <span>{{ 'ESHOP.CHECKOUT_SUBTOTAL' | translate }}</span>
-  <span>{{ (total$ | async) | currency:'EUR' }}</span>
-</div>
 
-      <!-- ⬇️ POPLATOK ZA DOPRAVU (návrat) -->
-      <div class="line">
-        <span>{{ 'ESHOP.SHIPPING_FEE' | translate }}</span>
-        <span>{{ shippingFee() | currency:'EUR' }}</span>
+        <div class="line">
+          <span>{{ 'ESHOP.CHECKOUT_SUBTOTAL' | translate }}</span>
+          <span>{{ (total$ | async) | currency:'EUR' }}</span>
+        </div>
+
+        <div class="line">
+          <span>
+            {{ 'ESHOP.SHIPPING_FEE' | translate }}
+            <ng-container *ngIf="isFreeShipping">
+              ({{ 'ESHOP.SHIPPING_FREE' | translate }})
+            </ng-container>
+          </span>
+
+          <ng-container *ngIf="checkoutForm.get('country')?.value !== 'WORLD'; else worldShipping">
+            <span>{{ shippingFee() | currency:'EUR' }}</span>
+          </ng-container>
+        </div>
+
+        <ng-template #worldShipping>
+          <span>{{ 'COMMON.COUNTRY_WORLD_CONTACT' | translate }}</span>
+        </ng-template>
+
+        <div class="line" *ngIf="paymentFee() > 0">
+          <span>{{ 'ESHOP.PAYMENT_FEE' | translate }}</span>
+          <span>{{ paymentFee() | currency:'EUR' }}</span>
+        </div>
+
+        <!-- darčekové balenie -->
+        <div class="line" *ngIf="giftWrapFee() > 0">
+          <span>{{ 'ESHOP.GIFTWRAP.TITLE' | translate }}</span>
+          <span>{{ giftWrapFee() | currency:'EUR' }}</span>
+        </div>
+
+     
+
+        <div class="line">
+          <span>{{ 'ESHOP.INCLUDING_VAT' | translate }}</span>
+          <span>{{ vatTotal() | currency:'EUR' }}</span>
+        </div>
+
+
+
+      <fieldset class="section voucher-inline">
+        <legend>{{ 'ESHOP.VOUCHER.TITLE' | translate }}</legend>
+
+        <div class="voucher-row">
+          <input
+            type="text"
+            formControlName="giftVoucherCode"
+            [placeholder]="'ESHOP.VOUCHER.PLACEHOLDER' | translate"
+            [readonly]="!!appliedGiftVoucher"
+            class="voucher-input"
+            [class.voucher-input-success]="voucherMessageType === 'success'"
+            [class.voucher-input-error]="voucherMessageType === 'error'"
+          />
+
+          <button
+            type="button"
+            class="voucher-btn"
+            (click)="applyGiftVoucher()"
+            [disabled]="giftVoucherApplying || !!appliedGiftVoucher"
+          >
+            <ng-container *ngIf="!giftVoucherApplying">
+              {{ 'ESHOP.VOUCHER.APPLY' | translate }}
+            </ng-container>
+            <ng-container *ngIf="giftVoucherApplying">
+              ...
+            </ng-container>
+          </button>
+
+          <button
+            *ngIf="appliedGiftVoucher"
+            type="button"
+            class="btn"
+            (click)="removeGiftVoucher()"
+          >
+            {{ 'ESHOP.VOUCHER.DELETE' | translate }}
+          </button>
+        </div>
+
+        <p
+          *ngIf="voucherMessage"
+          class="voucher-message"
+          [class.voucher-message-success]="voucherMessageType === 'success'"
+          [class.voucher-message-error]="voucherMessageType === 'error'"
+        >
+          {{ voucherMessage }}
+        </p>
+      </fieldset>
+
+      <div class="line" *ngIf="appliedGiftVoucher">
+        <span>{{ 'ESHOP.VOUCHER.LINE' | translate }}</span>
+        <span>-{{ appliedGiftVoucher.discount | currency:'EUR' }}</span>
+      </div>
+        <br>
+
+
+
+
+
+        <div class="line total">
+          <strong>{{ 'ESHOP.GRAND_TOTAL' | translate }}</strong>
+          <strong style="font-size: 1.6rem;">
+            {{ grand((total$ | async) ?? 0) | currency:'EUR' }}
+          </strong>
+        </div>
+
+        <fieldset class="section" style="margin-top: 1rem;">
+          <legend>{{ 'ESHOP.DELIVERY_URGENCY' | translate }}</legend>
+
+          <mat-radio-group formControlName="deliveryUrgency" class="vertical-radio">
+            <mat-radio-button value="standard">
+              {{ 'ESHOP.DELIVERY_URGENCY_STANDARD' | translate }}
+            </mat-radio-button>
+
+            <mat-radio-button value="rush">
+              {{ 'ESHOP.DELIVERY_URGENCY_RUSH' | translate }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </fieldset>
       </div>
 
-      <div class="line" *ngIf="paymentFee() > 0">
-        <span>{{ 'ESHOP.PAYMENT_FEE' | translate }}</span>
-        <span>{{ paymentFee() | currency:'EUR' }}</span>
-      </div>
-
-      <!-- DPH – CELKOM -->
-      <div class="line">
-        <span>{{ 'ESHOP.INCLUDING_VAT' | translate }}</span>
-        <span>{{ taxIncluded((total$ | async) ?? 0) | currency:'EUR' }}</span>
-      </div>
-
-      <!-- Rozpis podľa sadzieb -->
-      <!-- <div class="line" *ngFor="let r of vatSummary.byRate">
-        <span class="fee-note">— DPH ({{ r.rate }}%)</span>
-        <span class="fee-note">{{ r.tax | currency:'EUR' }}</span>
-      </div> -->
-
-      <div class="line total">
-        <strong>{{ 'ESHOP.GRAND_TOTAL' | translate }}</strong>
-        <strong style="font-size: 1.6rem;">
-          {{ grand((total$ | async) ?? 0) | currency:'EUR' }}
-        </strong>
-      </div>
-      </div>
-
-
-    <!-- SÚHLASY -->
+      <!-- SÚHLASY -->
       <fieldset class="section consents" formGroupName="consents">
-        <!-- <legend>{{ 'ESHOP.CONSENTS' | translate }}</legend> -->
-
         <mat-checkbox formControlName="terms" required>
           <span [innerHTML]="'ESHOP.CONSENT_TERMS' | translate"></span>
         </mat-checkbox>
@@ -234,22 +508,10 @@
           </p>
         </div>
 
-        <!-- <mat-checkbox formControlName="privacy">
-          <span [innerHTML]="'ESHOP.CONSENT_PRIVACY' | translate"></span>
-        </mat-checkbox> -->
-
-        <!-- <mat-checkbox formControlName="cookies">
-          <span [innerHTML]="'ESHOP.CONSENT_COOKIES' | translate"></span>
-        </mat-checkbox> -->
-
         <mat-checkbox formControlName="marketing">
           {{ 'ESHOP.CONSENT_MARKETING' | translate }}
         </mat-checkbox>
       </fieldset>
-
-
-
-
 
       <!-- Submit -->
       <div class="form-actions">
@@ -259,23 +521,18 @@
           class="btn-primary"
           [style.width.px]="submitBtnWidth || null"
           [disabled]="isSubmitting || isDeliverySelectionMissing || checkoutForm.invalid">
-          
 
-      <ng-container *ngIf="!isSubmitting">{{ 'ESHOP.CHECKOUT_PROCEED_PAYMENT' | translate }}</ng-container>
+          <ng-container *ngIf="!isSubmitting">{{ 'ESHOP.CHECKOUT_PROCEED_PAYMENT' | translate }}</ng-container>
 
-      <mat-progress-spinner
-      *ngIf="isSubmitting"
-      diameter="20"
-      mode="indeterminate"
-      color="accent"
-      class="spinner-inline"
-      ></mat-progress-spinner>
+          <mat-progress-spinner
+            *ngIf="isSubmitting"
+            diameter="20"
+            mode="indeterminate"
+            color="accent"
+            class="spinner-inline"
+          ></mat-progress-spinner>
 
-    </button>
-
-
-
-
+        </button>
 
         <p *ngIf="isDeliverySelectionMissing" class="fee-note">
           {{ 'ESHOP.SELECT_REQUIRED' | translate }}

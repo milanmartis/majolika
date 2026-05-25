@@ -7,6 +7,53 @@
     z-index: 999999999999;
   }
    */
+
+/* loader pri dočítavaní ďalších strán */
+.paging-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 0 20px;
+}
+
+
+
+.paging-spinner {
+  border: 4px solid rgba(0,0,0,0.1);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border-left-color: var(--base-blue);
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+
+
+
+.paging-text {
+  margin-top: -23px;
+  font-size: 0.95rem;
+  opacity: 0.8;
+  color: var(--base-blue);
+}
+
+
+/* (nepovinné) dark mode jemné zosvetlenie farby */
+@media (prefers-color-scheme: dark) {
+  .paging-text { opacity: 0.9; }
+}
+
+
+
+
+
   .search-button {
     background: transparent;
     border: none;
@@ -44,7 +91,7 @@
      -------------------------------------------------------- */
   .search-overlay {
     position: fixed;
-    top: 0;
+    top: 0px;
     left: 0;
     right: 0;        /* zabezpečí 100% šírky */
     bottom: 0;       /* zabezpečí 100% výšky */
@@ -123,6 +170,25 @@ margin:auto;
     white-space: nowrap; 
   }
   
+
+  .icon-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+}
+
+.icon { /* voliteľné, nech je obrázok blok a centrovaný */
+  display: block;
+}
+
+.icon-text {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+  color: #2944ba; /* alebo nechaj default */
+}  
   /* Obal inputu – relatívne pozicionovanie pre clear tlačidlo */
   .input-with-clear {
 
@@ -139,8 +205,8 @@ margin:auto;
     font-size: 14px;
     border: 1px solid #2944ba;
     background: transparent;
-    border-top-left-radius: 16px;
-    border-bottom-left-radius: 16px;
+    border-top-left-radius: var(--corners);
+    border-bottom-left-radius: var(--corners);
     outline: none;
     white-space: nowrap; 
 margin-right: -10px;
@@ -151,14 +217,14 @@ margin-right: -10px;
   .search-go-button {
     background: #2944ba;
     color: #fff;
-    padding: 12px 16px;
+    padding: 11px 16px;
     font-size: 14px;
     cursor: pointer;
-    border-top-right-radius: 16px;
-    border-bottom-right-radius: 16px;
+    border-top-right-radius: var(--corners);
+    border-bottom-right-radius: var(--corners);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    transition: background 0.2s;
+    transition: all 0.2s;
     margin-left: 0px;
     white-space: nowrap; 
 
@@ -191,10 +257,10 @@ margin-right: -10px;
     padding: 0px;
     position: absolute;
     right: 8px;
-    top: 10px;
+    top: 0px;
     background: transparent;
     border: none;
-    font-size: 1.85rem;
+    font-size: 1.485rem;
     cursor: pointer;
     color: #333;
   }
@@ -342,6 +408,18 @@ margin-right: -10px;
     transition: all 0.3s ease;
 
   }
+  .product-card2 {
+    background: transparent;
+    border: 0px solid #ddd;
+    border-radius: var(--corners);
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s;
+    transition: all 0.3s ease;
+
+  }
   .status {
     position: absolute;
     float: inline-start;
@@ -402,16 +480,23 @@ margin-right: -10px;
   /* Sekcia ostatných vzorov */
   .others {
     position: relative;
-    bottom: 100px;
     vertical-align: top;
     display: flex;
-
-    gap: 6px;
+padding: 22px;
+    gap: 1px;
     margin-top: 24px;
     justify-content: center;
   }
   .others .product-card {
-    width: 80px;
+    width: 90px;
+  }
+  .others .product-card2 img {
+    width: 65px;
+    margin: 0px;
+    transition: all 0.3s ease;
+  }
+  .others .product-card2 img:hover {
+    transform: scale(1.05);
   }
   /* Obrázky v tejto sekcii majú tiež 200×200 px */
   .others .card-img-wrapper {
@@ -446,6 +531,7 @@ margin-right: -10px;
       white-space: nowrap; 
 
       gap: 0px;
+      padding: 2px;
     }
     .search-input-full {
       width: 100%;

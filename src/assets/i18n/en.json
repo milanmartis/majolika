@@ -3,6 +3,9 @@
     "HOME": "Home",
     "OR": "or",
     "VIAC_INFO": "More information",
+    "REZERVOVAT": "Book now",
+    "VEDIETVIAC": "View details",
+
     "POPISKY_KAT_VYROBKOV": "Product categories",
     "VYBERTE_KATEGORIU": "Choose a category",
     "ADD_TO_CART_HOLD": "Add to cart (free places {{available}})",
@@ -14,8 +17,10 @@
     "STATUS": "{{booked}} booked / {{max}} max ({{available}} available)",
     "LOADING": "— loading capacity…",
     "TRVANIE": "Duration",
-    "WHO_WE_ARE": "Who we are",
-    "WHO_WE_ARE_PEREX": "We introduce you to our team that takes care of preserving and developing traditional Slovak ceramics."
+    "WHO_WE_ARE": "About Us",
+    "WHO_WE_ARE_PEREX": "Behind every product from Modra stands a person — their hands, experience, and sense of detail.",
+    "WHO_WE_ARE_PEREX2": "The team of Slovak Folk Majolica consists of masters, artistic painters, craftsmen, lecturers, and management staff who together keep the tradition of Modra majolica alive and move it forward. Each of us contributes to ensuring that majolica is created with the same respect as it was by generations before us, and that it continues to have its place in today's world."
+
 
   },
 
@@ -75,6 +80,26 @@
 
 
   "ESHOP": { 
+    "VOUCHER": {
+    "TITLE": "Apply gift voucher",
+    "PLACEHOLDER": "Enter voucher code",
+    "APPLY": "Apply",
+    "APPLIED": "Applied voucher: {{code}}",
+    "LINE": "Gift voucher",
+    "DELETE": "Remove",
+    "ERROR_EMPTY": "Please enter a gift voucher code.",
+    "ERROR_INVALID": "The voucher is not valid.",
+    "ERROR_NOT_VALUE": "This voucher is not a credit voucher.",
+    "ERROR_NO_BALANCE": "This voucher has no remaining balance.",
+    "ERROR_INVALID_OR_USED": "The voucher is invalid or has already been used.",
+    "SUCCESS_APPLIED": "The voucher has been applied. Discount {{discount}} €.",
+    "SNACK_APPLIED": "Voucher applied: -{{discount}} €",
+    "ERROR_NOT_APPLIED": "You entered a voucher code but have not applied it yet."
+  },
+          "SELECT_VARIATION": "Choose a variant",
+    "ADDED_TO_CART": "Added to Cart",
+
+    "CANCEL": "Cancel",
     "WELCOME": "Shop with our production",
     "FIRST_TEXT": "Slovak Folk Majolica is a bearer of the tradition of Modra Majolica and Majolica ornamentation, while also being a space for creativity and innovative approaches in the production of Modra ceramics. The goal of project support is to develop creative talent and innovations in the field of traditional crafts by preserving, maintaining, and restoring a significant part of Slovakia’s cultural heritage.",
     "MNOZSTVO": "Quantity",
@@ -93,12 +118,12 @@
     "CART_IS_EMPTY": "The cart is empty",
     "SELECT_CATEGORY": "Please select a category",
     "SORT_BY": "Sort by",
-    "SORT_NAME_ASC": "Názov A-Z",
-    "SORT_NAME_DESC": "Názov Z-A",
-    "SORT_PRICE_ASC": "Od najlacnejšieho",
-    "SORT_PRICE_DESC": "Od najdrahšieho",
-    "SORT_NEWEST": "Najnovšie",
-    "SORT_OLDEST": "Najstaršie",
+    "SORT_NAME_ASC": "Name A-Z",
+    "SORT_NAME_DESC": "Name Z-A",
+    "SORT_PRICE_ASC": "Price Low-High",
+    "SORT_PRICE_DESC": "Price High-Low",
+    "SORT_NEWEST": "Newest",
+    "SORT_OLDEST": "Oldest",
     "FILTER_BY": "Filter",
     "POKRACOVAT_SHOPPING": "Continue Shopping",
     "SIZES_TEXT": "Specifications",
@@ -117,9 +142,11 @@
      "CHECKOUT_CUSTOMER_INFO": "Customer Information",
      "CHECKOUT_PROCEED_PAYMENT": "Proceed to Payment",
      "INCLUDING_VAT": "Including VAT",
-     
-"FAREBNY_DEKOR": "Colorful decor",
-"PESTRY_DEKOR": "Vivid decor",
+         "WORKSHOPANOTHERS":"Appointments for tours and workshops can also be arranged individually outside the published schedule.",
+"BEGIN": "Begins at ",
+     "KAPACITA": "free places: ",
+"FAREBNY_DEKOR": "Multicolor decor",
+"PESTRY_DEKOR": "Multicolor decor",
 "MODRY_DEKOR": "Blue decor",
 "ZELENY_DEKOR": "Green decor",
 
@@ -143,6 +170,8 @@
     "DELIVERY_POST_OFFICE": "Deliver to post office",
     "DELIVERY_PACKETA_BOX": "Packeta box",
     "DELIVERY_POST_COURIER": "Post courier to address",
+    "DELIVERY_DIGITAL_PRODUCT": "Digital product",
+
     "SHIPPING_FEE": "Shipping",
     "POST_OFFICE_ID": "Post office ID",
     "PACKETA_BOX_ID": "Packeta box ID",
@@ -163,6 +192,10 @@
     "LOGIN": "Sign in",
         "NOVINKA": "New",
     "ZLAVA": "Discount",
+    "VYPREDANE": "Sold out",
+    "NEDOSTUPNE": "Unavailable",
+    "PRODUCT_UNAVAILABLE_HINT": "This product is currently unavailable. You can contact us for more information.",
+    "PRODUCT_SOLDOUT_HINT": "This product is currently sold out. You can contact us for more information.",
 "CONSENT_TERMS": "I agree to the <a href='../article/vseobecne-obchodne-podmienky'>Terms and Conditions</a>.",
 
 "CONSENT_PRIVACY": "I agree to the processing of personal data according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Privacy Policy</a>.",
@@ -178,19 +211,94 @@
     "unpaid": "Waiting for payment",
     "paid": "Paid",
     "refunded": "Refunded",
-    "ONSITE_ONLY_PICKUP": "Pay on site is available only for in-store pickup."
+    "ONSITE_ONLY_PICKUP": "Pay on site is available only for in-store pickup.",
+    "ALL": "All",
+    "DELIVERY_URGENCY": "Delivery time",
+    "DELIVERY_URGENCY_STANDARD": "Standard delivery time is fine for me (approximately two weeks)",
+    "DELIVERY_URGENCY_RUSH": "My order is urgent",
+    "COD_NOT_FOR_PICKUP": "Cash on delivery is not available for pickup.",
+        "BILLING": {
+      "TITLE": "Billing details",
+      "COMPANY_PURCHASE": "Buying as a company",
+      "COMPANY_NAME": "Company name",
+      "ICO": "Company ID",
+      "DIC": "Tax ID",
+      "IC_DPH": "VAT ID",
+      "ADDRESS_TITLE": "Billing address",
+      "ADDRESS_SAME_AS_SHIPPING": "Same as shipping address",
+      "ADDRESS_DIFFERENT": "Different billing address"
+    },
+    "GIFTWRAP": {
+      "TITLE": "Gift wrapping",
+      "LOADING_PRICE": "loading price…",
+      "HOW_MANY": "How many pieces to wrap?",
+      "SELECTED_OF": "Selected: {{selected}} of {{total}} pcs.",
+      "RULES_TITLE": "Gift wrapping – how should we wrap it?",
+      "MODE_EACH_ITEM": "Each piece separately",
+      "MODE_EACH_ITEM_HINT": "",
+      "MODE_BY_PRODUCT": "By product",
+      "MODE_BY_PRODUCT_HINT": "– one product = one package",
+      "MODE_ALL_TOGETHER": "All together (1 package)",
+      "MODE_ALL_TOGETHER_HINT": "– if size allows",
+      "NOTE_LABEL": "Wrapping note (optional)",
+      "NOTE_PLACEHOLDER": "E.g. please remove price tags / add a short note..."
+    },
+    "SHIPPING_FREE": "free shipping"
 
+
+  },
+
+   "CHECKOUT": {
+    "SUCCESS": {
+      "TITLE": "Thank you for your order",
+      "BODY": "Your order has been created successfully.",
+      "BACK": "Back to home",
+      "CHECKING": "Checking payment status...",
+      "ORDER_SUMMARY": "Order summary",
+
+      "PAID_TITLE": "Thank you, payment received",
+      "PAID_BODY": "Payment for your order was successful. We’ve sent confirmation and details to your email.",
+
+      "PENDING_TITLE": "Payment in progress",
+      "PENDING_BODY": "Payment for your order is not confirmed yet. We’ll keep checking automatically. If the page doesn’t refresh, please check your email.",
+
+      "REFUNDED_TITLE": "Payment refunded",
+      "REFUNDED_BODY": "Payment for your order has been refunded. We’ve sent more information to your email.",
+
+      "ORDER_OK_TITLE": "Order received",
+      "ORDER_OK_BODY": "Your order {{orderNo}} has been received. We’ve sent confirmation and further information to your email."
+    }
+
+  },
+    "ORDER": {
+    "NO": "Order",
+    "DATE": "Date",
+    "EMAIL": "Email",
+    "TOTAL": "Total to pay",
+    "DOWNLOAD_INVOICE": "Download invoice",
+
+    "GIFTWRAP": "Gift wrapping",
+    "GIFTWRAP_QTY": "Number of wraps",
+    "GIFTWRAP_MODE": "Wrapping method",
+    "NOTE": "Note",
+
+    "GIFTWRAP_MODE_EACH_ITEM": "Each item separately",
+    "GIFTWRAP_MODE_BY_PRODUCT": "By product",
+    "GIFTWRAP_MODE_ALL_TOGETHER": "All together",
+    "GIFTWRAP_MODE_ALL": "All (one wrap per item)",
+    "GIFTWRAP_MODE_SELECTED": "Selected products",
+
+    "BADGE_GIFTWRAP": "Gift wrapping",
+    "BADGE_DIGITAL": "Digital product"
   },
 
   "CHECKOUT_CANCEL": {
-    "TITLE": "Payment was cancelled ❌",
-    "DESCRIPTION": "You can try again or return to your cart.",
+    "TITLE": "Payment cancelled",
+    "DESCRIPTION": "Your payment was not completed or was cancelled. If this was a mistake, you can try completing the checkout again.",
+    "ORDER": "Order: {{id}}",
     "BACK_TO_CHECKOUT": "Back to checkout",
     "CONTINUE_SHOPPING": "Continue shopping"
   },
-
-
-
 
   "DIELNE": { 
     "WELCOME": "Tours and Creative Workshops",
@@ -286,7 +394,11 @@
     "prstene": "Rings",
     "tasky": "Bags",
     "prehliadky": "Tours",
-    "tvorive-dielne": "Creative Workshops"
+    "tvorive-dielne": "Creative Workshops",
+    "fragmenty":"Fragments",
+    "prehliadky-vyroby": "Factory Tours",
+    "masterclass": "Masterclass",
+    "katkine-vzory": "Katka's Patterns"
   },
 
 
@@ -417,7 +529,14 @@
     "COUNTRY": "Country",
     "NOTES": "Notes",
     "COPY": "Copy",
-    "COPIED": "Copied to clipboard!"
+    "COPIED": "Copied to clipboard!",
+     "REMOVE_ITEM": "Remove item",
+    "PEOPLE_SHORT": "ppl",
+    "PIECE_SHORT": "pcs",
+    "STREET_AND_NUMBER": "Street and number",
+    "COUNTRY_SK": "Slovakia",
+    "COUNTRY_CZ": "Czech Republic",
+    "COUNTRY_WORLD_CONTACT": "Rest of the world (please contact us)"
   },
 
 
@@ -448,7 +567,7 @@
 },
     
 "PREHLIADKY2": {
-  "INFO": "Information",
+  "INFO": "Gift vouchers",
   "MAJOLIKA_NA_AKCII": "Majolica at the event",
   "DIELNE2": "Workshops",
   "PREHLIADKY2": "Tours"
@@ -520,25 +639,25 @@
       "CAREERS": "Careers",
       "BLOG": "Blog",
       "TERMS": "Terms of bussiness",
-      "PRIVACY": "Privacy policy"
+      "PRIVACY": "Privacy policy",
+      "NEW_MODELS": "New models"
     },
     "NEWSLETTER": {
       "TITLE": "Newsletter",
       "TEXT": "Subscribe and get 10% off your first order.",
       "EMAIL_PLACEHOLDER": "Your email address",
-      "SUBMIT": "Subscribe"
+      "SUBMIT": "Subscribe",
+      "DONE": "Thank you for subscribing",
+      "OK": "Thank you for subscribing",
+      "ERROR": "Oops, please try again later."
+
     },
     "SOCIAL": {
       "TITLE": "Follow us"
     }
   },
-    "CHECKOUT": {
-    "SUCCESS": {
-      "TITLE": "Thank you for your order! 🎉",
-      "BODY": "Your payment was successful. A confirmation has been sent to your email.",
-      "BACK": "Back to Home"
-    }
-  },
+
+
   
   "role": {
     "admin": "Administration",
@@ -555,6 +674,63 @@
     "next": "Next",
     "page": "Page {{page}} of {{total}}"
   }
+,
 
-    
-}
+  "LOADING": {
+    "CATEGORIES": "Loading categories…",
+    "CONTENT": "Loading content…"
+  
+
+
+  },
+
+"ICONS": {
+      "TANIER": "Plate",
+      "DZBAN": "Jug",
+      "VAZA": "Vase",
+      "POHAR": "Glass",
+      "MISKA": "Bowl"
+    } ,
+
+    "AKTUALITY": {
+    "NOT_FOUND": {
+      "TITLE": "Article not found",
+      "TEXT": "Check the link or go back to the news list.",
+      "BACK": "← Back to news"
+    }
+  },
+    "SESSION_PICKER": {
+    "TITLE": "Choose a session",
+    "SUBTITLE": "Click a day in the calendar to see available times.",
+    "CLOSE": "Close",
+
+    "LEGEND_HAS": "Days with sessions",
+    "LEGEND_NONE": "No sessions",
+
+    "SELECTED_DAY": "Selected day",
+    "SESSION": "Time",
+    "SESSION_PLACEHOLDER": "-- choose time --",
+
+    "QTY": "People",
+    "ADD_TO_CART": "Add to cart",
+    "HELP_SELECT": "Select a day and time.",
+
+    "NO_SESSIONS_DAY": "No sessions available on this day.",
+
+    "AVAILABLE": "available",
+    "START": "Start",
+    "DURATION": "Duration",
+    "MINUTES": "min",
+
+    "HINT": "Pick a day in the calendar. Days with sessions are highlighted.",
+
+    "WD_MON": "Mon",
+    "WD_TUE": "Tue",
+    "WD_WED": "Wed",
+    "WD_THU": "Thu",
+    "WD_FRI": "Fri",
+    "WD_SAT": "Sat",
+    "WD_SUN": "Sun"
+  }
+  
+  }

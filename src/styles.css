@@ -18,8 +18,18 @@
 
   /* prípadne ďalšie premené */
 }
-
-
+.cdk-overlay-pane.session-picker-dialog .mat-mdc-dialog-surface,
+.cdk-overlay-pane.session-picker-dialog .mat-mdc-dialog-container,
+.cdk-overlay-pane.session-picker-dialog .mat-mdc-dialog-inner-container {
+  border-radius: 0 !important;
+  --mdc-dialog-container-shape: 0px !important;
+  --mat-dialog-container-shape: 0px !important;
+}
+.vertical-radio {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
 
 html, body {     
   background: var(--color-primary);
@@ -52,11 +62,10 @@ html, body {
 body {
   margin: 0;
   font-family: "alegreya", serif;
-  background-image: url("/assets/img/corner6.png");
-  background-size: auto;
-  background-repeat: no-repeat;
-  background-position: bottom right;
-  background-size:40rem;
+
+  /* background-image presunutý na .app-wrapper */
+   background-repeat: no-repeat;
+   background-position: bottom right;
 
   animation: slideUpImage 1.2s ease-out forwards;
 
@@ -67,6 +76,14 @@ body {
   hyphens: none;
   white-space: pre-line;
   font-size: 0.9rem;
+
+}
+/* background sa zobrazí až keď je app hotová (app-wrapper je len pri !isLoading) */
+.app-wrapper {
+  background-image: url("/assets/img/corner6.png");
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size: 27rem;
 }
 
 .variant-button{
@@ -85,28 +102,34 @@ i{
   color: var(--base-blue);
 }
 
-@media (max-width: 1000px) {
-  body{
-    background-image: url("/assets/img/corner7.png");
-    background-size:28rem;
 
 
-  }
+  /* .app-wrapper { background-image: url("/assets/img/corner7.png"); background-size: 28rem; } */
+
+  /* .app-wrapper { background-image: url("/assets/img/corner7.png"); background-size: 22rem; } */
+ 
+
+  @media (max-width: 1000px) {
+
+  .app-wrapper { background-image: none; }
+ }
+ @media (max-width: 600px) {
+  .app-wrapper { background-image: none; }
+ }
 /* 1b2d6f */
 
-}
-@media (max-width: 600px) {
-  body{
-    background-image: url("/assets/img/corner7.png");
-    background-size:22rem;
 
-
-  }
-/* 1b2d6f */
-
+/* ostré rohy len pre dialógy s panelClass="dialog--sharp" */
+.dialog--sharp .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 0 !important;
+  background: var(--color-primary);
 }
 
-
+/* voliteľne úplne flat vzhľad bez tieňa */
+.dialog--sharp .mat-mdc-dialog-container .mdc-dialog__surface {
+  box-shadow: none !important; /* ak chceš */
+  /* border: 1px solid #ddd;   // ak chceš tenký okraj */
+}
 
 button{
   margin:10px;
@@ -407,7 +430,7 @@ br{
 
 
 .moja-backdrop{
-  background: red;
+ 
   /* background-size:contain */
 
 }

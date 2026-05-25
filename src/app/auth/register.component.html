@@ -5,8 +5,11 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'AUTH.FIELDS.USERNAME.LABEL' | translate }}</mat-label>
-      <input matInput formControlName="username"
-             [placeholder]="'AUTH.FIELDS.USERNAME.PLACEHOLDER' | translate" />
+      <input
+        matInput
+        formControlName="username"
+        [placeholder]="'AUTH.FIELDS.USERNAME.PLACEHOLDER' | translate"
+      />
       <mat-error *ngIf="form.get('username')?.hasError('required')">
         {{ 'AUTH.FIELDS.USERNAME.REQUIRED' | translate }}
       </mat-error>
@@ -14,8 +17,11 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'AUTH.FIELDS.EMAIL.LABEL' | translate }}</mat-label>
-      <input matInput formControlName="email"
-             [placeholder]="'AUTH.FIELDS.EMAIL.PLACEHOLDER' | translate" />
+      <input
+        matInput
+        formControlName="email"
+        [placeholder]="'AUTH.FIELDS.EMAIL.PLACEHOLDER' | translate"
+      />
       <mat-error *ngIf="form.get('email')?.hasError('required')">
         {{ 'AUTH.FIELDS.EMAIL.REQUIRED' | translate }}
       </mat-error>
@@ -26,8 +32,12 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'AUTH.FIELDS.PASSWORD.LABEL' | translate }}</mat-label>
-      <input matInput type="password" formControlName="password"
-             [placeholder]="'AUTH.FIELDS.PASSWORD.PLACEHOLDER' | translate" />
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        [placeholder]="'AUTH.FIELDS.PASSWORD.PLACEHOLDER' | translate"
+      />
       <mat-error *ngIf="form.get('password')?.hasError('required')">
         {{ 'AUTH.FIELDS.PASSWORD.REQUIRED' | translate }}
       </mat-error>
@@ -36,23 +46,55 @@
       </mat-error>
     </mat-form-field>
 
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'AUTH.CONFIRM_PASSWORD' | translate }}</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="confirmPassword"
+        [placeholder]="'AUTH.CONFIRM_PASSWORD' | translate"
+      />
+      <mat-error *ngIf="form.hasError('passwordMismatch') && confirmPassword?.touched">
+        Heslá sa nezhodujú
+      </mat-error>
+    </mat-form-field>
+
+    <div class="turnstile-wrapper">
+      <div id="turnstile-container"></div>
+
+      <div class="turnstile-error" *ngIf="turnstileError">
+        Potvrďte, že nie ste robot.
+      </div>
+    </div>
+
     <div *ngIf="error" class="server-error">
       {{ error | translate }}
 
       <div class="mt-3">
-        <button mat-stroked-button
-                [disabled]="isSubmitting || cooldownSec>0"
-                (click)="resendConfirmation(email?.value)">
+        <button
+          mat-stroked-button
+          type="button"
+          [disabled]="isSubmitting || cooldownSec > 0"
+          (click)="resendConfirmation(email?.value)"
+        >
           {{ 'AUTH.REGISTER.RESEND_CONFIRM' | translate }}
-          <span *ngIf="cooldownSec>0">({{cooldownSec}}s)</span>
+          <span *ngIf="cooldownSec > 0">({{ cooldownSec }}s)</span>
         </button>
       </div>
     </div>
 
-    <button mat-raised-button color="primary" class="register-btn"
-            [disabled]="form.invalid || isSubmitting">
-      <ng-container *ngIf="!isSubmitting">{{ 'AUTH.REGISTER.SUBMIT' | translate }}</ng-container>
-      <mat-progress-spinner *ngIf="isSubmitting"
+    <button
+      mat-raised-button
+      color="primary"
+      class="register-btn"
+      [disabled]="form.invalid || isSubmitting"
+    >
+      <ng-container *ngIf="!isSubmitting">
+        {{ 'AUTH.REGISTER.SUBMIT' | translate }}
+      </ng-container>
+
+      <mat-progress-spinner
+        *ngIf="isSubmitting"
         diameter="24"
         mode="indeterminate"
         color="accent"
@@ -60,31 +102,42 @@
       ></mat-progress-spinner>
     </button>
   </form>
-  <br>
+
+  <br />
+
   <div style="width: 100%; text-align:center;">
-
-    <a [routerLink]="['/login']"> {{ 'AUTH.ACCOUNT_LOGIN' | translate }}</a><br>
-    <a [routerLink]="['/auth/forgot-password']"> {{ 'AUTH.RESET_PASSWORD' | translate }}</a>
+    <a [routerLink]="['/login']">{{ 'AUTH.ACCOUNT_LOGIN' | translate }}</a><br />
+    <a [routerLink]="['/auth/forgot-password']">{{ 'AUTH.RESET_PASSWORD' | translate }}</a>
   </div>
-  <mat-card-actions class="auth-actions">
-        <button (click)="auth.loginWithGoogle()" class="gsi-material-button">
-        <div class="gsi-material-button-state"></div>
-        <div class="gsi-material-button-content-wrapper">
-          <div class="gsi-material-button-icon">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-              <path fill="none" d="M0 0h48v48H0z"></path>
-            </svg>
-          </div>
-          <span class="gsi-material-button-contents">{{ 'AUTH.OR_SIGN_UP_WITH_GOOGLE' | translate }}</span>
-          <span style="display: none;">{{ 'AUTH.OR_SIGN_UP_WITH_GOOGLE' | translate }}</span>
-        </div>
-      </button>
-    </mat-card-actions>
 
+  <mat-card-actions class="auth-actions">
+    <button (click)="auth.loginWithGoogle()" class="gsi-material-button" type="button">
+      <div class="gsi-material-button-state"></div>
+      <div class="gsi-material-button-content-wrapper">
+        <div class="gsi-material-button-icon">
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            style="display: block;"
+          >
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+            <path fill="none" d="M0 0h48v48H0z"></path>
+          </svg>
+        </div>
+        <span class="gsi-material-button-contents">
+          {{ 'AUTH.OR_SIGN_UP_WITH_GOOGLE' | translate }}
+        </span>
+        <span style="display: none;">
+          {{ 'AUTH.OR_SIGN_UP_WITH_GOOGLE' | translate }}
+        </span>
+      </div>
+    </button>
+  </mat-card-actions>
 </mat-card>
 
 <app-footer class="mt-8"></app-footer>

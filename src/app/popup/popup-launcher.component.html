@@ -23,7 +23,7 @@
 
   <!-- footer with header and button -->
   <div class="footer">
-    <h1>{{ popup.header }}</h1>
+    <h1 [innerHTML]="popup.header | nbspSmallWords | linkify"></h1>
 
     <ng-container *ngFor="let block of popup.text">
       <ng-container *ngIf="block.type === 'paragraph'">

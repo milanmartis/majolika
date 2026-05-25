@@ -86,7 +86,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
             </div>
         </div>
         <div class="col" style="width:100%; text-align:center;">
-            <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/kvet_7cf47cab6b.jpg">
+            <img src="https://d1hbdvlfav95nt.cloudfront.net/products/kvet_7cf47cab6b.jpg">
         </div>
         </div>
         `

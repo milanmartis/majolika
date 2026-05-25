@@ -17,6 +17,42 @@
   transition: background 0.3s ease;
   
 } */
+.child-button img{
+  vertical-align: top;
+  width: 100%;          /* prispôsob sa boxu .img-flip */
+  height: 100%;         /* vyplň štvorcový box */
+  object-fit: contain;  /* ak chceš vidieť celé obrázky, nič sa nereže */
+  /* ak chceš “pekne orezané”, daj miesto toho: object-fit: cover; */
+  opacity: 0.85;
+  transition: all .625s ease;
+}
+
+/* na hover / focus / stlačenie bude farebný */
+.child-button:hover img,
+.child-button:focus-visible img,
+.child-button:active img,
+.child-button.is-selected img {           /* ⇦ ostane farebný pre aktívnu kategóriu */
+  filter: none;
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.child-button .label{
+  line-height: 1.15;
+  white-space: normal;
+}
+.child-button:hover .label{
+  color: var(--base-blue);
+  font-weight: 700;
+  text-decoration: underline;
+
+}
+
+.child-button:hover{
+
+    background-color: #e7ebec75;
+
+}
 
 
 /* full‑page sivý závoj */
@@ -80,23 +116,51 @@
   width: 222px; /* fixná šírka zodpovedajúca najdlhšiemu stavu */
 }
 
-
-
-.catmainpic{
+.catmainpic-wrapper {
   display: block;
   width: 100%;
   height: 330px;
-  margin: 0px;
-  padding: 0px;
-position: relative;
-left: 0px;
-top:-40px;
-object-fit: cover;
-z-index: 0;
-/* border: 1px solid var(--base-blue-thin); */
+  margin-top: -40px;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* skeleton loading pre banner */
+.catmainpic-wrapper.loading {
+  background: #f6f7f8;
+  background-image: linear-gradient(
+    45deg,
+    #f6f7f8f1 0%,
+    #edeef1 50%,
+    #f6f7f8 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* keď loading, obrázok skryj (aby ho nebolo vidno pod skeletonom) */
+.catmainpic-wrapper.loading .catmainpic {
+  opacity: 0;
+}
+
+/* jemný fade-in pre banner po načítaní */
+.catmainpic {
+  display: block;
+  width: 100%;
+  height: 330px;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  left: 0;
+  top: 0px;
+  object-fit: cover;
+  z-index: 0;
+  transition: opacity 0.35s ease;
 }
 
 .cat-heading{
+  margin-top: -44px;
   z-index: 999;
 }
 
@@ -105,21 +169,23 @@ z-index: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center; /* toto zarovná obsah na stred */
-  gap: 1px;
+  gap: 0px;
   margin-bottom: 22px;
   text-align: center;
   font-weight: 600;
   background: var(--primary-color);
 }
 
+
+
+
 .child-button{
   display: inline-flex;
   flex-direction: column;
-  align-items: center;       /* vodorovne na stred (ponechaj) */
-  justify-content: flex-start; /* ⬅️ vertikálne hore */
+  align-items: center;          /* vodorovne na stred */
+  justify-content: flex-start;  /* vertikálne hore */
   gap: .9rem;
-
-  /* ostatné tvoje štýly... */
+  text-decoration: none;
   vertical-align: top;
   font-weight: 700;
   text-align: center;
@@ -127,93 +193,168 @@ z-index: 0;
   color: var(--base-blue);
   background: var(--primary-color);
   border: 0;
-  padding: 12px 12px;        /* trošku väčší top padding, ak chceš */
+  padding: 12px 12px;
   border-radius: var(--corners);
   cursor: pointer;
   font-size: 1.18rem;
-  transition: transform .2s ease;
   width: 266px;
-  height: 330px;             /* ak chceš fixnú výšku, nechaj */
+  height: 330px;                /* fixná výška na desktope */
   perspective: 800px;
-    transition: transform .6s ease;
-  
+
+  transition: transform .2s ease; /* (ponechané 1×) */
 }
 
-.img-flip{
-  position:relative;
-  width:260px; 
-  height:260px;
+/* Wrapper na obrázok – oreže zoomovaný img vo vnútri */
+/* už existujúce */
+.img-flip {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1 / 1;
   transform-style: preserve-3d;
   transition: transform .6s ease;
+  overflow: hidden;
+  border-radius: var(--corners);
 }
 
-.img-flip img{
+/* ... img štýly atď. */
+
+/* 💡 shimmer skeleton pri načítavaní kategórie */
+.img-flip.loading {
+  background: #f6f7f8;
+  background-image: linear-gradient(
+    45deg,
+    #f6f7f8f1 0%,
+    #edeef1 50%,
+    #f6f7f8 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* počas loadingu obrázok skryj, nech vidno len skeleton */
+.img-flip.loading img {
+  opacity: 0;
+}
+
+/* keď sa načíta, jemne fade-in + tvoj zoom efekt */
+.img-flip img {
   vertical-align: top;
-  position:absolute; inset:0;
-  width:100%; 
-  height:100%; 
-  object-fit:cover;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   backface-visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    transform 0.35s ease;
 }
 
-.img-flip .front{ 
+
+.img-flip .front{
   opacity: 1;
-  /* //filter: var(--img-blue-filter);  */
-} 
+  /* filter: var(--img-blue-filter); */
+}
 /* .img-flip .back{
   transform: rotateY(180deg);
-  filter:none;
+  filter: none;
 } */
 
-/* preklopenie na farebnú stranu */
-/* .child-button:hover .img-flip,
-.child-button:focus-visible .img-flip,
-.child-button.is-selected .img-flip{
-  transform: rotateY(180deg);
-  color: var(--base-blue);
+/* Hover efekt: zväčši LEN obrázok (rámik ostáva stabilný) */
+.child-button:hover .img-flip img,
+.child-button:focus-visible .img-flip img{
+  transform: scale(1.08);
+}
 
-} */
+/* Jemnejšie pri “tap” */
+.child-button:active .img-flip img{
+  transform: scale(1.04);
+}
+
+/* ===== Mobile layout: 2 stĺpce ===== */
+@media (max-width: 600px) {
+  .child-buttons {
+    display: grid;                               /* grid namiesto flexu */
+    grid-template-columns: repeat(2, 1fr);       /* presne 2 stĺpce */
+    gap: 2px;                                    /* rozostup medzi kartami */
+    justify-items: stretch;                      /* karty na plnú šírku buniek */
+    align-items: stretch;
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
+  .child-button {
+    width: 100%;                                 /* vyplní šírku stĺpca */
+    height: auto;                                /* prispôsobí sa obsahu */
+    padding: 2px 1px;
+    margin: 0;                                   /* medzery rieši grid */
+    border-radius: var(--corners);
+    margin-bottom: 15px;
+  }
+  .child-button img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  /* Obrázok: štvorcový box, obrázok vystredený a proporčne orezený */
+  .img-flip {
+    width: 100%;
+    aspect-ratio: 1 / 1;        /* čistý štvorec */
+    overflow: hidden;
+    border-radius: var(--corners);
+    position: relative;
+  }
+
+  .img-flip img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;                /* žiadnych 90 % – plná šírka */
+    height: 100%;
+    object-fit: cover;          /* proporčne, ale oreže okraje */
+    object-position: center;    /* stred obrázka, nie ľavý horný roh */
+  }
+
+  /* Nadpis v karte – menší, zalamovateľný */
+  .child-button .label {
+    font-size: 0.95rem;
+    line-height: 1.15;
+    white-space: normal;                          /* nech sa môže zalomiť */
+    word-break: break-word;
+  }
+}
+
+/* ===== Tablet (voliteľné): 3 stĺpce medzi 600–900 px ===== */
+@media (min-width: 601px) and (max-width: 900px) {
+  .child-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: stretch;
+  }
+  .child-button { width: 100%; height: auto; }
+  .img-flip { width: 100%; aspect-ratio: 1 / 1; }
+}
+
+/* ===== Desktop (voliteľné): môžeš ponechať flex,
+   alebo použiť plynulejšiu mriežku auto-fit (odkomentuj ak chceš)
+@media (min-width: 901px) {
+  .child-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .child-button { width: 100%; height: auto; }
+  .img-flip { width: 100%; aspect-ratio: 1 / 1; }
+}
+*/
+
 
 @media (prefers-reduced-motion: reduce){
   .img-flip{ transition:none; }
 }
 
-.child-button img{
-  vertical-align: top;
-  width: 260px;              /* uprav podľa potreby */
-  height: 260px;              /* uprav podľa potreby */
-  object-fit: cover;
-  opacity: 0.85;
-  /* filter: var(--img-blue-filter);         ⇦ modrý nádych default */
-  transition: all .625s ease;
-}
-
-/* na hover / focus / stlačenie bude farebný */
-.child-button:hover img,
-.child-button:focus-visible img,
-.child-button:active img,
-.child-button.is-selected img {           /* ⇦ ostane farebný pre aktívnu kategóriu */
-  filter: none;
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-.child-button .label{
-  line-height: 1.15;
-  white-space: normal;
-}
-.child-button:hover .label{
-  color: var(--base-blue);
-  font-weight: 700;
-  text-decoration: underline;
-
-}
-
-.child-button:hover{
-
-    background-color: #e7ebec75;
-
-}
 
 
 /* .child-button {
@@ -589,31 +730,106 @@ font-size: 1.2rem;
   border-color: var(--base-blue);
 }
 
-/* src/app/pages/eshop/product-list.component.css */
-/* ================= HOST & LAYOUT ================= */
-.reset-button{
-  position: relative;
-  top:-3px;
-  left:0px;
-  text-align: center;
-  margin: 1px 1px 1px 8px;
-  color:var(--base-blue);
-  background-color: var(--base-blue);
-  border: 1px solid var(--base-blue);
-  color: #edeef1;
-  padding: 4px 8px 3px 6px;
-  border-radius: var(--corners);
-  cursor: pointer;
-  font-size: 0.69rem;
-  font-weight: 700;
-  font-family: verdana;
-  transition: all 0.3s ease;
+
+
+
+
+
+/* A11y: skrytý titulok pre čítačky */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
 }
 
-.reset-button:hover{
+/* Wrapper */
+.cat-heading { padding: 6px 0; color: var(--base-blue); }
+.cat-bar { display: flex; justify-content: center; width: 100%; }
+
+/* ===== Desktop default: jeden riadok, bez zalomenia ===== */
+.cat-crumbs {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  /* -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
+          mask-image: linear-gradient(to right, black 85%, transparent); */
+}
+
+/* oddeľovač */
+.sep { opacity: .55; user-select: none; }
+
+/* „chip“ – hranatý (radius 0), stred textu */
+.crumb {
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 0;                         /* hranaté */
+  border: 1px solid var(--base-blue-thin);
+  background: var(--color-primary);
   color: var(--base-blue);
-  background-color: transparent;
-}  
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+
+  max-width: 28ch;                          /* dlhé názvy skráť elipsou (desktop) */
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  transition: transform .18s ease, all .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.crumb:hover,
+.crumb:focus-visible {
+  transform: translateY(-1px);
+  background: var(--color-primary);
+}
+
+/* zvýraznenie aktuálnej kategórie */
+.crumb--current {
+  background: var(--base-blue);
+  border-color: var(--base-blue);
+  color: #fff;
+  cursor: default;
+}
+.crumb--current:hover,
+.crumb--current:focus-visible {
+  transform: none;
+  background: var(--base-blue);
+}
+
+/* ===== Mobile: viac riadkov, centrované, čitateľné ===== */
+@media (max-width: 768px) {
+  .cat-crumbs {
+    display: flex;
+    flex-wrap: wrap;             /* dovolí viac riadkov */
+    justify-content: center;     /* centrum */
+    gap: 6px 8px;
+    white-space: normal;         /* dovoľ zalomenie textu */
+    overflow: visible;
+    -webkit-mask-image: none; mask-image: none;
+  }
+
+  .sep { display: none; }        /* čistejšie bez šípok na mobile */
+
+  /* chips sa môžu zalomiť a sú centrované */
+  .crumb {
+    max-width: min(100%, 28rem); /* nech vie rásť do šírky kontajnera */
+    text-align: center;
+    white-space: normal;         /* kľúč: viacriadkové */
+    word-break: break-word;
+    padding: 7px 10px;
+    font-size: 0.92rem;
+  }
+}
+
 
 
 
@@ -767,7 +983,7 @@ font-size: 1.2rem;
 .catmainpic{
   display: block;
   width: 100%;
-  height: 160px;
+  height: 400px;
   margin: 0px;
   padding: 0px;
 position: relative;
@@ -960,7 +1176,121 @@ float: none;
 .img-wrapper .btn-heart.is-fav .mat-icon {
   color: var(--base-blue);
 }
+/* ===== Mega-nav loader ===== */
+.content-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  min-height: 160px;
+}
 
+.content-loader__text {
+  font-size: 0.9rem;
+  color: var(--base-blue);
+}
+
+/* A11y: skrytý titulok pre čítačky */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
+/* Wrapper */
+.cat-heading {
+  position: relative;
+  z-index: 2;
+  padding: 6px 0;
+  color: var(--base-blue);
+}
+
+.cat-bar {
+  z-index: 999999;
+  display: flex;
+  justify-content: center; /* celé v strede */
+  width: 100%;
+}
+
+/* Scrollovateľná, ale centrovaná skupina */
+.cat-crumbs {
+  position: relative;
+  display: inline-flex;      /* inline-flex + center */
+  align-items: center;
+  justify-content: center;   /* centrovanie pri short obsahu */
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+
+  /* jemný fade na okrajoch (naznačí scroll) */
+  /* -webkit-mask-image: linear-gradient(to right, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, black 20px, black calc(100% - 20px), transparent 100%); */
+}
+
+.cat-crumbs::-webkit-scrollbar { display: none; }
+.cat-crumbs { scrollbar-width: none; }
+
+.sep {
+  flex: 0 0 auto;
+  opacity: .55;
+  user-select: none;
+}
+
+
+
+.crumb--current {
+  background: var(--base-blue);
+  border-color: var(--base-blue);
+  color: #fff;
+  cursor: default;
+}
+
+.crumb--close {
+  width: 40px;                 /* konzistentná plocha na klik */
+  min-width: 40px;
+  max-width: 40px;
+  padding: 8px 0;              /* X presne v strede */
+  font-size: 1rem;
+}
+
+
+/* Mobilné doladenia */
+@media (max-width: 768px) {
+  .cat-crumbs { gap: 6px; }
+  .crumb { max-width: 64vw; padding: 7px 10px; font-size: 0.92rem; }
+  .sep { display: none; }      /* čistejšie bez šípok */
+  .crumb--close { width: 36px; min-width: 36px; max-width: 36px; }
+}
+
+@media (max-width: 420px) {
+  .crumb { max-width: 70vw; font-size: 0.9rem; }
+  .crumb--close { width: 32px; min-width: 32px; max-width: 32px; }
+}
+
+
+
+
+/* jednoduchý CSS spinner */
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-top-color: var(--base-blue);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 /* kľúčové snímky pre pružný “bounce” */
 @keyframes heartBounce {
   0%   { transform: scale(.6); }
@@ -1034,6 +1364,42 @@ float: none;
   padding: 6px 8px;
 }
 
+
+/* ===== SOLD OUT / UNAVAILABLE badges ===== */
+.img-wrapper .badge-soldout {
+  width: 118px;
+  height: 30px;
+  border: none;
+  outline: none;
+  background: transparent url(/assets/img/back2.webp) no-repeat center / cover;
+  background-size: 8rem auto;
+  color: #fff;
+  font-size: 1rem;
+  padding: 6px 8px;
+
+  /* aby sa líšil aspoň textom */
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+
+.img-wrapper .badge-unavailable {
+  width: 118px;
+  height: 30px;
+  border: none;
+  outline: none;
+  background: transparent url(/assets/img/back2.webp) no-repeat center / cover;
+  background-size: 8rem auto;
+  color: #fff;
+  font-size: 0.92rem;
+  padding: 6px 8px;
+
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  opacity: .92; /* jemne “tlmene” oproti ostatným */
+}
+
+
+
 /* (voliteľné) na veľmi úzkych obrazovkách mierne zmenšíme */
 @media (max-width: 420px) {
   .img-wrapper .badge-stack {
@@ -1062,6 +1428,22 @@ float: none;
     background-size: 5rem auto;
 
   }
+  .img-wrapper .badge-soldout {
+          width: 88px;
+    height: 20px;
+    font-size: 0.826rem;
+    padding: 3px 1px;
+    background-size: 5rem auto;
+
+  }
+  .img-wrapper .badge-unavailable {
+          width: 88px;
+    height: 20px;
+    font-size: 0.826rem;
+    padding: 3px 1px;
+    background-size: 5rem auto;
+
+  }
 }
 
 
@@ -1077,8 +1459,8 @@ float: none;
 /* ================= Pôvodné štýly produktu ================= */
 .product-list {
   margin-top: 0px;
-  padding-left: 1.52rem;
-  padding-right: 1.52rem;
+  padding-left: .52rem;
+  padding-right: .52rem;
   width: 100%;
 }
 .product-list h2 {

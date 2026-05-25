@@ -2,7 +2,7 @@
 
 <!-- 1) Ikona lupy v hlavičke -->
 <button class="search-button" (click)="openOverlay()" aria-label="Otvoriť vyhľadávanie">
-  <i class="fas fa-search"></i>
+  <i class="fas fa-search" aria-hidden="true"></i>
 </button>
 
 <!-- 2) Fullscreen overlay -->
@@ -12,11 +12,13 @@
   [class.visible]="isVisible"
   [class.open]="isOpen"
   [class.close]="isClosing"
+  role="dialog"
+  aria-modal="true"
 >
-  <!-- Krížik na zavretie overlayu -->
+  <!-- Zavrieť overlay -->
   <button class="close-btn" (click)="closeOverlay()" aria-label="Zatvoriť vyhľadávanie">✕</button>
 
-  <!-- Horný riadok: input + krížik + dropdown návrhov + tlačidlo Hľadaj -->
+  <!-- Horný riadok: input + loader + dropdown + tlačidlo Hľadaj -->
   <div class="search-header">
     <div class="input-with-clear">
       <input
@@ -24,36 +26,43 @@
         type="text"
         [formControl]="searchControl"
         class="search-input-full"
-        placeholder="{{'ESHOP.SEARCH_PLACEHOLDER' | translate}}"
+        placeholder="{{ 'ESHOP.SEARCH_PLACEHOLDER' | translate }}"
         aria-label="Vyhľadávanie produktov"
         (focus)="onFocus()"
         (blur)="onBlur()"
       />
 
-      <!-- Krížik na vymazanie obsahu; zobrazuje sa iba ak je v inpute niečo napísané -->
-        <!-- Spinner počas načítavania -->
-       <div *ngIf="isLoading" class="input-spinner"></div>
-    
-       <!-- Krížik na vymazanie obsahu (iba keď nie je loading) -->
-       <button
-          *ngIf="!isLoading && searchControl.value"
-          class="clear-input-btn"
-         (click)="clearInput()"
-         aria-label="Vymazať text"
-          type="button"
-       >✕</button>
-      <div *ngIf="isLoading"  class="loading-message-wrapper">
+      <!-- Malý spinner v inpute počas načítavania živých návrhov -->
+      <div *ngIf="isLoading" class="input-spinner" aria-hidden="true"></div>
+
+      <!-- Krížik na vymazanie obsahu (iba keď nie je loading a je text) -->
+      <button
+        *ngIf="!isLoading && searchControl.value"
+        class="clear-input-btn"
+        (click)="clearInput()"
+        aria-label="Vymazať text"
+        type="button"
+      >
+        ✕
+      </button>
+
+      <!-- Text „Načítavam…“ -->
+      <div *ngIf="isLoading" class="loading-message-wrapper">
         <span class="loading-message">{{ loadingText }}</span>
-        </div>
-      <!-- Dropdown živých návrhov -->
-      <!-- Dropdown živých návrhov -->
-      <ul class="suggestions-dropdown" *ngIf="showDropdown">
+      </div>
+
+      <!-- Dropdown živých návrhov (autocomplete) -->
+      <ul class="suggestions-dropdown" *ngIf="showDropdown" role="listbox">
         <li
           *ngFor="let p of suggestions$ | async"
           class="suggestion-item"
           (click)="onSelectProduct(p)"
+          role="option"
         >
-          <div class="img-wrapper suggestion-img-wrapper" [class.loading]="loadingMap[p.primaryImageUrl]">
+          <div
+            class="img-wrapper suggestion-img-wrapper"
+            [class.loading]="loadingMap[p.primaryImageUrl]"
+          >
             <img
               *ngIf="p.primaryImageUrl"
               [src]="p.primaryImageUrl"
@@ -62,11 +71,12 @@
               (error)="onImageError(p.primaryImageUrl)"
             />
           </div>
-          <!-- <span class="suggestion-text">{{ p.name }}</span> -->
-          <span class="suggestion-text" title="{{ p.name }}">
-            {{ p.name.length > 20 ? (p.name | slice:0:33) + '...' : p.name }}
+
+          <span class="suggestion-text" [title]="p.name">
+            {{ p.name.length > 33 ? (p.name | slice:0:33) + '…' : p.name }}
           </span>
         </li>
+
         <li *ngIf="(suggestions$ | async)?.length === 0" class="no-suggestion">
           {{ 'ESHOP.NO_RESULTS' | translate }}
         </li>
@@ -76,30 +86,36 @@
     <button class="search-go-button" (click)="onSearch()" aria-label="Spustiť vyhľadávanie">
       {{ 'ESHOP.SEARCH' | translate }}
     </button>
-
   </div>
 
-  <div class="others" *ngIf="results.length === 0 || searchControl.value === null ">
-    <div class="product-card" *ngFor="let icon of icons">
-      <a (click)="searchFromLink(icon)"  class="icon-link"
-      
+  <!-- 3) „Iné“ – ikonky (bez pipes v click) -->
+  <div class="others" *ngIf="results.length === 0 || searchControl.value === null">
+    <div class="product-card2" *ngFor="let icon of icons">
+      <a
+        class="icon-link"
+        (click)="searchFromIcon(icon)"
+        role="button"
+        tabindex="0"
       >
         <img
           class="icon"
-          width="32"
-          height="32"
+          width="22"
+          height="22"
           [alt]="icon"
+          title="{{ icon }}"
           src="assets/img/icons/{{ icon }}.svg"
-          >
-
+        />
+        <span class="icon-text">{{ ('ICONS.' + (icon | uppercase)) | translate }}</span>
       </a>
     </div>
-</div>
-    <div class="others" *ngIf="results.length === 0 || searchControl.value === null ">
-    <div class="product-card" (click)="searchFromLink('habánsky dekór')">
+  </div>
+
+  <!-- 3b) presety dekorov -->
+  <div class="others" *ngIf="results.length === 0 || searchControl.value === null">
+    <div class="product-card" (click)="searchPreset('habansky')">
       <div class="img-wrapper card-img-wrapper" [class.loading]="loadingMap['habansky']">
         <img
-          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/pestry_c66dc15903.png"
+          src="https://d1hbdvlfav95nt.cloudfront.net/products/habansky_d991e83517.png"
           alt="Habánsky vzor"
           (load)="onImageLoad('habansky')"
           (error)="onImageError('habansky')"
@@ -109,10 +125,11 @@
         <h3 class="card-title">{{ 'ESHOP.HABANSKY_DEKOR' | translate }}</h3>
       </div>
     </div>
-    <div class="product-card" (click)="searchFromLink('modrý dekór')">
+
+    <div class="product-card" (click)="searchPreset('modry')">
       <div class="img-wrapper card-img-wrapper" [class.loading]="loadingMap['modry']">
         <img
-          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/modry_3d97dda614.png"
+          src="https://d1hbdvlfav95nt.cloudfront.net/products/modry_3d97dda614.png"
           alt="Modrý vzor"
           (load)="onImageLoad('modry')"
           (error)="onImageError('modry')"
@@ -122,10 +139,11 @@
         <h3 class="card-title">{{ 'ESHOP.MODRY_DEKOR' | translate }}</h3>
       </div>
     </div>
-    <div class="product-card" (click)="searchFromLink('pestrý dekór')">
+
+    <div class="product-card" (click)="searchPreset('pestry')">
       <div class="img-wrapper card-img-wrapper" [class.loading]="loadingMap['pestry']">
         <img
-          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/habansky_d991e83517.png"
+          src="https://d1hbdvlfav95nt.cloudfront.net/products/pestry_c66dc15903.png"
           alt="Pestrý vzor"
           (load)="onImageLoad('pestry')"
           (error)="onImageError('pestry')"
@@ -135,10 +153,11 @@
         <h3 class="card-title">{{ 'ESHOP.PESTRY_DEKOR' | translate }}</h3>
       </div>
     </div>
-    <div class="product-card" (click)="searchFromLink('zelený dekór')">
+
+    <div class="product-card" (click)="searchPreset('zeleny')">
       <div class="img-wrapper card-img-wrapper" [class.loading]="loadingMap['zeleny']">
         <img
-          src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/zeleny_e59e86cc20.png"
+          src="https://d1hbdvlfav95nt.cloudfront.net/products/zeleny_e59e86cc20.png"
           alt="Zelený vzor"
           (load)="onImageLoad('zeleny')"
           (error)="onImageError('zeleny')"
@@ -149,62 +168,61 @@
       </div>
     </div>
   </div>
-  <!-- 3) Výsledky (celý overlay teraz scrolluje) -->
+
+  <!-- 4) Výsledky -->
   <div
-  class="results-wrapper"
-  *ngIf="results.length > 0"
-  (scroll)="onResultsScroll($event)"
->
-  <h2 class="results-title">
-    {{ 'ESHOP.RESULT_SEARCH' | translate }} ({{ results.length }})
-  </h2>
-      <!-- "FAREBNY_DEKOR": "Buntes Dekor",
-      "PESTRY_DEKOR": "Lebhaftes Dekor",
-      "MODRY_DEKOR": "Blaues Dekor",
-      "ZELENY_DEKOR": "Grünes Dekor",
-      "TVAR_TANIER": "Tellerform",
-      "TVAR_VAZA": "Vasenform",
-      "TVAR_DZBAN": "Krugform",
-      "TVAR_POHAR": "Glasform",
-      "TVAR_MISKA": "Schalenform",
-      "TVAR_TEXT": "Form",
-      "DEKOR_TEXT": "Dekor" -->
-  <div class="cards-grid">
-    <div
-      *ngFor="let p of displayedResults"
-      class="product-card"
-      (click)="onSelectProduct(p)"
-    >
-      <div class="img-wrapper card-img-wrapper" [class.loading]="loadingMap[p.primaryImageUrl]">
-        <img
-          *ngIf="p.primaryImageUrl"
-          [src]="p.primaryImageUrl"
-          [alt]="p"
-          (load)="onImageLoad(p.primaryImageUrl)"
-          (error)="onImageError(p.primaryImageUrl)"
-        />
-      </div>
-      <div class="card-content">
-        <h1 class="card-title">{{ p.name }}</h1>
-        <div *ngIf="p.price !== undefined" class="card-price">
-          € {{ p.price | number: '1.2-2' }}
-          <span *ngIf="p.price_sale !== undefined" class="sale-price">
-            <!-- <del>€ {{ p.price_sale | number: '1.2-2' }}</del> -->
-          </span>
+    class="results-wrapper"
+    *ngIf="results.length > 0"
+    (scroll)="onResultsScroll($event)"
+  >
+    <h2 class="results-title">
+      {{ 'ESHOP.RESULT_SEARCH' | translate }}
+    </h2>
+
+    <div class="cards-grid">
+      <div
+        *ngFor="let p of displayedResults"
+        class="product-card"
+        (click)="onSelectProduct(p)"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="p.name"
+      >
+        <div class="img-wrapper card-img-wrapper" [class.loading]="loadingMap[p.primaryImageUrl]">
+          <img
+            *ngIf="p.primaryImageUrl"
+            [src]="p.primaryImageUrl"
+            [alt]="p.name"
+            (load)="onImageLoad(p.primaryImageUrl)"
+            (error)="onImageError(p.primaryImageUrl)"
+          />
+        </div>
+
+        <div class="card-content">
+          <h1 class="card-title">{{ p.name }}</h1>
+
+          <div *ngIf="p.inSale === true">
+            <p style="font-size: 1rem; text-align: center; display:inline-flex; padding-right: 6px; font-weight: 700;">
+              {{ p.price_sale }} €
+            </p>
+            <p style="display: inline-flex; font-size: 1rem; text-decoration: line-through; color: rgb(121, 121, 121);">
+              {{ p.price | number:'1.2-2' }} €
+            </p>
+          </div>
+
+          <div *ngIf="p.inSale === false" class="price-sale">
+            <p style="font-size: 1rem; font-weight: 700;">
+              {{ p.price | number:'1.2-2' }} €
+            </p>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Loader pri dočítavaní -->
+    <div class="paging-loader" *ngIf="isLoadingPage" role="status" aria-live="polite">
+      <span class="paging-spinner" aria-hidden="true"></span>
+      <span class="paging-text">{{ 'ESHOP.LOADING_PRODUCTS' | translate }}</span>
+    </div>
   </div>
-
-<!--  -->
-
-  </div>
-
-  <!-- Správa, ak žiadne výsledky -->
-  <!-- <div class="no-results" *ngIf="searchControl.value && results.length > 2">
-    Žiadne výsledky pre „{{ searchControl.value }}“
-  </div> -->
-
-
-
 </div>

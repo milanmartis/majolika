@@ -2,36 +2,120 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <title>Slovenská ľudová majolika</title>
+  <title>Slovenská ľudová majolika – uchovávame tradície</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <link rel="apple-touch-icon" href="/assets/img/mobile.jpg"/>
-  <link rel="manifest" href="/assets/manifest.json"/>
 
+  <!-- Základné meta pre SEO -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+        content="Slovenská ľudová majolika z Modry – originálna ručne maľovaná keramika, tradičné vzory a remeselné výrobky. Objavte hrnčeky, misy, taniere a dekorácie priamo z dielne v Modre.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#1976d2">
+
+  <!-- Open Graph (Facebook, LinkedIn, atď.) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Slovenská ľudová majolika Modra – ručne maľovaná keramika">
+  <meta property="og:description"
+        content="Ručne maľovaná majolika z Modry – tradičná keramika, dielňa a e-shop s originálnymi výrobkami.">
+  <meta property="og:url" content="https://www.majolika.sk/">
+  <meta property="og:image" content="https://www.majolika.sk/assets/img/logo_white_bg.gif">
+
+  <!-- Twitter karty -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Slovenská ľudová majolika Modra – ručne maľovaná keramika">
+  <meta name="twitter:description"
+        content="Slovenská ľudová majolika z Modry – tradičná ručne maľovaná keramika priamo z dielne.">
+  <meta name="twitter:image" content="https://www.majolika.sk/assets/img/logo_white_bg.gif">
+
+  <link rel="apple-touch-icon" href="/assets/img/mobile.jpg"/>
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="white"/>
   <link rel="icon" type="image/x-icon" href="/assets/ico.png">
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://use.typekit.net/gpz7sjg.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Google Identity -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-<script async
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC57XSUvZIf3w9MJvA5pjfPxGlMY_jHZ70&libraries=marker,places">
-</script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+  <!-- Structured data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Slovenská ľudová majolika",
+    "url": "https://www.majolika.sk",
+    "logo": "https://www.majolika.sk/assets/img/logo_white_bg.gif",
+    "sameAs": [
+      "https://www.facebook.com/majolikamodra",
+      "https://www.instagram.com/majolikamodra.sk"
+    ]
+  }
+  </script>
+
+  <!-- Structured data: LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Slovenská ľudová majolika",
+    "image": "https://www.majolika.sk/assets/og/og-home.jpg",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Dolná 138",
+      "addressLocality": "Modra",
+      "postalCode": "90001",
+      "addressCountry": "SK"
+    },
+    "telephone": "+421911980105",
+    "url": "https://www.majolika.sk"
+  }
+  </script>
+
+  <!-- Google Maps -->
 
 
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<!-- Font Awesome -->
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#1976d2">
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#1976d2">
+  <script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC57XSUvZIf3w9MJvA5pjfPxGlMY_jHZ70&libraries=marker&v=weekly"
+  async
+  defer
+></script>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <!-- =========================
+       Google Tag Manager (GTM)
+       ========================= -->
+  <script>
+    // Initialize dataLayer early
+    window.dataLayer = window.dataLayer || [];
+    // Optional: Consent Mode defaults (adjust based on your cookie banner)
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_personalization: 'denied',
+      ad_user_data: 'denied',
+      analytics_storage: 'granted'
+    });
+  </script>
+  <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PCK79V8F');
+  </script>
+
 </head>
-<body class="mat-typography">
+<body style="margin-top:-30px;">
+
   <app-root></app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
+
 </body>
 </html>

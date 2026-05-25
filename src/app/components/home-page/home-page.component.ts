@@ -1,42 +1,42 @@
-/* src/app/landing-page/landing-page.component.ts */
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  AfterViewInit
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subscription, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { NbspSmallWordsPipe } from 'app/pipes/nbsp-small-words.pipe';
-
-import { ProductsService, Product } from 'app/services/products.service';
-import { SlidesService, Slide } from 'app/services/slides.service';
 import { FooterComponent } from 'app/components/footer/footer.component';
-// import { SafeUrlPipe } from 'app/shared/safe-url.pipe';
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-  query,
-  stagger
-} from '@angular/animations';
 
-interface CalendarDay {
-  date: Date;
-  dayOfMonth: number;
-  isOccupied: boolean;
-  isToday: boolean;
-  isInCurrentMonth: boolean;
-  isSelectable: boolean;
+import { trigger, style, transition, animate, query, stagger } from '@angular/animations';
+
+type HeadingLevel = 'h1' | 'h2' | 'h3';
+
+interface HeroCardVM {
+  imageUrl: string;
+  alt: string;
+  routerLink: string;
+  openInNewTab: boolean;
+  buttonText?: string;
 }
+
+interface HeroImagesBlock {
+  __component: 'homepage.hero-images';
+  id?: number;
+  items: Array<{
+    id?: number;
+    alt?: string;
+    link?: string;
+    openInNewTab?: boolean;
+    buttonText?: string;
+    image?: any; // u teba image.url + formats
+  }>;
+}
+
+type HomepageBlock = HeroImagesBlock | any;
+
+type GalleryImage = { url: string; alt: string };
 
 @Component({
   selector: 'app-home-page',
@@ -46,316 +46,236 @@ interface CalendarDay {
     RouterModule,
     TranslateModule,
     FormsModule,
+    HttpClientModule,
     FooterComponent
   ],
   animations: [
-    trigger('fadeIn', [
-      state('visible', style({ opacity: 1 })),
-      transition('void => visible', [
-        style({ opacity: 0 }),
-        animate('0.5s ease-in'),
-      ]),
-    ]),
-    trigger('slideUp', [
-      state('visible', style({ transform: 'translateY(0)', opacity: 1 })),
-      transition('void => visible', [
-        style({ transform: 'translateY(100%)', opacity: 0 }),
-        animate('0.4s ease-out'),
-      ]),
-    ]),
-    trigger('slideDownUp', [
-      state('closed', style({ height: '0px', opacity: 0, overflow: 'hidden' })),
-      state('open', style({ height: '*', opacity: 1, overflow: 'hidden' })),
-      transition('closed => open', [
-        style({ height: '0px', opacity: 0 }),
-        animate('350ms ease-out', style({ height: '*', opacity: 1 })),
-      ]),
-      transition('open => closed', [
-        style({ height: '*', opacity: 1 }),
-        animate('300ms ease-in', style({ height: '0px', opacity: 0 })),
-      ]),
-    ]),
     trigger('fadeInStagger', [
       transition('false => true', [
         query('.choice-card', [
           style({ opacity: 0, transform: 'translateY(-1000px)' }),
           stagger(150, [
             animate(
-              '1000ms cubic-bezier(0.25, 0.8, 0.25, 1)', // pomalší koniec
+              '1000ms cubic-bezier(0.25, 0.8, 0.25, 1)',
               style({ opacity: 1, transform: 'translateY(0)' })
             )
           ])
         ], { optional: true })
       ])
     ]),
-    trigger('overlayAnimation', [
-      transition('* => *', [
-        // start hidden & a little down
-        style({ opacity: 0, transform: 'translateY(50px)' }),
-        // wait 1s, then animate up & fade in over 500ms
-        animate('500ms 1000ms ease-out',
-                style({ opacity: 1, transform: 'translateY(0)' }))
-      ])
-    ]),
-    ],
+  ],
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css'],
 })
-export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class HomePageComponent implements OnInit, OnDestroy {
+
+  private readonly CMS_BASE = 'https://majolika-cms.appdesign.sk';
+
+  // ✅ len to, čo reálne máš (hero-images/heading/paragraph)
+  private readonly HOMEPAGE_URL =
+    this.CMS_BASE +
+    '/api/homepage' +
+    '?populate[content][on][homepage.hero-images][populate][items][populate]=image' +
+    '&populate[content][on][homepage.heading]=*' +
+    '&populate[content][on][homepage.paragraph]=*';
 
   animationState = false;
-  @ViewChild('bgVideo') bgVideoRef!: ElementRef<HTMLVideoElement>;
 
+  // TOP 2 karty (fallback)
+  topHeroCards: HeroCardVM[] = [
+    {
+      imageUrl: 'https://d1hbdvlfav95nt.cloudfront.net/products/eshop_cb861c9cb5.jpg',
+      alt: 'E-shop',
+      routerLink: '/eshop',
+      openInNewTab: false,
+      buttonText: 'E-SHOP',
+    },
+    {
+      imageUrl: 'https://d1hbdvlfav95nt.cloudfront.net/products/dielne_1b69a9d207.jpg',
+      alt: 'Dielne',
+      routerLink: '/dielne',
+      openInNewTab: false,
+    }
+  ];
 
-  /* ---------------- SLIDER ---------------- */
-  // @ViewChild('sliderScroll'/, { static: false })
-  // sliderScroll!: ElementRef<HTMLDivElement>;
+  heroLoading: boolean[] = [true, true];
 
-  // slides: Slide[] = [];
-  // currentSlideIndex = 0;
-  // private slidesSub?: Subscription;
-  // private autoId?: number;
+  // všetko pod top
+  restBlocks: HomepageBlock[] = [];
 
-  // public pauseAuto(): void {
-  //   if (this.autoId != null) {
-  //     clearInterval(this.autoId);
-  //     this.autoId = undefined;
-  //   }
-  // }
-  // public resumeAuto(): void {
-  //   if (this.autoId == null && this.slides.length) {
-  //     this.autoId = window.setInterval(() => this.nextSlide(), 5000);
-  //   }
-  // }
+  // galéria (iba z prvého rest hero-images bloku)
+  galleryImages: GalleryImage[] = [];
+  galleryClass = 'gallery-1';
 
-  /* -------- FEATURED‐PRODUCTS SCROLLER -------- */
-  // @ViewChild('scrollContainer', { static: false })
-  // scrollContainer!: ElementRef<HTMLDivElement>;
-  // private autoSlideInterval?: number;
+  // bloky, ktoré sa renderujú po galérii
+  blocksAfterGallery: HomepageBlock[] = [];
 
-  // startAutoSlide(): void {
-  //   if (this.autoSlideInterval != null) return;
-  //   this.autoSlideInterval = window.setInterval(() => {
-  //     const container = this.scrollContainer.nativeElement;
-  //     const maxScrollLeft = container.scrollWidth - container.clientWidth;
-  //     if (container.scrollLeft >= maxScrollLeft) {
-  //       container.scrollTo({ left: 0, behavior: 'smooth' });
-  //     } else {
-  //       container.scrollBy({ left: 300, behavior: 'smooth' });
-  //     }
-  //   }, 4000);
-  // }
+  // modal
+  modalOpen = false;
+  modalUrl = '';
+  modalAlt = '';
 
-  // stopAutoSlide(): void {
-  //   if (this.autoSlideInterval != null) {
-  //     clearInterval(this.autoSlideInterval);
-  //     this.autoSlideInterval = undefined;
-  //   }
-  // }
-
-  // scrollLeft(): void {
-  //   this.scrollContainer.nativeElement.scrollBy({ left: -300, behavior: 'smooth' });
-  // }
-
-  // scrollRight(): void {
-  //   this.scrollContainer.nativeElement.scrollBy({ left: 300, behavior: 'smooth' });
-  // }
-
-  /* ---------------- PRODUKTY & OSTATNÉ ---------------- */
-  saleProducts: Product[] = [];
-  featured: Product[] = [];
-  experiences: Product[] = [];
-  loadingMap: Record<string, boolean> = {};
-  private saleSub?: Subscription;
-  private expSub?: Subscription;
-  imgState = 'hidden';
-
-  /* ---------------- KALENDÁR ---------------- */
-  calendarDays: CalendarDay[] = [];
-  weekDays = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
-  currentMonth = new Date();
-  selectedDay: CalendarDay | null = null;
-  registration = { name: '', email: '' };
+  private sub?: Subscription;
 
   constructor(
-    private router: Router,
-    private productsService: ProductsService,
-    private slidesService: SlidesService
+    private http: HttpClient,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
-    // fetch slides
-    // this.slidesSub = this.slidesService
-    //   .getSlides()
-    //   .pipe(catchError(() => of([] as Slide[])))
-    //   .subscribe(sl => {
-    //     this.slides = sl;
-    //     this.resumeAuto();
-    //   });
-
-    this.loadSaleAndFeatured();
-    this.loadExperiences();
-    this.generateCalendar(this.currentMonth);
-
-    setTimeout(() => (this.imgState = 'visible'), 300);
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => this.animationState = true, 0);
-    this.bgVideoRef.nativeElement.muted = true;
-    this.bgVideoRef.nativeElement.play();
-    // auto‐scroll featured products when view is ready
-    // this.startAutoSlide();
+    setTimeout(() => (this.animationState = true), 0);
+    this.sub = this.loadHomepage().subscribe();
   }
 
   ngOnDestroy(): void {
-    // this.pauseAuto();
-    // this.stopAutoSlide();
-    // this.slidesSub?.unsubscribe();
-    this.saleSub?.unsubscribe();
-    this.expSub?.unsubscribe();
+    this.sub?.unsubscribe();
   }
 
-  /* === SLIDER NAVIGATION === */
-  // nextSlide(): void {
-  //   if (!this.slides.length) return;
-  //   this.pauseAuto();
-  //   this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
-  //   this.scrollToSlide(this.currentSlideIndex);
-  //   this.resumeAuto();
-  // }
-
-  // prevSlide(): void {
-  //   if (!this.slides.length) return;
-  //   this.pauseAuto();
-  //   this.currentSlideIndex =
-  //     (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
-  //   this.scrollToSlide(this.currentSlideIndex);
-  //   this.resumeAuto();
-  // }
-
-  // goToSlide(i: number): void {
-  //   this.pauseAuto();
-  //   this.currentSlideIndex = i;
-  //   this.scrollToSlide(i);
-  //   this.resumeAuto();
-  // }
-
-  // private scrollToSlide(index: number): void {
-  //   const el = this.sliderScroll.nativeElement;
-  //   el.scrollTo({ left: el.offsetWidth * index, behavior: 'smooth' });
-  // }
-
-  /* === PRODUKTY === */
-  private loadSaleAndFeatured(): void {
-    this.saleSub = this.productsService
-      .getRootProducts('name:asc')
-      .pipe(catchError(() => of({ data: [] } as any)))
-      .subscribe(resp => {
-        this.saleProducts = resp.data.filter((p: Product) => p.inSale);
-        [...this.saleProducts, ...this.featured].forEach(
-          p => (this.loadingMap[p.slug] = true)
-        );
-      });
-
-    this.productsService.getFeaturedProducts().subscribe(l => {
-      this.featured = l;
-      [...this.saleProducts, ...this.featured].forEach(
-        p => (this.loadingMap[p.slug] = true)
-      );
-    });
+  onHeroImageLoad(i: number): void {
+    this.heroLoading[i] = false;
   }
 
-  private loadExperiences(): void {
-    this.expSub = this.productsService
-      .getProductsByCategorySlug('zazitky', 'name:asc')
-      .pipe(
-        map(r => r.data.slice(0, 6)),
-        catchError(() => of([] as Product[]))
-      )
-      .subscribe(list => (this.experiences = list));
+  onHeroImageError(i: number): void {
+    this.heroLoading[i] = false;
   }
 
-  onImageLoad(slug: string): void {
-    this.loadingMap[slug] = false;
+  sanitizeHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html || '');
   }
 
-  onImageError(slug: string): void {
-    this.loadingMap[slug] = false;
+  private loadHomepage() {
+    return this.http.get<any>(this.HOMEPAGE_URL).pipe(
+      map((resp) => {
+        const dataAny: any = resp?.data;
+        const content: HomepageBlock[] = dataAny?.content ?? dataAny?.attributes?.content ?? [];
+
+        // 1) TOP: prvý hero-images blok -> prvé 2 items
+        const firstHeroIndex = content.findIndex(b => b?.__component === 'homepage.hero-images');
+        const firstHeroBlock = (firstHeroIndex >= 0 ? content[firstHeroIndex] : null) as HeroImagesBlock | null;
+
+        if (firstHeroBlock?.items?.length) {
+          const firstTwo = firstHeroBlock.items.slice(0, 2);
+          this.heroLoading = [true, true];
+
+          const mapped = firstTwo.map((it, idx) => {
+            const imageUrl = this.resolveStrapiImageUrl(it?.image) || this.topHeroCards[idx]?.imageUrl || '';
+            const routerLink = this.normalizeRouterLink(it?.link, idx);
+
+            return {
+              imageUrl,
+              alt: it?.alt || '',
+              routerLink,
+              openInNewTab: !!it?.openInNewTab,
+              buttonText: it?.buttonText,
+            } as HeroCardVM;
+          });
+
+          if (mapped.length === 1) {
+            mapped.push(this.topHeroCards[1]);
+            this.heroLoading[1] = false;
+          }
+
+          this.topHeroCards = mapped;
+        } else {
+          this.heroLoading = [false, false];
+        }
+
+        // 2) REST: všetko okrem prvého hero bloku
+        this.restBlocks = content.filter((_, idx) => idx !== firstHeroIndex);
+
+        // 3) GALÉRIA iba ak prvý REST blok je hero-images
+        this.buildGalleryFromFirstRestBlock();
+
+        return true;
+      }),
+      catchError((err) => {
+        console.error('Homepage API error:', err);
+        this.heroLoading = [false, false];
+        this.restBlocks = [];
+        this.galleryImages = [];
+        this.blocksAfterGallery = [];
+        return of(false);
+      })
+    );
   }
 
-  openInNewTab(url: string): void {
-    window.open(url, '_self', 'noopener');
-  }
+  private buildGalleryFromFirstRestBlock(): void {
+    this.galleryImages = [];
+    this.blocksAfterGallery = [...this.restBlocks];
 
-  goToLink(url: string): void {
-    this.router.navigateByUrl('/' + url);
-  }
+    if (!this.restBlocks.length) return;
 
-  /* === KALENDÁR === */
-  private generateCalendar(reference: Date): void {
-    const first = new Date(reference.getFullYear(), reference.getMonth(), 1);
-    const startMonday = new Date(first);
-    startMonday.setDate(first.getDate() - ((first.getDay() + 6) % 7));
+    const first = this.restBlocks[0];
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    this.calendarDays = [];
-    for (let i = 0; i < 42; i++) {
-      const d = new Date(startMonday);
-      d.setDate(startMonday.getDate() + i);
-      const inMonth = d.getMonth() === reference.getMonth();
-      const isToday = d.getTime() === today.getTime();
-      this.calendarDays.push({
-        date: d,
-        dayOfMonth: d.getDate(),
-        isOccupied: false,
-        isToday,
-        isInCurrentMonth: inMonth,
-        isSelectable: inMonth,
-      });
+    if (first?.__component !== 'homepage.hero-images' || !Array.isArray(first.items)) {
+      // žiadna galéria, renderuj všetko normálne
+      return;
     }
+
+    const imgs = (first.items as any[])
+      .slice(0, 4)
+      .map(it => ({
+        url: this.resolveStrapiImageUrl(it?.image),
+        alt: it?.alt || ''
+      }))
+      .filter(g => !!g.url);
+
+    if (!imgs.length) return;
+
+    this.galleryImages = imgs;
+    this.galleryClass =
+      imgs.length <= 1 ? 'gallery-1' :
+      imgs.length === 2 ? 'gallery-2' :
+      imgs.length === 3 ? 'gallery-3' : 'gallery-4';
+
+    // odstráň prvý block (lebo ho renderujeme ako galériu)
+    this.blocksAfterGallery = this.restBlocks.slice(1);
   }
 
-  prevMonth(): void {
-    this.currentMonth = new Date(
-      this.currentMonth.getFullYear(),
-      this.currentMonth.getMonth() - 1,
-      1
-    );
-    this.generateCalendar(this.currentMonth);
-    this.selectedDay = null;
+  // ✅ u teba: image.url + image.formats.large.url
+  resolveStrapiImageUrl(imageField: any): string {
+    const url =
+      imageField?.formats?.large?.url ||
+      imageField?.formats?.medium?.url ||
+      imageField?.url ||
+      '';
+
+    if (!url) return '';
+    return url.startsWith('/') ? `${this.CMS_BASE}${url}` : url;
   }
 
-  nextMonth(): void {
-    this.currentMonth = new Date(
-      this.currentMonth.getFullYear(),
-      this.currentMonth.getMonth() + 1,
-      1
-    );
-    this.generateCalendar(this.currentMonth);
-    this.selectedDay = null;
+  private normalizeRouterLink(link: string | undefined, fallbackIndex: number): string {
+    const fallback = fallbackIndex === 0 ? '/eshop' : '/dielne';
+    if (!link) return fallback;
+    const t = ('' + link).trim();
+    if (!t) return fallback;
+    return t.startsWith('/') ? t : `/${t}`;
   }
 
-  selectDay(day: CalendarDay): void {
-    if (!day.isSelectable) return;
-    this.selectedDay = day;
+  normalizeLink(link?: string): string {
+    if (!link) return '/';
+    const t = ('' + link).trim();
+    if (!t) return '/';
+    return t.startsWith('/') ? t : `/${t}`;
   }
 
-  submitRegistration(): void {
-    if (!this.selectedDay) return;
-    alert('Ďakujeme za registráciu!');
-    this.registration = { name: '', email: '' };
-    this.selectedDay = null;
+  openModal(url: string, alt: string = ''): void {
+    if (!url) return;
+    this.modalUrl = url;
+    this.modalAlt = alt;
+    this.modalOpen = true;
+    document.body.style.overflow = 'hidden';
   }
 
-  /* === ROUTING KARTY === */
-  onSelect(option: 'optionA' | 'optionB'): void {
-    const queryParams =
-      option === 'optionB'
-        ? { category: 'zazitky' }
-        : { category: 'kolekcie' };
-    this.router.navigate(['/produkt'], { queryParams });
+  closeModal(): void {
+    this.modalOpen = false;
+    this.modalUrl = '';
+    this.modalAlt = '';
+    document.body.style.overflow = '';
+  }
+
+  @HostListener('document:keydown.escape')
+  onEsc(): void {
+    if (this.modalOpen) this.closeModal();
   }
 }

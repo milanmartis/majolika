@@ -12,7 +12,8 @@ import {
   AfterViewInit
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { forkJoin } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -119,8 +120,57 @@ interface CalendarDay {
 })
 export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
+  // =========================
+  // ✅ Locale helpers
+  // =========================
+  private currentLangCode(): string {
+    return (this.lang.getCurrentLanguage() || 'sk').toLowerCase();
+  }
+
+  /** ✅ ak máš URL /en/... /de/... (SK bez prefixu) */
+  private langPrefixSegments(): string[] {
+    const l = this.currentLangCode();
+    return l === 'sk' ? [] : [l];
+  }
+
+  /** ✅ bezpečný wrapper na navigáciu s prefixom jazyka */
+  private nav(commands: any[], extras?: any): void {
+    this.router.navigate([...this.langPrefixSegments(), ...commands], extras);
+  }
 
 
+private navigateToProductDetailByDocumentId(
+  documentId: string,
+  extras?: { date?: string; sessionId?: number }
+): void {
+  const locale = (this.lang.getCurrentLanguage() || 'sk').toLowerCase();
+
+  this.productsService.getProductByDocumentIdForceLocale(documentId, locale).pipe(
+    catchError(() => this.productsService.getProductByDocumentIdForceLocale(documentId, 'sk')),
+    map(resp => this.productsService.extractFirst(resp)),
+    catchError(() => of(null))
+  ).subscribe(prod => {
+    const slug = (prod?.slug ?? '').trim();
+
+    console.log('[NAV] docId=', documentId, 'locale=', locale, 'slug=', slug, 'prod=', prod);
+
+    if (!slug) return;
+
+    this.router.navigate(['produkt', slug], {
+      queryParams: {
+        ...(extras?.date ? { date: extras.date } : {}),
+        ...(extras?.sessionId != null ? { sessionId: extras.sessionId } : {}),
+        documentId,
+      },
+      queryParamsHandling: '',
+    });
+  });
+}
+
+
+  // =========================
+  // Date utils
+  // =========================
   public toUTCDateString(date: Date | string): string {
     const d = typeof date === 'string' ? new Date(date) : date;
     return d.toISOString().slice(0, 10); // "YYYY-MM-DD"
@@ -129,27 +179,26 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
   isSameDay(a: Date | string, b: Date | string): boolean {
     const d1 = typeof a === 'string' ? new Date(a) : a;
     const d2 = typeof b === 'string' ? new Date(b) : b;
-    // Porovnávaj podľa UTC, nie lokálne!
     return (
       d1.getUTCFullYear() === d2.getUTCFullYear() &&
       d1.getUTCMonth() === d2.getUTCMonth() &&
       d1.getUTCDate() === d2.getUTCDate()
     );
   }
-  
 
   private toLocalDateString(date: Date | string): string {
-    // Premeň na Date, ak je string
     const d = typeof date === 'string' ? new Date(date) : date;
-    // Vezmi YYYY-MM-DD v lokálnom čase
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
+
   @ViewChildren('slideVideo', { read: ElementRef })
   slideVideos!: QueryList<ElementRef<HTMLVideoElement>>;
   @Input() externalVideo!: string;
   safeUrl!: SafeResourceUrl;
+
   @ViewChild('slideVideo', { static: false })
   slideVideo!: ElementRef<HTMLVideoElement>;
+
   /* ---------------- SLIDER ---------------- */
   @ViewChild('sliderScroll', { static: false })
   sliderScroll!: ElementRef<HTMLDivElement>;
@@ -159,7 +208,9 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
   currentSlideIndex = 0;
   private slidesSub?: Subscription;
   private autoId?: number;
-  public sessionProductImages: Record<number, string> = {}; // podľa ID
+
+  /** ✅ obrázky viaž radšej na product.documentId (stabilné medzi locale) */
+  public sessionProductImages: Record<string, string> = {};
 
   /* -------- FEATURED‐PRODUCTS SCROLLER -------- */
   @ViewChild('scrollContainer', { static: false })
@@ -173,7 +224,6 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
     const el = this.sliderScroll?.nativeElement;
     if (!el) return;
 
-    // sync po resize
     this.resizeObserver = new ResizeObserver(() => {
       this.scrollToSlide(this.currentSlideIndex);
     });
@@ -182,7 +232,6 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
     this.sliderInitialized = true;
   }
   private scrollSyncTimeout?: number;
-
 
   /* ---------------- PRODUKTY & OSTATNÉ ---------------- */
   saleProducts: Product[] = [];
@@ -204,140 +253,243 @@ export class LandingPage2Component implements OnInit, OnChanges, AfterViewInit, 
     });
   }
 
-
-  
   currentMonth = new Date();
   selectedDay: CalendarDay | null = null;
   registration = { name: '', email: '' };
 
-  // sessionsForSelectedDay: any[] = [];
   loadingSessions = false;
   selectedSession: EventSessionWithCapacity | null = null;
-  // registration = { name: '', email: '' };
   loading = false;
   bookingSuccess = false;
   errorMessage = '';
   sessionsForSelectedDay: EventSessionWithCapacity[] = [];
-  // loadingSessions = false;
   bookingName = '';
   bookingEmail = '';
   feedback = '';
-  feedbackKey=''; 
+  feedbackKey='';
 
   private cartSub?: Subscription;
   holdTimer?: any;
   private cartBookingSub?: Subscription;
+
+  authLoading = true;
+
   constructor(
     private router: Router,
     private productsService: ProductsService,
     private slide2sService: Slide2sService,
     private sanitizer: DomSanitizer,
     private eventSessionsService: EventSessionsService,
-    public lang: LanguageService,    
+    public lang: LanguageService,
     private cart: CartService,
     private auth: AuthService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-
     @Inject(LOCALE_ID) public locale: string
-
   ) {}
+
+  // =========================
+  // ✅ Experiences click -> documentId -> localized slug -> navigate with lang prefix
+  // =========================
+  public openExperienceByDocumentId(p: Product): void {
+  const docId = (p as any)?.documentId;
+  if (!docId) return;
+  this.navigateToProductDetailByDocumentId(docId);
+}
+
+  // =========================
+  // ✅ Session card: image loader via documentId
+  // =========================
   loadProductImageForSession(session: EventSessionWithCapacity) {
-    const prod = session.product;
-    if (!prod || !prod.id || this.sessionProductImages[prod.id]) return;
-    this.productsService.getProductById(prod.id).subscribe(product => {
-      if (product && product.primaryImageUrl) {
-        this.sessionProductImages[prod.id] = product.primaryImageUrl;
-      }
+    const docId = session.product?.documentId;
+    if (!docId || this.sessionProductImages[docId]) return;
+
+    const want = this.currentLangCode();
+
+    this.productsService.getProductByDocumentIdForceLocale(docId, want).pipe(
+      catchError(() => this.productsService.getProductByDocumentIdForceLocale(docId, 'sk')),
+      map(resp => this.productsService.extractFirst(resp)),
+      catchError(() => of(null))
+    ).subscribe(prod => {
+      if (prod?.primaryImageUrl) this.sessionProductImages[docId] = prod.primaryImageUrl;
     });
   }
+
+
+
+public goToSession(session: EventSessionWithCapacity, ev?: Event): void {
+  ev?.preventDefault();
+  ev?.stopPropagation();
+
+  const documentId = session.product?.documentId;
+  if (!documentId) {
+    console.warn('Missing session.product.documentId', session);
+    return;
+  }
+
+  const dateStr = this.selectedDay
+    ? this.toUTCDateString(this.selectedDay.date)
+    : this.toUTCDateString(session.startDateTime);
+
+  this.navigateToProductDetailByDocumentId(documentId, {
+    date: dateStr,
+    sessionId: session.id,
+  });
+}
+  // =========================
+  // (Optional) localized pick, but now we mainly rely on documentId-based fetches
+  // =========================
+  private pickLocalizedProduct(masterProduct: any): any {
+    if (!masterProduct) return null;
+
+    const want = (this.lang.getCurrentLanguage() || 'sk').toLowerCase();
+    const masterLocale = (masterProduct.locale || '').toLowerCase();
+
+    if (masterLocale === want) return masterProduct;
+
+    const locs =
+      masterProduct.localizations?.data ??
+      masterProduct.localizations ??
+      [];
+
+    const hit = locs.find((x: any) =>
+      ((x?.attributes?.locale ?? x?.locale ?? '') as string).toLowerCase() === want
+    );
+
+    return hit?.attributes ?? hit ?? masterProduct;
+  }
+
   private setActiveVideoProps(): void {
-    // assuming currentSlideIndex corresponds to a slide that has a video
     const videosArray = this.slideVideos.toArray();
     const activeVideo = videosArray[this.currentSlideIndex];
     if (activeVideo?.nativeElement) {
       const el = activeVideo.nativeElement;
       el.muted = true;
       el.volume = 0;
-      // you can also ensure autoplay/play etc. here if needed
     }
   }
+
   public onVideoReady(event: Event): void {
     const video = event.target as HTMLVideoElement;
-    // istota že sa správne nastaví, zvlášť ak nechceš manipulovať cez ViewChild
     video.muted = true;
     video.volume = 0;
   }
 
   public getSessionPrice(session: EventSessionWithCapacity): number {
-    // priorita: session.price > session.product.price > 0
-    // ak session.price neexistuje, použije cenu produktu
     if (!session) return 0;
-  if (session.product?.inSale === true) {
-    return (session as any).price ?? session.product?.price_sale ?? 0;
-  }else{
-    return (session as any).price ?? session.product?.price ?? 0;
+    if (session.product?.inSale === true) {
+      return (session as any).price ?? session.product?.price_sale ?? 0;
+    } else {
+      return (session as any).price ?? session.product?.price ?? 0;
+    }
   }
-    // return session.price;
+
+  isSelected(day: CalendarDay): boolean {
+    return !!this.selectedDay && this.isSameDay(day.date, this.selectedDay.date);
   }
 
-isSelected(day: CalendarDay): boolean {
-  return !!this.selectedDay && this.isSameDay(day.date, this.selectedDay.date);
-}
+  public addDays(date: Date | string, days: number): Date {
+    const d = typeof date === 'string' ? new Date(date) : new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
 
-public addDays(date: Date | string, days: number): Date {
-  const d = typeof date === 'string' ? new Date(date) : new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
-}
+  public selectDay(day: CalendarDay): void {
+    if (!day.isSelectable) return;
+    this.selectedDay = day;
+    const utcDate = this.toUTCDateString(day.date);
+    this.loadSessionsForDay(utcDate, true);
+  }
 
-public selectDay(day: CalendarDay): void {
-  if (!day.isSelectable) return;
-  this.selectedDay = day;
-  // pre filter použijeme UTC dátum (len deň, bez času)
-  const utcDate = this.toUTCDateString(day.date);
-  this.loadSessionsForDay(utcDate, true);
-}
-
-private loadSessionsForDay(date: string | Date | CalendarDay, forceReload = false) {
+  private loadSessionsForDay(date: string | Date | CalendarDay, forceReload = false) {
   const dateStr =
     typeof date === 'string' ? date :
     date instanceof Date ? this.toUTCDateString(date) :
     this.toUTCDateString(date.date);
 
   this.loadingSessions = true;
-  this.eventSessionsService.listForDay(dateStr, forceReload).subscribe({
-    next: (sessions) => { this.sessionsForSelectedDay = sessions ?? []; this.loadingSessions = false; },
-    error: () => { this.loadingSessions = false; this.sessionsForSelectedDay = []; }
+
+  const wantLocale = this.currentLangCode();
+
+  this.eventSessionsService.listForDay(dateStr, forceReload).pipe(
+
+    // 1) dedupe podľa product.documentId
+    map((sessions) => {
+      const res: EventSessionWithCapacity[] = [];
+      const seen = new Set<string>();
+
+      for (const s of (sessions ?? [])) {
+        const docId = s.product?.documentId;
+        if (docId) {
+          if (seen.has(docId)) continue;
+          seen.add(docId);
+        }
+        res.push(s);
+      }
+
+      return res;
+    }),
+
+    // 2) pre každý session dotiahni produkt v správnom locale podľa documentId
+    switchMap((sessions) => {
+      const calls = sessions.map((s) => {
+        const docId = s.product?.documentId;
+        if (!docId) return of(s);
+
+        return this.productsService.getProductByDocumentIdForceLocale(docId, wantLocale).pipe(
+          catchError(() => this.productsService.getProductByDocumentIdForceLocale(docId, 'sk')),
+          map(resp => {
+            const prod = this.productsService.extractFirst(resp);
+            if (prod) s.product = prod; // ✅ prepíš na EN/DE/SK variant
+            return s;
+          }),
+          catchError(() => of(s))
+        );
+      });
+
+      return forkJoin(calls);
+    })
+
+  ).subscribe({
+    next: (sessions) => {
+      this.sessionsForSelectedDay = sessions ?? [];
+      this.loadingSessions = false;
+    },
+    error: () => {
+      this.loadingSessions = false;
+      this.sessionsForSelectedDay = [];
+    }
   });
 }
 
-public stripSizePrefix(url?: string): string {
+  public stripSizePrefix(url?: string): string {
     if (!url) return '/assets/img/gall/placeholder.jpg';
-    // odstráni prefix len v POSLEDNOM segmente cesty (teda v názve súboru)
     return url.replace(/(^|\/)(?:large_|medium_|small_|thumbnail_)(?=[^/]*$)/, '$1');
   }
+
+  // =========================
+  // Booking
+  // =========================
   startBooking(session: EventSessionWithCapacity) {
     this.selectedSession = session;
     this.feedback = '';
-    this.feedbackKey=''; 
+    this.feedbackKey='';
 
-  if (this.authLoading) {
-    this.feedback = this.translate.instant('feedback.checking_auth'); // kľúč podľa tvojho i18n
-    return;
-  }
-  if (!this.bookingName || !this.bookingEmail) {
-    this.feedbackKey = 'login_required'; // ... atď.
-
-    this.feedback = this.translate.instant('feedback.login_required');
-    return;
-  }
-  
-    if ((session.capacity?.available || 0) <= 0) {
-      this.feedback =  this.translate.instant('feedback.season_full');
+    if (this.authLoading) {
+      this.feedback = this.translate.instant('feedback.checking_auth');
       return;
     }
-  
+    if (!this.bookingName || !this.bookingEmail) {
+      this.feedbackKey = 'login_required';
+      this.feedback = this.translate.instant('feedback.login_required');
+      return;
+    }
+
+    if ((session.capacity?.available || 0) <= 0) {
+      this.feedback = this.translate.instant('feedback.season_full');
+      return;
+    }
+
     this.loadingSessions = true;
     const payload: BookingPayload = {
       session: session.id,
@@ -346,34 +498,37 @@ public stripSizePrefix(url?: string): string {
       customerEmail: this.bookingEmail,
       status: 'pending',
     };
-  
+
     this.eventSessionsService.createBooking(payload).subscribe({
       next: (res) => {
         this.loadingSessions = false;
         this.feedback = '';
+
         if (session.capacity) {
           session.capacity.available = Math.max(0, session.capacity.available - 1);
         }
+
         const bookingId = res.id;
         const expireAt = Date.now() + 10 * 60 * 1000;
-  
-        // Načítaj produkt, ak je k session priradený
-        const slug = session.product?.slug;
-        //console.log('Session product slug:', slug);
-        if (slug) {
-          this.productsService.getProductWithVariations(slug).pipe(
+
+        // ✅ Na cart produkt ber podľa documentId -> správna lokalizácia
+        const docId = session.product?.documentId;
+        const locale = this.currentLangCode();
+
+        if (docId) {
+          this.productsService.getProductByDocumentIdForceLocale(docId, locale).pipe(
+            catchError(() => this.productsService.getProductByDocumentIdForceLocale(docId, 'sk')),
+            map(resp => this.productsService.extractFirst(resp)),
             catchError(() => of(null))
-          ).subscribe(prodResp => {
-            const prod: Product | null = prodResp?.data?.[0] ?? null;
+          ).subscribe(prod => {
             if (!prod) return;
-  
-            const variation = prod.variations?.[0] ?? null;
-            const price = variation?.price ?? prod.price ?? 0;
+
+            const variation = (prod as any).variations?.[0] ?? null;
             const img = variation?.primaryImageUrl || prod.primaryImageUrl || '';
             const id = variation?.id ?? prod.id;
             const name = prod.name;
             const productSlug = variation?.slug ?? prod.slug ?? '';
-  
+
             this.cart.add(
               {
                 id,
@@ -381,8 +536,8 @@ public stripSizePrefix(url?: string): string {
                 slug: productSlug,
                 price: this.getSessionPrice(session),
                 img,
-                price_sale: undefined, // alebo cenu ak vieš
-                inSale: false, // alebo true podľa logiky, session zvyčajne false
+                price_sale: undefined,
+                inSale: false,
                 session,
                 bookingId,
                 holdExpires: expireAt,
@@ -391,7 +546,7 @@ public stripSizePrefix(url?: string): string {
             );
           });
         } else {
-          // fallback bez detailu produktu
+          // fallback bez docId
           this.cart.add(
             {
               id: session.id,
@@ -408,32 +563,30 @@ public stripSizePrefix(url?: string): string {
             1
           );
         }
-  
-        // automatické uvoľnenie po 10 minútach
+
         this.holdTimer && clearTimeout(this.holdTimer);
-this.holdTimer = setTimeout(() => {
-  this.eventSessionsService.patchBooking(bookingId, { status: 'cancelled' }).subscribe();
-  this.cart.removeByBooking(bookingId);
+        this.holdTimer = setTimeout(() => {
+          this.eventSessionsService.patchBooking(bookingId, { status: 'cancelled' }).subscribe();
+          this.cart.removeByBooking(bookingId);
 
-  // Zobraz snack bar informáciu
-  this.snackBar.open('⏳ Reservation expired.', 'OK', {
-    duration: 4000,
-    panelClass: ['snack-info'] // alebo snack-error, podľa dizajnu
-  });
+          this.snackBar.open('⏳ Reservation expired.', 'OK', {
+            duration: 4000,
+            panelClass: ['snack-info']
+          });
 
-  if (session.capacity) { session.capacity.available += 1; }
-}, 10 * 60 * 1000); // alebo 1 * 60 * 1000 pre 1 minutu na testovanie
+          if (session.capacity) { session.capacity.available += 1; }
+        }, 10 * 60 * 1000);
       },
-      error: (err) => {
+      error: (_err) => {
         this.loadingSessions = false;
         this.feedback = 'Booking failed.';
-       // console.error(err);
       }
     });
   }
-  
-  
 
+  // =========================
+  // Angular lifecycle
+  // =========================
   ngOnChanges(changes: SimpleChanges) {
     if (changes['externalVideo']) {
       const base = `https://www.youtube-nocookie.com/embed/${this.externalVideo}`;
@@ -449,39 +602,25 @@ this.holdTimer = setTimeout(() => {
     }
   }
 
-  authLoading = true;
-
   ngOnInit(): void {
-
-    // this.slide2sService.slides2$.subscribe(slides2 => {
-    //   this.slides = slides2;
-    //   this.resumeAuto(); // ak treba reštartovať auto-slide pri zmene
-    // });
-
     this.slide2sService.slides2$.subscribe(s => {
       this.slides = s;
     });
 
-     this.slidesSub = this.slide2sService.getSlides()
-    .pipe(catchError(() => of([] as Slide2[])))
-    .subscribe(sl => {
-      this.slides = sl;
-      this.resumeAuto();
-      // Po tom, čo *ngIf* vloží element do DOM, nechaj Angular vykresliť a potom inicializuj
-      setTimeout(() => this.initSliderIfReady(), 0);
-    });
-
-
-
-
-
+    this.slidesSub = this.slide2sService.getSlides()
+      .pipe(catchError(() => of([] as Slide2[])))
+      .subscribe(sl => {
+        this.slides = sl;
+        this.resumeAuto();
+        setTimeout(() => this.initSliderIfReady(), 0);
+      });
 
     this.eventSessionsService.bookingChanged$.subscribe(() => {
       if (this.selectedDay) {
         this.loadSessionsForDay(this.toUTCDateString(this.selectedDay.date), true);
       }
     });
-    
+
     this.cartBookingSub = this.cart.bookingRemoved$.subscribe(_ => {
       if (this.selectedDay) {
         setTimeout(() => {
@@ -491,7 +630,6 @@ this.holdTimer = setTimeout(() => {
         }, 250);
       }
     });
-
 
     this.auth.currentUser$.subscribe(user => {
       if (user) {
@@ -503,17 +641,6 @@ this.holdTimer = setTimeout(() => {
       }
     });
 
-
-
-
-    // this.slidesSub = this.slide2sService
-    //   .getSlides()
-    //   .pipe(catchError(() => of([] as Slide2[])))
-    //   .subscribe(sl => {
-    //     this.slides = sl;
-    //     this.resumeAuto();
-    //   });
-  
     this.loadSaleAndFeatured();
     this.loadExperiences();
     this.generateCalendar(this.currentMonth);
@@ -521,33 +648,18 @@ this.holdTimer = setTimeout(() => {
     setTimeout(() => {
       const todayDay = this.calendarDays.find(d => d.isToday);
       if (todayDay) {
-        this.selectDay(todayDay); // toto zavolá aj loadSessionsForDay
+        this.selectDay(todayDay);
       }
     }, 0);
-  
+
     setTimeout(() => (this.imgState = 'visible'), 300);
   }
 
-      ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
     setTimeout(() => (this.animationState = true), 0);
     this.startAutoSlide();
-    this.initSliderIfReady();          
+    this.initSliderIfReady();
   }
-
-  public onSliderScroll = (): void => {
-    this.pauseAuto();
-    const el = this.sliderScroll?.nativeElement;
-    if (!el) return;
-
-    if (this.scrollSyncTimeout != null) clearTimeout(this.scrollSyncTimeout);
-    this.scrollSyncTimeout = window.setTimeout(() => {
-      const w = el.clientWidth || 1;
-      // posuň index až keď prejdeš ~30% ďalšieho slidu
-      const newIndex = Math.floor((el.scrollLeft + w * 0.3) / w);
-      if (newIndex !== this.currentSlideIndex) this.currentSlideIndex = newIndex;
-      this.resumeAuto();
-    }, 100);
-  };
 
   ngOnDestroy(): void {
     this.pauseAuto();
@@ -556,10 +668,12 @@ this.holdTimer = setTimeout(() => {
     this.saleSub?.unsubscribe();
     this.expSub?.unsubscribe();
     this.resizeObserver?.disconnect();
+    this.cartBookingSub?.unsubscribe();
   }
 
-
+  // =========================
   // Slider navigation
+  // =========================
   public nextSlide(): void {
     if (!this.slides.length) return;
     this.pauseAuto();
@@ -604,7 +718,23 @@ this.holdTimer = setTimeout(() => {
     }
   }
 
+  public onSliderScroll = (): void => {
+    this.pauseAuto();
+    const el = this.sliderScroll?.nativeElement;
+    if (!el) return;
+
+    if (this.scrollSyncTimeout != null) clearTimeout(this.scrollSyncTimeout);
+    this.scrollSyncTimeout = window.setTimeout(() => {
+      const w = el.clientWidth || 1;
+      const newIndex = Math.floor((el.scrollLeft + w * 0.3) / w);
+      if (newIndex !== this.currentSlideIndex) this.currentSlideIndex = newIndex;
+      this.resumeAuto();
+    }, 100);
+  };
+
+  // =========================
   // Featured products auto-scroll
+  // =========================
   public startAutoSlide(): void {
     if (!this.scrollContainer) return;
     if (this.autoSlideInterval != null) return;
@@ -634,7 +764,9 @@ this.holdTimer = setTimeout(() => {
     this.scrollContainer.nativeElement.scrollBy({ left: 300, behavior: 'smooth' });
   }
 
+  // =========================
   // Load products
+  // =========================
   private loadSaleAndFeatured(): void {
     this.saleSub = this.productsService
       .getRootProducts('name:asc')
@@ -643,15 +775,19 @@ this.holdTimer = setTimeout(() => {
         this.saleProducts = resp.data.filter((p: Product) => p.inSale);
         this.saleProducts.forEach(p => (this.loadingMap[p.slug] = true));
       });
+
     this.productsService.getFeaturedProducts().subscribe(list => {
       this.featured = list;
       setTimeout(() => this.startAutoSlide());
     });
   }
 
+  /** ✅ experiences musí používať locale podľa aktívneho jazyka */
   private loadExperiences(): void {
+    const locale = this.currentLangCode();
+
     this.expSub = this.productsService
-      .getProductsByCategorySlug('zazitky', 'name:asc')
+      .getProductsByCategorySlug('zazitky', 'name:asc', 1, 20, locale)
       .pipe(
         map(r => r.data.slice(0, 6)),
         catchError(() => of([] as Product[]))
@@ -671,18 +807,21 @@ this.holdTimer = setTimeout(() => {
     window.open(url, '_self', 'noopener');
   }
 
+  /** ✅ aj tu zachovaj jazykový prefix */
   public goToLink(url: string): void {
-    this.router.navigateByUrl('/' + url);
+    // pôvodne: this.router.navigateByUrl('/' + url);
+    this.nav([url]);
   }
 
-  public goToLogin(url: string): void {
-      this.router.navigate(
-        ['/login'],
-        { queryParams: { returnUrl: this.router.url } }
-      );
+  /** ✅ login tiež s prefixom */
+  public goToLogin(_url: string): void {
+    // pôvodne: ['/login']
+    this.nav(['login'], { queryParams: { returnUrl: this.router.url } });
   }
 
-
+  // =========================
+  // Calendar load helpers
+  // =========================
   private loadSessionsForMonth(month: Date) {
     this.eventSessionsService.listForMonth(month).subscribe({
       next: sessions => {
@@ -697,93 +836,79 @@ this.holdTimer = setTimeout(() => {
     });
   }
 
-
   private generateCalendar(reference: Date): void {
-  // 1. deň mesiaca v UTC
-  const first = new Date(Date.UTC(reference.getUTCFullYear(), reference.getUTCMonth(), 1));
-  const startMonday = new Date(first);
-  startMonday.setUTCDate(first.getUTCDate() - ((first.getUTCDay() + 6) % 7));
+    const first = new Date(Date.UTC(reference.getUTCFullYear(), reference.getUTCMonth(), 1));
+    const startMonday = new Date(first);
+    startMonday.setUTCDate(first.getUTCDate() - ((first.getUTCDay() + 6) % 7));
 
-  // Dnes v UTC (polnoc)
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
 
-  this.calendarDays = [];
-  for (let i = 0; i < 42; i++) {
-    const d = new Date(startMonday);
-    d.setUTCDate(startMonday.getUTCDate() + i);
-    d.setUTCHours(0, 0, 0, 0); // UTC polnoc!
+    this.calendarDays = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(startMonday);
+      d.setUTCDate(startMonday.getUTCDate() + i);
+      d.setUTCHours(0, 0, 0, 0);
 
-    const inMonth = d.getUTCMonth() === reference.getUTCMonth() && d.getUTCFullYear() === reference.getUTCFullYear();
-    const isToday = d.getTime() === today.getTime();
+      const inMonth = d.getUTCMonth() === reference.getUTCMonth() && d.getUTCFullYear() === reference.getUTCFullYear();
+      const isToday = d.getTime() === today.getTime();
 
-    this.calendarDays.push({
-      date: d,
-      dayOfMonth: d.getUTCDate(),
-      isOccupied: false,
-      isToday,
-      isInCurrentMonth: inMonth,
-      // ✅ selektovateľné len dni v tomto mesiaci, ktoré sú >= dnes
-      isSelectable: inMonth && d.getTime() >= today.getTime(),
+      this.calendarDays.push({
+        date: d,
+        dayOfMonth: d.getUTCDate(),
+        isOccupied: false,
+        isToday,
+        isInCurrentMonth: inMonth,
+        isSelectable: inMonth && d.getTime() >= today.getTime(),
+      });
+    }
+
+    const startRaw = this.toUTCDateString(this.calendarDays[0].date);
+    const end = this.toUTCDateString(this.calendarDays[this.calendarDays.length - 1].date);
+    const todayStr = this.toUTCDateString(today);
+    const start = startRaw < todayStr ? todayStr : startRaw;
+
+    this.eventSessionsService.listForRange(start, end).subscribe({
+      next: (sessions) => {
+        for (let day of this.calendarDays) {
+          const dayStr = this.toUTCDateString(day.date);
+          if (dayStr >= todayStr) {
+            day.isOccupied = sessions.some((session: any) => {
+              const eventDateStr = this.toUTCDateString(session.startDateTime);
+              return eventDateStr === dayStr;
+            });
+          } else {
+            day.isOccupied = false;
+          }
+        }
+      },
+      error: (_err) => {}
     });
   }
 
-  // Orež range tak, aby začínal najneskôr dnes
-  const startRaw = this.toUTCDateString(this.calendarDays[0].date); // prvý deň v gride
-  const end = this.toUTCDateString(this.calendarDays[this.calendarDays.length - 1].date); // posledný deň
-  const todayStr = this.toUTCDateString(today);
-  const start = startRaw < todayStr ? todayStr : startRaw;
-
-  this.eventSessionsService.listForRange(start, end).subscribe({
-    next: (sessions) => {
-      for (let day of this.calendarDays) {
-        const dayStr = this.toUTCDateString(day.date);
-        // ✅ „obsadenosť“ len pre dni od dnes (staré dni ignorujeme)
-        if (dayStr >= todayStr) {
-          day.isOccupied = sessions.some((session: any) => {
-            const eventDateStr = this.toUTCDateString(session.startDateTime);
-            return eventDateStr === dayStr;
-          });
-        } else {
-          day.isOccupied = false;
-        }
-      }
-    },
-    error: (err) => {
-    //  console.warn('Chyba pri načítaní sessions:', err);
-    }
-  });
-}
-  
-
-
-
   public prevMonth(): void {
-  this.currentMonth = new Date(Date.UTC(
-    this.currentMonth.getUTCFullYear(),
-    this.currentMonth.getUTCMonth() - 1,
-    1
-  ));
-  this.generateCalendar(this.currentMonth);
-  this.selectedDay = this.calendarDays.find(d => d.isInCurrentMonth && d.dayOfMonth === 1) ?? null;
+    this.currentMonth = new Date(Date.UTC(
+      this.currentMonth.getUTCFullYear(),
+      this.currentMonth.getUTCMonth() - 1,
+      1
+    ));
+    this.generateCalendar(this.currentMonth);
+    this.selectedDay = this.calendarDays.find(d => d.isInCurrentMonth && d.dayOfMonth === 1) ?? null;
 
-  if (this.selectedDay) {
-    this.loadSessionsForDay(this.toUTCDateString(this.selectedDay.date), true);
+    if (this.selectedDay) {
+      this.loadSessionsForDay(this.toUTCDateString(this.selectedDay.date), true);
+    }
   }
-}
-  
+
   public async nextMonth(): Promise<void> {
-    // Move to first day of next month in UTC
     const y = this.currentMonth.getUTCFullYear();
     const m = this.currentMonth.getUTCMonth();
     this.currentMonth = new Date(Date.UTC(y, m + 1, 1));
 
     const prevSelectedDom = this.selectedDay?.dayOfMonth ?? 1;
 
-    // If generateCalendar is sync, removing await is fine.
     await this.generateCalendar(this.currentMonth);
 
-    // Try to keep same day-of-month; otherwise fall back to 1st; otherwise last day in month grid.
     const inMonth = this.calendarDays.filter(d => d.isInCurrentMonth);
     this.selectedDay =
       inMonth.find(d => d.dayOfMonth === prevSelectedDom) ??
@@ -792,16 +917,9 @@ this.holdTimer = setTimeout(() => {
       null;
 
     if (this.selectedDay) {
-      this.loadSessionsForDay(this.toUTCDateString(this.selectedDay.date), true); // ✅ string
-    } else {
-      // optionally: this.clearSessions();
+      this.loadSessionsForDay(this.toUTCDateString(this.selectedDay.date), true);
     }
   }
-
-  // public selectDay(day: CalendarDay): void {
-  //   if (!day.isSelectable) return;
-  //   this.selectedDay = day;
-  // }
 
   public submitRegistration(): void {
     if (!this.selectedDay) return;
@@ -810,15 +928,9 @@ this.holdTimer = setTimeout(() => {
     this.selectedDay = null;
   }
 
-  // Navigation cards
+  /** ✅ aj toto musí ísť cez lang prefix */
   public onSelect(option: 'optionA' | 'optionB'): void {
     const params = option === 'optionB' ? { category: 'zazitky' } : { category: 'kolekcie' };
-    this.router.navigate(['/produkt'], { queryParams: params });
+    this.nav(['produkt'], { queryParams: params });
   }
-
-  // public selectDay(day: CalendarDay): void {
-  //   if (!day.isSelectable) return;
-  //   this.selectedDay = day;
-  //   this.loadSessionsForDate(day.date);
-  // }
 }

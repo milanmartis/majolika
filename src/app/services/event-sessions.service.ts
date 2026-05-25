@@ -58,6 +58,7 @@ interface ApiList<T> { data: T; }
 
 @Injectable({ providedIn: 'root' })
 export class EventSessionsService {
+  sessionsForSelectedDay: Product[] = [];
   private readonly apiUrl = environment.apiUrl;
   private base = environment.apiUrl.replace(/\/+$/, '');
   private token = environment.strapiToken;
@@ -147,7 +148,19 @@ export class EventSessionsService {
         })
       );
   }
-
+  /** ✅ Sessions podľa spoločného documentId (zdieľané medzi SK/EN/DE) */
+  getSessionsForProductDocument(documentId: string): Observable<EventSessionWithCapacity[]> {
+    const url = `${this.base}/event-sessions/by-document?documentId=${encodeURIComponent(documentId)}`;
+    return this.http
+      .get<ApiList<EventSessionWithCapacity[]>>(url, { headers: this.headers() })
+      .pipe(
+        map(resp => resp?.data ?? []),
+        catchError(err => {
+          console.error('getSessionsForProductDocument error', err);
+          return of<EventSessionWithCapacity[]>([]);
+        })
+      );
+  }
   invalidateDay(date: Date | string) {
     const isoDay = typeof date === 'string' ? date : date.toISOString().slice(0, 10);
     delete this.cache[isoDay];

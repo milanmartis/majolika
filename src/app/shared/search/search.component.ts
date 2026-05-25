@@ -7,12 +7,13 @@ import {
   Renderer2,
   ElementRef,
   ViewChild,
-  AfterViewInit
+  AfterViewInit,
+  OnDestroy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -20,11 +21,13 @@ import {
   catchError,
   filter,
   map,
+  tap,
+  finalize,
+  takeUntil
 } from 'rxjs/operators';
 
-import { ProductsService, Product } from 'app/services/products.service';
+import { ProductsService, Product, StrapiResp } from 'app/services/products.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { tap, finalize } from 'rxjs/operators';
 import { SearchService } from 'app/services/search.service';
 
 @Component({
@@ -34,38 +37,43 @@ import { SearchService } from 'app/services/search.service';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
 })
-export class SearchComponent implements OnInit, AfterViewInit {
+export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('searchOverlay', { static: true }) searchOverlayRef!: ElementRef<HTMLElement>;
   @ViewChild('searchInputRef', { static: false }) searchInputRef!: ElementRef<HTMLInputElement>;
 
-  searchControl = new FormControl('');
-  displayedResults: Product[] = [];
-  totalCount = 0;
+  private destroy$ = new Subject<void>();
+
+  searchControl = new FormControl<string>('');
+
+  // stránkovanie
+  private readonly PAGE_SIZE = 20;
   currentPage = 0;
-  isLoading = false;
-  isLoadingPage = false;
+  pageCount = 0;
+  totalCount = 0;
+
+  // dáta
+  results: Product[] = [];
+  displayedResults: Product[] = [];
+
+  // UI
+  isLoading = false;      // prvá strana / autocomplete
+  isLoadingPage = false;  // ďalšie strany
+  showDropdown = false;
+  isVisible = false;
+  isOpen = false;
+  isClosing = false;
 
   suggestions$: Observable<Product[]> = of([]);
+
   loadingBaseText = '';
   loadingText = '';
   dotCount = 1;
   dotInterval: any;
-  /** Po stlačení ENTER / kliknutí na lupa sa načítajú „všetky“ výsledky do allResults */
-  results: Product[] = [];
-  /** Zobrazené položky (infinite scroll) */
 
-  /** veľkosť „stránky“ */
-  private readonly PAGE_SIZE = 20;
-  /** ďalší index, odkiaľ naberáme ďalšie položky */
-  public nextIndex = 0;
-
-  isVisible = false;
-  isOpen = false;
-  isClosing = false;
-  showDropdown = false;
-
-  /** mapovanie pre shimmer loading: imageUrl -> boolean */
   loadingMap: Record<string, boolean> = {};
+
+  // ikony
+  icons = ['tanier','dzban','vaza','pohar','miska'];
 
   constructor(
     private productsService: ProductsService,
@@ -73,30 +81,26 @@ export class SearchComponent implements OnInit, AfterViewInit {
     private renderer: Renderer2,
     private translate: TranslateService,
     private searchService: SearchService
-
   ) {}
-  
-  ngOnInit() {
 
-    // Odozva na trigger z iného komponentu
-    this.searchService.openOverlay$.subscribe(() => {
-      this.openOverlay();
-    });
-    // Autocomplete (živé návrhy) pri písaní s loaderom
+  ngOnInit() {
+    // otvorenie overlaya zvonka
+    this.searchService.openOverlay$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.openOverlay());
+
+    // autocomplete (vyhľadáva naprieč lokalizáciami)
     this.suggestions$ = this.searchControl.valueChanges.pipe(
       debounceTime(250),
       distinctUntilChanged(),
       filter((value): value is string => !!value && value.trim().length > 2),
-      tap(() => { 
-        this.isLoading = true; 
-      }),
+      tap(() => { this.isLoading = true; }),
       switchMap((query: string) =>
-        this.productsService.searchProducts(query).pipe(
-          map(products => products), // zobrazíme max. 5 návrhov
+        // !!! locale='all' => hľadá vo všetkých jazykoch
+        this.productsService.searchProducts(query, 1, 33, 'all').pipe(
+          map((resp: StrapiResp<Product>) => resp.data ?? []),
           catchError(() => of([] as Product[])),
-          finalize(() => {
-            this.isLoading = false;
-          })
+          finalize(() => { this.isLoading = false; })
         )
       )
     );
@@ -107,125 +111,256 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.renderer.listen(overlay, 'wheel', (e: WheelEvent) => this.onWheel(e));
     this.renderer.listen(overlay, 'touchmove', (e: TouchEvent) => this.onTouchMove(e));
   }
-  
 
-  /**
-   * Zabraňuje pretláčaniu scrollu mimo overlayu pri kolieskovom scrollovaní.
-   */
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    clearInterval(this.dotInterval);
+  }
+
+  // guards pre scroll v overlaya
   private onWheel(event: WheelEvent) {
     const overlay = this.searchOverlayRef.nativeElement;
-  
-    // Ak to neprišlo priamo z kontajnera overlay­a, necháme event plynúť
-    if (event.target !== overlay) {
-      return;
-    }
-  
+    if (event.target !== overlay) return;
+
     const { scrollTop, scrollHeight, clientHeight } = overlay;
     const deltaY = event.deltaY;
-  
-    // Blokovať len pri pokuse rolovať nad hornou alebo pod dolnou hranou
-    if ((deltaY < 0 && scrollTop === 0) ||
-        (deltaY > 0 && scrollTop + clientHeight >= scrollHeight)) {
+
+    if (
+      (deltaY < 0 && scrollTop === 0) ||
+      (deltaY > 0 && scrollTop + clientHeight >= scrollHeight)
+    ) {
       event.preventDefault();
     }
   }
 
-  /**
-   * Zabraňuje pretláčaniu scrollu mimo overlayu pri dotykoch na mobiloch.
-   */
   private onTouchMove(event: TouchEvent) {
     const overlay = this.searchOverlayRef.nativeElement;
-  
-    if (event.target !== overlay) {
-      return;
-    }
-  
-    const { scrollTop, scrollHeight, clientHeight } = overlay;
-  
-    if (scrollHeight <= clientHeight) {
-      event.preventDefault();
-    }
-  }
-  icons = ['tanier','dzban','vaza','pohar','miska'];
+    if (event.target !== overlay) return;
 
-  /** Otvorí overlay a obnoví posledný query + výsledky z localStorage */
+    const { scrollHeight, clientHeight } = overlay;
+    if (scrollHeight <= clientHeight) event.preventDefault();
+  }
+
   openOverlay(): void {
-    // 1) Clear any previous results and loading state
     this.clearAllResults();
-    this.isLoading = false;
-    this.showDropdown = false;
-  
-    // 2) Reset the input to empty (won't trigger a search because '' is filtered out)
-    this.searchControl.setValue('');
-  
-    // 3) Show the overlay
+    this.resetSearchState();
+
     this.isVisible = true;
     setTimeout(() => {
       this.isOpen = true;
       this.isClosing = false;
       this.renderer.addClass(document.body, 'no-scroll');
-  
-      // 4) Focus the freshly-emptied input
+
       const inputEl =
         this.searchInputRef?.nativeElement ||
         document.querySelector<HTMLInputElement>('.search-input-full');
-      if (inputEl) {
-        inputEl.focus();
-      }
+
+      inputEl?.focus();
     }, 10);
   }
 
+  closeOverlay(): void {
+    this.isClosing = true;
+    this.isOpen = false;
+    setTimeout(() => {
+      this.isVisible = false;
+      this.isClosing = false;
+      this.resetSearchState();
+      this.renderer.removeClass(document.body, 'no-scroll');
+    }, 300);
+  }
+
   searchFromLink(term: string): void {
-    this.searchControl.setValue(term);
+    const q = (term ?? '').trim();
+    if (!q) return;
+    this.searchControl.setValue(q);
     this.onSearch(true);
+  }
+
+  /** ✅ FIX: klik na ikonku -> prelož text v TS (v template nesmú byť pipes v (click)) */
+  searchFromIcon(icon: string): void {
+    const key = `ICONS.${String(icon || '').toUpperCase()}`;
+    const translated = (this.translate.instant(key) || '').trim();
+    // fallback: keď by kľúč neexistoval, tak aspoň použijeme raw icon
+    this.searchFromLink(translated && translated !== key ? translated : icon);
+  }
+
+  // Presety dekorov – podľa jazyka UI použijeme výraz, ktorý dáva zmysel,
+  // no keďže hľadáme cez locale=all, nájde to aj v iných jazykoch.
+  searchPreset(preset: 'habansky' | 'modry' | 'pestry' | 'zeleny'): void {
+    const lang = (this.translate.currentLang || this.translate.defaultLang || 'sk').toLowerCase();
+
+    const dict: Record<string, Record<string, string>> = {
+      habansky: {
+        sk: 'habánsky dekór',
+        en: 'haban decor',
+        de: 'haban dekor',
+      },
+      modry: {
+        sk: 'modrý dekór',
+        en: 'blue decor',
+        de: 'blaues dekor',
+      },
+      pestry: {
+        sk: 'pestrý dekór',
+        en: 'multicolor decor',
+        de: 'buntes dekor',
+      },
+      zeleny: {
+        sk: 'zelený dekór',
+        en: 'green decor',
+        de: 'grünes dekor',
+      },
+    };
+
+    const term = dict[preset]?.[lang] ?? dict[preset]?.['sk'] ?? '';
+    this.searchFromLink(term);
   }
 
   onSearch(storeInLocal: boolean = true): void {
     this.isLoading = true;
     this.showDropdown = false;
-  
-    const query = this.searchControl.value?.trim() || '';
+
+    const query = (this.searchControl.value ?? '').trim();
     if (!query) {
-      this.clearAllResults();
-      if (storeInLocal) {
-        localStorage.removeItem('lastSearchQuery');
-      }
-      this.isLoading = false; // ← tu tiež
+      this.resetSearchState();
+      if (storeInLocal) localStorage.removeItem('lastSearchQuery');
+      this.isLoading = false;
       return;
     }
-  
-    if (storeInLocal) {
-      localStorage.setItem('lastSearchQuery', query);
-    }
-  
-    this.productsService.searchProducts(query).subscribe({
-      next: products => {
-        this.results = products;
-        this.nextIndex = 0;
-        this.displayedResults = [];
-        this.appendNextPage();
-  
-        this.loadingMap = {};
-        this.displayedResults.forEach(p => {
-          if (p.primaryImageUrl) {
-            this.loadingMap[p.primaryImageUrl] = true;
-          }
+
+    if (storeInLocal) localStorage.setItem('lastSearchQuery', query);
+
+    // reset a načítaj prvú stranu
+    this.results = [];
+    this.displayedResults = [];
+    this.loadingMap = {};
+    this.currentPage = 0;
+    this.pageCount = 0;
+    this.totalCount = 0;
+
+    this.loadPage(query, 1, true);
+  }
+
+  private loadPage(query: string, page: number, first = false) {
+    this.isLoadingPage = !first;
+
+    // !!! locale='all' => hľadá naprieč všetkými lokalizáciami
+    this.productsService.searchProducts(query, page, this.PAGE_SIZE, 'all').subscribe({
+      next: (resp: StrapiResp<Product>) => {
+        const items = resp.data ?? [];
+
+        // append
+        this.results = this.results.concat(items);
+        this.displayedResults = this.results;
+
+        // meta
+        this.currentPage = resp.meta?.pagination?.page ?? page;
+        this.pageCount   = resp.meta?.pagination?.pageCount ?? this.pageCount;
+        this.totalCount  = resp.meta?.pagination?.total ?? this.totalCount;
+
+        // shimmer flags
+        items.forEach(p => {
+          if (p.primaryImageUrl) this.loadingMap[p.primaryImageUrl] = true;
         });
-  
-        this.isLoading = false; // ✅ loader off po úspešnom výsledku
       },
       error: () => {
-        this.clearAllResults();
-        this.isLoading = false; // ✅ loader off aj pri chybe
+        if (first) this.resetSearchState();
+      },
+      complete: () => {
+        this.isLoading = false;
+        this.isLoadingPage = false;
       },
     });
   }
-  
 
-  
+  onResultsScroll(e: Event) {
+    const tgt = e.target as HTMLElement;
+    const nearBottom = tgt.scrollTop + tgt.clientHeight >= tgt.scrollHeight - 1100;
+
+    if (nearBottom && !this.isLoadingPage && this.currentPage < this.pageCount) {
+      const query = (this.searchControl.value ?? '').trim();
+      if (!query) return;
+      this.loadPage(query, this.currentPage + 1);
+    }
+  }
+
+  onImageLoad(url: string): void { this.loadingMap[url] = false; }
+  onImageError(url: string): void { this.loadingMap[url] = false; }
+
+  onFocus() { this.showDropdown = true; }
+  onBlur()  { setTimeout(() => { this.showDropdown = false; }, 200); }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleEnter(event: Event) {
+    const ke = event as KeyboardEvent;
+    ke.preventDefault?.();
+    this.onSearch(true);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEsc() {
+    if (this.isVisible && !this.isClosing) this.closeOverlay();
+  }
+
+  clearInput(): void {
+    this.searchControl.setValue('');
+    localStorage.removeItem('lastSearchQuery');
+    this.resetSearchState();
+
+    setTimeout(() => {
+      const inputEl =
+        this.searchInputRef?.nativeElement ||
+        document.querySelector<HTMLInputElement>('.search-input-full');
+      inputEl?.focus();
+    }, 0);
+  }
+
+  onSelectProduct(p: Product) {
+    if (!p?.slug) return;
+
+    this.router.navigate(
+      ['/produkt', p.slug],
+      {
+        queryParams: p.documentId ? { documentId: p.documentId } : undefined
+      }
+    ).then(() => {
+      this.isClosing = true;
+      this.isOpen = false;
+
+      setTimeout(() => {
+        this.isVisible = false;
+        this.isClosing = false;
+        this.clearAllResults();
+        this.renderer.removeClass(document.body, 'no-scroll');
+      }, 300);
+    });
+  }
+  private resetSearchState() {
+    this.results = [];
+    this.displayedResults = [];
+    this.currentPage = 0;
+    this.pageCount = 0;
+    this.totalCount = 0;
+    this.loadingMap = {};
+    this.isLoading = false;
+    this.isLoadingPage = false;
+    this.showDropdown = false;
+  }
+
+  public nextIndex = 0;
+
+  private clearAllResults() {
+    this.results = [];
+    this.displayedResults = [];
+    this.nextIndex = 0;
+    this.loadingMap = {};
+  }
+
   startLoadingDots() {
     this.translate.get('ESHOP.LOADING_PRODUCTS').subscribe({
-      next: (base) => {
+      next: base => {
         this.loadingBaseText = base;
         this.loadingText = `${base}...`;
         this.dotCount = 1;
@@ -242,130 +377,5 @@ export class SearchComponent implements OnInit, AfterViewInit {
   stopLoadingDots() {
     clearInterval(this.dotInterval);
     this.loadingText = '';
-  }
-
-  selectSuggestion(product: Product) {
-    this.searchControl.setValue(product.name);
-    this.onSearch(true);
-    this.showDropdown = false;
-  }
-
-  onFocus() {
-    this.showDropdown = true;
-  }
-
-  onBlur() {
-    setTimeout(() => {
-      this.showDropdown = false;
-    }, 200);
-  }
-
-  /** Odstráni všetky výsledky */
-  private clearAllResults() {
-    this.results = [];
-    this.displayedResults = [];
-    this.nextIndex = 0;
-    this.loadingMap = {};
-  }
-
-  /** Pridá ďalších PAGE_SIZE položiek do displayedResults, ak existujú */
-  private appendNextPage() {
-    const start = this.nextIndex;
-    const end = Math.min(this.nextIndex + this.PAGE_SIZE, this.results.length);
-    if (start < end) {
-      const slice = this.results.slice(start, end);
-      this.displayedResults = this.displayedResults.concat(slice);
-      this.nextIndex = end;
-    }
-  }
-
-  /** Handler scrollu vo výsledkoch (infinite scroll) */
-  onResultsScroll(e: Event) {
-    const tgt = e.target as HTMLElement;
-    if (tgt.scrollTop + tgt.clientHeight >= tgt.scrollHeight - 100) {
-      // 1) remember where we started
-      const oldIndex = this.nextIndex;
-  
-      // 2) append the next page (will update this.nextIndex)
-      this.appendNextPage();
-  
-      // 3) only mark the truly new items
-      const newIndex = this.nextIndex;
-      this.displayedResults
-        .slice(oldIndex, newIndex)
-        .forEach(p => {
-          if (p.primaryImageUrl) {
-            this.loadingMap[p.primaryImageUrl] = true;
-          }
-        });
-    }
-  }
-
-  /** Zatvorí overlay s animáciou: slide-out */
-  closeOverlay(): void {
-    this.isClosing = true;
-    this.isOpen = false;
-    setTimeout(() => {
-      this.isVisible = false;
-      this.isClosing = false;
-      this.clearAllResults();
-      this.renderer.removeClass(document.body, 'no-scroll');
-    }, 300);
-  }
-
-  /** Klik na konkrétny výsledok: najprv zatvoríme overlay, potom navigujeme */
-  onSelectProduct(p: Product) {
-    this.isClosing = true;
-    this.isOpen = false;
-    setTimeout(() => {
-      this.isVisible = false;
-      this.isClosing = false;
-      this.clearAllResults();
-      this.renderer.removeClass(document.body, 'no-scroll');
-      this.router.navigate(['/produkt', p.slug]);
-    }, 300);
-  }
-
-  /** Event po načítaní obrázka: odstráni shimmer pre dané URL */
-  onImageLoad(url: string): void {
-    this.loadingMap[url] = false;
-  }
-
-  onImageError(url: string): void {
-    this.loadingMap[url] = false;
-  }
-
-  @HostListener('keydown.enter', ['$event'])
-  handleEnter(event: KeyboardEvent) {
-    event.preventDefault();
-    this.onSearch(true);
-  }
-
-  @HostListener('document:keydown.escape', ['$event'])
-  onEsc() {
-    if (this.isVisible && !this.isClosing) {
-      this.closeOverlay();
-    }
-  }
-
-  /**
-   * Nová metóda: vymaže obsah inputu aj zo storage, zruší výsledky a schová dropdown.
-   */
-  clearInput(): void {
-    // 1) Vymazať hodnotu formulárového ovládacieho prvku
-    this.searchControl.setValue('');
-    // 2) Odstrániť uložený posledný dopyt (ak existuje)
-    localStorage.removeItem('lastSearchQuery');
-    // 3) Vyčistiť všetky zobrazené výsledky
-    this.clearAllResults();
-    // 4) Skryť rozbaľovací zoznam návrhov
-    this.showDropdown = false;
-    // 5) Vrátiť fokus na input
-    setTimeout(() => {
-      const inputEl = this.searchInputRef?.nativeElement || document.querySelector<HTMLInputElement>('.search-input-full');
-      if (inputEl) {
-        inputEl.focus();
-      }
-    }, 0);
   }
 }

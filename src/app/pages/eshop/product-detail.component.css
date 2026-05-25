@@ -3,12 +3,47 @@
   max-width: 1200px;
   width: 100%;
   margin: auto;
-  padding: 43px 20px 20px 20px;
+  padding: 3px 20px 20px 20px;
 }
+
+
+.intro-text{
+color: var(--base-blue);
+padding: 20px;;
+
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: 2fr;
   gap: 2rem;
+}
+/* ===== content loader ===== */
+.content-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  min-height: 60px;
+}
+
+.content-loader__text {
+  font-size: 0.9rem;
+  color: var(--base-blue);
+}
+
+/* jednoduchý CSS spinner */
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-top-color: var(--base-blue);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 @media (min-width: 624px) {
   .detail-grid {
@@ -637,6 +672,33 @@ button.favourite2:hover {
   padding: 6px 8px;
 }
 
+.main-image-wrapper .badge-soldout {
+  width: 118px;
+    height: 30px;
+    border: none;
+    outline: none;
+    background: transparent url(/assets/img/back2.webp) no-repeat center / cover;
+    background-size: 8rem auto;
+  color: #fff;
+  border-color: var(--base-blue);
+  font-size: 1rem;
+  padding: 6px 8px;
+}
+
+.main-image-wrapper .badge-unavailable {
+  width: 118px;
+    height: 30px;
+    border: none;
+    outline: none;
+    background: transparent url(/assets/img/back2.webp) no-repeat center / cover;
+    background-size: 8rem auto;
+  color:zz #fff;
+  border-color: var(--base-blue);
+  font-size: 1rem;
+  padding: 6px 8px;
+}
+
+
 /* (voliteľné) na veľmi úzkych obrazovkách mierne zmenšíme */
 @media (max-width: 420px) {
   .main-image-wrapper .badge-flag {
@@ -713,7 +775,7 @@ body.no-scroll {
 .description-wrapper {
   position: relative;
   color: #1a2f8a;
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   text-align: left;
 }
 
@@ -789,6 +851,8 @@ h4{
   transition: max-height 0.3s ease;
   padding: 0 1rem;
   background: transparent;
+  margin-bottom: 10px;
+
 }
 
 .fa{
@@ -801,44 +865,156 @@ margin: 0px 0px 0px 0px;
 }
 
 .accordion__item.is-open .accordion__content {
-  max-height: 500px; /* or enough to fit your content */
+  max-height: 100%; /* or enough to fit your content */
   padding: 1rem;
 }
 
-:host ::ng-deep .fc-daygrid-day.fc-day-disabled {
-  opacity: 0.45;
-  pointer-events: none;
+/* skry prvé dva stĺpce v List view (bodka + čas) */
+:host ::ng-deep .fc .fc-list .fc-list-event-graphic,
+:host ::ng-deep .fc .fc-list .fc-list-event-dot,
+:host ::ng-deep .fc .fc-list .fc-list-event-time {
+  display: none !important;
+}
+/* fallback cez poradie buniek */
+:host ::ng-deep .fc .fc-list .fc-list-event > td:nth-child(1),
+:host ::ng-deep .fc .fc-list .fc-list-event > td:nth-child(2) {
+  display: none !important;
+}
+
+/* prerob List layout na karty vedľa seba (wrap) */
+:host ::ng-deep .fc .fc-list .fc-list-table {
+  display: block !important;
+  width: 100% !important;
+}
+:host ::ng-deep .fc .fc-list .fc-list-table tbody {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  gap: 8px 12px !important;
+  overflow: visible !important;
+}
+
+/* hlavička dňa = celý riadok */
+:host ::ng-deep .fc .fc-list .fc-list-day {
+  display: block !important;
+  flex: 0 0 100% !important;
+  margin: 10px 0 4px !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/* event (TR) = karta so šírkou, ktorá sa zalamuje */
+:host ::ng-deep .fc .fc-list .fc-list-event {
+  display: block !important;
+  flex: 0 0 auto !important;
+  width: clamp(180px, 28%, 260px) !important;
+  margin: 0 !important;
+}
+
+/* necháme len titulkovú bunku, ktorá hostí .m-ev */
+:host ::ng-deep .fc .fc-list .fc-list-event .fc-list-event-title {
+  display: block !important;
+  padding: 0 !important;
+  white-space: normal !important;
+}
+:host ::ng-deep .fc .fc-list .fc-list-event .fc-list-event-title a {
+  display: block !important;
+  text-decoration: none !important;
+}
+
+/* tvoj modrý badge ostáva – len vyplní šírku karty */
+:host ::ng-deep .fc .fc-list .fc-list-event .m-ev {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.fc-toolbar-title{
+ font-size: 1.3rem;
+ margin-bottom: 0.5rem;
+ color: var(--base-blue);
+ text-align: left;
+ padding-left: 0.75rem;
 }
 
 
-/* === bunky bez eventov: malé, sivasté, kompaktné === */
-:host ::ng-deep .fc-daygrid-day.no-ev .fc-daygrid-day-frame {
-  padding: 4px 6px;
-}
-:host ::ng-deep .fc-daygrid-day.no-ev {
-  background: #f8fafc;
-}
-:host ::ng-deep .fc-daygrid-day.no-ev .fc-daygrid-day-number {
-  font-size: 10px;
-  font-weight: 600;
-  color: #94a3b8;
-}
-:host ::ng-deep .fc-daygrid-day.no-ev .fc-daygrid-day-events {
-  min-height: 0;
-}
-
-/* === bunky s eventmi: nech sa zväčšia podľa obsahu === */
-:host ::ng-deep .fc-daygrid-day.has-ev .fc-daygrid-day-frame {
-  padding: 2px 2px;
-}
-:host ::ng-deep .fc-daygrid-day.has-ev .fc-daygrid-day-number {
-  font-size: 12px;
-  color: #0f172a;
-}
 :host ::ng-deep .fc-toolbar-title {
-  font-size: 16px;
-  color: #0f172a;
+  color: var(--base-blue);
+
 }
+
+
+:host ::ng-deep .fc-list-empty {
+  color: var(--base-blue);
+
+}
+:host ::ng-deep .fc-listWeek-view {
+  border: none !important;
+}
+:host ::ng-deep .fc-list-event-title {
+  border: none !important;
+   transition: transform 160ms ease, box-shadow 160ms ease;
+}
+:host ::ng-deep .fc-list-event-title:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 18px rgba(0,0,0,.14);
+}
+
+
+
+
+:host ::ng-deep .fc-list-day-text {
+  margin-right: 20px;
+}
+:host ::ng-deep th {
+  border: none !important;
+}
+
+:host ::ng-deep .fc-list-day-cushion  {
+  border: none !important;
+
+}
+
+:host ::ng-deep .fc-list-event-title{
+  text-align: center;
+
+
+}
+:host ::ng-deep  .fc-list-day{
+  text-align: center;
+
+
+}
+
+
+:host ::ng-deep .fc-button{
+  color: var(--color-primary);
+  background: var(--base-blue);
+}
+:host ::ng-deep .fc-button-primary{
+  color: var(--color-primary);
+  background: var(--base-blue);
+}
+
+
+.fc-icon{
+background: var(--base-blue);
+color: #fff;
+}
+
+h2{
+  color: var(--base-blue);
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+/* mobil: 2 karty v riadku */
+@media (max-width: 640px) {
+  :host ::ng-deep .fc .fc-list .fc-list-event {
+    width: calc(50% - 12px) !important;
+  }
+}
+
 
 /* už existujúci štýl z predchádzajúceho kroku – výrazné badge */
 :host ::ng-deep .fc-daygrid-event { background: transparent; border: 0; padding: 0; }
@@ -856,3 +1032,6 @@ margin: 0px 0px 0px 0px;
 /* zvýraznenie dostupnosti z eventClassNames */
 :host ::ng-deep .fc-event.low-availability .m-ev { outline: 2px solid #f59e0b; }
 :host ::ng-deep .fc-event.sold-out .m-ev { background: #475569; }
+/* FullCalendar LIST – stabilizácia rozbitého layoutu */
+:host ::ng-deep .fc-list, 
+:host ::ng-deep .fc-list-table { width: 100%; }

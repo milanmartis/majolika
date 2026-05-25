@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-user-form',
   standalone: true,
@@ -12,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
       <!-- First / Last Name -->
       <div class="form-row">
         <label>{{ ('FORM.FIRST_NAME' | translate) }} *</label>
-        <input formControlName="firstName" placeholder="{{ ('FORM.LAST_NAME' | translate) }}" />
+        <input formControlName="firstName" placeholder="{{ ('FORM.FIRST_NAME' | translate) }}" />
       </div>
 
       <div class="form-row">
@@ -51,7 +52,11 @@ import { TranslateModule } from '@ngx-translate/core';
 
         <div class="form-row full-width">
           <label>{{ ('FORM.COUNTRY' | translate) }} *</label>
-          <input formControlName="country" placeholder="{{ ('FORM.COUNTRY' | translate) }}" />
+          <select formControlName="country">
+            <option value="SK">{{ 'COMMON.COUNTRY_SK' | translate }}</option>
+            <option value="CZ">{{ 'COMMON.COUNTRY_CZ' | translate }}</option>
+            <option value="WORLD">{{ 'COMMON.COUNTRY_WORLD_CONTACT' | translate }}</option>
+          </select>
         </div>
       </div>
 
@@ -85,15 +90,18 @@ import { TranslateModule } from '@ngx-translate/core';
       color: #444;
     }
 
-    .form-row input {
+    .form-row input,
+    .form-row select {
       padding: 0.8rem;
       border: 1px solid #ddd;
       border-radius: 6px;
       font-size: 1rem;
       transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #fff;
     }
 
-    .form-row input:focus {
+    .form-row input:focus,
+    .form-row select:focus {
       border-color: var(--base-blue);
       box-shadow: 0 0 0 3px rgba(41, 68, 186, 0.15);
       outline: none;

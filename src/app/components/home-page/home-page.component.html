@@ -1,78 +1,111 @@
-<!-- src/app/landing-page/landing-page.component.html -->
 <div class="landing-container">
 
-
-  <!-- ---------- DVE KARTY ---------- -->
+  <!-- ---------- TOP: DVE KARTY (prvé 2 z prvého hero-images bloku) ---------- -->
   <div class="choice-grid" [@fadeInStagger]="animationState">
-    <div class="choice-card">
-      <a [routerLink]="['/eshop']">
-        <div class="image-wrapper">
-        <!-- <img src="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_home_majolika_1_3815377127.jpg" alt="E-shop" /> -->
-        <img src="/assets/img/eshop/e/16.jpg" alt="E-shop" />
-      </div>
-      <button class="choice-button">E-SHOP</button>
-    </a>
-    </div>
-
-    <div class="choice-card">
-      <a [routerLink]="['/dielne']">
-        <div class="image-wrapper">
-          <video
-            #bgVideo
-            autoplay
-            muted
-            loop
-            playsinline
-            class="video-bg"
-            poster="https://medusa-majolika-s3-us-east.s3.us-east-1.amazonaws.com/products/medium_placeholder_6982996b8f.jpg"
-          >
-            <source src="/assets/video/majolica555.mp4" type="video/mp4" />
-            Tvoje zariadenie nepodporuje prehrávanie videa.
-          </video>
+    <div class="choice-card" *ngFor="let card of topHeroCards; let i = index">
+      <a [routerLink]="card.routerLink">
+        <div class="image-wrapper" [class.loading]="heroLoading[i]">
+          <img
+            [src]="card.imageUrl"
+            fetchpriority="high"
+            decoding="async"
+            [alt]="card.alt || 'Hero'"
+            (load)="onHeroImageLoad(i)"
+            (error)="onHeroImageError(i)"
+          />
         </div>
-        <button class="choice-button">{{ 'CALENDAR.TITLE' | translate }}</button>
+
+        <button class="choice-button">
+          <ng-container *ngIf="card.buttonText; else fallbackBtn">
+            {{ card.buttonText }}
+          </ng-container>
+
+          <ng-template #fallbackBtn>
+            {{ card.routerLink === '/eshop' ? 'E-SHOP' : ('CALENDAR.TITLE' | translate) }}
+          </ng-template>
+        </button>
       </a>
     </div>
   </div>
 
- 
-  <!-- -------  DEKOR + ODKAZY ------- -->
+  <!-- dekor -->
   <div style="position: relative; top: -90px;margin:0px;padding:0px;margin-bottom:-90px;">
     <img
       src="/assets/img/back_dekor_black2.png"
       alt="dekor"
-      width="104"
-      style="transform: rotate(90deg)"
+      width="134"
+      style="margin-top:20px; margin-bottom: -30px; transform: rotate(90deg)"
     />
   </div>
-  <!-- <h4 style="  word-break: keep-all;
-  overflow-wrap: normal;
-  hyphens: none;max-width:600px;width:100%; text-align: center;padding-bottom: 40px;padding-left:18px;padding-right:18px;" [innerHTML]="'ESHOP.FIRST_TEXT' | translate | nbspSmallWords"></h4> -->
 
-<!-- 
-  <div
-    class="buttons2 mb-4"
-    style="position: relative; display: flex; top: 0"
-  >
-    <a
-      routerLink="/eshop"
-      style="display:block; width:100px;height:100px;"
-      >{{ 'HOME.ESHOP' | translate }}</a
-    >
-    <a
-      routerLink="/dielne"
-      style="display:block; width:100px;height:100px;"
-      >{{ 'HOME.DIELNE' | translate }}</a
-    >
-    <a
-      routerLink="/article/historia-majoliky"
-      style="display:block; width:100px;height:100px;"
-      >{{ 'HOME.TRADICIA' | translate }}</a
-    >
-  </div> -->
+  <!-- ---------- POD TÝM: presne to, čo máš v Strapi (heading/paragraph/hero-images) ---------- -->
+  <div class="homepage-content" *ngIf="restBlocks.length" style="text-align:center;">
 
+    <!-- GALÉRIA: iba keď prvý blok pod tým je hero-images -->
+    <div *ngIf="galleryImages.length"
+         class="content-gallery"
+         [ngClass]="galleryClass">
+
+      <button
+        class="gallery-item"
+        type="button"
+        *ngFor="let g of galleryImages"
+        (click)="openModal(g.url, g.alt)"
+        aria-label="Open image fullscreen">
+
+        <img [src]="g.url" [alt]="g.alt || 'image'" loading="lazy" decoding="async" />
+      </button>
+
+    </div>
+
+    <!-- Zvyšok blokov (v poradí) -->
+    <ng-container *ngFor="let block of blocksAfterGallery">
+
+      <!-- HEADING -->
+      <ng-container *ngIf="block.__component === 'homepage.heading'">
+        <h1 *ngIf="block.level === 'h1'">{{ block.text }}</h1>
+        <h2 *ngIf="block.level === 'h2'">{{ block.text }}</h2>
+        <h3 *ngIf="block.level === 'h3'">{{ block.text }}</h3>
+      </ng-container>
+
+      <!-- PARAGRAPH -->
+      <ng-container *ngIf="block.__component === 'homepage.paragraph'">
+        <div class="paragraph" [innerHTML]="sanitizeHtml(block.text)"></div>
+      </ng-container>
+
+      <!-- HERO-IMAGES: ak sú ďalšie hero-images bloky neskôr, normálne ich renderni pod tým -->
+      <ng-container *ngIf="block.__component === 'homepage.hero-images'">
+        <div class="hero-section">
+          <div class="hero-grid">
+            <a class="hero-tile" *ngFor="let it of block.items" [routerLink]="normalizeLink(it.link)">
+              <img
+                [src]="resolveStrapiImageUrl(it.image)"
+                [alt]="it.alt || 'hero'"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="hero-tile-label" *ngIf="it.alt">{{ it.alt }}</span>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+
+    </ng-container>
+
+  </div>
 
 </div>
 
-<!-- <img src="./assets/img/corner6.png" alt="corner" class="corner-img-animated" /> -->
+<!-- FULLSCREEN MODAL -->
+<div class="img-modal" *ngIf="modalOpen" (click)="closeModal()">
+  <button class="modal-close" type="button" (click)="closeModal(); $event.stopPropagation()">×</button>
+
+  <img
+    class="modal-img"
+    [src]="modalUrl"
+    [alt]="modalAlt || 'image'"
+    (click)="$event.stopPropagation()"
+  />
+</div>
+
 <app-footer style="z-index:99;"></app-footer>

@@ -1,72 +1,93 @@
 // app/interceptors/auth.interceptor.ts
 import { Injectable } from '@angular/core';
 import {
-  HttpInterceptor, HttpRequest, HttpHandler, HttpEvent,
-  HttpContextToken, HttpContext
+  HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-
-// HttpContext flagy (voliteľné použitie pri konkrétnych requestoch)
-export const SKIP_AUTH       = new HttpContextToken<boolean>(() => false);
-export const FORCE_API_TOKEN = new HttpContextToken<boolean>(() => false);
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Aplikuj len na Strapi API (funguje pre absolútne aj relatívne URL)
-    const isStrapi = this.isStrapiRequest(req.url, environment.apiUrl);
-    if (!isStrapi || req.context.get(SKIP_AUTH)) {
+    if (!this.isStrapiRequest(req.url, environment.apiUrl)) {
       return next.handle(req);
     }
 
-    // Neposielaj Authorization na OAuth štart/callback a local login/register
     const relPath = this.relativeApiPath(req.url, environment.apiUrl);
-    const skipForEndpoints =
+
+    // neautorizujeme auth/SSO endpointy
+    if (
       /^\/connect\//.test(relPath) ||
       /^\/auth\/.+\/callback$/.test(relPath) ||
       /^\/auth\/local$/.test(relPath) ||
-      /^\/auth\/local\/register$/.test(relPath);
-
-    if (skipForEndpoints) {
+      /^\/auth\/local\/register$/.test(relPath)
+    ) {
       return next.handle(req);
     }
 
-    // Neprekryvaj existujúci Authorization
+    // Ak už je Authorization a je prázdny -> ZMAŽ ho. Ak je neprázdny -> nechaj tak.
     if (req.headers.has('Authorization')) {
-      return next.handle(req);
+      const val = req.headers.get('Authorization');
+      if (!val) {
+        req = req.clone({ headers: req.headers.delete('Authorization') });
+      } else {
+        return next.handle(req);
+      }
     }
 
-    const jwt = localStorage.getItem('jwt');
-    const useApiToken = !jwt && !!environment.strapiToken;
-    const forceApiToken = req.context.get(FORCE_API_TOKEN);
-
+    // pripoj platné JWT; ak nie je platné, pošli bez Authorization
+    const jwt = this.getValidTokenFromStorage();
     let authReq = req;
-
-    if (jwt && !forceApiToken) {
+    if (jwt) {
       authReq = req.clone({ setHeaders: { Authorization: `Bearer ${jwt}` } });
-    } else if (useApiToken || forceApiToken) {
-      // POZOR: v FE používaj len PUBLIC API token, nikdy Admin token
-      authReq = req.clone({ setHeaders: { Authorization: `Bearer ${environment.strapiToken}` } });
     }
 
-    return next.handle(authReq);
+    const sentWithAuthHeader = authReq.headers.has('Authorization');
+
+    return next.handle(authReq).pipe(
+      catchError((err: any) => {
+        // 401 po pokuse s JWT -> zmaž token a skús raz bez Authorization (pre public endpoints)
+        if (err instanceof HttpErrorResponse && err.status === 401 && sentWithAuthHeader) {
+          this.dropToken();
+          const retry = authReq.clone({ headers: authReq.headers.delete('Authorization') });
+          return next.handle(retry);
+        }
+        return throwError(() => err);
+      })
+    );
   }
 
-  /** Zistí, či URL mieri na Strapi (host + base path z environment.apiUrl) */
+  // --- helpers ---
+
+  private getValidTokenFromStorage(): string | null {
+    let token: string | null = null;
+    try { token = localStorage.getItem('jwt'); } catch {}
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1] || ''));
+      const now = Math.floor(Date.now() / 1000);
+      if (payload?.exp && payload.exp > now) return token;
+    } catch {}
+
+    this.dropToken();
+    return null;
+  }
+
+  private dropToken() {
+    try { localStorage.removeItem('jwt'); } catch {}
+  }
+
   private isStrapiRequest(requestUrl: string, apiBase: string): boolean {
     try {
       const req = new URL(requestUrl, window.location.origin);
       const api = new URL(apiBase, window.location.origin);
-      // match host + to, že path začína base path (napr. /api)
       return req.origin === api.origin && req.pathname.startsWith(api.pathname);
-    } catch {
-      return false;
-    }
+    } catch { return false; }
   }
 
-  /** Vráti path relatívnu k base API (napr. '/auth/google/callback') */
   private relativeApiPath(requestUrl: string, apiBase: string): string {
     const req = new URL(requestUrl, window.location.origin);
     const api = new URL(apiBase, window.location.origin);

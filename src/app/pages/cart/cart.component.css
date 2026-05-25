@@ -32,7 +32,7 @@
   }
   
   .cart-item {
-    
+     grid-template-columns: 90px minmax(0, 1fr) 34px;
     display: grid;
     grid-template-areas: "thumb details remove";
     /* grid-template-columns: 90px 1fr 40px; */
@@ -68,11 +68,12 @@
     height: 120px;
     object-fit: cover;
     border-radius: var(--corners);
+     grid-area: thumb; 
   }
   
   .item-details {
-    grid-area: details;
-
+  grid-area: details;
+  min-width: 0;     /* ✅ dovolí shrink v gride */
     gap: 0.5rem;
     margin-left: 1rem;
   }
@@ -131,16 +132,21 @@
   }
   
   .remove-btn {
+    position: absolute;
+    right: 0px;
     grid-area: remove;
     background: transparent;
     border: none;
     cursor: pointer;
     font-size: 1.2rem;
     color: #888;
+  justify-self: end; /* ✅ nech je úplne vpravo */
   }
   
   .remove-btn:hover {
-    color: #e53e3e;
+    color: #333;
+    font-weight: 700;
+    background-color: transparent;
   }
   
   .summary {
