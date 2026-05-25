@@ -16,6 +16,10 @@
     "outputPath": "dist/dashboard",
     "index": "src/index.html",
     "browser": "src/main.ts",
+    "server": "src/main.server.ts",
+    "ssr": {
+      "entry": "src/server.ts"
+    },
     "polyfills": ["zone.js"],
     "tsConfig": "tsconfig.app.json",
     "baseHref": "/",
@@ -36,6 +40,16 @@
   },
   "configurations": {
     "production": {
+      "optimization": {
+        "scripts": true,
+        "styles": {
+          "minify": true,
+          "inlineCritical": true
+        },
+        "fonts": {
+          "inline": false
+        }
+      },
       "outputHashing": "all",
       "serviceWorker": "ngsw-config.json",
 

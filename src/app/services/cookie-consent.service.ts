@@ -15,6 +15,8 @@ export class CookieConsentService {
   consentChanges = this.state$.asObservable();
 
   private load(): CookieConsent | null {
+    if (typeof localStorage === 'undefined') return null;
+
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
@@ -27,7 +29,9 @@ export class CookieConsentService {
   }
 
   private save(consent: CookieConsent) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
+    }
     this.state$.next(consent);
     this.applySideEffects(consent);
   }

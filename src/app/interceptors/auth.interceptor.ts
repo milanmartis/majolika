@@ -62,6 +62,8 @@ export class AuthInterceptor implements HttpInterceptor {
   // --- helpers ---
 
   private getValidTokenFromStorage(): string | null {
+    if (typeof localStorage === 'undefined') return null;
+
     let token: string | null = null;
     try { token = localStorage.getItem('jwt'); } catch {}
     if (!token) return null;
@@ -77,20 +79,23 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private dropToken() {
+    if (typeof localStorage === 'undefined') return;
     try { localStorage.removeItem('jwt'); } catch {}
   }
 
   private isStrapiRequest(requestUrl: string, apiBase: string): boolean {
     try {
-      const req = new URL(requestUrl, window.location.origin);
-      const api = new URL(apiBase, window.location.origin);
+      const origin = typeof window !== 'undefined' ? window.location.origin : apiBase;
+      const req = new URL(requestUrl, origin);
+      const api = new URL(apiBase, origin);
       return req.origin === api.origin && req.pathname.startsWith(api.pathname);
     } catch { return false; }
   }
 
   private relativeApiPath(requestUrl: string, apiBase: string): string {
-    const req = new URL(requestUrl, window.location.origin);
-    const api = new URL(apiBase, window.location.origin);
+    const origin = typeof window !== 'undefined' ? window.location.origin : apiBase;
+    const req = new URL(requestUrl, origin);
+    const api = new URL(apiBase, origin);
     let rel = req.pathname.slice(api.pathname.length);
     if (!rel.startsWith('/')) rel = '/' + rel;
     return rel;

@@ -72,7 +72,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   isCategoriesLoading = true;
 
   // ✅ FIX: promo sa nevyrenderuje "na chvíľu" a potom nezmizne v ngOnInit (layout shift)
-  showPromo = localStorage.getItem('hidePromo') !== '1';
+  showPromo = typeof localStorage !== 'undefined'
+    ? localStorage.getItem('hidePromo') !== '1'
+    : true;
 
   currentLang = 'sk';
 
@@ -162,7 +164,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
   
     this.showPromo = false;
-    localStorage.setItem('hidePromo', '1');
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('hidePromo', '1');
+    }
 
     this.megaSub = this.megaMenuService.isOpen$.subscribe((open) => {
       this.isMegaOpen = open;
@@ -180,13 +184,17 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         this.expanded = {};
       });
 
-    this.productsService
-      .getAllCategoriesFlat()
-      .pipe(finalize(() => (this.isCategoriesLoading = false)))
-      .subscribe((allCats) => {
-        this.categories = this.buildTree(allCats);
-        this.filteredCategories = [...this.categories];
-      });
+    if (typeof window !== 'undefined') {
+      this.productsService
+        .getAllCategoriesFlat()
+        .pipe(finalize(() => (this.isCategoriesLoading = false)))
+        .subscribe((allCats) => {
+          this.categories = this.buildTree(allCats);
+          this.filteredCategories = [...this.categories];
+        });
+    } else {
+      this.isCategoriesLoading = false;
+    }
 
     // jazyk + build nav
     this.currentLang = this.languageService.getCurrentLanguage();
@@ -200,7 +208,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   closePromo() {
   this.showPromo = false;
-  localStorage.setItem('hidePromo', '1');
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('hidePromo', '1');
+  }
   }
 
   // ======= DESKTOP NAV BUILDER (podľa jazyka) =======

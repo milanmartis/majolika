@@ -101,6 +101,8 @@ export class FooterNewsletterComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    if (typeof window === 'undefined') return;
+
     // zaregistruj global callback pre Turnstile (ak treba)
     if (this.siteKey) {
       (window as any).onTurnstileCallback = (token: string) => {

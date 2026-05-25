@@ -10,18 +10,21 @@ import {
   HTTP_INTERCEPTORS
 } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideServerRendering } from '@angular/platform-server';
 import { importProvidersFrom } from '@angular/core';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MegaMenuModule } from 'primeng/megamenu';
 
-import { LOCALE_ID, ApplicationConfig } from '@angular/core';
+import { LOCALE_ID, ApplicationConfig, NgZone, ɵNoopNgZone as NoopNgZone } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeSk from '@angular/common/locales/sk';
 import localeEn from '@angular/common/locales/en';
@@ -39,14 +42,33 @@ registerLocaleData(localeEn, 'en');
 registerLocaleData(localeSk, 'sk');
 registerLocaleData(localeDe, 'de');
 
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+export class ServerTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<Record<string, unknown>> {
+    const safeLang = ['sk', 'en', 'de'].includes(lang) ? lang : 'sk';
+    const candidates = [
+      join(process.cwd(), 'dist/dashboard/browser/assets/i18n', `${safeLang}.json`),
+      join(process.cwd(), 'src/assets/i18n', `${safeLang}.json`),
+    ];
+
+    for (const file of candidates) {
+      if (!existsSync(file)) continue;
+
+      try {
+        return of(JSON.parse(readFileSync(file, 'utf8')));
+      } catch {
+        return of({});
+      }
+    }
+
+    return of({});
+  }
 }
 
 const serverConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideAnimations(),
+    provideServerRendering(),
+    provideNoopAnimations(),
     provideHttpClient(
       withFetch(),
       withInterceptors([noCacheInterceptor, localeInterceptor]),
@@ -57,7 +79,7 @@ const serverConfig: ApplicationConfig = {
 
     importProvidersFrom(
       TranslateModule.forRoot({
-        loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
+        loader: { provide: TranslateLoader, useClass: ServerTranslateLoader }
       }),
       MatDialogModule,
       MatSnackBarModule,
@@ -65,6 +87,7 @@ const serverConfig: ApplicationConfig = {
     ),
 
     { provide: LOCALE_ID, useValue: 'sk' },
+    { provide: NgZone, useClass: NoopNgZone },
     { provide: 'API_URL', useValue: environment.apiUrl },
     { provide: 'FRONTEND_URL', useValue: environment.frontendUrl },
   ]

@@ -123,11 +123,15 @@ export class GoogleLoginPromptComponent implements OnInit, OnDestroy {
     // z AuthService si zober stav prihlásenia
     this.auth.currentUser$.subscribe(u => this.loggedIn.set(!!u));
 
+    if (typeof window === 'undefined') return;
+
     // listener na výsledok z popupu (GoogleRedirectComponent -> postMessage)
     window.addEventListener('message', this.onMessage);
   }
 
   ngOnDestroy(): void {
+    if (typeof window === 'undefined') return;
+
     window.removeEventListener('message', this.onMessage);
   }
 

@@ -40,6 +40,8 @@ export class PopupLauncherComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (typeof window === 'undefined') return;
+
     this.popupService.getActivePopups().subscribe(list => {
       if (!list.length) return;
       this.popup = list[0];
@@ -74,6 +76,8 @@ export class PopupLauncherComponent implements OnInit, OnDestroy {
   }
 
   private canShowNow(): boolean {
+  if (typeof localStorage === 'undefined') return false;
+
   const ts = localStorage.getItem(this.STORAGE_KEY);
   if (!ts) return true;
 
@@ -82,6 +86,8 @@ export class PopupLauncherComponent implements OnInit, OnDestroy {
 }
 
   open(): void {
+    if (typeof window === 'undefined') return;
+
     this.isOpen = true;
     this.startSlideshow(); // spustiť len keď otvorené
   }
@@ -89,7 +95,9 @@ export class PopupLauncherComponent implements OnInit, OnDestroy {
   close(): void {
     this.isOpen = false;
     this.stopSlideshow();
-    localStorage.setItem(this.STORAGE_KEY, new Date().toISOString());
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.STORAGE_KEY, new Date().toISOString());
+    }
   }
 
   private startSlideshow(): void {
@@ -97,7 +105,9 @@ export class PopupLauncherComponent implements OnInit, OnDestroy {
     if (this.timerId || this.imageUrls.length < 2) return;
 
     // (voliteľné) prednačítanie
-    this.imageUrls.forEach(u => { const img = new Image(); img.src = u; });
+    if (typeof Image !== 'undefined') {
+      this.imageUrls.forEach(u => { const img = new Image(); img.src = u; });
+    }
 
     this.timerId = setInterval(() => {
       // ak popup medzičasom zatvorený, pauzni

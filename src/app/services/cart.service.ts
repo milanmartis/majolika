@@ -124,6 +124,7 @@ export class CartService {
 
   private update(list: CartRow[]) {
     this.rows$.next(list);
+    if (typeof localStorage === 'undefined') return;
     localStorage.setItem(this.LS_KEY, JSON.stringify(list));
   }
 
@@ -146,6 +147,8 @@ export class CartService {
 }
 
   private load(): CartRow[] {
+  if (typeof localStorage === 'undefined') return [];
+
   try {
     const parsed: CartRow[] = JSON.parse(localStorage.getItem(this.LS_KEY) || '[]');
     return Array.isArray(parsed)

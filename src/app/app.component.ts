@@ -280,10 +280,14 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // simulácia načítania – bezpečné pre SSR
-    setTimeout(() => {
+    if (this.isBrowser) {
+      setTimeout(() => {
+        this.isLoading = false;
+        this.cdRef.detectChanges();
+      }, 2000);
+    } else {
       this.isLoading = false;
-      this.cdRef.detectChanges();
-    }, 2000);
+    }
 
     // Default SEO (fallback, keď route nemá vlastné dáta)
     this.title.setTitle('Slovenská ľudová majolika Modra – ručne maľovaná keramika');

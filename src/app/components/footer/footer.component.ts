@@ -38,6 +38,11 @@ export class FooterComponent implements OnInit {
   ngOnInit(): void {
     this.currentLang = this.languageService.getCurrentLanguage();
 
+    if (typeof window === 'undefined') {
+      this.imgState = 'visible';
+      return;
+    }
+
     // animovaný nábeh loga
     setTimeout(() => {
       this.imgState = 'visible';

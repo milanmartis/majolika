@@ -15,7 +15,11 @@ export const noCacheInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req2);
   }
 
-  // 2) Cache-buster len pre statické assety na rovnakom pôvode (ak ho chceš)
+  // 2) Cache-buster len pre statické assety na rovnakom pôvode (iba v browseri)
+  if (typeof location === 'undefined') {
+    return next(req);
+  }
+
   const sameOrigin = req.url.startsWith(location.origin);
   const isGet = req.method === 'GET';
   const pathname = sameOrigin ? new URL(req.url, location.origin).pathname : '';

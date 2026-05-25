@@ -4,10 +4,9 @@
   "scripts": {
     "build": "ng build --configuration production",
     "build:seo": "ng build --configuration production && node scripts/prerender-product-seo.mjs",
-    "serve:ssg": "ts-node server/index.ts",
-    "start:ssg": "node --env-file=.env dist-server/index.js",
-    "build:server": "tsc -p server/tsconfig.server.json",
-    "prod": "npm run build && npm run build:server && npm run start:ssg"
+    "build:ssr": "ng build --configuration production",
+    "serve:ssr": "node dist/dashboard/server/server.mjs",
+    "prod": "npm run build:ssr && npm run serve:ssr"
   },
   "private": true,
   "dependencies": {

@@ -32,6 +32,12 @@ export class MegaMenuService {
     if (this.megaTimeoutId !== null) {
       clearTimeout(this.megaTimeoutId);
     }
+    if (typeof window === 'undefined') {
+      this._isOpen$.next(false);
+      this.megaTimeoutId = null;
+      return;
+    }
+
     this.megaTimeoutId = window.setTimeout(() => {
       this._isOpen$.next(false);
       this.megaTimeoutId = null;
@@ -47,6 +53,12 @@ export class MegaMenuService {
     if (this.megaTimeoutId !== null) {
       clearTimeout(this.megaTimeoutId);
     }
+    if (typeof window === 'undefined') {
+      this._isOpen$.next(!this._isOpen$.getValue());
+      this.megaTimeoutId = null;
+      return;
+    }
+
     this.megaTimeoutId = window.setTimeout(() => {
       const current = this._isOpen$.getValue();
       this._isOpen$.next(!current);

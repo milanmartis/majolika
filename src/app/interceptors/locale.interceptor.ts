@@ -9,9 +9,12 @@ export const localeInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const locale = localStorage.getItem('locale') || 'sk';
+  const locale =
+    typeof localStorage !== 'undefined'
+      ? localStorage.getItem('language') || localStorage.getItem('locale') || 'sk'
+      : 'sk';
   const newReq = req.clone({
-    params: (req.params ?? new URLSearchParams() as any).set('locale', locale),
+    params: req.params.set('locale', locale),
   });
 
   return next(newReq);

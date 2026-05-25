@@ -539,7 +539,10 @@ isWrappable(row: CartRow): boolean {
     this.vatTotal.set(fixedTotals.tax);
   }
 
-  private temporaryId = localStorage.getItem('lastBookingTmpId') || null;
+  private temporaryId =
+    typeof localStorage !== 'undefined'
+      ? localStorage.getItem('lastBookingTmpId') || null
+      : null;
   checkoutForm!: FormGroup;
 
   selectedDeliveryMethod = signal<DeliveryMethod>('pickup');
@@ -793,6 +796,8 @@ isWrappable(row: CartRow): boolean {
   }
 
   private showLoginSnackOnce() {
+    if (typeof sessionStorage === 'undefined') return;
+
     if (sessionStorage.getItem('loginSnackShown')) return;
     sessionStorage.setItem('loginSnackShown', '1');
     this.snack.open(
@@ -803,6 +808,8 @@ isWrappable(row: CartRow): boolean {
   }
 
   private checkLoginSnackFromUrl() {
+    if (typeof window === 'undefined') return;
+
     const tree: UrlTree = this.router.parseUrl(this.router.url);
     const qp = tree.queryParams;
 

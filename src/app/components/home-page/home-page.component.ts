@@ -123,6 +123,11 @@ export class HomePageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (typeof window === 'undefined') {
+      this.heroLoading = [false, false];
+      return;
+    }
+
     setTimeout(() => (this.animationState = true), 0);
     this.sub = this.loadHomepage().subscribe();
   }
