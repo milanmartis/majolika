@@ -7,6 +7,7 @@ frontend:
     build:
       commands:
         - npm run build:seo
+        - cp dist/dashboard/browser/index.csr.html dist/dashboard/browser/index.html
   artifacts:
     baseDirectory: dist/dashboard/browser
     files:
