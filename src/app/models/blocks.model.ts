@@ -27,6 +27,8 @@ export interface ImageBlock {
   thumbnailUrl: string;
   mediumUrl: string;
   largeUrl: string;
+  width?: number;
+  height?: number;
   /** Nepovinný popis obrázka */
   caption?: string;
 }

@@ -61,7 +61,6 @@ export class EventSessionsService {
   sessionsForSelectedDay: Product[] = [];
   private readonly apiUrl = environment.apiUrl;
   private base = environment.apiUrl.replace(/\/+$/, '');
-  private token = environment.strapiToken;
 
   private cache: Record<string, EventSessionWithCapacity[]> = {};
   private bookingChangedSource = new Subject<void>();
@@ -76,7 +75,6 @@ export class EventSessionsService {
   private headers(json = false): HttpHeaders {
     let headers = new HttpHeaders({ Accept: 'application/json' });
     if (json) headers = headers.set('Content-Type', 'application/json');
-    if (this.token) headers = headers.set('Authorization', `Bearer ${this.token}`);
     return headers;
   }
 

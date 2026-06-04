@@ -48,6 +48,8 @@ export class ArticleService {
               thumbnailUrl: toUrl(formats.thumbnail?.url) || toUrl(mediaAttrs.url),
               mediumUrl: toUrl(formats.medium?.url) || toUrl(mediaAttrs.url),
               largeUrl: toUrl(formats.large?.url) || toUrl(mediaAttrs.url),
+              width: Number(mediaAttrs?.width) || undefined,
+              height: Number(mediaAttrs?.height) || undefined,
               alignment: (block as ImageBlock).alignment,
             };
           }

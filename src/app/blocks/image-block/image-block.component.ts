@@ -8,7 +8,7 @@ import type { ImageBlock } from 'app/models/blocks.model';
   imports: [CommonModule],
   template: `
     <div class="image-block" (click)="click.emit()">
-      <div class="image-wrapper">
+      <div class="image-wrapper" [style.aspect-ratio]="aspectRatio">
         <img
           [src]="block.mediumUrl"
           [alt]="block.caption || ''"
@@ -24,4 +24,9 @@ import type { ImageBlock } from 'app/models/blocks.model';
 export class ImageBlockComponent {
   @Input() block!: ImageBlock;   // má aj columns?: 'one' | 'two' (ale šírku rieši wrapper)
   @Output() click = new EventEmitter<void>();
+
+  get aspectRatio(): string {
+    if (!this.block?.width || !this.block?.height) return '16 / 9';
+    return `${this.block.width} / ${this.block.height}`;
+  }
 }
