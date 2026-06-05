@@ -593,9 +593,9 @@ button.favourite2:hover {
   background: transparent;
   border: none;
   cursor: pointer;
-  opacity: 0;                 /* default: ukryté */
+  opacity: .95;
   transition: opacity .2s ease;
-  z-index: 2;                 /* nad <img> */
+  z-index: 2;
   padding: 0;
   line-height: 1;
 }

@@ -206,7 +206,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   /* ---------- favorites ---------------------------------------- */
   isFav(p: Product): boolean {
-    return this.favIds.has(Number(p.id));
+    return this.favState.isFavorite(p.id, p.documentId);
   }
 
   addToFav(product: Product, btnEl?: HTMLButtonElement) {
@@ -215,7 +215,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const wasFav = this.favState.isFavorite(product.id);
+    const wasFav = this.favState.isFavorite(product.id, product.documentId);
     this.favState.toggle(product);
 
     if (btnEl) {

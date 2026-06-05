@@ -52,10 +52,7 @@ function hasExpiredToken(platformId: Object): boolean {
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
 
-  // 1) Ak JE v storage token a JE EXPIROVANÝ -> blokni úplne (aj public)
   if (hasExpiredToken(platformId)) {
-    // tu môžeš pridať napr. event/logiku na odhlásenie/redirect
-    // router.navigate(['/login']);  // ak chceš presmerovať
     const err = new HttpErrorResponse({
       status: 401,
       statusText: 'TokenExpired',
@@ -65,11 +62,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return throwError(() => err);
   }
 
-  // 2) Ak je token platný, pripoj ho; ak nie je, pošli požiadavku bez Authorization
   const validToken = getValidTokenFromStorage(platformId);
-  const cloned = validToken
-    ? req.clone({ setHeaders: { Authorization: `Bearer ${validToken}` } })
-    : req.clone({ setHeaders: { Authorization: '' }, withCredentials: false });
 
-  return next(cloned);
+  if (validToken) {
+    return next(req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${validToken}`,
+      },
+    }));
+  }
+
+  return next(req);
 };

@@ -37,7 +37,7 @@
       <button class="btn-heart"
         [class.is-fav]="isFavorite"
         [attr.aria-pressed]="isFavorite"
-        (click)="onToggleFavorite(product)"
+        (click)="$event.preventDefault(); $event.stopPropagation(); onToggleFavorite(product)"
         type="button"
         aria-label="Obľúbený produkt">
         <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
@@ -267,7 +267,7 @@
       </div>
       <div class="cart-row">
 
-        <button class="favourite2" (click)="onToggleFavorite(product)">
+        <button class="favourite2" (click)="$event.preventDefault(); $event.stopPropagation(); onToggleFavorite(product)">
   <mat-icon style="vertical-align:middle;margin-right:6px;">
     {{ isFavorite ? 'favorite' : 'favorite_border' }}
   </mat-icon>

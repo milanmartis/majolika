@@ -557,6 +557,12 @@ isExperienceProduct(prod: Product | null): boolean {
   
   this.loading = true;
   this.applyCalendarLocale(this.translate.currentLang);
+  this.favState.favorites$
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe(() => {
+      this.updateIsFavorite();
+      this.cd.markForCheck();
+    });
 
     const qp = this.route.snapshot.queryParamMap;
   this.navDateStr = qp.get('date');
@@ -1011,7 +1017,7 @@ this.cart.add(
   }
 
   private updateIsFavorite(): void {
-    this.isFavorite = this.product ? this.favState.isFavorite(this.product.id) : false;
+    this.isFavorite = this.product ? this.favState.isFavorite(this.product.id, this.product.documentId) : false;
   }
 
   startLoadingDots() {
@@ -1068,6 +1074,7 @@ this.cart.add(
       this.loadingFavorite = true;
 
       this.favState.toggle(product);
+      this.updateIsFavorite();
       setTimeout(() => (this.loadingFavorite = false), 600);
     });
   }

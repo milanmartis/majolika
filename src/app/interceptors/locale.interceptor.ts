@@ -1,6 +1,10 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const localeInterceptor: HttpInterceptorFn = (req, next) => {
+  if (req.headers.get('x-skip-locale') === 'true') {
+    return next(req.clone({ headers: req.headers.delete('x-skip-locale') }));
+  }
+
   // iba ak ide o Strapi API volanie
   if (!req.url.includes('/api/')) return next(req);
 

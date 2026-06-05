@@ -24,7 +24,7 @@ export class FavoriteStateService {
   }
 
   /** Interné načítanie zo servera */
-  private reload(): void {
+  reload(): void {
     this.favSrv.getAll().subscribe({
       next: (favs) => {
         const normalized = favs
@@ -41,19 +41,19 @@ export class FavoriteStateService {
 
   /** Prepnutie obľúbeného stavu – optimisticky + idempotentné správanie pri 409 */
   toggle(product: Product): void {
-    const pid = String(product.id);
+    const pid = this.productKey(product);
     if (this.inFlight.has(pid)) return; // blokni spam
     this.inFlight.add(pid);
 
     const prev = this.favs$.value;
-    const existing = prev.find(f => String(f.product?.id) === pid);
+    const existing = prev.find(f => this.favoriteKey(f) === pid);
 
     if (existing) {
       // ✅ Optimistické odstránenie
-      const next = prev.filter(f => String(f.product?.id) !== pid);
+      const next = prev.filter(f => this.favoriteKey(f) !== pid);
       this.favs$.next(next);
 
-      this.favSrv.remove(existing.id).pipe(
+      this.favSrv.remove(existing).pipe(
         catchError(err => {
           console.error('remove fav failed -> rollback', err);
           this.favs$.next(prev); // ⬅ rollback
@@ -70,7 +70,7 @@ export class FavoriteStateService {
       const temp: Favorite = { id: tempId, product: { ...product } as any } as Favorite;
       this.favs$.next([...prev, temp]);
 
-      this.favSrv.add(product.id).pipe(
+      this.favSrv.add(product).pipe(
         catchError((err: HttpErrorResponse) => {
           if (err?.status === 409) {
             // už existuje → ber ako success, zosynchronizuj serverový stav
@@ -93,7 +93,7 @@ export class FavoriteStateService {
           }
           // nahradíme dočasný záznam reálnym a deduplikujeme podľa product.id
           const list = this.favs$.value
-            .filter(f => f.id !== tempId && String(f.product?.id) !== pid);
+            .filter(f => f.id !== tempId && this.favoriteKey(f) !== pid);
           this.favs$.next([...list, created]);
         },
         complete: () => this.inFlight.delete(pid),
@@ -103,16 +103,16 @@ export class FavoriteStateService {
   }
 
   /** Lokálna kontrola, či je produkt obľúbený */
-  isFavorite(id: number | string): boolean {
-    const key = String(id);
-    return this.favs$.value.some(f => String(f.product?.id) === key);
+  isFavorite(id: number | string, documentId?: string): boolean {
+    const key = documentId || String(id);
+    return this.favs$.value.some(f => this.favoriteKey(f) === key);
   }
 
   /** Pomocník: dedupe podľa product.id (posledný vyhráva) */
   private uniqueByProductId(items: Favorite[]): Favorite[] {
     const map = new Map<string, Favorite>();
     for (const f of items) {
-      const key = String(f.product?.id ?? '');
+      const key = this.favoriteKey(f);
       if (key) map.set(key, f);
     }
     return Array.from(map.values());
@@ -131,6 +131,7 @@ export class FavoriteStateService {
     // 2) Strapi tvar: { data: { id, attributes: { product: { data: { id, attributes... }}}}}
     const data = raw?.data ?? raw;
     const id   = data?.id ?? raw?.id;
+    const documentId = data?.documentId ?? data?.attributes?.documentId ?? raw?.documentId;
 
     // product id sa môže nachádzať tu:
     const prodId =
@@ -141,13 +142,35 @@ export class FavoriteStateService {
       raw?.product?.id ??
       fallbackProduct?.id;
 
+    const prodDocumentId =
+      data?.attributes?.product?.data?.attributes?.documentId ??
+      data?.attributes?.product?.data?.documentId ??
+      data?.product?.data?.attributes?.documentId ??
+      data?.product?.data?.documentId ??
+      data?.product?.documentId ??
+      raw?.product?.data?.attributes?.documentId ??
+      raw?.product?.data?.documentId ??
+      raw?.product?.documentId ??
+      fallbackProduct?.documentId;
+
     if (!id) return null;
 
     const out: Favorite = {
       id,
-      product: prodId ? ({ id: prodId } as any) : (fallbackProduct as any)
+      documentId,
+      product: prodId || prodDocumentId
+        ? ({ id: prodId, documentId: prodDocumentId } as any)
+        : (fallbackProduct as any)
     } as Favorite;
 
     return out;
+  }
+
+  private productKey(product: Product): string {
+    return product.documentId || String(product.id);
+  }
+
+  private favoriteKey(favorite: Favorite): string {
+    return favorite.product?.documentId || String(favorite.product?.id ?? '');
   }
 }
