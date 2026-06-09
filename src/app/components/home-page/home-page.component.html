@@ -38,6 +38,47 @@
     />
   </div>
 
+  <h1>Slovenská ľudová majolika Modra</h1>
+
+<p class="home-seo-text">
+  Slovenská ľudová majolika v Modre od roku 1883 zachováva tradíciu ručne maľovanej keramiky. V našich dielňach vznikajú originálne taniere, misy, džbány, čajníky, hrnčeky, vázy a dekorácie vyrábané tradičnými remeselnými postupmi. Každý kus je ručne maľovaný a predstavuje jedinečný originál.
+</p>
+
+<h2>Ručne maľovaná keramika z Modry</h2>
+
+<p class="home-seo-text">
+  Majolika Modra patrí medzi najvýznamnejších výrobcov tradičnej slovenskej keramiky.
+  V e-shope nájdete široký výber úžitkovej aj dekoratívnej keramiky,
+  darčekových predmetov a limitovaných kolekcií.
+  Navštíviť môžete aj múzeum, výrobné dielne a tvorivé workshopy priamo v Modre.
+</p>
+<br />
+<h2>Najobľúbenejšie kategórie</h2>
+
+
+<div class="home-category-buttons" *ngIf="popularCategories.length">
+  <a
+    *ngFor="let cat of popularCategories"
+    class="home-category-button"
+    [routerLink]="['/produkt', 'kategoria', cat.category_slug]"
+  >
+    <span class="home-category-img" [class.loading]="categoryImgLoadingMap[cat.category_slug]">
+      <img
+        [src]="cat.category_image"
+        [alt]="catLabel(cat)"
+        loading="lazy"
+        decoding="async"
+        (load)="onCategoryImageLoad(cat.category_slug)"
+        (error)="onCategoryImageError(cat.category_slug)"
+      />
+    </span>
+
+    <span class="label">{{ catLabel(cat) }}</span>
+  </a>
+</div>
+
+
+
   <!-- ---------- POD TÝM: presne to, čo máš v Strapi (heading/paragraph/hero-images) ---------- -->
   <div class="homepage-content" *ngIf="restBlocks.length" style="text-align:center;">
 

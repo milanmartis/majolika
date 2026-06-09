@@ -8,6 +8,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subscription, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { FooterComponent } from 'app/components/footer/footer.component';
+import { ProductsService, Category } from '../../services/products.service';
 
 import { trigger, style, transition, animate, query, stagger } from '@angular/animations';
 
@@ -81,6 +82,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   animationState = false;
 
+  popularCategories: Category[] = [];
+  categoryImgLoadingMap: Record<string, boolean> = {};
+
   // TOP 2 karty (fallback)
   topHeroCards: HeroCardVM[] = [
     {
@@ -119,7 +123,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private productsSrv: ProductsService
+
   ) {}
 
   ngOnInit(): void {
@@ -127,6 +133,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.heroLoading = [false, false];
       return;
     }
+
+    this.loadPopularCategories();
 
     setTimeout(() => (this.animationState = true), 0);
     this.sub = this.loadHomepage().subscribe();
@@ -147,7 +155,48 @@ export class HomePageComponent implements OnInit, OnDestroy {
   sanitizeHtml(html: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(html || '');
   }
+private loadPopularCategories(): void {
+  this.productsSrv.getAllCategoriesFlat().subscribe({
+    next: (cats) => {
+      const wanted = [
+        'misy_a_misky',
+        'dzbany',
+        'taniere',
+        'cajniky',
+        'hrnceky',
+        'vazy',
+        'pohare',
+        'svietniky',
+        'tvorive-dielne',
+        'darcekove-poukazy'
+      ];
 
+      this.popularCategories = wanted
+        .map(slug => cats.find(c => c.category_slug === slug))
+        .filter((c): c is Category => !!c);
+
+      this.categoryImgLoadingMap = Object.fromEntries(
+        this.popularCategories.map(c => [c.category_slug, true])
+      );
+    },
+    error: () => {
+      this.popularCategories = [];
+    }
+  });
+}
+
+catLabel(c: Category | undefined | null): string {
+  if (!c) return '';
+  return c.category_name;
+}
+
+onCategoryImageLoad(slug: string): void {
+  this.categoryImgLoadingMap[slug] = false;
+}
+
+onCategoryImageError(slug: string): void {
+  this.categoryImgLoadingMap[slug] = false;
+}
   private loadHomepage() {
     return this.http.get<any>(this.HOMEPAGE_URL).pipe(
       map((resp) => {
