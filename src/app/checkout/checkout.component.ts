@@ -947,12 +947,12 @@ isWrappable(row: CartRow): boolean {
         this.applyCourierAddressMode();
         this.applyPerMethodValidators(m, address, details);
 
-        if (m === 'post_office') {
-          const alreadySelected = !!details.get('postOfficeId')!.value;
-          if (!alreadySelected) {
-            this.openSlposta();
-          }
-        }
+        // if (m === 'post_office') {
+        //   const alreadySelected = !!details.get('postOfficeId')!.value;
+        //   if (!alreadySelected) {
+        //     this.openSlposta();
+        //   }
+        // }
         this.ensurePaymentCompatibleWithDelivery(false);
       });
 
@@ -1037,46 +1037,59 @@ isWrappable(row: CartRow): boolean {
   }
 
   openSlposta() {
-    const w = window as any;
+  const w = window as any;
 
-    if (!w?.slposta?.PickupWidget) {
-      this.snack.open('Výber pošty sa ešte načítava, skúste znova o chvíľu.', 'OK', {
-        duration: 3000,
-      });
-      return;
-    }
-
-    const config = {
-      branchKinds: ['office'],
-      callback: (pickupPoint: SlpostaPickupPoint | null) => {
-        if (!pickupPoint) return;
-
-        this.checkoutForm.patchValue({
-          delivery: {
-            method: 'post_office',
-            details: {
-              provider: 'slposta',
-              postOfficeId: pickupPoint.id,
-              notes: pickupPoint.label
-                || `${pickupPoint.deliveryAddress?.street ?? ''} ${pickupPoint.deliveryAddress?.city ?? ''} ${pickupPoint.deliveryAddress?.zip ?? ''}`.trim()
-            },
-            address: {
-              street: pickupPoint.deliveryAddress?.street ?? '',
-              city: pickupPoint.deliveryAddress?.city ?? '',
-              zip: pickupPoint.deliveryAddress?.zip ?? '',
-              country: 'Slovensko'
-            }
-          }
-        });
-
-        const deliveryGroup = this.checkoutForm.get('delivery') as FormGroup;
-        const details = deliveryGroup.get('details') as FormGroup;
-        this.applyPerMethodValidators('post_office', deliveryGroup.get('address') as FormGroup, details);
-      }
-    };
-
-    (window as any).slposta.PickupWidget.open(config);
+  if (!w?.slposta?.PickupWidget) {
+    this.snack.open('Výber pošty sa ešte načítava, skúste znova.', 'OK', {
+      duration: 3000,
+    });
+    return;
   }
+
+  const config = {
+    country: 'SK',
+    language: (this.translate.currentLang || 'sk').slice(0, 2),
+    callback: (point: any) => {
+
+  //console.log('[SLPOSTA]', point);
+  //alert(JSON.stringify(point, null, 2));
+
+  if (!point) return;
+
+  const id =
+    point.id ||
+    point.postOfficeId ||
+    point.officeId ||
+    point.zip ||
+    '';
+
+  const label = [
+  point.label,
+  point.deliveryAddress?.street,
+  point.deliveryAddress?.zip,
+  point.deliveryAddress?.city,
+]
+.filter(Boolean)
+.join(', ');
+
+  const finalLabel = label || String(id);
+
+  this.checkoutForm.patchValue({
+    delivery: {
+      method: 'post_office',
+      details: {
+        postOfficeId: String(id),
+        notes: finalLabel,
+      },
+    },
+  });
+},
+  };
+
+  
+
+  w.slposta.PickupWidget.open(config);
+}
 
   
 
@@ -1339,6 +1352,12 @@ isWrappable(row: CartRow): boolean {
     return addr || `Pošta #${this.postOfficeId}`;
   }
 
+  get packetaBoxLabel(): string {
+  const notes = this.ctrl('delivery.details.notes').value || '';
+  const id = this.ctrl('delivery.details.packetaBoxId').value || '';
+  return notes || `Packeta #${id}`;
+}
+
   changePostOffice() {
     this.openSlposta();
   }
@@ -1389,9 +1408,13 @@ private openPacketaNow() {
 
     const humanLabel = [
       point.name,
+      point.place,
       point.street,
+      point.zip,
       point.city,
-    ].filter(Boolean).join(', ');
+    ]
+    .filter(Boolean)
+    .join(', ');
 
     this.checkoutForm.patchValue({
       delivery: {

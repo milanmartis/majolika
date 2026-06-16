@@ -336,11 +336,10 @@
 
             <ng-template #postOfficeSelected>
               <div class="post-office-selected" style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
-                <mat-chip-set>
-                  <mat-chip>
-                    {{ postOfficeLabel }}
-                  </mat-chip>
-                </mat-chip-set>
+                <div class="selected-pickup">
+                  <strong>Vybraná pošta</strong>
+                  <div>{{ postOfficeLabel }}</div>
+                </div>
 
                 <button type="button" class="btn-primary" (click)="changePostOffice()">
                   {{ 'COMMON.CHANGE_POSTA' | translate }}
@@ -359,8 +358,13 @@
             </ng-container>
 
             <ng-template #packetaSelected>
+              <div class="selected-pickup">
+                <strong>Vybraná Packeta</strong>
+                <div>{{ packetaBoxLabel }}</div>
+              </div>
+
               <button type="button" class="btn-primary" (click)="choosePacketaBox()">
-                {{ 'COMMON.CHANGE' | translate }} #{{ checkoutForm.get('delivery.details.packetaBoxId')?.value }}
+                {{ 'COMMON.CHANGE' | translate }}
               </button>
             </ng-template>
           </div>
