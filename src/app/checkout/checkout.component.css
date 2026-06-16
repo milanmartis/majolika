@@ -580,7 +580,7 @@ textarea{
 @media (max-width: 640px) {
   .checkout-wrapper {
     padding: 0.6rem;
-    overflow-x: hidden;
+    overflow-x: visible;
   }
 
   .left-col,

@@ -524,3 +524,17 @@ a:hover {
     --mdc-dialog-container-shape: 12px;
   }
 }
+
+
+
+
+@supports (-webkit-touch-callout: none) {
+  body {
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+
+  body iframe {
+    max-width: 100vw !important;
+    max-height: 100dvh !important;
+  }
+}

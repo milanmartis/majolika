@@ -1078,45 +1078,7 @@ isWrappable(row: CartRow): boolean {
     (window as any).slposta.PickupWidget.open(config);
   }
 
-  async openPacketa() {
-    await this.ensurePacketaReady();
-
-    const apiKey = environment.PACKETA_WIDGET_KEY;
-    const options = {
-      language: (this.translate.currentLang || 'sk').slice(0,2),
-      view: 'modal',
-      vendors: [
-        { country: 'sk' },
-        { country: 'sk', group: 'zbox' }
-      ],
-    };
-
-    const onSelect = (point: any) => {
-      if (!point) return;
-
-      const provider = point.carrierId ? `carrier:${point.carrierId}` : 'packeta';
-      const pickupId = point.carrierId ? point.carrierPickupPointId : point.id;
-
-      const humanLabel = [
-        point.name,
-        point.street,
-        point.city,
-      ].filter(Boolean).join(', ');
-
-      this.checkoutForm.patchValue({
-        delivery: {
-          method: 'packeta_box',
-          details: {
-            provider,
-            packetaBoxId: pickupId,
-            notes: humanLabel,
-          }
-        }
-      });
-    };
-
-    (window as any).Packeta.Widget.pick(apiKey, onSelect, options);
-  }
+  
 
   private ctrl(path: string): AbstractControl {
     const c = this.checkoutForm.get(path);
@@ -1394,57 +1356,57 @@ isWrappable(row: CartRow): boolean {
     window.location.href = url;
   }
 
-  choosePacketaBox() {
-    const w = window as any;
+ choosePacketaBox() {
+  const w = window as any;
 
-    if (!w?.Packeta?.Widget) {
-      this.snack.open('Packeta sa ešte načítava, skúste znova o chvíľu.', 'OK', {
-        duration: 3000,
-      });
-      return;
-    }
-
-    this.openPacketaNow();
+  if (!w?.Packeta?.Widget) {
+    this.snack.open('Packeta sa ešte načítava, skúste znova o chvíľu.', 'OK', {
+      duration: 3000,
+    });
+    return;
   }
 
-  private openPacketaNow() {
-    const apiKey = environment.PACKETA_WIDGET_KEY;
+  this.openPacketaNow();
+}
 
-    const options = {
-      language: (this.translate.currentLang || 'sk').slice(0, 2),
-      view: 'modal',
-      vendors: [
-        { country: 'sk' },
-        { country: 'sk', group: 'zbox' },
-      ],
-    };
+private openPacketaNow() {
+  const apiKey = environment.PACKETA_WIDGET_KEY;
 
-    const onSelect = (point: any) => {
-      if (!point) return;
+  const options = {
+    language: (this.translate.currentLang || 'sk').slice(0, 2),
+    view: 'modal',
+    vendors: [
+      { country: 'sk' },
+      { country: 'sk', group: 'zbox' },
+    ],
+  };
 
-      const provider = point.carrierId ? `carrier:${point.carrierId}` : 'packeta';
-      const pickupId = point.carrierId ? point.carrierPickupPointId : point.id;
+  const onSelect = (point: any) => {
+    if (!point) return;
 
-      const humanLabel = [
-        point.name,
-        point.street,
-        point.city,
-      ].filter(Boolean).join(', ');
+    const provider = point.carrierId ? `carrier:${point.carrierId}` : 'packeta';
+    const pickupId = point.carrierId ? point.carrierPickupPointId : point.id;
 
-      this.checkoutForm.patchValue({
-        delivery: {
-          method: 'packeta_box',
-          details: {
-            provider,
-            packetaBoxId: pickupId,
-            notes: humanLabel,
-          },
+    const humanLabel = [
+      point.name,
+      point.street,
+      point.city,
+    ].filter(Boolean).join(', ');
+
+    this.checkoutForm.patchValue({
+      delivery: {
+        method: 'packeta_box',
+        details: {
+          provider,
+          packetaBoxId: pickupId,
+          notes: humanLabel,
         },
-      });
-    };
+      },
+    });
+  };
 
-    (window as any).Packeta.Widget.pick(apiKey, onSelect, options);
-  }
+  (window as any).Packeta.Widget.pick(apiKey, onSelect, options);
+}
   
   
   copy(text: string) {
