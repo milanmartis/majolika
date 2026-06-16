@@ -1036,8 +1036,15 @@ isWrappable(row: CartRow): boolean {
     this.destroy$.complete();
   }
 
-  async openSlposta() {
-    await this.ensureSlpostaReady();
+  openSlposta() {
+    const w = window as any;
+
+    if (!w?.slposta?.PickupWidget) {
+      this.snack.open('Výber pošty sa ešte načítava, skúste znova o chvíľu.', 'OK', {
+        duration: 3000,
+      });
+      return;
+    }
 
     const config = {
       branchKinds: ['office'],
@@ -1388,9 +1395,58 @@ isWrappable(row: CartRow): boolean {
   }
 
   choosePacketaBox() {
-    this.openPacketa();
+    const w = window as any;
+
+    if (!w?.Packeta?.Widget) {
+      this.snack.open('Packeta sa ešte načítava, skúste znova o chvíľu.', 'OK', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    this.openPacketaNow();
   }
 
+  private openPacketaNow() {
+    const apiKey = environment.PACKETA_WIDGET_KEY;
+
+    const options = {
+      language: (this.translate.currentLang || 'sk').slice(0, 2),
+      view: 'modal',
+      vendors: [
+        { country: 'sk' },
+        { country: 'sk', group: 'zbox' },
+      ],
+    };
+
+    const onSelect = (point: any) => {
+      if (!point) return;
+
+      const provider = point.carrierId ? `carrier:${point.carrierId}` : 'packeta';
+      const pickupId = point.carrierId ? point.carrierPickupPointId : point.id;
+
+      const humanLabel = [
+        point.name,
+        point.street,
+        point.city,
+      ].filter(Boolean).join(', ');
+
+      this.checkoutForm.patchValue({
+        delivery: {
+          method: 'packeta_box',
+          details: {
+            provider,
+            packetaBoxId: pickupId,
+            notes: humanLabel,
+          },
+        },
+      });
+    };
+
+    (window as any).Packeta.Widget.pick(apiKey, onSelect, options);
+  }
+  
+  
   copy(text: string) {
     if (!text) return;
     navigator.clipboard?.writeText(text).then(() => {

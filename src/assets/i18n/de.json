@@ -602,7 +602,7 @@
     },
     "NEWSLETTER": {
       "TITLE": "Newsletter",
-      "TEXT": "Melde dich an und erhalte 10 % Rabatt auf deine erste Bestellung.",
+      "TEXT": "Melde dich an",
       "EMAIL_PLACEHOLDER": "Deine E-Mail-Adresse",
       "SUBMIT": "Abonnieren",
       "DONE": "Danke für dein Abonnement",

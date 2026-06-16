@@ -644,7 +644,7 @@
     },
     "NEWSLETTER": {
       "TITLE": "Newsletter",
-      "TEXT": "Subscribe and get 10% off your first order.",
+      "TEXT": "Subscribe",
       "EMAIL_PLACEHOLDER": "Your email address",
       "SUBMIT": "Subscribe",
       "DONE": "Thank you for subscribing",

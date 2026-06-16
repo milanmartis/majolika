@@ -670,7 +670,7 @@
     },
     "NEWSLETTER": {
       "TITLE": "Newsletter",
-      "TEXT": "Prihlás sa na odber a získaj 10% zľavu na prvú objednávku.",
+      "TEXT": "Prihlás sa na odber noviniek.",
       "EMAIL_PLACEHOLDER": "Váš e-mail",
       "SUBMIT": "Odoberať",
       "DONE": "Ďakujeme, ste prihlásený",
