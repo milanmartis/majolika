@@ -809,8 +809,15 @@ public goToSession(session: EventSessionWithCapacity, ev?: Event): void {
 
   /** ✅ aj tu zachovaj jazykový prefix */
   public goToLink(url: string): void {
-    // pôvodne: this.router.navigateByUrl('/' + url);
-    this.nav([url]);
+    if (!url) return;
+
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      window.location.href = url;
+      return;
+    }
+
+    const clean = url.startsWith('/') ? url : '/' + url;
+    this.router.navigateByUrl(clean);
   }
 
   /** ✅ login tiež s prefixom */
