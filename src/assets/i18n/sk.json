@@ -659,6 +659,8 @@
       "RETURNS": "Reklamácie",
       "CONTACT": "Kontaktuj nás"
     },
+    "OZMAJOLIKA": {
+      "TITLE": "Majolika Modra"},
     "INFO": {
       "TITLE": "Informácie",
       "ABOUT_COMPANY": "O nás",
@@ -668,6 +670,8 @@
       "PRIVACY": "Ochrana osobných údajov",
       "NEW_MODELS": "Nové vzory"
     },
+    
+
     "NEWSLETTER": {
       "TITLE": "Newsletter",
       "TEXT": "Prihlás sa na odber noviniek.",
@@ -796,7 +800,30 @@
     "WD_FRI": "Pi",
     "WD_SAT": "So",
     "WD_SUN": "Ne"
-  }
+  },
+  "WITHDRAWAL": {
+  "TITLE": "Odstúpenie od zmluvy",
+  "INTRO": "Vyplňte formulár nižšie. Po jeho odoslaní Vám zašleme potvrdenie o prijatí oznámenia.",
+  "NAME": "Meno a priezvisko",
+  "ORDER_NUMBER": "Číslo objednávky",
+  "PRODUCTS": "Produkt alebo produkty, ktorých sa odstúpenie týka",
+  "EMAIL": "E-mail",
+  "PHONE": "Telefón",
+  "SEND": "Odoslať oznámenie",
+  "SUCCESS_TITLE": "Potvrdzujeme prijatie oznámenia o odstúpení od zmluvy.",
+  "SUCCESS_TEXT": "O ďalšom postupe Vás budeme informovať.",
+  "FOOTER_LINK": "Odstúpiť od zmluvy tu",
+  "GDPR": "Súhlasím so spracovaním osobných údajov podľa <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Zásad ochrany súkromia</a>.",
+  "CAPTCHA_ERROR": "Potvrďte, že nie ste robot.",
+  "SENDING": "Odosielam...",
+  "ORDER_NOT_FOUND": "Objednávka s týmto číslom a e-mailovou adresou nebola nájdená.",
+  "ERROR": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova.",
+      "ORDER_CHECKING": "Overujeme číslo objednávky...",
+    "ORDER_VALID": "Objednávka bola nájdená.",
+    "ORDER_CHECK_ERROR": "Objednávku sa momentálne nepodarilo overiť."
+
+
+}
   } 
 
   

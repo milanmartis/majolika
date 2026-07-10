@@ -1,0 +1,94 @@
+<div class="withdrawal-page">
+  <div class="container">
+    <h1>{{ 'WITHDRAWAL.TITLE' | translate }}</h1>
+
+    <p class="intro">
+      {{ 'WITHDRAWAL.INTRO' | translate }}
+    </p>
+
+    <div *ngIf="submitted" class="success">
+      <strong>{{ 'WITHDRAWAL.SUCCESS_TITLE' | translate }}</strong>
+      <br><br>
+      {{ 'WITHDRAWAL.SUCCESS_TEXT' | translate }}
+    </div>
+
+    <form *ngIf="!submitted" #f="ngForm" (ngSubmit)="submitForm()">
+      <div class="field">
+        <label>{{ 'WITHDRAWAL.NAME' | translate }} *</label>
+        <input type="text" name="name" [(ngModel)]="form.name" required>
+      </div>
+
+      <div class="field">
+        <label>{{ 'WITHDRAWAL.ORDER_NUMBER' | translate }} *</label>
+        <input
+  type="text"
+  name="orderNumber"
+  [(ngModel)]="form.orderNumber"
+  (ngModelChange)="onOrderNumberChange($event)"
+  [class.input-valid]="orderCheckStatus === 'valid'"
+  [class.input-invalid]="orderCheckStatus === 'invalid'"
+  autocomplete="off"
+  required
+>
+
+<div class="order-check-message checking" *ngIf="orderCheckStatus === 'checking'">
+  {{ 'WITHDRAWAL.ORDER_CHECKING' | translate }}
+</div>
+
+<div class="order-check-message valid" *ngIf="orderCheckStatus === 'valid'">
+  {{ 'WITHDRAWAL.ORDER_VALID' | translate }}
+</div>
+
+<div class="order-check-message invalid" *ngIf="orderCheckStatus === 'invalid'">
+  {{ 'WITHDRAWAL.ORDER_NOT_FOUND' | translate }}
+</div>
+
+<div class="order-check-message error" *ngIf="orderCheckStatus === 'error'">
+  {{ 'WITHDRAWAL.ORDER_CHECK_ERROR' | translate }}
+</div>
+      </div>
+
+      <div class="field">
+        <label>{{ 'WITHDRAWAL.PRODUCTS' | translate }} *</label>
+        <textarea rows="5" name="products" [(ngModel)]="form.products" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>{{ 'WITHDRAWAL.EMAIL' | translate }} *</label>
+        <input type="email" name="email" [(ngModel)]="form.email" required email>
+      </div>
+
+      <div class="field">
+        <label>{{ 'WITHDRAWAL.PHONE' | translate }}</label>
+        <input type="text" name="phone" [(ngModel)]="form.phone">
+      </div>
+
+      <label class="gdpr-check">
+        <input
+          type="checkbox"
+          name="gdpr"
+          [(ngModel)]="form.gdpr"
+          required
+        >
+        <span [innerHTML]="'WITHDRAWAL.GDPR' | translate"></span>
+      </label>
+
+      <div class="turnstile-wrapper">
+        <div #turnstileContainer></div>
+
+        <div class="turnstile-error" *ngIf="turnstileError">
+          {{ 'WITHDRAWAL.CAPTCHA_ERROR' | translate }}
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="form-error">
+        {{ errorMessage | translate }}
+      </div>
+
+      <button type="submit" [disabled]="!f.valid || !form.gdpr || isSubmitting">
+        <span *ngIf="!isSubmitting">{{ 'WITHDRAWAL.SEND' | translate }}</span>
+        <span *ngIf="isSubmitting">{{ 'WITHDRAWAL.SENDING' | translate }}</span>
+      </button>
+    </form>
+  </div>
+</div>

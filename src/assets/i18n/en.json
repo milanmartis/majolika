@@ -633,6 +633,8 @@
       "RETURNS": "Returns",
       "CONTACT": "Contact us"
     },
+        "OZMAJOLIKA": {
+      "TITLE": "Majolika Modra"},
     "INFO": {
       "TITLE": "Information",
       "ABOUT_COMPANY": "About the company",
@@ -642,6 +644,8 @@
       "PRIVACY": "Privacy policy",
       "NEW_MODELS": "New models"
     },
+    
+
     "NEWSLETTER": {
       "TITLE": "Newsletter",
       "TEXT": "Subscribe",
@@ -731,6 +735,25 @@
     "WD_FRI": "Fri",
     "WD_SAT": "Sat",
     "WD_SUN": "Sun"
-  }
+  },
+  "WITHDRAWAL": {
+  "TITLE": "Withdrawal from Contract",
+  "INTRO": "Please fill in the form below. After submitting it, we will send you a confirmation of receipt.",
+  "NAME": "Name & surname",
+  "ORDER_NUMBER": "Order number",
+  "PRODUCTS": "Product or products the withdrawal concerns",
+  "EMAIL": "Email",
+  "PHONE": "Phone",
+  "SEND": "Submit notice",
+  "SUCCESS_TITLE": "We confirm receipt of your withdrawal from contract notice.",
+  "SUCCESS_TEXT": "We will inform you about the next steps.",
+  "FOOTER_LINK": "Withdraw from contract here",
+  "GDPR": "I agree to the processing of personal data according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Privacy Policy</a>.",
+  "CAPTCHA_ERROR": "Please confirm that you are not a robot.",
+      "ORDER_CHECKING": "Checking the order number...",
+    "ORDER_VALID": "The order was found.",
+    "ORDER_NOT_FOUND": "No order with this number was found.",
+    "ORDER_CHECK_ERROR": "The order could not be verified at the moment."
+}
   
   }

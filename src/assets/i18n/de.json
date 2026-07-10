@@ -591,6 +591,8 @@
       "RETURNS": "Reklamationen",
       "CONTACT": "Kontaktiere uns"
     },
+            "OZMAJOLIKA": {
+      "TITLE": "Majolika Modra"},
     "INFO": {
       "TITLE": "Informationen",
       "ABOUT_COMPANY": "Über das Unternehmen",
@@ -600,6 +602,8 @@
       "PRIVACY": "Datenschutz",
       "NEW_MODELS": "Neue Muster"
     },
+    
+
     "NEWSLETTER": {
       "TITLE": "Newsletter",
       "TEXT": "Melde dich an",
@@ -729,7 +733,29 @@
     "WD_FRI": "Fri",
     "WD_SAT": "Sat",
     "WD_SUN": "Sun"
-  }
-  
+  },
+  "WITHDRAWAL": {
+  "TITLE": "Widerruf des Vertrags",
+  "INTRO": "Bitte füllen Sie das Formular unten aus. Nach dem Absenden senden wir Ihnen eine Eingangsbestätigung.",
+  "NAME": "Name und Nachname",
+  "ORDER_NUMBER": "Bestellnummer",
+  "PRODUCTS": "Produkt oder Produkte, auf die sich der Widerruf bezieht",
+  "EMAIL": "E-Mail",
+  "PHONE": "Telefon",
+  "SEND": "Mitteilung absenden",
+  "SUCCESS_TITLE": "Wir bestätigen den Eingang Ihrer Widerrufserklärung.",
+  "SUCCESS_TEXT": "Wir werden Sie über das weitere Vorgehen informieren.",
+
+    "SENDING": "Wird gesendet...",
+
+  "GDPR": "Ich stimme der Verarbeitung meiner personenbezogenen Daten gemäß der <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Datenschutzerklärung</a> zu.",
+  "CAPTCHA_ERROR": "Bitte bestätigen Sie, dass Sie kein Roboter sind.",
+  "ORDER_NOT_FOUND": "Es wurde keine Bestellung mit dieser Bestellnummer und E-Mail-Adresse gefunden.",
+  "ERROR": "Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+  "FOOTER_LINK": "Vertrag widerrufen",
+     "ORDER_CHECKING": "Die Bestellnummer wird überprüft...",
+    "ORDER_VALID": "Die Bestellung wurde gefunden.",
+    "ORDER_CHECK_ERROR": "Die Bestellung konnte momentan nicht überprüft werden."
+} 
   
   }

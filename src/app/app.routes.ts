@@ -6,6 +6,7 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
 import { LandingPage2Component } from './components/landing-page2/landing-page2.component';
 
 import { EshopComponent } from './pages/eshop/eshop.component';
+import { WithdrawalComponent } from './pages/withdrawal/withdrawal.component';
 import { TradiciaComponent } from './pages/tradicia/tradicia.component';
 
 import { RegisterComponent } from 'app/auth/register.component';
@@ -191,6 +192,10 @@ export const routes: Routes = [
       import('./checkout/checkout.routes').then((m) => m.checkoutRoutes),
   },
 
+  {
+    path: 'odstupenie-od-zmluvy',
+    component: WithdrawalComponent
+  },
   // --- Email/SSO ---
   { path: 'confirm-email', component: ConfirmEmailComponent },
   { path: 'signin/callback', component: SigninCallbackComponent },
@@ -210,4 +215,5 @@ export const routes: Routes = [
   },
   // --- Fallback ---
   { path: '**', redirectTo: '' },
+
 ];

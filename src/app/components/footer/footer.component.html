@@ -18,6 +18,13 @@
 
     <li><a href="article/informacie">{{ 'FOOTER.SUPPORT.CONTACT' | translate }}</a></li>
   </ul>
+<br />
+  <h4 style="margin-top:20px;">{{ 'FOOTER.OZMAJOLIKA.TITLE' | translate }}</h4>
+  <ul>
+      <li><a [routerLink]="['/article/majolika-as']">Slovenská Ľudová Majolika, a. s.</a></li>
+    <li><a [routerLink]="['/article/oz-slm']">OZ Slovenská Ľudová Majolika</a></li>
+    <li><a [routerLink]="['/article/nove-vzory']">{{ 'FOOTER.INFO.NEW_MODELS' | translate }}</a></li>
+   </ul>
 </div>
 
 <div class="footer-col">
@@ -28,9 +35,12 @@
     <!-- <li><a href="#">{{ 'FOOTER.INFO.BLOG' | translate }}</a></li> -->
     <li><a [routerLink]="['/article/vseobecne-obchodne-podmienky']">{{ 'FOOTER.INFO.TERMS' | translate }}</a></li>
     <li><a [routerLink]="['/article/ochrana-a-spracovanie-osobnych-udajov']">{{ 'FOOTER.INFO.PRIVACY' | translate }}</a></li>
-    <li><a [routerLink]="['/article/majolika-as']">Slovenská Ľudová Majolika, a. s.</a></li>
-    <li><a [routerLink]="['/article/oz-slm']">OZ Slovenská Ľudová Majolika</a></li>
-    <li><a [routerLink]="['/article/nove-vzory']">{{ 'FOOTER.INFO.NEW_MODELS' | translate }}</a></li>
+    <li>
+      <a [routerLink]="['/odstupenie-od-zmluvy']">
+        {{ 'WITHDRAWAL.FOOTER_LINK' | translate }}
+      </a>
+    </li>
+
   </ul>
 </div>
 
