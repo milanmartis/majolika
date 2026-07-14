@@ -1515,9 +1515,23 @@ this.cart.add(
     }
   }
 
+  /**
+   * Štítok variantu do chipu:
+   *  - názov s pomlčkou -> zobrazíme len časť za pomlčkou („Džbán - Modrý dekór“ -> „Modrý dekór“)
+   *  - názov bez pomlčky -> je to vlastný názov variantu, zobrazíme ho celý
+   */
   getVariationLabel(name: string): string {
-    const parts = name.split('-');
-    return parts.length > 1 ? parts.slice(1).join(' ').trim() : '';
+    const full = (name ?? '').trim();
+    if (!full) return '';
+
+    // pred oddeľovačom musí byť medzera, aby sme nerozbili „Detské, 1-2 roky“ či „Modro-biela“
+    const sep = full.match(/\s+[-–—]\s*/);
+    if (sep?.index !== undefined) {
+      const tail = full.slice(sep.index + sep[0].length).trim();
+      if (tail) return tail;
+    }
+
+    return full;
   }
 
   addToCart() {
