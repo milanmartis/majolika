@@ -391,6 +391,15 @@ p{
 
 }
 
+/* Obsah detailu aktuality sa renderuje cez [innerHTML], takže naň komponentové
+   (emulovane enkapsulované) štýly nedosiahnu a holé globálne p{0.82rem} by ho
+   zmenšilo. Tieto globálne pravidlá cez .aktualita-content prebijú p a zväčšia text. */
+.aktualita-content p,
+.aktualita-content li {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
 
 .desc, i{    font-style: normal; font-size: 0.89rem; margin-bottom:1.5rem; color:#4a5568; line-height:1.5; }
 .desc br + br{ display:block; margin-top:0.75rem; }
