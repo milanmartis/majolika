@@ -26,7 +26,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NbspSmallWordsPipe } from 'app/pipes/nbsp-small-words.pipe';
 import { LinkifyPipe } from 'app/pipes/linkify.pipe';
 import { ShareButtonsComponent } from 'app/shared/share-buttons/share-buttons.component';
-import { MarkdownLitePipe } from 'app/pipes/markdown-lite.pipe';
 
 @Component({
   selector: 'app-aktualita-detail',
@@ -39,7 +38,6 @@ import { MarkdownLitePipe } from 'app/pipes/markdown-lite.pipe';
     NbspSmallWordsPipe,
     LinkifyPipe,
     ShareButtonsComponent,
-    MarkdownLitePipe,
   ],
   templateUrl: './aktualita-detail.component.html',
   styleUrls: ['./aktualita-detail.component.css'],

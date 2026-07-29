@@ -74,9 +74,15 @@
           </div>
         </header>
 
+        <!--
+          content je HTML z CKEditora – renderujeme ho priamo cez [innerHTML].
+          Angular má zabudovanú sanitizáciu (ponechá p/strong/em/a/ul/ol/li/h1–6/br/blockquote,
+          odstráni script a event handlery), takže netreba bypassSecurityTrustHtml ani vlastný safeHtml pipe.
+          Žiadny markdownLite/nbspSmallWords/linkify – tie by hotové HTML rozbili (napr. nbsp v „<a href“).
+        -->
         <section
-          class="body"
-          [innerHTML]="akt.content | markdownLite | nbspSmallWords | linkify"
+          class="body aktualita-content"
+          [innerHTML]="akt.content"
         ></section>
       </article>
 
