@@ -400,6 +400,12 @@ p{
   line-height: 1.7;
 }
 
+/* Vložené <p> majú browser default margin: 1em 0, čo robí veľké medzery medzi
+   odsekmi. Stiahneme ich na tesnejšie, ako to vyzerá v CKEditore. */
+.aktualita-content p {
+  margin: 0 0 0.5em;
+}
+
 
 .desc, i{    font-style: normal; font-size: 0.89rem; margin-bottom:1.5rem; color:#4a5568; line-height:1.5; }
 .desc br + br{ display:block; margin-top:0.75rem; }
