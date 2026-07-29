@@ -7,7 +7,7 @@ import {
   Inject,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { switchMap, map, tap, catchError, shareReplay } from 'rxjs/operators';
 import { LOCALE_ID } from '@angular/core';
@@ -48,7 +48,9 @@ export class AktualitaDetailComponent implements OnInit {
   others$!: Observable<Aktualita[]>;
   notFound$!: Observable<boolean>;
 
-  articleUrl = window.location.href;
+  // SSR-safe: window na serveri neexistuje. DOCUMENT je dostupný na oboch platformách,
+  // v prehliadači je doc.location.href identické s window.location.href.
+  articleUrl = '';
 
   // gallery state
   galleryThumbs: string[] = [];
@@ -61,10 +63,13 @@ export class AktualitaDetailComponent implements OnInit {
     private aktualityService: AktualityService,
     public lang: LanguageService,
     private router: Router,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    @Inject(DOCUMENT) private doc: Document
   ) {}
 
   ngOnInit() {
+    this.articleUrl = this.doc.location?.href ?? '';
+
     const slug$ = this.route.paramMap.pipe(
       map((pm) => (pm.get('slug') || '').trim()),
       shareReplay(1)

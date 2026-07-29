@@ -93,7 +93,7 @@
 .detail-content .body {
   flex: 1;
   line-height: 1.7;
-  font-size: 1rem;
+  font-size: 1.125rem;
 
   word-break: keep-all;
   overflow-wrap: normal;
