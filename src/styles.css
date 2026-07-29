@@ -403,7 +403,7 @@ p{
 /* Vložené <p> majú browser default margin: 1em 0, čo robí veľké medzery medzi
    odsekmi. Stiahneme ich na tesnejšie, ako to vyzerá v CKEditore. */
 .aktualita-content p {
-  margin: 0 0 0.5em;
+  margin: 0 0 0.7em;
 }
 
 
