@@ -1,48 +1,111 @@
 <h1 class="login-title">{{ 'CATEGORIES.AKTUALITY' | translate }}</h1>
 
-<div class="cards" style="max-width:1200px; margin:auto; text-align:center; padding-bottom:100px;">
-  <ng-container *ngIf="aktuality$ | async as aktualityList; else loading">
-    <ng-container *ngIf="aktualityList.length; else noNews">
-      <div
-        *ngFor="let akt of aktualityList"
-        class="card"
-        @fadeSlideIn              
-      >
-        <a [routerLink]="['/aktuality', akt.slug]"><img
-          *ngIf="akt.featuredImage"
-          class="akt-image"
-          appImageFade
-          loading="lazy"
-          decoding="async"
-          [src]="getMediaUrl(akt.featuredImage)"
-          [alt]="akt.title"
-        /></a>
-        <div class="content">
-          <h2>
-            <a [routerLink]="['/aktuality', akt.slug]" [innerHTML]="akt.title | nbspSmallWords | linkify"></a>
-          </h2>
-          <p class="date">
-            {{ akt.publishedAt 
-               | date:'mediumDate':undefined:lang.getCurrentLanguage() }}
-          </p>
-          <p class="summary" [innerHTML]="akt.summary | nbspSmallWords | linkify"></p>
-          <a
-            class="read-more"
-            [routerLink]="['/aktuality', akt.slug]"
+<div class="aktuality-page">
+
+  <!-- Toolbar: hľadanie + filter kategórií -->
+  <div class="akt-toolbar">
+    <div class="akt-search">
+      <input
+        type="search"
+        class="akt-search-input"
+        [ngModel]="query()"
+        (ngModelChange)="onSearch($event)"
+        [placeholder]="'AKTUALITY.LIST.SEARCH_PLACEHOLDER' | translate"
+        [attr.aria-label]="'AKTUALITY.LIST.SEARCH_PLACEHOLDER' | translate"
+      />
+      <button
+        *ngIf="query()"
+        type="button"
+        class="akt-search-clear"
+        (click)="onSearch('')"
+        [attr.aria-label]="'AKTUALITY.LIST.SEARCH_CLEAR' | translate"
+      >×</button>
+    </div>
+
+    <!-- Chips sa zobrazia len ak dáta reálne majú kategórie -->
+    <div class="akt-chips" *ngIf="categories().length">
+      <button
+        type="button"
+        class="akt-chip"
+        [class.active]="activeCategory() === null"
+        (click)="selectCategory(null)"
+      >{{ 'AKTUALITY.LIST.CATEGORY_ALL' | translate }}</button>
+      <button
+        *ngFor="let c of categories()"
+        type="button"
+        class="akt-chip"
+        [class.active]="activeCategory() === c.slug"
+        (click)="selectCategory(c.slug)"
+      >{{ c.name }}</button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="loaded(); else loading">
+
+    <ng-container *ngIf="all().length; else noNews">
+
+      <ng-container *ngIf="visible().length; else noResults">
+        <div class="cards">
+          <div
+            *ngFor="let akt of visible(); trackBy: trackBySlug"
+            class="card"
+            @fadeSlideIn
           >
-            {{ 'HOME.READMORE' | translate }} →
-          </a>
+            <a [routerLink]="['/aktuality', akt.slug]"><img
+              *ngIf="akt.featuredImage"
+              class="akt-image"
+              appImageFade
+              loading="lazy"
+              decoding="async"
+              [src]="getMediaUrl(akt.featuredImage)"
+              [alt]="akt.title"
+            /></a>
+            <div class="content">
+              <h2>
+                <a [routerLink]="['/aktuality', akt.slug]" [innerHTML]="akt.title | nbspSmallWords | linkify"></a>
+              </h2>
+              <p class="date">
+                {{ akt.publishedAt
+                   | date:'mediumDate':undefined:lang.getCurrentLanguage() }}
+              </p>
+              <p class="summary" [innerHTML]="akt.summary | nbspSmallWords | linkify"></p>
+              <a
+                class="read-more"
+                [routerLink]="['/aktuality', akt.slug]"
+              >
+                {{ 'HOME.READMORE' | translate }} →
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <!-- Načítať ďalšie + počítadlo -->
+        <div class="akt-more">
+          <button
+            *ngIf="canLoadMore()"
+            type="button"
+            class="btn-more"
+            (click)="loadMore()"
+          >{{ 'AKTUALITY.LIST.LOAD_MORE' | translate }}</button>
+          <p class="akt-count">{{ 'AKTUALITY.LIST.COUNT' | translate:{ shown: visible().length, total: filtered().length } }}</p>
+        </div>
+      </ng-container>
+
+      <ng-template #noResults>
+        <p class="akt-empty">{{ 'AKTUALITY.LIST.NO_RESULTS' | translate }}</p>
+      </ng-template>
+
     </ng-container>
+
   </ng-container>
 
   <ng-template #noNews>
-    <p>Žiadne aktuality.</p>
+    <p class="akt-empty">{{ 'AKTUALITY.LIST.EMPTY' | translate }}</p>
   </ng-template>
   <ng-template #loading>
-    <p>Načítavam aktuality…</p>
+    <p class="akt-empty">{{ 'AKTUALITY.LIST.LOADING' | translate }}</p>
   </ng-template>
+
 </div>
 
 <app-footer></app-footer>

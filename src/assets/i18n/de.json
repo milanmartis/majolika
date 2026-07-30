@@ -698,6 +698,19 @@
       "TITLE": "Artikel nicht gefunden",
       "TEXT": "Überprüfen Sie den Link oder kehren Sie zur Übersicht der Neuigkeiten zurück.",
       "BACK": "← Zurück zu den Neuigkeiten"
+    },
+    "LIST": {
+      "SEARCH_PLACEHOLDER": "Neuigkeiten durchsuchen…",
+      "SEARCH_CLEAR": "Suche löschen",
+      "CATEGORY_ALL": "Alle",
+      "LOAD_MORE": "Mehr laden",
+      "COUNT": "{{shown}} von {{total}} angezeigt",
+      "NO_RESULTS": "Keine Ergebnisse für die angegebenen Kriterien.",
+      "EMPTY": "Keine Neuigkeiten.",
+      "LOADING": "Neuigkeiten werden geladen…",
+      "RELATED_TITLE": "Weitere Neuigkeiten",
+      "VIEW_ALL": "Alle anzeigen",
+      "NO_OTHERS": "Keine weiteren Neuigkeiten."
     }
   },
 

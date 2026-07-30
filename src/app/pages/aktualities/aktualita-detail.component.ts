@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { Observable, of } from 'rxjs';
+import { Observable, of, combineLatest } from 'rxjs';
 import { switchMap, map, tap, catchError, shareReplay } from 'rxjs/operators';
 import { LOCALE_ID } from '@angular/core';
 
@@ -90,15 +90,40 @@ export class AktualitaDetailComponent implements OnInit {
 
     this.notFound$ = this.aktualita$.pipe(map((akt) => !akt));
 
-    this.others$ = slug$.pipe(
-      switchMap((slug) => {
-        if (!slug) return of([]); // ✅ bez slugu nedávaj "ďalšie"
-        return this.aktualityService.getAll().pipe(
-          map((all) => all.filter((a) => a.slug !== slug).slice(0, 53)),
-          catchError(() => of([]))
+    // „Súvisiace aktuality“: odľahčený zoznam, prednostne z rovnakej kategórie
+    // ako aktuálny článok (keď budú kategórie priradené), inak najnovšie.
+    // Zobrazíme len pár kusov, nie všetky.
+    this.others$ = combineLatest([this.aktualita$, slug$]).pipe(
+      switchMap(([current, slug]) => {
+        if (!slug) return of([] as Aktualita[]);
+        return this.aktualityService.getListSlim().pipe(
+          map((all) => this.pickRelated(all, slug, current)),
+          catchError(() => of([] as Aktualita[]))
         );
       })
     );
+  }
+
+  private readonly RELATED_COUNT = 5;
+
+  /** Vyber súvisiace: najprv rovnaká kategória, potom najnovšie; max RELATED_COUNT. */
+  private pickRelated(
+    all: Aktualita[],
+    currentSlug: string,
+    current: Aktualita | null
+  ): Aktualita[] {
+    const others = all.filter((a) => a.slug !== currentSlug);
+    const curCats = new Set((current?.categories ?? []).map((c) => c.slug));
+    if (curCats.size) {
+      // getListSlim vracia zoradené publishedAt:desc; stabilný sort zachová
+      // poradie podľa dátumu v rámci skupín (zdieľa kategóriu / nezdieľa).
+      others.sort((a, b) => {
+        const sa = (a.categories ?? []).some((c) => curCats.has(c.slug)) ? 0 : 1;
+        const sb = (b.categories ?? []).some((c) => curCats.has(c.slug)) ? 0 : 1;
+        return sa - sb;
+      });
+    }
+    return others.slice(0, this.RELATED_COUNT);
   }
 
   /** Build thumbs & full URLs, skip invalid entries */

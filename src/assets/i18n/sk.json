@@ -765,6 +765,19 @@
       "TITLE": "Aktualita neexistuje",
       "TEXT": "Skontroluj odkaz alebo sa vráť späť na zoznam aktualít.",
       "BACK": "← Späť na aktuality"
+    },
+    "LIST": {
+      "SEARCH_PLACEHOLDER": "Hľadať v aktualitách…",
+      "SEARCH_CLEAR": "Vymazať hľadanie",
+      "CATEGORY_ALL": "Všetky",
+      "LOAD_MORE": "Načítať ďalšie",
+      "COUNT": "Zobrazené {{shown}} z {{total}}",
+      "NO_RESULTS": "Žiadne výsledky pre zadané kritériá.",
+      "EMPTY": "Žiadne aktuality.",
+      "LOADING": "Načítavam aktuality…",
+      "RELATED_TITLE": "Ďalšie aktuality",
+      "VIEW_ALL": "Zobraziť všetky",
+      "NO_OTHERS": "Žiadne ďalšie aktuality."
     }
   },
 

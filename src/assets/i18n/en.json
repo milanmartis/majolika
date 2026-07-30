@@ -701,6 +701,19 @@
       "TITLE": "Article not found",
       "TEXT": "Check the link or go back to the news list.",
       "BACK": "← Back to news"
+    },
+    "LIST": {
+      "SEARCH_PLACEHOLDER": "Search news…",
+      "SEARCH_CLEAR": "Clear search",
+      "CATEGORY_ALL": "All",
+      "LOAD_MORE": "Load more",
+      "COUNT": "Showing {{shown}} of {{total}}",
+      "NO_RESULTS": "No results for the given criteria.",
+      "EMPTY": "No news.",
+      "LOADING": "Loading news…",
+      "RELATED_TITLE": "More news",
+      "VIEW_ALL": "View all",
+      "NO_OTHERS": "No other news."
     }
   },
     "SESSION_PICKER": {

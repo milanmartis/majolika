@@ -33,6 +33,30 @@ export class AktualityService {
       .pipe(map(res => res.data));
   }
 
+  /**
+   * Odľahčený zoznam pre výpis aktualít: len polia potrebné na kartu
+   * (title, slug, summary, publishedAt) + featuredImage a categories.
+   * Zámerne NEpopuluje content ani gallery – tie sú pre zoznam zbytočné
+   * a robili odpoveď zbytočne veľkou.
+   */
+  getListSlim(): Observable<Aktualita[]> {
+    const params = new HttpParams()
+      .set('locale', this.lang.getCurrentLanguage())
+      .set('sort', 'publishedAt:desc')
+      .set('fields[0]', 'title')
+      .set('fields[1]', 'slug')
+      .set('fields[2]', 'summary')
+      .set('fields[3]', 'publishedAt')
+      .set('populate[featuredImage]', 'true')
+      .set('populate[categories][fields][0]', 'name')
+      .set('populate[categories][fields][1]', 'slug')
+      .set('pagination[pageSize]', '100');
+
+    return this.http
+      .get<StrapiResponse<Aktualita>>(this.base, { params })
+      .pipe(map(res => res.data));
+  }
+
   /** Získa jednu aktualitu podľa slug */
   getBySlug(slug: string): Observable<Aktualita> {
     const params = new HttpParams()

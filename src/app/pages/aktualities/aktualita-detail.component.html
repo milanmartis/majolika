@@ -102,7 +102,7 @@
     </ng-template>
 
     <aside class="related" *ngIf="others$ | async as others">
-      <h2>Ďalšie aktuality</h2>
+      <h2>{{ 'AKTUALITY.LIST.RELATED_TITLE' | translate }}</h2>
 
       <ng-container *ngIf="others.length; else noOthers">
         <ul>
@@ -130,10 +130,14 @@
             </a>
           </li>
         </ul>
+
+        <a class="related-all" routerLink="/aktuality">
+          {{ 'AKTUALITY.LIST.VIEW_ALL' | translate }} →
+        </a>
       </ng-container>
 
       <ng-template #noOthers>
-        <p>Žiadne ďalšie aktuality.</p>
+        <p>{{ 'AKTUALITY.LIST.NO_OTHERS' | translate }}</p>
       </ng-template>
     </aside>
   </div>

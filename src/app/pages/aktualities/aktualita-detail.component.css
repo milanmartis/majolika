@@ -198,6 +198,19 @@
   color: #888;
 }
 
+.related .related-all {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--base-blue);
+  text-decoration: none;
+}
+
+.related .related-all:hover {
+  text-decoration: underline;
+}
+
 /* =========================
    FULLSCREEN OVERLAY (gallery)
 ========================= */

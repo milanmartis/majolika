@@ -7,12 +7,133 @@
   color: var(--base-blue);
 }
 
+.aktuality-page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 1rem 100px;
+}
+
+/* ---- Toolbar: hľadanie + kategórie ---- */
+.akt-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.akt-search {
+  position: relative;
+  flex: 1 1 320px;
+  max-width: 460px;
+}
+
+.akt-search-input {
+  width: 100%;
+  padding: 0.6rem 2.2rem 0.6rem 1rem;
+  border: 1px solid #d9d9d9;
+  /* rovnaké ostré rohy ako zvyšok webu (--corners: 0) */
+  border-radius: var(--corners);
+  font-size: 1rem;
+  outline: none;
+  /* type=search má vlastný natívny vzhľad – vypneme ho, nech sedí okraj */
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.akt-search-input:focus {
+  border-color: var(--base-blue);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+}
+
+.akt-search-clear {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;                 /* zruš globálny button { margin:10px } */
+  border: none;
+  background: transparent;   /* zruš globálne modré pozadie buttonu */
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #888;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.akt-search-clear:hover { color: var(--base-blue); }
+
+.akt-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.akt-chip {
+  margin: 0;                 /* zruš globálny button { margin:10px } */
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  color: #444;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--corners);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.akt-chip:hover { border-color: var(--base-blue); color: var(--base-blue); }
+
+.akt-chip.active {
+  background: var(--base-blue);
+  border-color: var(--base-blue);
+  color: #fff;
+}
+
 .cards {
   display: grid;
   /* vedľa seba čo najmenej 280px široké dlaždice, zaberú však vždy rovnomerne dostupný priestor */
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;       /* medzera medzi dlaždicami */
   padding: 1rem 0; /* odsadenie okolo mriežky */
+}
+
+/* ---- Načítať ďalšie + počítadlo ---- */
+.akt-more {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.btn-more {
+  margin: 0;                 /* zruš globálny button { margin:10px } */
+  border: 1px solid var(--base-blue);
+  background: #fff;
+  color: var(--base-blue);
+  padding: 0.7rem 2rem;
+  border-radius: var(--corners);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.btn-more:hover {
+  background: var(--base-blue);
+  color: #fff;
+}
+
+.akt-count {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.akt-empty {
+  text-align: center;
+  color: #666;
+  padding: 2rem 0;
 }
 
 .card {
