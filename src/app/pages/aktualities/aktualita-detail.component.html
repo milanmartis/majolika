@@ -55,10 +55,14 @@
             <span *ngIf="akt.author">— {{ akt.author.username }}</span>
           </p>
 
+          <!-- Hlavný (hero) obrázok je nad ohybom = LCP: načítaj ho prioritne,
+               bez lazy a bez fade, aby sa zobrazil čo najskôr. -->
           <img
             *ngIf="akt.featuredImage"
             [src]="getMediaUrl(akt.featuredImage)"
             [alt]="getAltText(akt.featuredImage)"
+            fetchpriority="high"
+            decoding="async"
           />
 
           <!-- Fotogaléria -->
@@ -68,6 +72,9 @@
                 *ngFor="let thumb of galleryThumbs; let i = index"
                 [src]="thumb"
                 class="thumb"
+                appImageFade
+                loading="lazy"
+                decoding="async"
                 (click)="openFullscreen(i); $event.preventDefault()"
               />
             </div>
@@ -104,6 +111,9 @@
               <div class="thumb-wrap">
                 <img
                   *ngIf="o.featuredImage"
+                  appImageFade
+                  loading="lazy"
+                  decoding="async"
                   [src]="getMediaUrl(o.featuredImage)"
                   [alt]="o.title"
                 />

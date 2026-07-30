@@ -26,6 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NbspSmallWordsPipe } from 'app/pipes/nbsp-small-words.pipe';
 import { LinkifyPipe } from 'app/pipes/linkify.pipe';
 import { ShareButtonsComponent } from 'app/shared/share-buttons/share-buttons.component';
+import { ImageFadeDirective } from './image-fade.directive';
 
 @Component({
   selector: 'app-aktualita-detail',
@@ -38,6 +39,7 @@ import { ShareButtonsComponent } from 'app/shared/share-buttons/share-buttons.co
     NbspSmallWordsPipe,
     LinkifyPipe,
     ShareButtonsComponent,
+    ImageFadeDirective,
   ],
   templateUrl: './aktualita-detail.component.html',
   styleUrls: ['./aktualita-detail.component.css'],

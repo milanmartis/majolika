@@ -406,6 +406,22 @@ p{
   margin: 0 0 0.7em;
 }
 
+/* Moderné načítanie obrázkov aktualít (direktíva appImageFade):
+   - placeholder tón je viditeľný POČAS načítania (opacity ostáva 1),
+     takže nevidno bielu plochu ani postupné vykresľovanie;
+   - fade-in beží až po pridaní .img-loaded (t.j. keď je obrázok naozaj načítaný),
+     preto sa obrázok nikdy nezasekne ako neviditeľný. */
+img.img-fade {
+  background-color: #e8e6e1;
+}
+img.img-fade.img-loaded {
+  animation: imgFadeIn 0.45s ease;
+}
+@keyframes imgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 
 .desc, i{    font-style: normal; font-size: 0.89rem; margin-bottom:1.5rem; color:#4a5568; line-height:1.5; }
 .desc br + br{ display:block; margin-top:0.75rem; }

@@ -11,6 +11,9 @@
         <a [routerLink]="['/aktuality', akt.slug]"><img
           *ngIf="akt.featuredImage"
           class="akt-image"
+          appImageFade
+          loading="lazy"
+          decoding="async"
           [src]="getMediaUrl(akt.featuredImage)"
           [alt]="akt.title"
         /></a>

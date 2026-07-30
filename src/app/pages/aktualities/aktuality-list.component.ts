@@ -10,7 +10,7 @@ import {
     animate,
   } from '@angular/animations';
   import { Observable } from 'rxjs';
-  import { Aktualita, SingleMedia } from 'app/models/aktualita.model';
+  import { Aktualita, SingleMedia, MediaAttr } from 'app/models/aktualita.model';
   import { AktualityService } from 'app/services/aktuality.service';
   import { LanguageService } from 'app/services/language.service';
   import { CommonModule } from '@angular/common';
@@ -19,6 +19,7 @@ import {
   import { FooterComponent } from 'app/components/footer/footer.component';
   import { NbspSmallWordsPipe } from 'app/pipes/nbsp-small-words.pipe';
   import { LinkifyPipe }        from 'app/pipes/linkify.pipe';
+  import { ImageFadeDirective } from './image-fade.directive';
 
   @Component({
     selector: 'app-aktuality-list',
@@ -28,8 +29,9 @@ import {
       RouterModule,
       TranslateModule,
       FooterComponent,
-      NbspSmallWordsPipe, 
-      LinkifyPipe
+      NbspSmallWordsPipe,
+      LinkifyPipe,
+      ImageFadeDirective
     ],
     templateUrl: './aktuality-list.component.html',
     styleUrls: ['./aktuality-list.component.css'],
@@ -65,11 +67,18 @@ import {
     }
   
     getMediaUrl(media?: SingleMedia): string {
-      if (!media) return '';
-      if ('data' in media && media.data) {
-        return media.data.attributes.url;
-      }
-      return (media as any).url || '';
+      const attrs = this.mediaAttrs(media);
+      if (!attrs) return '';
+      // Karta zobrazuje obrázok na ~290px – netreba plné rozlíšenie.
+      // Preferuj menší Strapi formát, plné url je až posledný fallback.
+      const f = attrs.formats ?? {};
+      return f['medium']?.url || f['small']?.url || attrs.url || '';
+    }
+
+    private mediaAttrs(media?: SingleMedia): MediaAttr | null {
+      if (!media) return null;
+      if ('data' in media) return media.data?.attributes ?? null;
+      return media as MediaAttr;
     }
   }
   
