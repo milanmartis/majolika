@@ -31,6 +31,8 @@
       "LAST_NAME": "Priezvisko",
       "EMAIL": "Email",
       "PHONE": "Telefón",
+      "PHONE_REQUIRED": "Telefón je povinný.",
+      "PHONE_INVALID": "Zadajte platné telefónne číslo (napr. +421 901 234 567 alebo 0901 234 567).",
       "STREET": "Ulica",
       "STREET2": "Ulica a číslo",
       "CITY": "Mesto",

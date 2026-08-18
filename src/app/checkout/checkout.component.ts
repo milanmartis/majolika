@@ -1,7 +1,7 @@
 // checkout.component.ts
 import { Component, OnInit, OnDestroy, signal, computed, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators, FormGroup, AbstractControl } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -99,6 +99,27 @@ const PAYMENT_FEE: Record<PaymentMethod, number> = {
   onsite: 0,
   cod: 1.5,
 };
+
+/**
+ * Telefón je povinný pri KAŽDEJ objednávke (Packeta ho tvrdo vyžaduje,
+ * doprava/pošta ho potrebujú na kontakt). Akceptujeme:
+ *  - SK medzinárodný:  +421 + 9 číslic         (napr. +421901234567)
+ *  - SK národný:       0 + 9 číslic            (napr. 0901234567)
+ *  - medzinárodný E.164: + a 8–15 číslic        (napr. +49151...)
+ *  - s predvoľbou 00:  00 + 8–15 číslic
+ * Medzery, pomlčky a zátvorky sú povolené (pri validácii sa odstránia).
+ */
+export function phoneValidator(control: AbstractControl): ValidationErrors | null {
+  const raw = (control.value ?? '').toString().trim();
+  if (!raw) return null; // prázdne rieši Validators.required, nie tento validátor
+  const n = raw.replace(/[\s\-().]/g, '');
+  const ok =
+    /^\+421\d{9}$/.test(n) ||   // +421 + 9 číslic (SK)
+    /^0\d{9}$/.test(n) ||        // 0 + 9 číslic (SK národný)
+    /^\+\d{8,15}$/.test(n) ||    // medzinárodný E.164
+    /^00\d{8,15}$/.test(n);      // 00 + medzinárodný
+  return ok ? null : { phoneInvalid: true };
+}
 
 @Component({
   selector: 'app-checkout',
@@ -614,7 +635,7 @@ isWrappable(row: CartRow): boolean {
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: [''],
+      phone: ['', [Validators.required, phoneValidator]],
       street: ['', Validators.required],
       city: ['', Validators.required],
       zip: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
@@ -893,12 +914,19 @@ isWrappable(row: CartRow): boolean {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          phone: user.phone,
+          phone: user.phone ?? '',
           street: user.street ?? '',
           city: user.city ?? '',
           zip: user.zip ?? '',
           country: user.country ?? 'Slovensko'
         });
+
+        // Prihlásený používateľ bez telefónu v profile ho MUSÍ doplniť v checkoute
+        // – rovno zobraz validačnú hlášku, nech to nie je prehliadnuteľné.
+        const phoneCtrl = this.checkoutForm.get('phone');
+        if (phoneCtrl && !phoneCtrl.value) {
+          phoneCtrl.markAsTouched();
+        }
 
         const countryFromForm = this.checkoutForm.get('country')!.value as CountryCode;
         this.countrySignal.set(countryFromForm || 'SK');

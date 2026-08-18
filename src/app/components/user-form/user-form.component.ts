@@ -27,10 +27,20 @@ import { TranslateModule } from '@ngx-translate/core';
         <input formControlName="email" type="email" placeholder="{{ ('FORM.EMAIL' | translate) }}" />
       </div>
 
-      <!-- Phone -->
+      <!-- Phone (povinné pri každej objednávke) -->
       <div class="form-row">
-        <label>{{ ('FORM.PHONE' | translate) }}</label>
-        <input formControlName="phone" type="text" placeholder="+421..." />
+        <label>{{ ('FORM.PHONE' | translate) }} *</label>
+        <input formControlName="phone" type="tel" inputmode="tel" autocomplete="tel"
+               placeholder="+421 901 234 567" />
+        <div class="field-error"
+             *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
+          <span *ngIf="form.get('phone')?.errors?.['required']">
+            {{ 'FORM.PHONE_REQUIRED' | translate }}
+          </span>
+          <span *ngIf="form.get('phone')?.errors?.['phoneInvalid']">
+            {{ 'FORM.PHONE_INVALID' | translate }}
+          </span>
+        </div>
       </div>
 
       <!-- Address -->
@@ -105,6 +115,16 @@ import { TranslateModule } from '@ngx-translate/core';
       border-color: var(--base-blue);
       box-shadow: 0 0 0 3px rgba(41, 68, 186, 0.15);
       outline: none;
+    }
+
+    .form-row input.ng-invalid.ng-touched {
+      border-color: #d33;
+    }
+
+    .field-error {
+      margin-top: 0.35rem;
+      font-size: 0.85rem;
+      color: #d33;
     }
 
     /* Grid pre adresu */

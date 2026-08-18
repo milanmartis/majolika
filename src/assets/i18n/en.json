@@ -29,6 +29,8 @@
     "LAST_NAME": "Last Name",
     "EMAIL": "Email",
     "PHONE": "Phone",
+    "PHONE_REQUIRED": "Phone number is required.",
+    "PHONE_INVALID": "Enter a valid phone number (e.g. +421 901 234 567 or 0901 234 567).",
     "STREET": "Street",
     "STREET2": "Street and Number",
     "CITY": "City",
