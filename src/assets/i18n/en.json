@@ -86,6 +86,7 @@
     "APPLY": "Apply",
     "APPLIED": "Applied voucher: {{code}}",
     "LINE": "Gift voucher",
+    "REMAINING": "Voucher balance: {{value}}",
     "DELETE": "Remove",
     "ERROR_EMPTY": "Please enter a gift voucher code.",
     "ERROR_INVALID": "The voucher is not valid.",

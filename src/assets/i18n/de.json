@@ -83,6 +83,7 @@
     "APPLY": "Einlösen",
     "APPLIED": "Eingelöster Gutschein: {{code}}",
     "LINE": "Geschenkgutschein",
+    "REMAINING": "Gutscheinguthaben: {{value}}",
     "DELETE": "Entfernen",
     "ERROR_EMPTY": "Bitte geben Sie einen Gutscheincode ein.",
     "ERROR_INVALID": "Der Gutschein ist nicht gültig.",

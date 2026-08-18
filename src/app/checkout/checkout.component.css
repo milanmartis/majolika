@@ -653,3 +653,11 @@ textarea{
   overflow-wrap: anywhere;
   line-height: 1.35;
 }
+/* Zostatok na darčekovej poukážke pri riadku so zľavou */
+.voucher-remaining {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #888;
+}

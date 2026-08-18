@@ -470,8 +470,13 @@
       </fieldset>
 
       <div class="line" *ngIf="appliedGiftVoucher">
-        <span>{{ 'ESHOP.VOUCHER.LINE' | translate }}</span>
-        <span>-{{ appliedGiftVoucher.discount | currency:'EUR' }}</span>
+        <span>
+          {{ 'ESHOP.VOUCHER.LINE' | translate }}
+          <small class="voucher-remaining">
+            {{ 'ESHOP.VOUCHER.REMAINING' | translate:{ value: (voucherRemainingAfter((total$ | async) ?? 0) | currency:'EUR') } }}
+          </small>
+        </span>
+        <span>-{{ voucherDiscount((total$ | async) ?? 0) | currency:'EUR' }}</span>
       </div>
         <br>
 

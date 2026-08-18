@@ -1200,8 +1200,34 @@ isWrappable(row: CartRow): boolean {
     };
   }
 
+  /**
+   * Základ, na ktorý sa uplatňuje darčeková poukážka – rovnako ako backend:
+   * položky + doprava + poplatok za platbu.
+   */
+  private voucherBase(itemsTotal: number | null): number {
+    return (itemsTotal || 0) + this.shippingFee() + this.paymentFee();
+  }
+
+  /**
+   * Reálna zľava poukážky voči AKTUÁLNym sumám (nie snapshot z času uplatnenia,
+   * ktorý sa pri zmene dopravy/platby neprepočítal a nesedel s backendom).
+   * discount = min(zostatok poukážky, položky + doprava + poplatok za platbu)
+   */
+  voucherDiscount(itemsTotal: number | null): number {
+    const v = this.appliedGiftVoucher;
+    if (!v) return 0;
+    return Math.min(v.remainingValue, this.voucherBase(itemsTotal));
+  }
+
+  /** Koľko na darčekovej poukážke ostane po uplatnení tejto objednávky. */
+  voucherRemainingAfter(itemsTotal: number | null): number {
+    const v = this.appliedGiftVoucher;
+    if (!v) return 0;
+    return Math.max(0, v.remainingValue - this.voucherDiscount(itemsTotal));
+  }
+
   grand(total: number | null): number {
-    const discount = this.appliedGiftVoucher?.discount ?? 0;
+    const discount = this.voucherDiscount(total);
 
     return Math.max(
       0,
@@ -1231,11 +1257,11 @@ isWrappable(row: CartRow): boolean {
       return sum + unit * i.qty;
     }, 0);
 
+    // Poukážka sa uplatňuje na položky + dopravu + poplatok za platbu (rovnako ako backend).
     const orderTotal =
       itemsTotal +
       this.shippingFee() +
-      this.paymentFee() +
-      this.giftWrapFee();
+      this.paymentFee();
 
     this.giftVoucherApplying = true;
 
@@ -1635,8 +1661,10 @@ private openPacketaNow() {
 
       giftVoucher: this.appliedGiftVoucher ? {
         code: this.appliedGiftVoucher.code,
-        discount: this.appliedGiftVoucher.discount,
-        newRemainingValue: this.appliedGiftVoucher.newRemainingValue,
+        discount: this.round2(this.voucherDiscount(itemsTotal)),
+        newRemainingValue: this.round2(
+          Math.max(0, this.appliedGiftVoucher.remainingValue - this.voucherDiscount(itemsTotal))
+        ),
       } : null,
 
       //  instrukcie k baleniu (produkt je reálny item)

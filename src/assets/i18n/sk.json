@@ -80,6 +80,7 @@
     "APPLY": "Uplatniť",
     "APPLIED": "Uplatnená poukážka: {{code}}",
     "LINE": "Darčeková poukážka",
+    "REMAINING": "Zostatok na poukážke: {{value}}",
     "DELETE": "Odstranit",
      "ERROR_EMPTY": "Zadajte kód darčekovej poukážky.",
   "ERROR_INVALID": "Poukážka nie je platná.",
