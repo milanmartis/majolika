@@ -406,6 +406,74 @@ p{
   margin: 0 0 0.7em;
 }
 
+/* --- Obrázky v obsahu aktuality (z CKEditora) ---
+   Obsah ide cez [innerHTML], preto sú tieto pravidlá GLOBÁLNE (komponentové
+   emulovane-enkapsulované by na innerHTML nedosiahli). Rešpektujú veľkosť a
+   zarovnanie nastavené v editore: <figure class="image image_resized
+   image-style-side" style="width:27%"> -> obrázok sa zobrazí zmenšený. */
+.aktualita-content img {
+  max-width: 100%;
+  height: auto;
+}
+.aktualita-content figure.image {
+  display: table;
+  margin: 1rem auto;            /* default: obrázok na stred */
+  max-width: 100%;
+}
+.aktualita-content figure.image img {
+  display: block;
+  width: 100%;                  /* vyplní figure -> veľkosť riadi šírka figure */
+  height: auto;
+}
+.aktualita-content figure.image figcaption {
+  display: table-caption;
+  caption-side: bottom;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #666;
+  text-align: center;
+  padding-top: 0.4rem;
+}
+
+/* Zmenšený obrázok: figure má inline width v %, len zabezpečíme, že nepretečie. */
+.aktualita-content figure.image.image_resized { max-width: 100%; }
+.aktualita-content figure.image.image_resized img { width: 100%; }
+
+/* Zarovnanie doľava/doprava – text obteká okolo obrázka. */
+.aktualita-content figure.image.image-style-align-left {
+  float: left;
+  margin: 0.4rem 1.25rem 0.8rem 0;
+}
+.aktualita-content figure.image.image-style-align-right,
+.aktualita-content figure.image.image-style-side {
+  float: right;
+  margin: 0.4rem 0 0.8rem 1.25rem;
+}
+/* Zarovnanie na stred. */
+.aktualita-content figure.image.image-style-align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Vyčisti obtekanie na konci obsahu, nech floaty nepretečú zo sekcie. */
+.aktualita-content::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+/* Mobil: obtekané obrázky nenechaj plávať (na úzkom displeji stiesnené),
+   veľkosť (napr. malé logo) ostáva, len sa vycentruje. */
+@media (max-width: 600px) {
+  .aktualita-content figure.image.image-style-align-left,
+  .aktualita-content figure.image.image-style-align-right,
+  .aktualita-content figure.image.image-style-side {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 /* Moderné načítanie obrázkov aktualít (direktíva appImageFade):
    - placeholder tón je viditeľný POČAS načítania (opacity ostáva 1),
      takže nevidno bielu plochu ani postupné vykresľovanie;
