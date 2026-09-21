@@ -9,7 +9,7 @@ import {
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { Observable, of, combineLatest } from 'rxjs';
-import { switchMap, map, tap, catchError, shareReplay } from 'rxjs/operators';
+import { switchMap, map, tap, catchError, shareReplay, startWith } from 'rxjs/operators';
 import { LOCALE_ID } from '@angular/core';
 
 import { AktualityService } from 'app/services/aktuality.service';
@@ -48,7 +48,7 @@ import { ImageFadeDirective } from './image-fade.directive';
 export class AktualitaDetailComponent implements OnInit {
   aktualita$!: Observable<Aktualita | null>;
   others$!: Observable<Aktualita[]>;
-  notFound$!: Observable<boolean>;
+  status$!: Observable<'loading' | 'loaded' | 'notfound'>;
 
   // SSR-safe: window na serveri neexistuje. DOCUMENT je dostupný na oboch platformách,
   // v prehliadači je doc.location.href identické s window.location.href.
@@ -88,7 +88,12 @@ export class AktualitaDetailComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.notFound$ = this.aktualita$.pipe(map((akt) => !akt));
+    // 3 stavy: kým beží fetch = 'loading' (nie 'notfound'!), preto sa počas
+    // načítania nezobrazí hláška „Aktualita neexistuje“.
+    this.status$ = this.aktualita$.pipe(
+      map((akt) => (akt ? 'loaded' : 'notfound') as 'loaded' | 'notfound'),
+      startWith('loading' as const)
+    );
 
     // „Súvisiace aktuality“: odľahčený zoznam, prednostne z rovnakej kategórie
     // ako aktuálny článok (keď budú kategórie priradené), inak najnovšie.

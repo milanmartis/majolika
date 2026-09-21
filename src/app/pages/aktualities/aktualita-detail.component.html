@@ -6,7 +6,7 @@
 <div id="articleTop"></div>
 
 <!-- ✅ Ak slug neexistuje / API vráti null => zobraz iba hlášku, nerozhádž layout -->
-<ng-container *ngIf="(notFound$ | async) === false; else notFound">
+<ng-container *ngIf="(status$ | async) !== 'notfound'; else notFound">
   <!-- fullscreen overlay -->
   <div #overlay *ngIf="isFullscreen" class="overlay" (click)="closeFullscreen()">
     <button class="close-btn" (click)="closeFullscreen(); $event.stopPropagation()">
