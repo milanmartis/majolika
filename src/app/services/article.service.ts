@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LanguageService } from './language.service'; // alebo správna cesta
 
@@ -24,7 +25,23 @@ export class ArticleService {
   ) {}
   
   
+  /**
+   * Načíta článok v danom jazyku. Ak v tom jazyku neexistuje (Strapi vráti 404,
+   * napr. chýbajúci EN preklad), spadne späť na slovenskú verziu, nech sa
+   * zobrazí aspoň SK obsah namiesto prázdnej stránky.
+   */
   getArticleBySlug(slug: string, lang?: string): Observable<Article> {
+    return this.requestArticle(slug, lang).pipe(
+      catchError(err => {
+        if (lang && lang.toLowerCase() !== 'sk') {
+          return this.requestArticle(slug, 'sk');
+        }
+        return throwError(() => err);
+      })
+    );
+  }
+
+  private requestArticle(slug: string, lang?: string): Observable<Article> {
     let url = `${this.base}/articles/${slug}`;
     if (lang) {
       url += `?locale=${encodeURIComponent(lang)}`;
