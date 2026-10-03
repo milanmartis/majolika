@@ -56,7 +56,10 @@
 <h2>Najobľúbenejšie kategórie</h2>
 
 
-<div class="home-category-buttons" *ngIf="popularCategories.length">
+<!-- Grid je VŽDY v DOM; kým sa kategórie načítajú (CSR), zobrazia sa skeleton
+     placeholdery s rovnakou mriežkou a aspect-ratio 1/1 -> rezervujú presne to
+     isté miesto, takže po načítaní footer neposkočí (CLS). -->
+<div class="home-category-buttons">
   <a
     *ngFor="let cat of popularCategories"
     class="home-category-button"
@@ -75,6 +78,18 @@
 
     <span class="label">{{ catLabel(cat) }}</span>
   </a>
+
+  <!-- skeleton placeholdery kým nie sú kategórie načítané -->
+  <ng-container *ngIf="!popularCategories.length">
+    <span
+      *ngFor="let s of categorySkeletons"
+      class="home-category-button"
+      aria-hidden="true"
+    >
+      <span class="home-category-img loading"></span>
+      <span class="label">&nbsp;</span>
+    </span>
+  </ng-container>
 </div>
 
 

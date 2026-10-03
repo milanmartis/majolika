@@ -83,6 +83,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
   animationState = false;
 
   popularCategories: Category[] = [];
+  /** Počet placeholderov = počet kategórií (fixný zoznam nižšie), aby skeleton
+      rezervoval presne to isté miesto ako výsledná mriežka. */
+  readonly categorySkeletons = Array(10).fill(0);
   categoryImgLoadingMap: Record<string, boolean> = {};
 
   // TOP 2 karty (fallback)
