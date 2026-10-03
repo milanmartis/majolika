@@ -1,7 +1,8 @@
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities; */
-@import url("https://use.typekit.net/gpz7sjg.css");
+/* Typekit (Alegreya) je načítaný cez <link> v index.html – @import tu bol duplicitný
+   a navyše serial render-blocking, preto odstránený. */
 
 
 :root {
