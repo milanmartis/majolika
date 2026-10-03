@@ -74,35 +74,17 @@ export const slideAnimation = trigger('slideAnimation', [
 ]);
 
 export const slideLeftAnimation = trigger('routeAnimations', [
+  // CLS-safe: ŽIADNA manipulácia s position. Pôvodná verzia dávala :enter aj
+  // :leave position:relative, takže obe stránky boli naraz v toku naskladané
+  // pod sebou a po odstránení odchádzajúcej prichádzajúca vyskočila nahor o
+  // celú výšku = veľký layout shift (CLS ~0.87 pri navigácii). Odchádzajúcu
+  // necháme odstrániť okamžite (bez :leave animácie) a prichádzajúcu len
+  // jemne prelíname (opacity) – ostáva v normálnom toku na správnej pozícii.
   transition('* <=> *', [
-    query(':enter, :leave', style({ 
-      position: 'relative', 
-      width: '100%', 
-      height: '100%', 
-      top: 0, 
-      left: 0, 
-      margin: 0,
-      padding: 0,
-      background: '#f0f0f0'
-    }), { optional: true }),
-
-    group([
-      // Animácia headera a footera (fade out)
-
-
-      // Animácia odchádzajúcej stránky (posun hore + fade out)
-      query(':leave', [
-        animate('400ms ease-in', style({ opacity: 0.0, transform: 'translateY(-10%)' }))
-      ], { optional: true }),
-
-      // Animácia prichádzajúcej stránky (príchod zdola + fade in)
-      query(':enter', [
-        style({ opacity: 0, transform: 'translateY(100%)' }),
-        animate('250ms ease-out', style({ opacity: 1, transform: 'translateY(0%)' }))
-      ], { optional: true }),
-
-
-    ])
+    query(':enter', [
+      style({ opacity: 0 }),
+      animate('250ms ease-out', style({ opacity: 1 }))
+    ], { optional: true })
   ])
 ]);
   
