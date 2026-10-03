@@ -783,3 +783,32 @@ a:hover {
     display: none;
   }
 }
+
+/* ===================================================================
+   Kritické Bootstrap triedy pre HLAVIČKU – definované lokálne.
+   Bootstrap je v index.html načítaný ODLOŽENE (neblokuje render), takže
+   bez tohto by sa hlavička kým Bootstrap dobehne rozložila zle a potom
+   skočila do správnej polohy = CLS + bliknutie. Hodnoty = Bootstrap 4.5.
+   =================================================================== */
+.d-flex { display: flex !important; }
+.align-items-center { align-items: center !important; }
+.justify-content-between { justify-content: space-between !important; }
+.ms-auto { margin-left: auto !important; }
+
+/* responzívna viditeľnosť: skryté na ≥992px, viditeľné nižšie */
+@media (min-width: 992px) {
+  .d-lg-none { display: none !important; }
+}
+
+/* Bootstrap .container (centrovanie + max-width podľa breakpointu) */
+.container {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 576px)  { .container { max-width: 540px; } }
+@media (min-width: 768px)  { .container { max-width: 720px; } }
+@media (min-width: 992px)  { .container { max-width: 960px; } }
+@media (min-width: 1200px) { .container { max-width: 1140px; } }
