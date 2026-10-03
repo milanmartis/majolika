@@ -793,7 +793,11 @@ a:hover {
 .d-flex { display: flex !important; }
 .align-items-center { align-items: center !important; }
 .justify-content-between { justify-content: space-between !important; }
-.ms-auto { margin-left: auto !important; }
+/* .ms-auto zámerne NEdefinujeme: projekt má Bootstrap 4.5.2, kde táto trieda
+   neexistuje (je to Bootstrap 5). Pôvodne bola no-op a logo sa na mobile
+   centrovalo cez justify-content:space-between (3 položky). Keď sme ju
+   definovali ako margin-left:auto, košík sa odtlačil vpravo a logo skočilo
+   vľavo – preto ju necháme bez efektu, rovnako ako v BS4. */
 
 /* responzívna viditeľnosť: skryté na ≥992px, viditeľné nižšie */
 @media (min-width: 992px) {
