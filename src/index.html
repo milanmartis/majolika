@@ -5,6 +5,38 @@
   <title>Slovenská ľudová majolika – uchovávame tradície</title>
   <base href="/">
 
+  <!-- CLS debug: aktívne len s ?clsdebug v URL. Vypíše do konzoly každý posun
+       rozloženia (layout-shift) vrátane elementu, ktorý skáče. Dočasné, bez
+       dopadu na bežných používateľov. -->
+  <script>
+    (function () {
+      try {
+        if (!/[?&]clsdebug/.test(location.search)) return;
+        if (!('PerformanceObserver' in window)) return;
+        var total = 0;
+        var po = new PerformanceObserver(function (list) {
+          list.getEntries().forEach(function (entry) {
+            if (entry.hadRecentInput) return;
+            total += entry.value;
+            var sources = (entry.sources || []).map(function (s) {
+              var el = s.node, d = '(?)';
+              if (el && el.nodeName) {
+                d = el.nodeName.toLowerCase();
+                if (el.id) d += '#' + el.id;
+                var cn = typeof el.className === 'string' ? el.className : '';
+                if (cn) d += '.' + cn.trim().replace(/\s+/g, '.');
+              }
+              return { el: d, from: s.previousRect, to: s.currentRect, node: el };
+            });
+            console.log('[CLS] +' + entry.value.toFixed(4) + '  spolu=' + total.toFixed(4), sources);
+          });
+        });
+        po.observe({ type: 'layout-shift', buffered: true });
+        console.log('[CLS] debug zapnutý – sleduje layout-shift…');
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Základné meta pre SEO -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
