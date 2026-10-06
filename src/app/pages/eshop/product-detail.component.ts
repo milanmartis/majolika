@@ -685,6 +685,16 @@ private initNormalPipeline(): void {
       filter((slug): slug is string => !!slug),
       switchMap(slug => this.productsService.getProductWithVariations(slug).pipe(
         map(resp => resp?.data?.[0] ?? null),
+        // SK fallback: niektoré produkty existujú len v SK (napr. knihy). Ak sa
+        // v aktuálnom jazyku nenájdu, skús SK – inak by sa zobrazilo „nenašiel"
+        // (a Google by indexoval 404, čo sa reálne stalo).
+        switchMap(product => product
+          ? of(product)
+          : this.productsService.getProductWithVariationsForceLocale(slug, 'sk').pipe(
+              map(resp => resp?.data?.[0] ?? null),
+              catchError(() => of(null))
+            )
+        ),
         map(product => ({ product, slug }))
       )),
       tap(({ product }) => {
