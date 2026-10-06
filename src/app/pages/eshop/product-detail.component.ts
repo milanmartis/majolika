@@ -350,7 +350,23 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
   dotInterval: any;
 
   fullscreenState: string = 'hidden';
-  notFound = false;
+
+  private _notFound = false;
+  get notFound(): boolean { return this._notFound; }
+  /**
+   * Pri nenájdenom produkte nastav noindex – inak Google indexuje stránku
+   * s nadpisom „Produkt sa žiaľ nenašiel" (hlásené vo výsledkoch vyhľadávania).
+   * Pri nájdenom späť index,follow.
+   */
+  set notFound(v: boolean) {
+    this._notFound = v;
+    if (v) {
+      this.meta.updateTag({ name: 'robots', content: 'noindex,follow' });
+      this.titleSvc.setTitle('Produkt nenájdený | Majolika Modra – ručne maľovaná keramika');
+    } else {
+      this.meta.updateTag({ name: 'robots', content: 'index,follow' });
+    }
+  }
 
   currentIndex = 0;
   featured: Product[] = [];
