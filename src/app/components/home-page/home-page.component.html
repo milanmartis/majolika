@@ -67,7 +67,7 @@
   >
     <span class="home-category-img" [class.loading]="categoryImgLoadingMap[cat.category_slug]">
       <img
-        [src]="cat.category_image"
+        [src]="cat.category_image_small || cat.category_image"
         [alt]="catLabel(cat)"
         loading="lazy"
         decoding="async"

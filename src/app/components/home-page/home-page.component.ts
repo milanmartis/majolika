@@ -91,14 +91,14 @@ export class HomePageComponent implements OnInit, OnDestroy {
   // TOP 2 karty (fallback)
   topHeroCards: HeroCardVM[] = [
     {
-      imageUrl: 'https://d1hbdvlfav95nt.cloudfront.net/products/eshop_cb861c9cb5.jpg',
+      imageUrl: 'https://d1hbdvlfav95nt.cloudfront.net/products/medium_eshop_cb861c9cb5.jpg',
       alt: 'E-shop',
       routerLink: '/eshop',
       openInNewTab: false,
       buttonText: 'E-SHOP',
     },
     {
-      imageUrl: 'https://d1hbdvlfav95nt.cloudfront.net/products/dielne_1b69a9d207.jpg',
+      imageUrl: 'https://d1hbdvlfav95nt.cloudfront.net/products/medium_dielne_1b69a9d207.jpg',
       alt: 'Dielne',
       routerLink: '/dielne',
       openInNewTab: false,
@@ -292,8 +292,8 @@ onCategoryImageError(slug: string): void {
   // ✅ u teba: image.url + image.formats.large.url
   resolveStrapiImageUrl(imageField: any): string {
     const url =
-      imageField?.formats?.large?.url ||
       imageField?.formats?.medium?.url ||
+      imageField?.formats?.large?.url ||
       imageField?.url ||
       '';
 
