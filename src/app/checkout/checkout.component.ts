@@ -1390,6 +1390,21 @@ isWrappable(row: CartRow): boolean {
     return false;
   }
 
+  /** Fakturačná/doručovacia krajina je mimo SR a ČR. */
+  get isWorld(): boolean {
+    return this.countrySignal() === 'WORLD';
+  }
+
+  /**
+   * Dopravu mimo SR/ČR kalkulujeme individuálne – fyzické doručenie do sveta
+   * nedovolíme objednať online (pickup a digitálne produkty sú OK).
+   */
+  get isInternationalShippingBlocked(): boolean {
+    if (!this.isWorld) return false;
+    const method = this.checkoutForm.get('delivery.method')?.value as DeliveryMethod;
+    return method === 'post_office' || method === 'packeta_box' || method === 'post_courier';
+  }
+
   get isPostOffice(): boolean {
     return this.ctrl('delivery.method').value === 'post_office';
   }
@@ -1510,6 +1525,15 @@ private openPacketaNow() {
     }
 
     const items: CartRow[] = this.cart.items;
+
+    if (this.isInternationalShippingBlocked) {
+      this.snack.open(
+        this.translate.instant('ESHOP.WORLD_SHIPPING_BLOCKED'),
+        '',
+        { duration: 7000, panelClass: 'my-snackbar-error', verticalPosition: 'bottom', horizontalPosition: 'center' }
+      );
+      return;
+    }
 
     if (this.checkoutForm.invalid || this.isDeliverySelectionMissing) {
       this.checkoutForm.markAllAsTouched();

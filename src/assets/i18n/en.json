@@ -176,6 +176,8 @@
     "DELIVERY_DIGITAL_PRODUCT": "Digital product",
 
     "SHIPPING_FEE": "Shipping",
+    "WORLD_SHIPPING_NOTE": "Delivery outside Slovakia and Czechia cannot be ordered online – we calculate shipping individually and arrange it with you. Please contact us by e-mail.",
+    "WORLD_SHIPPING_BLOCKED": "Shipping outside Slovakia and Czechia cannot be ordered online. Please contact us; we calculate shipping individually.",
     "POST_OFFICE_ID": "Post office ID",
     "PACKETA_BOX_ID": "Packeta box ID",
     "DELIVERY_ADDRESS_WHERE": "Where to deliver?",

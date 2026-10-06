@@ -661,3 +661,15 @@ textarea{
   font-weight: 400;
   color: #888;
 }
+
+/* Upozornenie pri doručení mimo SR/ČR */
+.world-shipping-note {
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #e0b400;
+  background: #fff8e1;
+  border-radius: var(--corners);
+  color: #6b5200;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}

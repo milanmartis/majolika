@@ -174,6 +174,8 @@
     "DELIVERY_POST_COURIER": "Kuriér na adresu",
     "DELIVERY_DIGITAL_PRODUCT": "Elektronicky",
     "SHIPPING_FEE": "Doprava",
+    "WORLD_SHIPPING_NOTE": "Doručenie mimo SR a ČR nie je možné objednať online – dopravu kalkulujeme individuálne a dohodneme so zákazníkom samostatne. Kontaktujte nás prosím e-mailom.",
+    "WORLD_SHIPPING_BLOCKED": "Dopravu mimo SR a ČR nie je možné objednať online. Kontaktujte nás, dopravu kalkulujeme individuálne.",
     "POST_OFFICE_ID": "ID pošty",
     "PACKETA_BOX_ID": "ID Packeta boxu",
       "DELIVERY_ADDRESS_WHERE": "Kde doručiť?",

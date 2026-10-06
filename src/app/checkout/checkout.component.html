@@ -280,12 +280,17 @@
             {{ 'ESHOP.DELIVERY_PACKETA_BOX' | translate }}
           </mat-chip-option>
 
-          <mat-chip-option value="post_courier" [disabled]="onlyGiftVouchersInCart">
+          <mat-chip-option value="post_courier" [disabled]="onlyGiftVouchersInCart || isWorld">
             {{ 'ESHOP.DELIVERY_POST_COURIER' | translate }}
           </mat-chip-option>
 
    
         </mat-chip-listbox>
+
+        <!-- Doprava mimo SR/ČR sa kalkuluje individuálne -> online objednávku neumožníme -->
+        <p class="world-shipping-note" *ngIf="isWorld">
+          {{ 'ESHOP.WORLD_SHIPPING_NOTE' | translate }}
+        </p>
 
         <!-- „iná adresa“ – len pre kuriéra -->
         <div *ngIf="selectedDeliveryMethod() === 'post_courier'" class="section" style="margin-top:.75rem">
@@ -529,7 +534,7 @@
           type="submit"
           class="btn-primary"
           [style.width.px]="submitBtnWidth || null"
-          [disabled]="isSubmitting || isDeliverySelectionMissing || checkoutForm.invalid">
+          [disabled]="isSubmitting || isDeliverySelectionMissing || checkoutForm.invalid || isInternationalShippingBlocked">
 
           <ng-container *ngIf="!isSubmitting">{{ 'ESHOP.CHECKOUT_PROCEED_PAYMENT' | translate }}</ng-container>
 

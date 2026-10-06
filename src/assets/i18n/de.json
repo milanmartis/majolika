@@ -176,6 +176,8 @@
 "BEGIN": "Beginnt am ",
 "KAPACITA": "freie Plätze: ",
     "SHIPPING_FEE": "Versand",
+    "WORLD_SHIPPING_NOTE": "Lieferungen außerhalb der Slowakei und Tschechiens können nicht online bestellt werden – den Versand berechnen wir individuell und stimmen ihn mit Ihnen ab. Bitte kontaktieren Sie uns per E-Mail.",
+    "WORLD_SHIPPING_BLOCKED": "Versand außerhalb der Slowakei und Tschechiens kann nicht online bestellt werden. Bitte kontaktieren Sie uns; den Versand berechnen wir individuell.",
     "PAYMENT_FEE": "Nachnahmegebühr",
     "GRAND_TOTAL": "Gesamtsumme",
     "POST_OFFICE_ID": "Postfiliale-ID",
