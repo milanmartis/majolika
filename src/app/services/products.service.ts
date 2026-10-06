@@ -966,7 +966,17 @@ getProductsByCategorySlug(
 
       return this.http
         .get<StrapiResp<Product>>(`${this.api}/products`, { params })
-        .pipe(this.mapResp);
+        .pipe(
+          this.mapResp,
+          // SK fallback: niektoré produkty existujú len v SK (napr. knihy). Ak
+          // kategória v aktuálnom jazyku nevráti nič, skús SK, nech sa
+          // nezobrazí "žiadne produkty" (a aby sk-only produkty neboli skryté).
+          switchMap(resp =>
+            (resp?.data?.length ?? 0) === 0 && useLocale !== 'sk'
+              ? this.getProductsByCategorySlug(slug, sort, page, pageSize, 'sk')
+              : of(resp)
+          )
+        );
     })
   );
 }
