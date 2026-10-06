@@ -1,4 +1,9 @@
 customHeaders:
+  # Bezpečnosť: HSTS – vynúť HTTPS (ochrana pred man-in-the-middle)
+  - pattern: '**'
+    headers:
+      - key: Strict-Transport-Security
+        value: 'max-age=31536000; includeSubDomains'
   # HTML – revalidovať
   - pattern: '/'
     headers:

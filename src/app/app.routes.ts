@@ -32,7 +32,7 @@ export const routes: Routes = [
       animation: 'LandingPage',
       title: 'Slovenská ľudová majolika – ručne maľovaná keramika',
       description:
-        'Oficiálna stránka Slovenskej ľudovej majoliky v Modre. Ručne maľovaná keramika, tradičné vzory, dielňa a e-shop s originálnymi výrobkami.',
+        'Oficiálna stránka Slovenskej ľudovej majoliky v Modre. Ručne maľovaná keramika a tradičný modranský dekór – taniere, misy, džbány, vázy a dekorácie. Navštívte naše dielne a workshopy alebo nakupujte v e-shope.',
     },
   },
 
