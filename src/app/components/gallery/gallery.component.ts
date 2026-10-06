@@ -16,7 +16,7 @@ import {
       <div class="gallery-overlay">
         <button class="close" (click)="close.emit()">&times;</button>
         <button class="nav prev" (click)="prev()">&larr;</button>
-        <img [src]="images[current]" class="gallery-img"/>
+        <img [src]="images[current]" alt="Obrázok galérie" class="gallery-img"/>
         <button class="nav next" (click)="next()">&rarr;</button>
       </div>
     `,

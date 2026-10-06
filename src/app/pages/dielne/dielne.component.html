@@ -2,7 +2,7 @@
     <div class="overlay_2">
 
         <div class="logo-header mb-8" >
-            <a routerLink="/"><img src="assets/img/logo-SLM.gif" style="width:200px;height:200px;margin:auto;position:relative;padding-bottom:0px;"
+            <a routerLink="/"><img alt="Slovenská ľudová majolika" src="assets/img/logo-SLM.gif" style="width:200px;height:200px;margin:auto;position:relative;padding-bottom:0px;"
                  [@fadeInOut]="imgState"></a>
           </div>
           <div style="position:relative; top:-30px;margin-top:-30px;margin-bottom:-60px;">
@@ -39,7 +39,7 @@
             <button class="close-btn" (click)="closeFullscreen()">×</button>
             <button class="prev" (click)="prevMedia()">❮</button>
             
-            <img *ngIf="currentMedia?.type === 'image'" [src]="currentMedia?.src" class="fullscreen-img">
+            <img alt="Zväčšený obrázok" *ngIf="currentMedia?.type === 'image'" [src]="currentMedia?.src" class="fullscreen-img">
             <video *ngIf="currentMedia?.type === 'video'" [src]="currentMedia?.src" controls autoplay class="fullscreen-video"></video>
             
             <button class="next" (click)="nextMedia()">❯</button>
