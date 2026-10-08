@@ -102,13 +102,24 @@
   }
   </script>
 
+  <!-- Structured data: WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Slovenská ľudová majolika",
+    "alternateName": "Majolika Modra",
+    "url": "https://www.majolika.sk/"
+  }
+  </script>
+
   <!-- Structured data: LocalBusiness -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Slovenská ľudová majolika",
-    "image": "https://www.majolika.sk/assets/og/og-home.jpg",
+    "image": "https://www.majolika.sk/assets/img/logo_white_bg.gif",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Dolná 138",
@@ -161,7 +172,25 @@
 </head>
 <body style="margin-top:-30px;">
 
-  <app-root></app-root>
+  <app-root>
+    <!-- Fallback obsah pre prehliadače/crawlery bez JavaScriptu. S JS sa nezobrazí
+         (Angular vykreslí reálnu stránku) -> žiadny flash ani CLS. -->
+    <noscript>
+      <h1>Slovenská ľudová majolika Modra</h1>
+      <p>Slovenská ľudová majolika v Modre od roku 1883 zachováva tradíciu ručne maľovanej keramiky. V našich dielňach vznikajú originálne taniere, misy, džbány, čajníky, hrnčeky, vázy a dekorácie vyrábané tradičnými remeselnými postupmi. Každý kus je ručne maľovaný a predstavuje jedinečný originál.</p>
+      <h2>Ručne maľovaná keramika z Modry</h2>
+      <p>Majolika Modra patrí medzi najvýznamnejších výrobcov tradičnej slovenskej keramiky. V e-shope nájdete široký výber úžitkovej aj dekoratívnej keramiky, darčekových predmetov a limitovaných kolekcií. Navštíviť môžete výrobné dielne a tvorivé workshopy priamo v Modre.</p>
+      <h2>Najobľúbenejšie kategórie</h2>
+      <nav aria-label="Hlavné sekcie">
+        <ul>
+          <li><a href="/eshop">E-shop – ručne maľovaná keramika</a></li>
+          <li><a href="/dielne">Prehliadky a tvorivé dielne</a></li>
+          <li><a href="/aktuality">Aktuality</a></li>
+          <li><a href="/article/historia-majoliky">Tradícia a história majoliky</a></li>
+        </ul>
+      </nav>
+    </noscript>
+  </app-root>
 
 </body>
 </html>
