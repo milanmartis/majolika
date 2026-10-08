@@ -66,13 +66,16 @@
   <link rel="icon" type="image/x-icon" href="/assets/ico.png">
 
   <!-- Fonts -->
+  <!-- preconnect len pre najdôležitejšie originy (PSI varuje pri >4):
+       CloudFront = hero/LCP obrázok, gstatic/typekit = fonty. Zvyšok (odložené
+       CSS) stačí dns-prefetch. -->
+  <link rel="preconnect" href="https://d1hbdvlfav95nt.cloudfront.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://use.typekit.net" crossorigin>
   <link rel="preconnect" href="https://p.typekit.net" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="preconnect" href="https://stackpath.bootstrapcdn.com" crossorigin>
-  <link rel="preconnect" href="https://d1hbdvlfav95nt.cloudfront.net" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="https://stackpath.bootstrapcdn.com">
   <!-- LCP: hero obrázok homepage – načítaj prioritne čo najskôr -->
   <link rel="preload" as="image" fetchpriority="high"
         href="https://d1hbdvlfav95nt.cloudfront.net/products/medium_eshop_cb861c9cb5.jpg">
