@@ -57,6 +57,8 @@ export class AktualitaDetailComponent implements OnInit {
   // gallery state
   galleryThumbs: string[] = [];
   galleryFull: string[] = [];
+  /** 1 ak je hlavný (hero) obrázok vložený na index 0 galleryFull -> posun pre thumbnaily */
+  galleryThumbOffset = 0;
   isFullscreen = false;
   fullscreenIndex = 0;
 
@@ -150,10 +152,18 @@ export class AktualitaDetailComponent implements OnInit {
       return attrs.formats?.['thumbnail']?.url || attrs.url;
     });
 
-    this.galleryFull = items.map((item) => {
+    const galleryFull = items.map((item) => {
       const attrs = this.extractAttributes(item)!;
       return attrs.formats?.['large']?.url || attrs.url;
     });
+
+    // Hlavný (hero) obrázok dáme do fullscreen setu ako prvý, aby sa dal otvoriť
+    // kliknutím rovnako ako thumbnaily. Do pruhu thumbnailov ho nepridávame.
+    const heroAttrs = akt.featuredImage ? this.extractAttributes(akt.featuredImage) : null;
+    const heroLarge = heroAttrs ? (heroAttrs.formats?.['large']?.url || heroAttrs.url) : null;
+
+    this.galleryFull = heroLarge ? [heroLarge, ...galleryFull] : galleryFull;
+    this.galleryThumbOffset = heroLarge ? 1 : 0;
   }
 
   private extractAttributes(

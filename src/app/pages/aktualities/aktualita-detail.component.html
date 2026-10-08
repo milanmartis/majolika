@@ -63,6 +63,8 @@
             [alt]="getAltText(akt.featuredImage)"
             fetchpriority="high"
             decoding="async"
+            class="hero-clickable"
+            (click)="openFullscreen(0)"
           />
 
           <!-- Fotogaléria -->
@@ -76,7 +78,7 @@
                 appImageFade
                 loading="lazy"
                 decoding="async"
-                (click)="openFullscreen(i); $event.preventDefault()"
+                (click)="openFullscreen(i + galleryThumbOffset); $event.preventDefault()"
               />
             </div>
           </div>

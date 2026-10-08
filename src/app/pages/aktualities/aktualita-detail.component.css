@@ -323,3 +323,8 @@
     flex: 1;             /* zoberie zostávajúcich 60% */
   }
 }
+
+/* Hlavný obrázok aktuality je klikateľný (otvorí fullscreen) */
+.hero-clickable {
+  cursor: zoom-in;
+}
