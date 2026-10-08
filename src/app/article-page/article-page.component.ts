@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Observable, combineLatest } from 'rxjs';
@@ -16,6 +16,7 @@ import { FooterComponent } from 'app/components/footer/footer.component';
 import { GalleryComponent } from 'app/components/gallery/gallery.component';
 import { MapComponent } from 'app/components/map/map.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { GoogleMapsLoaderService } from 'app/core/google-maps-loader.service';
 
 import type { Article } from 'app/models/article.model';
 import type { ContentBlock, ImageBlock } from 'app/models/blocks.model';
@@ -55,7 +56,7 @@ export class ArticlePageComponent {
 
   article$!: Observable<Article>;
   private destroy$ = new Subject<void>();
-  mapsReady = false;
+  mapsReady = signal(false);
   imageUrls: string[] = [];
   galleryOpen = false;
   galleryIndex = 0;
@@ -72,19 +73,23 @@ export class ArticlePageComponent {
   slug = toSignal(this.slug$, { initialValue: '' });
   showMap = computed(() => this.slug() === 'informacie');
 
+  private mapsLoader = inject(GoogleMapsLoaderService);
+
   constructor(
     private articleService: ArticleService,
     private lang: LanguageService
-  ) {}
+  ) {
+    // Google Maps JS načítaj (lazy) len keď stránka reálne zobrazuje mapu.
+    effect(() => {
+      if (this.showMap() && !this.mapsReady()) {
+        this.mapsLoader.load()
+          .then(() => this.mapsReady.set(true))
+          .catch(() => {});
+      }
+    });
+  }
 
   ngOnInit() {
-
-     const check = () => {
-    this.mapsReady = !!(window as any).google?.maps;
-    if (!this.mapsReady) setTimeout(check, 50);
-  };
-  check();
-
     this.article$ = combineLatest([
       this.slug$,
       this.lang.langChanged$
