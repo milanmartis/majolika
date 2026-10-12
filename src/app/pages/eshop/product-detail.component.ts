@@ -846,6 +846,8 @@ private initNormalPipeline(): void {
       slug
     });
 
+    this.setProductBreadcrumbsJsonLd(productName, slug);
+
     this.articleUrl = url;
   }
 
@@ -890,6 +892,54 @@ private initNormalPipeline(): void {
       }
     };
 
+    script.textContent = JSON.stringify(jsonLd);
+    this.doc.head.appendChild(script);
+  }
+
+  /** BreadcrumbList JSON-LD pre detail produktu: Domov -> kategória -> produkt. */
+  private setProductBreadcrumbsJsonLd(productName: string, slug: string): void {
+    const old = this.doc.getElementById('product-breadcrumbs-jsonld');
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+
+    const siteUrl = (environment.frontendUrl || '').replace(/\/$/, '');
+    const items: any[] = [
+      { '@type': 'ListItem', position: 1, name: 'Domov', item: `${siteUrl}/` },
+    ];
+    let position = 2;
+
+    const bc = this.uniqueCategories?.[0];
+    if (bc?.parent) {
+      items.push({
+        '@type': 'ListItem',
+        position: position++,
+        name: bc.parent.category_name || bc.parent.category_slug,
+        item: `${siteUrl}/produkt/kategoria/${bc.parent.category_slug}`,
+      });
+    }
+    if (bc?.child) {
+      items.push({
+        '@type': 'ListItem',
+        position: position++,
+        name: bc.child.category_name || bc.child.category_slug,
+        item: `${siteUrl}/produkt/kategoria/${bc.child.category_slug}`,
+      });
+    }
+    items.push({
+      '@type': 'ListItem',
+      position,
+      name: productName,
+      item: `${siteUrl}/produkt/${slug}`,
+    });
+
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: items,
+    };
+
+    const script = this.doc.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'product-breadcrumbs-jsonld';
     script.textContent = JSON.stringify(jsonLd);
     this.doc.head.appendChild(script);
   }
