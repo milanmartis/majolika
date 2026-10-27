@@ -122,7 +122,16 @@ export const routes: Routes = [
   // { path: 'tradicia', component: TradiciaComponent, data: { animation: 'TradiciaPage' } },
 
   // --- O nás ---
-  { path: 'o-nas', component: AuthorsListComponent, data: { animation: 'autori' } },
+  {
+    path: 'o-nas',
+    component: AuthorsListComponent,
+    data: {
+      animation: 'autori',
+      title: 'O nás – autori a dielňa Slovenskej ľudovej majoliky Modra',
+      description:
+        'Spoznajte autorov a maliarov Slovenskej ľudovej majoliky v Modre – ľudí, ktorí ručne tvarujú a maľujú tradičnú modranskú keramiku.',
+    },
+  },
   {
     path: 'o-nas/majolika-modra-okolie',
     redirectTo: 'aktuality',
@@ -134,7 +143,13 @@ export const routes: Routes = [
   {
     path: 'kontakty',
     component: ArticlePageComponent,
-    data: { slug: 'informacie', animation: 'ArticlePage' },
+    data: {
+      slug: 'informacie',
+      animation: 'ArticlePage',
+      title: 'Kontakt a otváracie hodiny – Slovenská ľudová majolika Modra',
+      description:
+        'Kontakt na Slovenskú ľudovú majoliku v Modre – adresa, telefón, e-mail a otváracie hodiny predajne a dielne.',
+    },
   },
 
   // --- Články ---
@@ -201,12 +216,15 @@ export const routes: Routes = [
   { path: 'signin/callback', component: SigninCallbackComponent },
 
   // --- Aktuality ---
-  { path: 'kontakty', redirectTo: '/article/informacie', pathMatch: 'full' }
-,
-{
+  {
     path: 'aktuality',
     component: AktualityListComponent,
-    data: { animation: 'AktualityList' },
+    data: {
+      animation: 'AktualityList',
+      title: 'Aktuality a novinky – Slovenská ľudová majolika Modra',
+      description:
+        'Novinky, podujatia a aktuality zo Slovenskej ľudovej majoliky v Modre – výstavy, tvorivé dielne a nové kolekcie keramiky.',
+    },
   },
   {
     path: 'aktuality/:slug',

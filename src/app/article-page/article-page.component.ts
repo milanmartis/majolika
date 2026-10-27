@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { Title, Meta } from '@angular/platform-browser';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { takeUntil, map, switchMap, tap, distinctUntilChanged } from 'rxjs/operators';
 
@@ -77,7 +78,9 @@ export class ArticlePageComponent {
 
   constructor(
     private articleService: ArticleService,
-    private lang: LanguageService
+    private lang: LanguageService,
+    private title: Title,
+    private meta: Meta
   ) {
     // Google Maps JS načítaj (lazy) len keď stránka reálne zobrazuje mapu.
     effect(() => {
@@ -100,6 +103,18 @@ export class ArticlePageComponent {
         this.imageUrls = article.content
           .filter((b): b is ImageBlock => b.__component === 'blocks.image-block')
           .map(b => b.largeUrl);
+
+        // Jedinečný <title> pre každý článok (inak by všetky mali generický
+        // default z app.component a kazili by sitelinks / SEO).
+        if (article?.title) {
+          this.title.setTitle(
+            `${article.title} | Slovenská ľudová majolika Modra`
+          );
+          this.meta.updateTag({
+            name: 'description',
+            content: `${article.title} – Slovenská ľudová majolika z Modry, ručne maľovaná keramika a tradičný modranský dekór.`,
+          });
+        }
       })
     );
   }

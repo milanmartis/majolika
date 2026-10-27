@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
+import { Title, Meta } from '@angular/platform-browser';
 import { Observable, of, combineLatest } from 'rxjs';
 import { switchMap, map, tap, catchError, shareReplay, startWith } from 'rxjs/operators';
 import { LOCALE_ID } from '@angular/core';
@@ -67,6 +68,8 @@ export class AktualitaDetailComponent implements OnInit {
     private aktualityService: AktualityService,
     public lang: LanguageService,
     private router: Router,
+    private title: Title,
+    private meta: Meta,
     @Inject(LOCALE_ID) public locale: string,
     @Inject(DOCUMENT) private doc: Document
   ) {}
@@ -83,7 +86,18 @@ export class AktualitaDetailComponent implements OnInit {
       switchMap((slug) => {
         if (!slug) return of(null); // ✅ slug neexistuje
         return this.aktualityService.getBySlug(slug).pipe(
-          tap((akt) => this.buildGallery(akt)),
+          tap((akt) => {
+            this.buildGallery(akt);
+            // Jedinečný <title> pre každú aktualitu (inak generický default).
+            if (akt?.title) {
+              this.title.setTitle(
+                `${akt.title} | Aktuality – Slovenská ľudová majolika Modra`
+              );
+              if (akt.summary) {
+                this.meta.updateTag({ name: 'description', content: akt.summary });
+              }
+            }
+          }),
           catchError(() => of(null)) // ✅ 404/500 => null (nezrúti layout)
         );
       }),
