@@ -9,7 +9,7 @@
             [src]="card.imageUrl"
             fetchpriority="high"
             decoding="async"
-            [alt]="card.alt || 'Hero'"
+            [alt]="card.alt || 'Slovenská ľudová majolika Modra – ručne maľovaná keramika'"
             (load)="onHeroImageLoad(i)"
             (error)="onHeroImageError(i)"
           />
@@ -32,7 +32,7 @@
   <div style="position: relative; top: -90px;margin:0px;padding:0px;margin-bottom:-90px;">
     <img
       src="/assets/img/back_dekor_black2.png"
-      alt="dekor"
+      alt=""
       width="134"
       style="margin-top:20px; margin-bottom: -30px; transform: rotate(90deg)"
     />
@@ -109,7 +109,7 @@
         (click)="openModal(g.url, g.alt)"
         aria-label="Open image fullscreen">
 
-        <img [src]="g.url" [alt]="g.alt || 'image'" loading="lazy" decoding="async" />
+        <img [src]="g.url" [alt]="g.alt || 'Ručne maľovaná majolika z Modry'" loading="lazy" decoding="async" />
       </button>
 
     </div>
@@ -139,7 +139,7 @@
             <a class="hero-tile" *ngFor="let it of block.items" [routerLink]="normalizeLink(it.link)">
               <img
                 [src]="resolveStrapiImageUrl(it.image)"
-                [alt]="it.alt || 'hero'"
+                [alt]="it.alt || 'Slovenská ľudová majolika Modra'"
                 loading="lazy"
                 decoding="async"
               />
@@ -162,7 +162,7 @@
   <img
     class="modal-img"
     [src]="modalUrl"
-    [alt]="modalAlt || 'image'"
+    [alt]="modalAlt || 'Ručne maľovaná majolika z Modry'"
     (click)="$event.stopPropagation()"
   />
 </div>
