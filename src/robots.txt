@@ -1,5 +1,16 @@
 User-agent: *
+
+# Funkčné / súkromné stránky bez SEO hodnoty – šetríme crawl budget
 Disallow: /admin
 Disallow: /cart
+Disallow: /produkt/cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /login
+Disallow: /register
+Disallow: /auth/
+Disallow: /connect/
+Disallow: /signin/
+Disallow: /confirm-email
 
-Sitemap: https://majolika-cms.appdesign.sk/api/sitemap.xml
+Sitemap: https://www.majolika.sk/sitemap.xml
