@@ -22,6 +22,12 @@
   [@slideUp]="'visible'"
 >
 
+<!-- Jediný H1 stránky (SEO). Vizuálne skrytý – kontext kategórie je už
+     v banneri/breadcrumbe; H1 reflektuje vybranú kategóriu, inak e-shop. -->
+<h1 class="sr-only">
+  {{ selectedCategoryName || selectedRootCategoryName || ('ESHOP.H1_DEFAULT' | translate) }}
+</h1>
+
 <!-- Nadpis / breadcrumbs kategórií -->
 <div class="cat-heading" *ngIf="selectedRootCategorySlug">
   <h2 class="sr-only">Navigácia v kategóriách</h2>

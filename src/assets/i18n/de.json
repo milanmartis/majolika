@@ -5,13 +5,12 @@
     "VIAC_INFO": "Weitere Informationen",
     "REZERVOVAT": "Buchen",
     "VEDIETVIAC": "Details anzeigen",
-
     "POPISKY_KAT_VYROBKOV": "Produktkategorien",
     "VYBERTE_KATEGORIU": "Kategorie auswählen",
     "ADD_TO_CART_HOLD": "In den Warenkorb legen (frei {{available}})",
     "FULL": "Ausgebucht",
     "NO_TOURS_OR_WORKSHOPS": "Für diesen Tag sind keine Führungen oder Workshops geplant.",
-    "LOADING_SESSION":"Sitzungen werden geladen",
+    "LOADING_SESSION": "Sitzungen werden geladen",
     "AT": "am",
     "LABEL": "Kapazität",
     "STATUS": "{{booked}} gebucht / {{max}} maximal ({{available}} verfügbar)",
@@ -20,7 +19,6 @@
     "WHO_WE_ARE": "Wer wir sind",
     "WHO_WE_ARE_PEREX": "Wir stellen Ihnen unser Team vor, das sich um die Bewahrung und Entwicklung der traditionellen slowakischen Keramik kümmert."
   },
-
   "FORM": {
     "FIRST_NAME": "Vorname",
     "LAST_NAME": "Nachname",
@@ -35,16 +33,13 @@
     "COUNTRY": "Land",
     "ADRRESS": "Adresse"
   },
-
-
-"feedback": {
+  "feedback": {
     "checking_auth": "Authentifizierung wird überprüft...",
     "login_required": "Anmeldung erforderlich, um eine Sitzung zu buchen.",
     "login_to_book": "Anmelden",
-    "register_to_book": "Registrieren",   
+    "register_to_book": "Registrieren",
     "season_full": "Die Kapazität ist erschöpft."
   },
-
   "HOME": {
     "WELCOME": "Slowakische Volksmajolika",
     "PEREX": "Die Modra-Majolika und die Majolika-Ornamentik sind in die Repräsentative Liste des immateriellen Kulturerbes der Slowakei eingetragen.",
@@ -57,64 +52,56 @@
     "SEARCHING": "Suche",
     "DECOR_FILTER": "Filter nach Dekor",
     "SHAPE_FILTER": "Filter nach Form"
-
-
   },
-
-  "ONAS": { 
+  "ONAS": {
     "CO_ROBIME": "Unser Angebot",
     "KTO_SME": "Wer wir sind",
     "HISTORIA": "Geschichte",
     "INFO": "Informationen",
     "MAJOLIKA_DOMA_HEADER": "Majolika bei Ihnen zu Hause",
     "MAJOLIKA_DOMA_TEXT": "Die slowakische Volksmajolika ist ein Träger der Tradition der Modra-Majolika und der Majolika-Ornamentik. Gleichzeitig bietet sie Raum für Kreativität und innovative Ansätze in der Herstellung von Modra-Keramik. Ziel der Projektförderung ist die Entwicklung kreativer Talente und Innovationen im Bereich des traditionellen Handwerks durch die Bewahrung und Wiederherstellung eines bedeutenden Teils des Kulturerbes der Slowakei.\n\nEntdecken Sie einzigartige handbemalte Vasen aus der Majolika-Werkstatt. Die perfekte Ergänzung für Ihr Interieur."
-
-    },
-    
-
-  "SLIDE": {
-  "VIAC_INFO": "Mehr Informationen",
-  "POPISKY_KAT_VYROBKOV": "Produktkategorien",
-  "VYBERTE_KATEGORIU": "Kategorie auswählen"
-},
-
-  "ESHOP": { 
-    "VOUCHER": {
-    "TITLE": "Geschenkgutschein einlösen",
-    "PLACEHOLDER": "Gutscheincode eingeben",
-    "APPLY": "Einlösen",
-    "APPLIED": "Eingelöster Gutschein: {{code}}",
-    "LINE": "Geschenkgutschein",
-    "REMAINING": "Gutscheinguthaben: {{value}}",
-    "DELETE": "Entfernen",
-    "ERROR_EMPTY": "Bitte geben Sie einen Gutscheincode ein.",
-    "ERROR_INVALID": "Der Gutschein ist nicht gültig.",
-    "ERROR_NOT_VALUE": "Dieser Gutschein ist kein Wertgutschein.",
-    "ERROR_NO_BALANCE": "Dieser Gutschein hat kein Restguthaben mehr.",
-    "ERROR_INVALID_OR_USED": "Der Gutschein ist ungültig oder wurde bereits verwendet.",
-    "SUCCESS_APPLIED": "Der Gutschein wurde eingelöst. Rabatt {{discount}} €.",
-    "SNACK_APPLIED": "Gutschein eingelöst: -{{discount}} €",
-    "ERROR_NOT_APPLIED": "Sie haben einen Gutscheincode eingegeben, ihn aber noch nicht eingelöst."
   },
-          "SELECT_VARIATION": "Wählen Sie eine Variante",
+  "SLIDE": {
+    "VIAC_INFO": "Mehr Informationen",
+    "POPISKY_KAT_VYROBKOV": "Produktkategorien",
+    "VYBERTE_KATEGORIU": "Kategorie auswählen"
+  },
+  "ESHOP": {
+    "VOUCHER": {
+      "TITLE": "Geschenkgutschein einlösen",
+      "PLACEHOLDER": "Gutscheincode eingeben",
+      "APPLY": "Einlösen",
+      "APPLIED": "Eingelöster Gutschein: {{code}}",
+      "LINE": "Geschenkgutschein",
+      "REMAINING": "Gutscheinguthaben: {{value}}",
+      "DELETE": "Entfernen",
+      "ERROR_EMPTY": "Bitte geben Sie einen Gutscheincode ein.",
+      "ERROR_INVALID": "Der Gutschein ist nicht gültig.",
+      "ERROR_NOT_VALUE": "Dieser Gutschein ist kein Wertgutschein.",
+      "ERROR_NO_BALANCE": "Dieser Gutschein hat kein Restguthaben mehr.",
+      "ERROR_INVALID_OR_USED": "Der Gutschein ist ungültig oder wurde bereits verwendet.",
+      "SUCCESS_APPLIED": "Der Gutschein wurde eingelöst. Rabatt {{discount}} €.",
+      "SNACK_APPLIED": "Gutschein eingelöst: -{{discount}} €",
+      "ERROR_NOT_APPLIED": "Sie haben einen Gutscheincode eingegeben, ihn aber noch nicht eingelöst."
+    },
+    "SELECT_VARIATION": "Wählen Sie eine Variante",
     "ADDED_TO_CART": "Zum Warenkorb hinzugefügt",
-
     "CANCEL": "Abbrechen",
     "WELCOME": "Shop mit unserer Produktion",
     "FIRST_TEXT": "Die Slowakische Volksmajolika ist ein Träger der Tradition der Modra Majolika und der Majolika-Ornamentik und gleichzeitig ein Raum für Kreativität und innovative Verfahren in der Herstellung der Modra-Keramik. Ziel der Projektförderung ist die Entwicklung kreativer Talente und Innovationen im Bereich des traditionellen Handwerks durch die Bewahrung, den Erhalt und die Wiederherstellung eines bedeutenden Teils des slowakischen Kulturerbes.",
     "MNOZSTVO": "Menge",
     "VARIANTY": "Varianten",
     "VLOZ_DO_KOSIKA": "In den Warenkorb",
-    "CELKOVA_CENA": "Gesamtpreis" ,
-    "FEATURED":"Für Sie empfohlen",
+    "CELKOVA_CENA": "Gesamtpreis",
+    "FEATURED": "Für Sie empfohlen",
     "NO_PRODUCTS_IN_CATEGORY": "In dieser Kategorie gibt es keine Produkte",
     "LOADING_PRODUCTS": "Produkte werden geladen",
     "ERROR_LOADING_PRODUCTS": "Fehler beim Laden der Produkte",
     "ERROR_404": "Das Produkt wurde leider nicht gefunden",
-    "CART":"Warenkorb",
-    "DO_POKLADNE":"Zur Kasse",
+    "CART": "Warenkorb",
+    "DO_POKLADNE": "Zur Kasse",
     "POKLADNA": "Kasse",
-    "SUM_TOTAL":"Gesamtsumme",
+    "SUM_TOTAL": "Gesamtsumme",
     "CART_IS_EMPTY": "Der Warenkorb ist leer",
     "SELECT_CATEGORY": "Bitte wählen Sie eine Kategorie aus",
     "SORT_BY": "Aussortieren",
@@ -128,7 +115,7 @@
     "POKRACOVAT_SHOPPING": "Weiter einkaufen",
     "SIZES_TEXT": "Spezifikationen",
     "DESCRIPTION_TEXT": "Beschreibung",
-    "DEKOR":"Dekor",
+    "DEKOR": "Dekor",
     "CANCEL_ALL_DECORS": "Alle Filter entfernen",
     "BUTTON": "Jetzt entdecken",
     "HABANSKY_DEKOR": "Haban Dekor",
@@ -137,28 +124,27 @@
     "FAVORITE_ADDED": "Artikel zu Favoriten hinzugefügt",
     "FAVORITE_REMOVED": "Artikel aus Favoriten entfernt",
     "OK": "OK",
-      "CHECKOUT_FORM_INVALID": "Bitte füllen Sie alle Pflichtfelder aus.",
-      "CHECKOUT_MY_ITEMS": "Meine Artikel",
-      "CHECKOUT_CUSTOMER_INFO": "Kundendaten",
-      "CHECKOUT_PROCEED_PAYMENT": "Weiter zur Zahlung",
-"FAREBNY_DEKOR": "Buntes Dekor",
-"PESTRY_DEKOR": "Lebhaftes Dekor",
-"MODRY_DEKOR": "Blaues Dekor",
-"ZELENY_DEKOR": "Grünes Dekor",
-"TVAR_TANIER": "Tellerform",
-"TVAR_VAZA": "Vasenform",
-"TVAR_DZBAN": "Krugform",
-"TVAR_POHAR": "Glasform",
-"TVAR_MISKA": "Schalenform",
-"TVAR_TEXT": "Form",
-"DEKOR_TEXT": "Dekor",
-"RESULT_SEARCH": "Suchergebnisse",
-"SEARCH_PLACEHOLDER": "Produkte suchen...",
-"SEARCH": "Suche",
-"NO_RESULTS":"Keine Ergebnisse gefunden",
-"POCET_VOLNYCH_MIEST": "Plätze",
-"INCLUDING_VAT": "Inklusive MwSt.",
-
+    "CHECKOUT_FORM_INVALID": "Bitte füllen Sie alle Pflichtfelder aus.",
+    "CHECKOUT_MY_ITEMS": "Meine Artikel",
+    "CHECKOUT_CUSTOMER_INFO": "Kundendaten",
+    "CHECKOUT_PROCEED_PAYMENT": "Weiter zur Zahlung",
+    "FAREBNY_DEKOR": "Buntes Dekor",
+    "PESTRY_DEKOR": "Lebhaftes Dekor",
+    "MODRY_DEKOR": "Blaues Dekor",
+    "ZELENY_DEKOR": "Grünes Dekor",
+    "TVAR_TANIER": "Tellerform",
+    "TVAR_VAZA": "Vasenform",
+    "TVAR_DZBAN": "Krugform",
+    "TVAR_POHAR": "Glasform",
+    "TVAR_MISKA": "Schalenform",
+    "TVAR_TEXT": "Form",
+    "DEKOR_TEXT": "Dekor",
+    "RESULT_SEARCH": "Suchergebnisse",
+    "SEARCH_PLACEHOLDER": "Produkte suchen...",
+    "SEARCH": "Suche",
+    "NO_RESULTS": "Keine Ergebnisse gefunden",
+    "POCET_VOLNYCH_MIEST": "Plätze",
+    "INCLUDING_VAT": "Inklusive MwSt.",
     "CHECKOUT_FAILED": "Zahlung fehlgeschlagen.",
     "PAYMENT": "Zahlung",
     "PAYMENT_CARD": "Kartenzahlung",
@@ -172,9 +158,9 @@
     "DELIVERY_PACKETA_BOX": "Packeta Paketbox",
     "DELIVERY_POST_COURIER": "Postkurier an Adresse",
     "DELIVERY_DIGITAL_PRODUCT": "Digitales Produkt",
-         "WORKSHOPANOTHERS":"Termine für Führungen und Workshops können auch individuell außerhalb des veröffentlichten Zeitplans vereinbart werden.",
-"BEGIN": "Beginnt am ",
-"KAPACITA": "freie Plätze: ",
+    "WORKSHOPANOTHERS": "Termine für Führungen und Workshops können auch individuell außerhalb des veröffentlichten Zeitplans vereinbart werden.",
+    "BEGIN": "Beginnt am ",
+    "KAPACITA": "freie Plätze: ",
     "SHIPPING_FEE": "Versand",
     "WORLD_SHIPPING_NOTE": "Lieferungen außerhalb der Slowakei und Tschechiens können nicht online bestellt werden – den Versand berechnen wir individuell und stimmen ihn mit Ihnen ab. Bitte kontaktieren Sie uns per E-Mail.",
     "WORLD_SHIPPING_BLOCKED": "Versand außerhalb der Slowakei und Tschechiens kann nicht online bestellt werden. Bitte kontaktieren Sie uns; den Versand berechnen wir individuell.",
@@ -182,30 +168,29 @@
     "GRAND_TOTAL": "Gesamtsumme",
     "POST_OFFICE_ID": "Postfiliale-ID",
     "PACKETA_BOX_ID": "Packeta-Box-ID",
-     "DELIVERY_ADDRESS_WHERE": "Wohin liefern?",
+    "DELIVERY_ADDRESS_WHERE": "Wohin liefern?",
     "DELIVERY_ADDRESS_SAME": "Kundenadresse verwenden",
     "DELIVERY_ADDRESS_OTHER": "An eine andere Adresse liefern",
     "CHECKOUT_SUBTOTAL": "Zwischensumme",
     "SELECT_PACKETA_BOX": "Packeta-Box auswählen",
     "SELECT_REQUIRED": "Bitte wählen Sie vor dem Fortfahren einen Lieferort.",
     "SELECT_POST_OFFICE": "Postfiliale auswählen",
-      "BANK_TRANSFER_TITLE": "Banküberweisung",
-      "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
-      "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
-      "BANK_TRANSFER_BIC": "BANKSKBX",
-      "LOGIN_TO_SAVE_FAV": "Melden Sie sich an, um Favoriten zu speichern",
+    "BANK_TRANSFER_TITLE": "Banküberweisung",
+    "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
+    "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
+    "BANK_TRANSFER_BIC": "BANKSKBX",
+    "LOGIN_TO_SAVE_FAV": "Melden Sie sich an, um Favoriten zu speichern",
     "LOGIN": "Anmelden",
-        "NOVINKA": "Neuheit",
+    "NOVINKA": "Neuheit",
     "ZLAVA": "Rabatt",
     "VYPREDANE": "Ausverkauft",
     "NEDOSTUPNE": "Nicht verfügbar",
     "PRODUCT_UNAVAILABLE_HINT": "Dieser Artikel ist derzeit nicht verfügbar. Für weitere Informationen können Sie uns kontaktieren.",
     "PRODUCT_SOLDOUT_HINT": "Dieser Artikel ist derzeit ausverkauft. Für weitere Informationen können Sie uns kontaktieren.",
-"CONSENT_TERMS": "Ich stimme den <a href='../article/vseobecne-obchodne-podmienky'>Allgemeinen Geschäftsbedingungen</a> zu.",
-
-"CONSENT_PRIVACY": "Ich stimme der Verarbeitung personenbezogener Daten gemäß den <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Datenschutzbestimmungen</a> zu.",
-"CONSENT_COOKIES": "Ich stimme der Verwendung von Cookies gemäß den <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Cookie-Richtlinien</a> zu.",
-"CONSENT_MARKETING": "Ich möchte Neuigkeiten und Marketingangebote per E-Mail erhalten.",
+    "CONSENT_TERMS": "Ich stimme den <a href='../article/vseobecne-obchodne-podmienky'>Allgemeinen Geschäftsbedingungen</a> zu.",
+    "CONSENT_PRIVACY": "Ich stimme der Verarbeitung personenbezogener Daten gemäß den <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Datenschutzbestimmungen</a> zu.",
+    "CONSENT_COOKIES": "Ich stimme der Verwendung von Cookies gemäß den <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Cookie-Richtlinien</a> zu.",
+    "CONSENT_MARKETING": "Ich möchte Neuigkeiten und Marketingangebote per E-Mail erhalten.",
     "label_created": "Bestellung erhalten",
     "in_transit": "Unterwegs",
     "at_pickup": "Zur Abholung bereit",
@@ -220,7 +205,7 @@
     "DELIVERY_URGENCY_STANDARD": "Die Standardlieferzeit ist für mich in Ordnung (ungefähr zwei Wochen)",
     "DELIVERY_URGENCY_RUSH": "Meine Bestellung eilt",
     "COD_NOT_FOR_PICKUP": "Nachnahme ist bei Abholung nicht verfügbar.",
-        "BILLING": {
+    "BILLING": {
       "TITLE": "Rechnungsdaten",
       "COMPANY_PURCHASE": "Ich kaufe als Firma",
       "COMPANY_NAME": "Firmenname",
@@ -246,37 +231,34 @@
       "NOTE_LABEL": "Hinweis zur Verpackung (optional)",
       "NOTE_PLACEHOLDER": "Z.B. bitte Preisschilder entfernen / kurze Notiz hinzufügen..."
     },
-    "SHIPPING_FREE": "kostenloser Versand"
-
-  
+    "SHIPPING_FREE": "kostenloser Versand",
+    "H1_DEFAULT": "E-Shop – handbemalte Majolika aus Modra"
   },
-
-    "CHECKOUT_CANCEL": {
+  "CHECKOUT_CANCEL": {
     "TITLE": "Zahlung abgebrochen",
     "DESCRIPTION": "Ihre Zahlung wurde nicht abgeschlossen oder wurde abgebrochen. Falls dies ein Versehen war, können Sie den Checkout erneut versuchen.",
     "ORDER": "Bestellung: {{id}}",
     "BACK_TO_CHECKOUT": "Zurück zur Kasse",
     "CONTINUE_SHOPPING": "Weiter einkaufen"
   },
-
-  "DIELNE": { 
+  "DIELNE": {
     "WELCOME": "Führungen und kreative Werkstätten",
     "FIRST_TEXT": "Entdecken Sie die uralte Schönheit des traditionellen Volkskunsthandwerks. Wir bieten Ihnen eine einzigartige Gelegenheit, einen Blick hinter die Kulissen der größten Handwerkswerkstätten mit der längsten Tradition in der Slowakei zu werfen. Die Modra Majolika und die Majolika-Ornamentik sind in der Repräsentativen Liste des immateriellen Kulturerbes der Slowakei eingetragen."
   },
-  "TRADICIA": { 
+  "TRADICIA": {
     "WELCOME": "140 JAHRE SLOWAKISCHE VOLKSMAJOLIKA",
     "FIRST_TEXT": "Im Jahr 1883 wurde in Modra die Keramische Industrieschule (Agyagipar Tanműhely Modor) gegründet. Die Gründung dieser Schule legte den Grundstein für das zukünftige erfolgreiche Unternehmen Slowakische Keramik und später die Slowakische Volksmajolika, die bis heute kontinuierlich in Betrieb ist. Die Schule wurde von der Stadt Modra in Zusammenarbeit mit dem ungarischen Ministerium für Industrie und Handel gegründet. Der erste Leiter war Jozef Mička, ein Keramiker aus Mähren. Die Lehrlinge erlernten die wichtigsten Werkstattfertigkeiten wie Töpferei, Malerei und Brennen."
   },
-    "CATEGORIES": {
-      "HOME": "Startseite",
-      "AKTUALITY": "Neuigkeiten",
-      "PRODUCTS": "E-shop",
-      "WORKSHOPS": "Führungen & Werkstätten",
-      "TRADITION": "Tradition",
-      "ABOUT": "Uber uns",
-      "KONTAKTY": "Kontakt",
-      "PREHLIADKY": "Führungen",
-      "detska-kolekcia-s-mackom": "Kinderserie mit Bärchen",
+  "CATEGORIES": {
+    "HOME": "Startseite",
+    "AKTUALITY": "Neuigkeiten",
+    "PRODUCTS": "E-shop",
+    "WORKSHOPS": "Führungen & Werkstätten",
+    "TRADITION": "Tradition",
+    "ABOUT": "Uber uns",
+    "KONTAKTY": "Kontakt",
+    "PREHLIADKY": "Führungen",
+    "detska-kolekcia-s-mackom": "Kinderserie mit Bärchen",
     "dekoracie-a-svietidla": "Dekorationen und Beleuchtung",
     "hodiny": "Uhren",
     "kosiky": "Körbe",
@@ -357,14 +339,11 @@
     "WHO_WE_ARE": "Über uns",
     "WHO_WE_ARE_PEREX": "Hinter jedem Produkt aus Modra steht ein Mensch – seine Hände, seine Erfahrung und sein Gespür für Details.",
     "WHO_WE_ARE_PEREX2": "Das Team der Slowakischen Volksmajolika besteht aus Meistern, Kunstmalern, Handwerkern, Dozenten und Mitarbeitern des Managements, die gemeinsam die Tradition der Modra-Majolika am Leben erhalten und weiterentwickeln. Jeder von uns trägt dazu bei, dass die Majolika mit demselben Respekt geschaffen wird, wie sie von den Generationen vor uns hergestellt wurde, und dass sie auch in der heutigen Welt ihren Platz behält.",
-    "fragmenty":"Fragmente",
+    "fragmenty": "Fragmente",
     "prehliadky-vyroby": "Fabrikführungen",
     "masterclass": "Masterclass",
     "katkine-vzory": "Katkas Muster"
-    
-    },
-
-
+  },
   "cookie": {
     "title": "Informationen zu Cookies",
     "desc": "Mit Klick auf <strong>Alle akzeptieren</strong> speichern wir technische und Analyse-Cookies, um Ihre Nutzung zu verbessern und die Leistung zu messen. Sie können Ihre Präferenzen unter <em>Cookie-Einstellungen</em> ändern.",
@@ -386,7 +365,6 @@
       "saved": "Ihre Cookie-Einstellungen wurden gespeichert."
     }
   },
-
   "set": {
     "title": "Neues Passwort festlegen",
     "missingCode": "Wiederherstellungscode fehlt. Überprüfe den Link in der E-Mail oder fordere die Wiederherstellung erneut an.",
@@ -406,7 +384,7 @@
     "saving": "Speichere…",
     "success": "Das Passwort wurde geändert. Ich leite zur Anmeldung weiter…"
   },
-    "reset": {
+  "reset": {
     "title": "Passwort zurücksetzen",
     "email": {
       "label": "E-Mail",
@@ -417,17 +395,18 @@
     "sending": "Sende…",
     "sentInfo": "Wir haben dir eine E-Mail mit Anweisungen geschickt."
   },
-
   "AUTH": {
-    "RESET_PASSWORD":"Reset password",
-       "ERRORS":{
-"INVALID_CREDENTIALS":"Ungültige E-Mail oder Passwort."
-   },
+    "RESET_PASSWORD": "Reset password",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "Ungültige E-Mail oder Passwort."
+    },
     "OR_SIGN_UP_WITH_GOOGLE": "Oder mit Google weiter anmelden",
-     "EMAIL_NOT_CONFIRMED": "Bitte bestätige zuerst deine E-Mail. Prüfe deinen Posteingang.",
+    "EMAIL_NOT_CONFIRMED": "Bitte bestätige zuerst deine E-Mail. Prüfe deinen Posteingang.",
     "NO_ACCOUNT_REGISTER": "Kein Konto? Registrieren",
     "ACCOUNT_LOGIN": "Haben Sie bereits ein Konto? Anmelden",
-       "BUTTONS": { "LOADING": "Wird verarbeitet…" },
+    "BUTTONS": {
+      "LOADING": "Wird verarbeitet…"
+    },
     "FIELDS": {
       "IDENTIFIER": {
         "LABEL": "E-Mail oder Benutzername",
@@ -457,9 +436,9 @@
       "SUBMIT": "Anmelden",
       "SUCCESS": "Erfolgreich angemeldet!",
       "ERRORS": {
-      "EMAIL_NOT_CONFIRMED": "Musíte najprv potvrdiť e-mail. Skontrolujte si schránku.",
-      "INVALID_CREDENTIALS": "Nesprávny e-mail alebo heslo.",
-      "GENERIC": "Prihlásenie zlyhalo. Skúste to znova."
+        "EMAIL_NOT_CONFIRMED": "Musíte najprv potvrdiť e-mail. Skontrolujte si schránku.",
+        "INVALID_CREDENTIALS": "Nesprávny e-mail alebo heslo.",
+        "GENERIC": "Prihlásenie zlyhalo. Skúste to znova."
       }
     },
     "REGISTER": {
@@ -467,7 +446,6 @@
       "SUBMIT": "Konto erstellen",
       "RESEND_CONFIRM": "Bestätigungs-E-Mail erneut senden",
       "CONFIRM_SENT": "Bestätigungs-E-Mail wurde gesendet.",
-
       "SUCCESS": "✅ Registrierung erfolgreich! Bitte bestätige dein Konto per E-Mail.",
       "RESEND": {
         "SUCCESS": "📧 Bestätigungs-E-Mail wurde erneut gesendet.",
@@ -483,20 +461,18 @@
         "GENERIC": "Registrierung fehlgeschlagen. Bitte versuche es erneut."
       }
     }
-
   },
-
- "COMMON": { 
-  "OK": "OK", 
-  "CHANGE": "Packeta Box ändern",
-   "STREET": "Straße",
+  "COMMON": {
+    "OK": "OK",
+    "CHANGE": "Packeta Box ändern",
+    "STREET": "Straße",
     "CITY": "Stadt",
     "ZIP": "PLZ",
     "COUNTRY": "Land",
     "NOTES": "Hinweis",
     "COPY": "Kopieren",
     "COPIED": "In die Zwischenablage kopiert!",
-        "REMOVE_ITEM": "Artikel entfernen",
+    "REMOVE_ITEM": "Artikel entfernen",
     "PEOPLE_SHORT": "Pers.",
     "PIECE_SHORT": "Stk.",
     "STREET_AND_NUMBER": "Straße und Hausnummer",
@@ -504,68 +480,62 @@
     "COUNTRY_CZ": "Tschechische Republik",
     "COUNTRY_WORLD_CONTACT": "Rest der Welt (bitte kontaktieren Sie uns)"
   },
-
-
-
-    "CATEGORIES2": {
-      "TRADITIONAL": "Traditionell",
-      "MODERN": "Modern",
-      "LIMITED": "Limitierte Editionen"
-    },
-      "IMG": {
-  "NAME": "unser-angebot"
-},
-"KOMPLET": {
-  "PONUKA": "Gesamtes Angebot"
-},
-
-"CALENDAR": {
-  "TITLE": "Ausstellungen & Workshops",
-  "REGISTER_TITLE": "Anmeldung für",
-  "NAME": "Name",
-  "EMAIL": "E-Mail",
-  "SUBMIT": "Absenden",
-  "CANCEL": "Abbrechen"
-},
-"PREHLIADKY2": {
-  "INFO": "Geschenkgutscheine",
-  "MAJOLIKA_NA_AKCII": "Majolica at the event",
-  "DIELNE2": "Workshops",
-  "PREHLIADKY2": "Tours"
-},
-
-"ACCOUNT2": {
-  "TITLE": "Mein Konto",
-  "USER_DATA": "Benutzerdaten",
-  "SAVE_CHANGES": "Änderungen speichern",
-  "FAVORITES": "Meine Lieblingsprodukte",
-  "REMOVE_FAVORITE": "Entfernen",
-  "NO_FAVORITES": "Sie haben keine Lieblingsprodukte.",
-  "ADD_FAVORITES": "Fügen Sie sie hier hinzu...",
-  "ORDERS": "Meine Bestellungen",
-  "NO_ORDERS": "Sie haben keine Bestellungen.",
-  "ADD_ORDERS": "Fügen Sie sie hier hinzu...",
-  "LOGOUT": "Abmelden"
-},
-"table": {
-  "index": "#",
-  "date": "Datum",
-  "status": "Status",
-  "payment": "Zahlung",
-  "total": "Gesamt",
-  "paid": "Bezahlt",
-  "unpaid": "Offen",
-  "pending": "Ausstehend",
-  "completed": "Abgeschlossen",
-  "cancelled": "Storniert"
-},
-
-"ACCOUNT": {
-  "TITLE": "Môj účet",
-  "USERNAME": "Prihlasovacie meno",
-  "EMAIL": "E‑mail",
-  "LOGOUT": "Odhlásiť sa",
-     "FORM": {
+  "CATEGORIES2": {
+    "TRADITIONAL": "Traditionell",
+    "MODERN": "Modern",
+    "LIMITED": "Limitierte Editionen"
+  },
+  "IMG": {
+    "NAME": "unser-angebot"
+  },
+  "KOMPLET": {
+    "PONUKA": "Gesamtes Angebot"
+  },
+  "CALENDAR": {
+    "TITLE": "Ausstellungen & Workshops",
+    "REGISTER_TITLE": "Anmeldung für",
+    "NAME": "Name",
+    "EMAIL": "E-Mail",
+    "SUBMIT": "Absenden",
+    "CANCEL": "Abbrechen"
+  },
+  "PREHLIADKY2": {
+    "INFO": "Geschenkgutscheine",
+    "MAJOLIKA_NA_AKCII": "Majolica at the event",
+    "DIELNE2": "Workshops",
+    "PREHLIADKY2": "Tours"
+  },
+  "ACCOUNT2": {
+    "TITLE": "Mein Konto",
+    "USER_DATA": "Benutzerdaten",
+    "SAVE_CHANGES": "Änderungen speichern",
+    "FAVORITES": "Meine Lieblingsprodukte",
+    "REMOVE_FAVORITE": "Entfernen",
+    "NO_FAVORITES": "Sie haben keine Lieblingsprodukte.",
+    "ADD_FAVORITES": "Fügen Sie sie hier hinzu...",
+    "ORDERS": "Meine Bestellungen",
+    "NO_ORDERS": "Sie haben keine Bestellungen.",
+    "ADD_ORDERS": "Fügen Sie sie hier hinzu...",
+    "LOGOUT": "Abmelden"
+  },
+  "table": {
+    "index": "#",
+    "date": "Datum",
+    "status": "Status",
+    "payment": "Zahlung",
+    "total": "Gesamt",
+    "paid": "Bezahlt",
+    "unpaid": "Offen",
+    "pending": "Ausstehend",
+    "completed": "Abgeschlossen",
+    "cancelled": "Storniert"
+  },
+  "ACCOUNT": {
+    "TITLE": "Môj účet",
+    "USERNAME": "Prihlasovacie meno",
+    "EMAIL": "E‑mail",
+    "LOGOUT": "Odhlásiť sa",
+    "FORM": {
       "REQUIRED_FIELDS": "❌ Bitte füllen Sie alle Pflichtfelder aus!"
     },
     "ERRORS": {
@@ -580,13 +550,11 @@
     },
     "hide-product": "Produkte ausblenden",
     "show-product": "Produkte anzeigen"
-},
-
-
+  },
   "FOOTER": {
     "ABOUT": {
-    "TITLE": "Die Majolika-Geschichte",
-    "TEXT": "In der Slovenská ľudová majolika pflegen seit 140 Jahren Meister ihres Handwerks die geerbten Traditionen und formen mit Hand und Herz die keramische Seele der Region. Alle Produkte sind handgefertigt und handbemalt. Jedes Stück ist ein Unikat. Die Modraer Majolika und die Majolika-Ornamentik sind in die Repräsentative Liste des immateriellen Kulturerbes der Slowakei eingetragen. <a href='o-nas'>Klicken Sie und erfahren Sie mehr</a>"
+      "TITLE": "Die Majolika-Geschichte",
+      "TEXT": "In der Slovenská ľudová majolika pflegen seit 140 Jahren Meister ihres Handwerks die geerbten Traditionen und formen mit Hand und Herz die keramische Seele der Region. Alle Produkte sind handgefertigt und handbemalt. Jedes Stück ist ein Unikat. Die Modraer Majolika und die Majolika-Ornamentik sind in die Repräsentative Liste des immateriellen Kulturerbes der Slowakei eingetragen. <a href='o-nas'>Klicken Sie und erfahren Sie mehr</a>"
     },
     "SUPPORT": {
       "TITLE": "Kundenservice",
@@ -596,8 +564,9 @@
       "RETURNS": "Reklamationen",
       "CONTACT": "Kontaktiere uns"
     },
-            "OZMAJOLIKA": {
-      "TITLE": "Majolika Modra"},
+    "OZMAJOLIKA": {
+      "TITLE": "Majolika Modra"
+    },
     "INFO": {
       "TITLE": "Informationen",
       "ABOUT_COMPANY": "Über das Unternehmen",
@@ -607,8 +576,6 @@
       "PRIVACY": "Datenschutz",
       "NEW_MODELS": "Neue Muster"
     },
-    
-
     "NEWSLETTER": {
       "TITLE": "Newsletter",
       "TEXT": "Melde dich an",
@@ -617,55 +584,47 @@
       "DONE": "Danke für dein Abonnement",
       "OK": "Danke für dein Abonnement",
       "ERROR": "Hoppla, bitte versuche es später noch einmal."
-     },
+    },
     "SOCIAL": {
       "TITLE": "Folge uns"
     }
   },
-      "CHECKOUT": {
+  "CHECKOUT": {
     "SUCCESS": {
       "TITLE": "Vielen Dank für Ihre Bestellung",
       "BODY": "Ihre Bestellung wurde erfolgreich erstellt.",
       "BACK": "Zur Startseite",
       "CHECKING": "Zahlungsstatus wird geprüft...",
       "ORDER_SUMMARY": "Bestellübersicht",
-
       "PAID_TITLE": "Vielen Dank, Zahlung erhalten",
       "PAID_BODY": "Die Zahlung für Ihre Bestellung war erfolgreich. Bestätigung und Details wurden an Ihre E-Mail gesendet.",
-
       "PENDING_TITLE": "Zahlung läuft",
       "PENDING_BODY": "Die Zahlung für Ihre Bestellung ist noch nicht bestätigt. Wir prüfen den Status automatisch. Wenn die Seite sich nicht aktualisiert, prüfen Sie bitte Ihre E-Mail.",
-
       "REFUNDED_TITLE": "Zahlung zurückerstattet",
       "REFUNDED_BODY": "Die Zahlung für Ihre Bestellung wurde zurückerstattet. Weitere Informationen wurden an Ihre E-Mail gesendet.",
-
       "ORDER_OK_TITLE": "Bestellung eingegangen",
       "ORDER_OK_BODY": "Ihre Bestellung ist eingegangen. Bestätigung und weitere Informationen wurden an Ihre E-Mail gesendet."
     }
   },
-
   "ORDER": {
     "NO": "Bestellung",
     "DATE": "Datum",
     "EMAIL": "E-Mail",
     "TOTAL": "Gesamtbetrag",
     "DOWNLOAD_INVOICE": "Rechnung herunterladen",
-
     "GIFTWRAP": "Geschenkverpackung",
     "GIFTWRAP_QTY": "Anzahl der Verpackungen",
     "GIFTWRAP_MODE": "Verpackungsart",
     "NOTE": "Notiz",
-
     "GIFTWRAP_MODE_EACH_ITEM": "Jeden Artikel einzeln",
     "GIFTWRAP_MODE_BY_PRODUCT": "Nach Produkt",
     "GIFTWRAP_MODE_ALL_TOGETHER": "Alles zusammen",
     "GIFTWRAP_MODE_ALL": "Alles (eine Verpackung pro Artikel)",
     "GIFTWRAP_MODE_SELECTED": "Ausgewählte Produkte",
-
     "BADGE_GIFTWRAP": "Geschenkverpackung",
     "BADGE_DIGITAL": "Digitales Produkt"
   },
-    "role": {
+  "role": {
     "admin": "Verwaltung",
     "painter": "Maler / Malerin",
     "jug_maker": "Krugmacher / Krugmacherin",
@@ -679,26 +638,19 @@
     "prev": "Zurück",
     "next": "Weiter",
     "page": "Seite {{page}} von {{total}}"
-  }
-,
-
+  },
   "LOADING": {
     "CATEGORIES": "Kategorien werden geladen...",
     "CONTENT": "Inhalt wird geladen..."
-  
-
-
   },
-
-"ICONS": {
-      "TANIER": "Teller",
-      "DZBAN": "Krug",
-      "VAZA": "Vase",
-      "POHAR": "Glas",
-      "MISKA": "Schale"
-    } ,
-
-      "AKTUALITY": {
+  "ICONS": {
+    "TANIER": "Teller",
+    "DZBAN": "Krug",
+    "VAZA": "Vase",
+    "POHAR": "Glas",
+    "MISKA": "Schale"
+  },
+  "AKTUALITY": {
     "NOT_FOUND": {
       "TITLE": "Artikel nicht gefunden",
       "TEXT": "Überprüfen Sie den Link oder kehren Sie zur Übersicht der Neuigkeiten zurück.",
@@ -718,32 +670,24 @@
       "NO_OTHERS": "Keine weiteren Neuigkeiten."
     }
   },
-
-    "SESSION_PICKER": {
+  "SESSION_PICKER": {
     "TITLE": "Choose a session",
     "SUBTITLE": "Click a day in the calendar to see available times.",
     "CLOSE": "Close",
-
     "LEGEND_HAS": "Days with sessions",
     "LEGEND_NONE": "No sessions",
-
     "SELECTED_DAY": "Selected day",
     "SESSION": "Time",
     "SESSION_PLACEHOLDER": "-- choose time --",
-
     "QTY": "People",
     "ADD_TO_CART": "Add to cart",
     "HELP_SELECT": "Select a day and time.",
-
     "NO_SESSIONS_DAY": "No sessions available on this day.",
-
     "AVAILABLE": "available",
     "START": "Start",
     "DURATION": "Duration",
     "MINUTES": "min",
-
     "HINT": "Pick a day in the calendar. Days with sessions are highlighted.",
-
     "WD_MON": "Mon",
     "WD_TUE": "Tue",
     "WD_WED": "Wed",
@@ -753,27 +697,24 @@
     "WD_SUN": "Sun"
   },
   "WITHDRAWAL": {
-  "TITLE": "Widerruf des Vertrags",
-  "INTRO": "Gemäß den geltenden gesetzlichen Bestimmungen haben Sie beim Kauf in unserem E-Shop das Recht, innerhalb der gesetzlichen Frist vom Vertrag zurückzutreten. Wenn Sie dieses Recht ausüben möchten, füllen Sie bitte das untenstehende Formular aus. Nach dem Absenden erhalten Sie umgehend eine Bestätigung über den Eingang der Mitteilung an Ihre E-Mail-Adresse. Anschließend werden wir Sie über das weitere Vorgehen informieren.",
-  "NAME": "Name und Nachname",
-  "ORDER_NUMBER": "Bestellnummer",
-  "PRODUCTS": "Produkt oder Produkte, auf die sich der Widerruf bezieht",
-  "EMAIL": "E-Mail",
-  "PHONE": "Telefon",
-  "SEND": "Mitteilung absenden",
-  "SUCCESS_TITLE": "Wir bestätigen den Eingang Ihrer Widerrufserklärung.",
-  "SUCCESS_TEXT": "Wir werden Sie über das weitere Vorgehen informieren.",
-
+    "TITLE": "Widerruf des Vertrags",
+    "INTRO": "Gemäß den geltenden gesetzlichen Bestimmungen haben Sie beim Kauf in unserem E-Shop das Recht, innerhalb der gesetzlichen Frist vom Vertrag zurückzutreten. Wenn Sie dieses Recht ausüben möchten, füllen Sie bitte das untenstehende Formular aus. Nach dem Absenden erhalten Sie umgehend eine Bestätigung über den Eingang der Mitteilung an Ihre E-Mail-Adresse. Anschließend werden wir Sie über das weitere Vorgehen informieren.",
+    "NAME": "Name und Nachname",
+    "ORDER_NUMBER": "Bestellnummer",
+    "PRODUCTS": "Produkt oder Produkte, auf die sich der Widerruf bezieht",
+    "EMAIL": "E-Mail",
+    "PHONE": "Telefon",
+    "SEND": "Mitteilung absenden",
+    "SUCCESS_TITLE": "Wir bestätigen den Eingang Ihrer Widerrufserklärung.",
+    "SUCCESS_TEXT": "Wir werden Sie über das weitere Vorgehen informieren.",
     "SENDING": "Wird gesendet...",
-
-  "GDPR": "Ich stimme der Verarbeitung meiner personenbezogenen Daten gemäß der <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Datenschutzerklärung</a> zu.",
-  "CAPTCHA_ERROR": "Bitte bestätigen Sie, dass Sie kein Roboter sind.",
-  "ORDER_NOT_FOUND": "Es wurde keine Bestellung mit dieser Bestellnummer und E-Mail-Adresse gefunden.",
-  "ERROR": "Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
-  "FOOTER_LINK": "Vertrag widerrufen",
-     "ORDER_CHECKING": "Die Bestellnummer wird überprüft...",
+    "GDPR": "Ich stimme der Verarbeitung meiner personenbezogenen Daten gemäß der <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Datenschutzerklärung</a> zu.",
+    "CAPTCHA_ERROR": "Bitte bestätigen Sie, dass Sie kein Roboter sind.",
+    "ORDER_NOT_FOUND": "Es wurde keine Bestellung mit dieser Bestellnummer und E-Mail-Adresse gefunden.",
+    "ERROR": "Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+    "FOOTER_LINK": "Vertrag widerrufen",
+    "ORDER_CHECKING": "Die Bestellnummer wird überprüft...",
     "ORDER_VALID": "Die Bestellung wurde gefunden.",
     "ORDER_CHECK_ERROR": "Die Bestellung konnte momentan nicht überprüft werden."
-} 
-  
   }
+}

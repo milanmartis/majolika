@@ -1,5 +1,7 @@
 <div class="landing-container">
 <!-- src/app/landing-page/landing-page.component.html -->
+<!-- Jediný H1 stránky /dielne (SEO) – dizajn má hero slider, preto skrytý. -->
+<h1 class="sr-only">{{ 'DIELNE.WELCOME' | translate }}</h1>
 <!-- ---------- SLIDER ---------- -->
 <div *ngIf="slides.length"  style="width:100%;">
   <div class="slider-wrapper" >
@@ -208,10 +210,10 @@
       <div class="calendar-right flex-center" #formCard style="text-align:left;">
         <ng-container *ngIf="selectedDay; else expTpl">
           <div *ngIf="selectedDay" class="form-card">
-            <h1 >
-              <!-- {{ 'CALENDAR.REGISTER_TITLE' | translate }} -->
+            <h2 style="font-size:2rem;margin:0 0 .5rem;">
+              <!-- vybraný dátum – podnadpis vo formulári, nie H1 stránky -->
               {{ selectedDay.date | date:'d. MMMM yyyy':undefined:lang.getCurrentLanguage() }}
-            </h1>
+            </h2>
           
             <div *ngIf="loadingSessions">{{ 'BASE.LOADING_SESSION' | translate }}</div>
             <div *ngIf="!loadingSessions && sessionsForSelectedDay.length === 0">

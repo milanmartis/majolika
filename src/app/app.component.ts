@@ -6,8 +6,11 @@ import {
   ElementRef,
   ChangeDetectorRef,
   HostListener,
-  inject
+  inject,
+  Inject
 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { environment } from 'environments/environment';
 import { ViewChild } from '@angular/core';
 import { skip } from 'rxjs/operators';
 import { trigger, state, style, animate, transition } from '@angular/animations';
@@ -214,7 +217,8 @@ export class AppComponent implements OnInit {
     private translate: TranslateService,
     private auth: AuthService,
     private title: Title,
-    private meta: Meta
+    private meta: Meta,
+    @Inject(DOCUMENT) private doc: Document
   ) {
     // Otvoriť sidebar pri prvom pridaní položky do košíka
     this.cart.cart$
@@ -313,6 +317,11 @@ export class AppComponent implements OnInit {
             content: data['description']
           });
         }
+
+        // Centrálny canonical pre KAŽDÚ stránku -> vždy na www doménu
+        // (rieši duplicitu www vs non-www v Search Console) a bez query/fragmentu
+        // (dedupe ?utm=…, #…). Produktové stránky si canonical následne spresnia.
+        this.setCanonical();
       });
 
     // ↓↓↓ browser-only blok
@@ -397,6 +406,26 @@ export class AppComponent implements OnInit {
       child = child.firstChild;
     }
     return child;
+  }
+
+  /**
+   * Nastaví <link rel="canonical"> na aktuálnu cestu na kanonickej (www) doméne,
+   * bez query a fragmentu. Volá sa pri každej navigácii, aby canonical nezostal
+   * zaseknutý z predošlej stránky.
+   */
+  private setCanonical(): void {
+    const base = (environment.frontendUrl || 'https://www.majolika.sk').replace(/\/$/, '');
+    // this.router.url je napr. "/produkt/xyz?page=2#top" -> necháme len cestu
+    const path = this.router.url.split(/[?#]/)[0] || '/';
+    const href = base + path;
+
+    let linkEl = this.doc.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!linkEl) {
+      linkEl = this.doc.createElement('link');
+      linkEl.setAttribute('rel', 'canonical');
+      this.doc.head.appendChild(linkEl);
+    }
+    linkEl.setAttribute('href', href);
   }
 
   @HostListener('window:scroll')

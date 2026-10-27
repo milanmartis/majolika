@@ -119,7 +119,10 @@
 
       <!-- HEADING -->
       <ng-container *ngIf="block.__component === 'homepage.heading'">
-        <h1 *ngIf="block.level === 'h1'">{{ block.text }}</h1>
+        <!-- Hero vyššie už je jediný <h1> stránky; obsahový „h1" z CMS
+             renderujeme ako h2 (vizuál zachovaný triedou as-h1), aby mala
+             homepage práve jeden H1 (SEO). -->
+        <h2 *ngIf="block.level === 'h1'" class="as-h1">{{ block.text }}</h2>
         <h2 *ngIf="block.level === 'h2'">{{ block.text }}</h2>
         <h3 *ngIf="block.level === 'h3'">{{ block.text }}</h3>
       </ng-container>

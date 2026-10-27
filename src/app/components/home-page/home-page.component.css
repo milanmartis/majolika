@@ -102,6 +102,8 @@
 }
 
 .homepage-content h1 { font-size: 2.1rem; font-weight: 700; }
+/* CMS „h1" blok renderovaný ako h2 kvôli jedinému H1 na stránke – vzhľad ako h1 */
+.homepage-content h2.as-h1 { font-size: 2.1rem; font-weight: 700; }
 .homepage-content h2 { font-size: 1.7rem; font-weight: 650; }
 .homepage-content h3 { font-size: 1.35rem; font-weight: 650; }
 

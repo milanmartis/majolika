@@ -5,13 +5,12 @@
     "VIAC_INFO": "More information",
     "REZERVOVAT": "Book now",
     "VEDIETVIAC": "View details",
-
     "POPISKY_KAT_VYROBKOV": "Product categories",
     "VYBERTE_KATEGORIU": "Choose a category",
     "ADD_TO_CART_HOLD": "Add to cart (free places {{available}})",
     "FULL": "Full",
     "NO_TOURS_OR_WORKSHOPS": "No tours or workshops scheduled for this day.",
-    "LOADING_SESSION":"Loading sessions...",
+    "LOADING_SESSION": "Loading sessions...",
     "AT": "at",
     "LABEL": "Capacity",
     "STATUS": "{{booked}} booked / {{max}} max ({{available}} available)",
@@ -20,10 +19,7 @@
     "WHO_WE_ARE": "About Us",
     "WHO_WE_ARE_PEREX": "Behind every product from Modra stands a person — their hands, experience, and sense of detail.",
     "WHO_WE_ARE_PEREX2": "The team of Slovak Folk Majolica consists of masters, artistic painters, craftsmen, lecturers, and management staff who together keep the tradition of Modra majolica alive and move it forward. Each of us contributes to ensuring that majolica is created with the same respect as it was by generations before us, and that it continues to have its place in today's world."
-
-
   },
-
   "FORM": {
     "FIRST_NAME": "First Name",
     "LAST_NAME": "Last Name",
@@ -38,15 +34,13 @@
     "COUNTRY": "Country",
     "ADRRESS": "Address"
   },
-
- "feedback": {
+  "feedback": {
     "checking_auth": "Checking authentication...",
     "login_required": "Login required to book a session.",
     "login_to_book": "Login",
-    "register_to_book": "Register",   
+    "register_to_book": "Register",
     "season_full": "The session is full."
   },
-
   "HOME": {
     "WELCOME": "Slovak Folk Majolica",
     "PEREX": "Modra majolica and majolica ornamentation are inscribed in the Representative List of the Intangible Cultural Heritage of Slovakia.",
@@ -59,49 +53,40 @@
     "SEARCHING": "Searching",
     "DECOR_FILTER": "Filter by decor",
     "SHAPE_FILTER": "Filter by shape"
-
   },
-
-  "ONAS": { 
+  "ONAS": {
     "CO_ROBIME": "Our Offer",
     "KTO_SME": "Who we are",
     "HISTORIA": "History",
     "INFO": "Information",
     "MAJOLIKA_DOMA_HEADER": "Majolica in Your Home",
     "MAJOLIKA_DOMA_TEXT": "Slovak folk majolica is one of the bearers of the tradition of Modra majolica and majolica ornamentation, while also serving as a space for creativity and innovative approaches in the production of Modra ceramics. The aim of the project support is to develop creative talent and innovation in the field of traditional crafts through the preservation and restoration of an important part of Slovakia’s cultural heritage.\n\nDiscover unique hand-painted vases from the Majolika workshop. A perfect addition to your interior."
-
-    },
-
-
-
-"SLIDE": {
-  "VIAC_INFO": "More information",
-  "POPISKY_KAT_VYROBKOV": "Product Categories",
-  "VYBERTE_KATEGORIU": "Choose a category"
-},
-
-
-  "ESHOP": { 
-    "VOUCHER": {
-    "TITLE": "Apply gift voucher",
-    "PLACEHOLDER": "Enter voucher code",
-    "APPLY": "Apply",
-    "APPLIED": "Applied voucher: {{code}}",
-    "LINE": "Gift voucher",
-    "REMAINING": "Voucher balance: {{value}}",
-    "DELETE": "Remove",
-    "ERROR_EMPTY": "Please enter a gift voucher code.",
-    "ERROR_INVALID": "The voucher is not valid.",
-    "ERROR_NOT_VALUE": "This voucher is not a credit voucher.",
-    "ERROR_NO_BALANCE": "This voucher has no remaining balance.",
-    "ERROR_INVALID_OR_USED": "The voucher is invalid or has already been used.",
-    "SUCCESS_APPLIED": "The voucher has been applied. Discount {{discount}} €.",
-    "SNACK_APPLIED": "Voucher applied: -{{discount}} €",
-    "ERROR_NOT_APPLIED": "You entered a voucher code but have not applied it yet."
   },
-          "SELECT_VARIATION": "Choose a variant",
+  "SLIDE": {
+    "VIAC_INFO": "More information",
+    "POPISKY_KAT_VYROBKOV": "Product Categories",
+    "VYBERTE_KATEGORIU": "Choose a category"
+  },
+  "ESHOP": {
+    "VOUCHER": {
+      "TITLE": "Apply gift voucher",
+      "PLACEHOLDER": "Enter voucher code",
+      "APPLY": "Apply",
+      "APPLIED": "Applied voucher: {{code}}",
+      "LINE": "Gift voucher",
+      "REMAINING": "Voucher balance: {{value}}",
+      "DELETE": "Remove",
+      "ERROR_EMPTY": "Please enter a gift voucher code.",
+      "ERROR_INVALID": "The voucher is not valid.",
+      "ERROR_NOT_VALUE": "This voucher is not a credit voucher.",
+      "ERROR_NO_BALANCE": "This voucher has no remaining balance.",
+      "ERROR_INVALID_OR_USED": "The voucher is invalid or has already been used.",
+      "SUCCESS_APPLIED": "The voucher has been applied. Discount {{discount}} €.",
+      "SNACK_APPLIED": "Voucher applied: -{{discount}} €",
+      "ERROR_NOT_APPLIED": "You entered a voucher code but have not applied it yet."
+    },
+    "SELECT_VARIATION": "Choose a variant",
     "ADDED_TO_CART": "Added to Cart",
-
     "CANCEL": "Cancel",
     "WELCOME": "Shop with our production",
     "FIRST_TEXT": "Slovak Folk Majolica is a bearer of the tradition of Modra Majolica and Majolica ornamentation, while also being a space for creativity and innovative approaches in the production of Modra ceramics. The goal of project support is to develop creative talent and innovations in the field of traditional crafts by preserving, maintaining, and restoring a significant part of Slovakia’s cultural heritage.",
@@ -109,15 +94,15 @@
     "VARIANTY": "Variants",
     "VLOZ_DO_KOSIKA": "Add to Cart",
     "CELKOVA_CENA": "Total Price",
-    "FEATURED":"Recommended for you",
+    "FEATURED": "Recommended for you",
     "NO_PRODUCTS_IN_CATEGORY": "There are no products in this category",
     "LOADING_PRODUCTS": "Loading products",
     "ERROR_LOADING_PRODUCTS": "Error loading products",
     "ERROR_404": "The product was unfortunately not found",
-    "CART":"Cart",
-    "DO_POKLADNE":"Checkout",
+    "CART": "Cart",
+    "DO_POKLADNE": "Checkout",
     "POKLADNA": "Checkout",
-    "SUM_TOTAL":"Total",
+    "SUM_TOTAL": "Total",
     "CART_IS_EMPTY": "The cart is empty",
     "SELECT_CATEGORY": "Please select a category",
     "SORT_BY": "Sort by",
@@ -131,36 +116,34 @@
     "POKRACOVAT_SHOPPING": "Continue Shopping",
     "SIZES_TEXT": "Specifications",
     "DESCRIPTION_TEXT": "Description",
-    "DEKOR":"Decor",
+    "DEKOR": "Decor",
     "CANCEL_ALL_DECORS": "Cancel All Filters",
     "BUTTON": "Discover Now",
     "HABANSKY_DEKOR": "Haban decor",
-        "FAVORITE_ADD": "Add to favorites",
+    "FAVORITE_ADD": "Add to favorites",
     "FAVORITE_REMOVE": "Remove from favorites",
     "FAVORITE_ADDED": "Item added to favorites",
     "FAVORITE_REMOVED": "Item removed from favorites",
     "OK": "OK",
-     "CHECKOUT_FORM_INVALID": "Please fill in all required fields.",
-     "CHECKOUT_MY_ITEMS": "My Items",
-     "CHECKOUT_CUSTOMER_INFO": "Customer Information",
-     "CHECKOUT_PROCEED_PAYMENT": "Proceed to Payment",
-     "INCLUDING_VAT": "Including VAT",
-         "WORKSHOPANOTHERS":"Appointments for tours and workshops can also be arranged individually outside the published schedule.",
-"BEGIN": "Begins at ",
-     "KAPACITA": "free places: ",
-"FAREBNY_DEKOR": "Multicolor decor",
-"PESTRY_DEKOR": "Multicolor decor",
-"MODRY_DEKOR": "Blue decor",
-"ZELENY_DEKOR": "Green decor",
-
-"TVAR_TEXT": "Shape",
-"DEKOR_TEXT": "Decor",
-"RESULT_SEARCH": "Search results",
-"SEARCH_PLACEHOLDER": "Search products...",
-"SEARCH": "Search",
-"NO_RESULTS":"No results found",
-"POCET_VOLNYCH_MIEST": "Left seats",
-
+    "CHECKOUT_FORM_INVALID": "Please fill in all required fields.",
+    "CHECKOUT_MY_ITEMS": "My Items",
+    "CHECKOUT_CUSTOMER_INFO": "Customer Information",
+    "CHECKOUT_PROCEED_PAYMENT": "Proceed to Payment",
+    "INCLUDING_VAT": "Including VAT",
+    "WORKSHOPANOTHERS": "Appointments for tours and workshops can also be arranged individually outside the published schedule.",
+    "BEGIN": "Begins at ",
+    "KAPACITA": "free places: ",
+    "FAREBNY_DEKOR": "Multicolor decor",
+    "PESTRY_DEKOR": "Multicolor decor",
+    "MODRY_DEKOR": "Blue decor",
+    "ZELENY_DEKOR": "Green decor",
+    "TVAR_TEXT": "Shape",
+    "DEKOR_TEXT": "Decor",
+    "RESULT_SEARCH": "Search results",
+    "SEARCH_PLACEHOLDER": "Search products...",
+    "SEARCH": "Search",
+    "NO_RESULTS": "No results found",
+    "POCET_VOLNYCH_MIEST": "Left seats",
     "CHECKOUT_FAILED": "Payment failed.",
     "PAYMENT": "Payment",
     "PAYMENT_CARD": "Card",
@@ -174,7 +157,6 @@
     "DELIVERY_PACKETA_BOX": "Packeta box",
     "DELIVERY_POST_COURIER": "Post courier to address",
     "DELIVERY_DIGITAL_PRODUCT": "Digital product",
-
     "SHIPPING_FEE": "Shipping",
     "WORLD_SHIPPING_NOTE": "Delivery outside Slovakia and Czechia cannot be ordered online – we calculate shipping individually and arrange it with you. Please contact us by e-mail.",
     "WORLD_SHIPPING_BLOCKED": "Shipping outside Slovakia and Czechia cannot be ordered online. Please contact us; we calculate shipping individually.",
@@ -183,36 +165,33 @@
     "DELIVERY_ADDRESS_WHERE": "Where to deliver?",
     "DELIVERY_ADDRESS_SAME": "Use customer address",
     "DELIVERY_ADDRESS_OTHER": "Deliver to a different address",
-      "CHECKOUT_SUBTOTAL": "Subtotal",
+    "CHECKOUT_SUBTOTAL": "Subtotal",
     "GRAND_TOTAL": "Total",
     "SELECT_PACKETA_BOX": "Select Packeta box",
     "SELECT_REQUIRED": "Please select a delivery place before continuing.",
     "SELECT_POST_OFFICE": "Select post office",
-      "BANK_TRANSFER_TITLE": "Bank transfer",
-      "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
-      "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
-      "BANK_TRANSFER_BIC": "BANKSKBX",
-      "PAYMENT_FEE": "Cash on delivery fee",
-        "LOGIN_TO_SAVE_FAV": "Sign in to save favorites",
+    "BANK_TRANSFER_TITLE": "Bank transfer",
+    "BANK_TRANSFER_ACCOUNT": "Majolika eShop",
+    "BANK_TRANSFER_IBAN": "SK12 3456 7890 1234 5678 9012",
+    "BANK_TRANSFER_BIC": "BANKSKBX",
+    "PAYMENT_FEE": "Cash on delivery fee",
+    "LOGIN_TO_SAVE_FAV": "Sign in to save favorites",
     "LOGIN": "Sign in",
-        "NOVINKA": "New",
+    "NOVINKA": "New",
     "ZLAVA": "Discount",
     "VYPREDANE": "Sold out",
     "NEDOSTUPNE": "Unavailable",
     "PRODUCT_UNAVAILABLE_HINT": "This product is currently unavailable. You can contact us for more information.",
     "PRODUCT_SOLDOUT_HINT": "This product is currently sold out. You can contact us for more information.",
-"CONSENT_TERMS": "I agree to the <a href='../article/vseobecne-obchodne-podmienky'>Terms and Conditions</a>.",
-
-"CONSENT_PRIVACY": "I agree to the processing of personal data according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Privacy Policy</a>.",
-"CONSENT_COOKIES": "I agree to the use of cookies according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Cookie Policy</a>.",
-"CONSENT_MARKETING": "I would like to receive news and marketing offers by email.",
+    "CONSENT_TERMS": "I agree to the <a href='../article/vseobecne-obchodne-podmienky'>Terms and Conditions</a>.",
+    "CONSENT_PRIVACY": "I agree to the processing of personal data according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Privacy Policy</a>.",
+    "CONSENT_COOKIES": "I agree to the use of cookies according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Cookie Policy</a>.",
+    "CONSENT_MARKETING": "I would like to receive news and marketing offers by email.",
     "label_created": "Order received",
     "in_transit": "In transit",
     "at_pickup": "At pickup point",
-
     "delivered": "Delivered",
     "returned": "Returned",
-
     "unpaid": "Waiting for payment",
     "paid": "Paid",
     "refunded": "Refunded",
@@ -222,7 +201,7 @@
     "DELIVERY_URGENCY_STANDARD": "Standard delivery time is fine for me (approximately two weeks)",
     "DELIVERY_URGENCY_RUSH": "My order is urgent",
     "COD_NOT_FOR_PICKUP": "Cash on delivery is not available for pickup.",
-        "BILLING": {
+    "BILLING": {
       "TITLE": "Billing details",
       "COMPANY_PURCHASE": "Buying as a company",
       "COMPANY_NAME": "Company name",
@@ -248,55 +227,44 @@
       "NOTE_LABEL": "Wrapping note (optional)",
       "NOTE_PLACEHOLDER": "E.g. please remove price tags / add a short note..."
     },
-    "SHIPPING_FREE": "free shipping"
-
-
+    "SHIPPING_FREE": "free shipping",
+    "H1_DEFAULT": "E-shop – hand-painted majolica from Modra"
   },
-
-   "CHECKOUT": {
+  "CHECKOUT": {
     "SUCCESS": {
       "TITLE": "Thank you for your order",
       "BODY": "Your order has been created successfully.",
       "BACK": "Back to home",
       "CHECKING": "Checking payment status...",
       "ORDER_SUMMARY": "Order summary",
-
       "PAID_TITLE": "Thank you, payment received",
       "PAID_BODY": "Payment for your order was successful. We’ve sent confirmation and details to your email.",
-
       "PENDING_TITLE": "Payment in progress",
       "PENDING_BODY": "Payment for your order is not confirmed yet. We’ll keep checking automatically. If the page doesn’t refresh, please check your email.",
-
       "REFUNDED_TITLE": "Payment refunded",
       "REFUNDED_BODY": "Payment for your order has been refunded. We’ve sent more information to your email.",
-
       "ORDER_OK_TITLE": "Order received",
       "ORDER_OK_BODY": "Your order {{orderNo}} has been received. We’ve sent confirmation and further information to your email."
     }
-
   },
-    "ORDER": {
+  "ORDER": {
     "NO": "Order",
     "DATE": "Date",
     "EMAIL": "Email",
     "TOTAL": "Total to pay",
     "DOWNLOAD_INVOICE": "Download invoice",
-
     "GIFTWRAP": "Gift wrapping",
     "GIFTWRAP_QTY": "Number of wraps",
     "GIFTWRAP_MODE": "Wrapping method",
     "NOTE": "Note",
-
     "GIFTWRAP_MODE_EACH_ITEM": "Each item separately",
     "GIFTWRAP_MODE_BY_PRODUCT": "By product",
     "GIFTWRAP_MODE_ALL_TOGETHER": "All together",
     "GIFTWRAP_MODE_ALL": "All (one wrap per item)",
     "GIFTWRAP_MODE_SELECTED": "Selected products",
-
     "BADGE_GIFTWRAP": "Gift wrapping",
     "BADGE_DIGITAL": "Digital product"
   },
-
   "CHECKOUT_CANCEL": {
     "TITLE": "Payment cancelled",
     "DESCRIPTION": "Your payment was not completed or was cancelled. If this was a mistake, you can try completing the checkout again.",
@@ -304,24 +272,23 @@
     "BACK_TO_CHECKOUT": "Back to checkout",
     "CONTINUE_SHOPPING": "Continue shopping"
   },
-
-  "DIELNE": { 
+  "DIELNE": {
     "WELCOME": "Tours and Creative Workshops",
     "FIRST_TEXT": "Discover the ancient beauty of traditional folk craftsmanship. We offer you a unique opportunity to peek behind the scenes of the largest craft workshops with the longest tradition in Slovakia. Modra Majolica and Majolica ornamentation are listed in the Representative List of Intangible Cultural Heritage of Slovakia."
   },
-  "TRADICIA": { 
+  "TRADICIA": {
     "WELCOME": "140 YEARS OF SLOVAK FOLK MAJOLICA",
     "FIRST_TEXT": "In 1883, the Ceramic Industrial School (Agyagipar Tanműhely Modor) was founded in Modra. The establishment of this school laid the foundation for the future prosperous Slovak Ceramics company and later the Slovak Folk Majolica, which has continuously operated up to the present day. The school was founded by the town of Modra in cooperation with the Hungarian Ministry of Industry and Trade. The first director was Jozef Mička, a ceramist from Moravia. Apprentices learned the most important workshop skills, such as pottery, painting, and firing."
   },
-    "CATEGORIES": {
-      "HOME": "Home",
-      "AKTUALITY": "News",
-      "PRODUCTS": "E-shop",
-      "WORKSHOPS": "Tours & Workshops",
-      "TRADITION": "Tradition",
-      "ABOUT": "About",
-      "KONTAKTY": "Contact",
-      "PREHLIADKY": "Tours",
+  "CATEGORIES": {
+    "HOME": "Home",
+    "AKTUALITY": "News",
+    "PRODUCTS": "E-shop",
+    "WORKSHOPS": "Tours & Workshops",
+    "TRADITION": "Tradition",
+    "ABOUT": "About",
+    "KONTAKTY": "Contact",
+    "PREHLIADKY": "Tours",
     "dekoracie-a-svietidla": "Decorations and Lighting",
     "hodiny": "Clocks",
     "detska-kolekcia-s-mackom": "Children's Collection with Bear",
@@ -400,14 +367,12 @@
     "tasky": "Bags",
     "prehliadky": "Tours",
     "tvorive-dielne": "Creative Workshops",
-    "fragmenty":"Fragments",
+    "fragmenty": "Fragments",
     "prehliadky-vyroby": "Factory Tours",
     "masterclass": "Masterclass",
     "katkine-vzory": "Katka's Patterns"
   },
-
-
-    "cookie": {
+  "cookie": {
     "title": "Cookie Information",
     "desc": "By clicking <strong>Accept all</strong> we will store technical and analytics cookies to improve your experience and measure performance. You can change your preferences in <em>Cookie settings</em>.",
     "acceptAll": "Accept all",
@@ -428,7 +393,6 @@
       "saved": "Your cookie preferences have been saved."
     }
   },
-
   "set": {
     "title": "Set a new password",
     "missingCode": "Recovery code is missing. Check the link in the email or request a password reset again.",
@@ -448,7 +412,7 @@
     "saving": "Saving…",
     "success": "The password has been changed. Redirecting to sign in…"
   },
-    "reset": {
+  "reset": {
     "title": "Password reset",
     "email": {
       "label": "Email",
@@ -459,16 +423,17 @@
     "sending": "Sending…",
     "sentInfo": "We’ve sent you an email with instructions."
   },
-
-"AUTH": {
-  "RESET_PASSWORD":"Reset password",
-     "ERRORS":{
-"INVALID_CREDENTIALS":"Invalid email or password."
-   },
+  "AUTH": {
+    "RESET_PASSWORD": "Reset password",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "Invalid email or password."
+    },
     "OR_SIGN_UP_WITH_GOOGLE": "Or Continue with Google",
     "NO_ACCOUNT_REGISTER": "Don't have an account? Register",
     "ACCOUNT_LOGIN": "Already have an account? Log in",
-        "BUTTONS": { "LOADING": "Processing…" },
+    "BUTTONS": {
+      "LOADING": "Processing…"
+    },
     "FIELDS": {
       "IDENTIFIER": {
         "LABEL": "Email or username",
@@ -498,9 +463,9 @@
       "SUBMIT": "Sign in",
       "SUCCESS": "Signed in successfully!",
       "ERRORS": {
-      "EMAIL_NOT_CONFIRMED": "Musíte najprv potvrdiť e-mail. Skontrolujte si schránku.",
-      "INVALID_CREDENTIALS": "Nesprávny e-mail alebo heslo.",
-      "GENERIC": "Prihlásenie zlyhalo. Skúste to znova."
+        "EMAIL_NOT_CONFIRMED": "Musíte najprv potvrdiť e-mail. Skontrolujte si schránku.",
+        "INVALID_CREDENTIALS": "Nesprávny e-mail alebo heslo.",
+        "GENERIC": "Prihlásenie zlyhalo. Skúste to znova."
       }
     },
     "REGISTER": {
@@ -508,7 +473,6 @@
       "SUBMIT": "Create account",
       "RESEND_CONFIRM": "Resend confirmation email",
       "CONFIRM_SENT": "Confirmation email has been sent.",
-
       "SUCCESS": "✅ Registration successful! Please check your email to confirm your account.",
       "RESEND": {
         "SUCCESS": "📧 Confirmation email has been resent.",
@@ -520,22 +484,21 @@
         "USERNAME_TAKEN": "This username is already taken.",
         "WEAK_PASSWORD": "Password does not meet strength requirements.",
         "INVALID_CREDENTIALS": "Invalid email or password.",
-
         "GENERIC": "Registration failed. Please try again."
       }
     }
   },
-  "COMMON": { 
-    "OK": "OK", 
+  "COMMON": {
+    "OK": "OK",
     "CHANGE": "Change Packeta Box",
-   "STREET": "Street",
+    "STREET": "Street",
     "CITY": "City",
     "ZIP": "ZIP",
     "COUNTRY": "Country",
     "NOTES": "Notes",
     "COPY": "Copy",
     "COPIED": "Copied to clipboard!",
-     "REMOVE_ITEM": "Remove item",
+    "REMOVE_ITEM": "Remove item",
     "PEOPLE_SHORT": "ppl",
     "PIECE_SHORT": "pcs",
     "STREET_AND_NUMBER": "Street and number",
@@ -543,72 +506,61 @@
     "COUNTRY_CZ": "Czech Republic",
     "COUNTRY_WORLD_CONTACT": "Rest of the world (please contact us)"
   },
-
-
-
-
-   "CATEGORIES2": {
-        "TRADITIONAL": "Traditional",
-        "MODERN": "Modern",
-        "LIMITED": "Limited Editions"
-      },
-      "IMG": {
-  "NAME": "our-offer"
-},
-
-
-"KOMPLET": {
-  "PONUKA": "Complete Offer"
-},
-
-
-"CALENDAR": {
-  "TITLE": "Exhibitions & Workshops",
-  "REGISTER_TITLE": "Register for",
-  "NAME": "Name",
-  "EMAIL": "Email",
-  "SUBMIT": "Submit",
-  "CANCEL": "Cancel"
-},
-    
-"PREHLIADKY2": {
-  "INFO": "Gift vouchers",
-  "MAJOLIKA_NA_AKCII": "Majolica at the event",
-  "DIELNE2": "Workshops",
-  "PREHLIADKY2": "Tours"
-},
-
-"ACCOUNT2": {
-  "TITLE": "My Account",
-  "USER_DATA": "My Data",
-  "SAVE_CHANGES": "Save Changes",
-  "FAVORITES": "My Favorite Products",
-  "REMOVE_FAVORITE": "Remove",
-  "NO_FAVORITES": "You have no favorite products.",
-  "ADD_FAVORITES": "Add them here...",
-  "ORDERS": "My Orders",
-  "NO_ORDERS": "You have no orders.",
-  "ADD_ORDERS": "Add them here...",
-  "LOGOUT": "Log out"
-},
-"table": {
-  "index": "#",
-  "date": "Date",
-  "status": "Status",
-  "payment": "Payment",
-  "total": "Total",
-  "paid": "Paid",
-  "unpaid": "Unpaid",
-  "pending":" Pending",
-  "cancelled": "Cancelled",
-  "completed": "Completed"
-},
-
-"ACCOUNT": {
-  "TITLE": "Môj účet",
-  "USERNAME": "Prihlasovacie meno",
-  "EMAIL": "E‑mail",
-  "LOGOUT": "Odhlásiť sa",
+  "CATEGORIES2": {
+    "TRADITIONAL": "Traditional",
+    "MODERN": "Modern",
+    "LIMITED": "Limited Editions"
+  },
+  "IMG": {
+    "NAME": "our-offer"
+  },
+  "KOMPLET": {
+    "PONUKA": "Complete Offer"
+  },
+  "CALENDAR": {
+    "TITLE": "Exhibitions & Workshops",
+    "REGISTER_TITLE": "Register for",
+    "NAME": "Name",
+    "EMAIL": "Email",
+    "SUBMIT": "Submit",
+    "CANCEL": "Cancel"
+  },
+  "PREHLIADKY2": {
+    "INFO": "Gift vouchers",
+    "MAJOLIKA_NA_AKCII": "Majolica at the event",
+    "DIELNE2": "Workshops",
+    "PREHLIADKY2": "Tours"
+  },
+  "ACCOUNT2": {
+    "TITLE": "My Account",
+    "USER_DATA": "My Data",
+    "SAVE_CHANGES": "Save Changes",
+    "FAVORITES": "My Favorite Products",
+    "REMOVE_FAVORITE": "Remove",
+    "NO_FAVORITES": "You have no favorite products.",
+    "ADD_FAVORITES": "Add them here...",
+    "ORDERS": "My Orders",
+    "NO_ORDERS": "You have no orders.",
+    "ADD_ORDERS": "Add them here...",
+    "LOGOUT": "Log out"
+  },
+  "table": {
+    "index": "#",
+    "date": "Date",
+    "status": "Status",
+    "payment": "Payment",
+    "total": "Total",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "pending": " Pending",
+    "cancelled": "Cancelled",
+    "completed": "Completed"
+  },
+  "ACCOUNT": {
+    "TITLE": "Môj účet",
+    "USERNAME": "Prihlasovacie meno",
+    "EMAIL": "E‑mail",
+    "LOGOUT": "Odhlásiť sa",
     "FORM": {
       "REQUIRED_FIELDS": "❌ Please fill in all required fields!"
     },
@@ -624,11 +576,11 @@
     },
     "hide-product": "Hide products",
     "show-product": "Show products"
-},
+  },
   "FOOTER": {
     "ABOUT": {
- "TITLE": "The Majolika Story",
-    "TEXT": "At Slovenská ľudová majolika, master artisans have been nurturing inherited traditions for 140 years, shaping the ceramic soul of the region with their hands and hearts. All products are handmade and hand-painted. Every piece is a unique work of art. Modra majolika and majolica ornamentation are inscribed on the Representative List of the Intangible Cultural Heritage of Slovakia. <a href='o-nas'>Click to learn more</a>"
+      "TITLE": "The Majolika Story",
+      "TEXT": "At Slovenská ľudová majolika, master artisans have been nurturing inherited traditions for 140 years, shaping the ceramic soul of the region with their hands and hearts. All products are handmade and hand-painted. Every piece is a unique work of art. Modra majolika and majolica ornamentation are inscribed on the Representative List of the Intangible Cultural Heritage of Slovakia. <a href='o-nas'>Click to learn more</a>"
     },
     "SUPPORT": {
       "TITLE": "Customer support",
@@ -638,8 +590,9 @@
       "RETURNS": "Returns",
       "CONTACT": "Contact us"
     },
-        "OZMAJOLIKA": {
-      "TITLE": "Majolika Modra"},
+    "OZMAJOLIKA": {
+      "TITLE": "Majolika Modra"
+    },
     "INFO": {
       "TITLE": "Information",
       "ABOUT_COMPANY": "About the company",
@@ -649,8 +602,6 @@
       "PRIVACY": "Privacy policy",
       "NEW_MODELS": "New models"
     },
-    
-
     "NEWSLETTER": {
       "TITLE": "Newsletter",
       "TEXT": "Subscribe",
@@ -659,15 +610,11 @@
       "DONE": "Thank you for subscribing",
       "OK": "Thank you for subscribing",
       "ERROR": "Oops, please try again later."
-
     },
     "SOCIAL": {
       "TITLE": "Follow us"
     }
   },
-
-
-  
   "role": {
     "admin": "Administration",
     "painter": "Painter",
@@ -682,26 +629,19 @@
     "prev": "Previous",
     "next": "Next",
     "page": "Page {{page}} of {{total}}"
-  }
-,
-
+  },
   "LOADING": {
     "CATEGORIES": "Loading categories…",
     "CONTENT": "Loading content…"
-  
-
-
   },
-
-"ICONS": {
-      "TANIER": "Plate",
-      "DZBAN": "Jug",
-      "VAZA": "Vase",
-      "POHAR": "Glass",
-      "MISKA": "Bowl"
-    } ,
-
-    "AKTUALITY": {
+  "ICONS": {
+    "TANIER": "Plate",
+    "DZBAN": "Jug",
+    "VAZA": "Vase",
+    "POHAR": "Glass",
+    "MISKA": "Bowl"
+  },
+  "AKTUALITY": {
     "NOT_FOUND": {
       "TITLE": "Article not found",
       "TEXT": "Check the link or go back to the news list.",
@@ -721,31 +661,24 @@
       "NO_OTHERS": "No other news."
     }
   },
-    "SESSION_PICKER": {
+  "SESSION_PICKER": {
     "TITLE": "Choose a session",
     "SUBTITLE": "Click a day in the calendar to see available times.",
     "CLOSE": "Close",
-
     "LEGEND_HAS": "Days with sessions",
     "LEGEND_NONE": "No sessions",
-
     "SELECTED_DAY": "Selected day",
     "SESSION": "Time",
     "SESSION_PLACEHOLDER": "-- choose time --",
-
     "QTY": "People",
     "ADD_TO_CART": "Add to cart",
     "HELP_SELECT": "Select a day and time.",
-
     "NO_SESSIONS_DAY": "No sessions available on this day.",
-
     "AVAILABLE": "available",
     "START": "Start",
     "DURATION": "Duration",
     "MINUTES": "min",
-
     "HINT": "Pick a day in the calendar. Days with sessions are highlighted.",
-
     "WD_MON": "Mon",
     "WD_TUE": "Tue",
     "WD_WED": "Wed",
@@ -755,23 +688,22 @@
     "WD_SUN": "Sun"
   },
   "WITHDRAWAL": {
-  "TITLE": "Withdrawal from Contract",
-"INTRO": "In accordance with applicable legal regulations, you have the right to withdraw from the contract within the statutory period when purchasing from our e-shop. If you wish to exercise this right, please fill out the form below. After submitting it, we will promptly send you a confirmation of receipt of the notice to your email. We will then inform you about the next steps.",
-  "NAME": "Name & surname",
-  "ORDER_NUMBER": "Order number",
-  "PRODUCTS": "Product or products the withdrawal concerns",
-  "EMAIL": "Email",
-  "PHONE": "Phone",
-  "SEND": "Submit notice",
-  "SUCCESS_TITLE": "We confirm receipt of your withdrawal from contract notice.",
-  "SUCCESS_TEXT": "We will inform you about the next steps.",
-  "FOOTER_LINK": "Withdraw from contract here",
-  "GDPR": "I agree to the processing of personal data according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Privacy Policy</a>.",
-  "CAPTCHA_ERROR": "Please confirm that you are not a robot.",
-      "ORDER_CHECKING": "Checking the order number...",
+    "TITLE": "Withdrawal from Contract",
+    "INTRO": "In accordance with applicable legal regulations, you have the right to withdraw from the contract within the statutory period when purchasing from our e-shop. If you wish to exercise this right, please fill out the form below. After submitting it, we will promptly send you a confirmation of receipt of the notice to your email. We will then inform you about the next steps.",
+    "NAME": "Name & surname",
+    "ORDER_NUMBER": "Order number",
+    "PRODUCTS": "Product or products the withdrawal concerns",
+    "EMAIL": "Email",
+    "PHONE": "Phone",
+    "SEND": "Submit notice",
+    "SUCCESS_TITLE": "We confirm receipt of your withdrawal from contract notice.",
+    "SUCCESS_TEXT": "We will inform you about the next steps.",
+    "FOOTER_LINK": "Withdraw from contract here",
+    "GDPR": "I agree to the processing of personal data according to the <a href='../article/ochrana-a-spracovanie-osobnych-udajov'>Privacy Policy</a>.",
+    "CAPTCHA_ERROR": "Please confirm that you are not a robot.",
+    "ORDER_CHECKING": "Checking the order number...",
     "ORDER_VALID": "The order was found.",
     "ORDER_NOT_FOUND": "No order with this number was found.",
     "ORDER_CHECK_ERROR": "The order could not be verified at the moment."
-}
-  
   }
+}
