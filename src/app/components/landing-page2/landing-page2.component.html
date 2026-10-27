@@ -210,8 +210,10 @@
       <div class="calendar-right flex-center" #formCard style="text-align:left;">
         <ng-container *ngIf="selectedDay; else expTpl">
           <div *ngIf="selectedDay" class="form-card">
-            <h2 style="font-size:2rem;margin:0 0 .5rem;">
-              <!-- vybraný dátum – podnadpis vo formulári, nie H1 stránky -->
+            <!-- vybraný dátum – podnadpis vo formulári, nie H1 stránky.
+                 Štýl replikuje pôvodný globálny h1 (240%/uppercase/900), aby sa
+                 vzhľad nezmenil. -->
+            <h2 style="font-size:240%;text-transform:uppercase;font-weight:900;margin:0.67em 0;padding:0;">
               {{ selectedDay.date | date:'d. MMMM yyyy':undefined:lang.getCurrentLanguage() }}
             </h2>
           
