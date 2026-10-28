@@ -125,7 +125,7 @@
 
             <ul class="overlay-cat-tree" *ngIf="isExpanded('eshop')">
               <li *ngFor="let rc of categories" class="overlay-cat-item">
-                <ng-container *ngIf="rc.children; else leafCategory">
+                <ng-container *ngIf="rc.children?.length; else leafCategory">
                   <button
                     class="overlay-cat-btn"
                     [attr.aria-expanded]="isExpanded(rc.category_slug)"

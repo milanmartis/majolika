@@ -307,6 +307,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // ✅ zruš rozbehnuté scroll rAF/timeout, nech nebežia po prechode na detail
+    // (inak orphaned rAF „dotláčal" scroll hore aj na detaile produktu – iOS)
+    this.cancelScrollWork();
     this.destroyed$.next();
     this.destroyed$.complete();
   }
@@ -329,18 +332,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     if (!this.isBrowser) return;
 
     // zruš predchádzajúce rozbehnuté scrolly
-    if (this._scrollRaf != null) {
-      cancelAnimationFrame(this._scrollRaf);
-      this._scrollRaf = null;
-    }
-    if (this._scrollTimeout) {
-      clearTimeout(this._scrollTimeout);
-      this._scrollTimeout = null;
-    }
-
-    const prefersNoMotion =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.cancelScrollWork();
 
     const instantJump = () => {
       try {
@@ -352,48 +344,27 @@ export class ProductListComponent implements OnInit, OnDestroy {
       }
     };
 
-    const smoothTry = () => {
-      try {
-        if (!prefersNoMotion) {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          instantJump();
-        }
-      } catch {
-        instantJump();
-      }
-    };
-
-    // 1) okamžitý skok hneď
+    // Len jeden skok hore pri inicializácii listu + jedna poistka po vykreslení.
+    // ZÁMERNE bez behavior:'smooth' a bez opakovaného rAF „dotláčania" na vrch:
+    // na iOS Safari to bojovalo s používateľovým scrollom (hádzalo späť hore,
+    // nedalo sa odscrollovať nižšie), najmä kvôli momentum scrollu.
     instantJump();
-
-    // 2) dvojitý rAF a potom smooth
     this._scrollRaf = requestAnimationFrame(() => {
-      this._scrollRaf = requestAnimationFrame(() => {
-        smoothTry();
-
-        // 3) poistka – dotlač na vrch pár krát
-        let tries = 0;
-        const maxTries = 10;
-        const tick = () => {
-          const y =
-            window.scrollY ||
-            document.documentElement.scrollTop ||
-            document.body.scrollTop ||
-            0;
-
-          if (y > 0 && tries < maxTries) {
-            tries += 1;
-            instantJump();
-            this._scrollRaf = requestAnimationFrame(tick);
-          }
-        };
-        this._scrollRaf = requestAnimationFrame(tick);
-      });
+      instantJump();
+      this._scrollRaf = null;
     });
+  }
 
-    // 4) bezpečnostný dotyk po ~700 ms
-    this._scrollTimeout = setTimeout(() => instantJump(), 700);
+  /** Zruší prípadné naplánované scroll práce (rAF/timeout). */
+  private cancelScrollWork(): void {
+    if (this._scrollRaf != null) {
+      cancelAnimationFrame(this._scrollRaf);
+      this._scrollRaf = null;
+    }
+    if (this._scrollTimeout) {
+      clearTimeout(this._scrollTimeout);
+      this._scrollTimeout = null;
+    }
   }
 
   private maybeScrollTop(): void {
