@@ -24,7 +24,10 @@ padding: 20px;;
   align-items: center;
   justify-content: center;
   gap: .75rem;
-  min-height: 60px;
+  /* Rezervuj skoro celú výšku viewportu počas načítania. Inak je stránka
+     chvíľu len ~60px vysoká a na iOS sa swipe „rubber-band" odrazí späť hore
+     (pôsobí ako „nedá sa scrollovať / hádže hore"), kým dobehne HTTP. */
+  min-height: 80vh;
 }
 
 .content-loader__text {
@@ -62,6 +65,12 @@ padding: 20px;;
 .main-image-wrapper {
   /* aspect-ratio: 4 / 3; */
 position: relative;
+}
+
+/* Počas načítania hlavného obrázka rezervuj výšku, nech sa po donačítaní
+   layout neskočí (CLS) a nehádže to scroll na iOS. Len počas loadingu. */
+.main-image-wrapper.loading {
+  min-height: 320px;
 }
 
 /* Moderný shimmer loading pre obrázky */
