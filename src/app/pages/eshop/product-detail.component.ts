@@ -683,6 +683,11 @@ private initNormalPipeline(): void {
     .pipe(
       map(p => p.get('slug')),
       filter((slug): slug is string => !!slug),
+      // ✅ Scroll na vrch spravíme HNEĎ pri zmene slugu (synchronne), nie až keď
+      // dorazia dáta. Inak na pomalom pripojení prišla HTTP odpoveď neskôr a
+      // window.scrollTo(0) v loadProduct() šklbol používateľa späť hore – presne
+      // ten „hádže to späť / nedá sa scrollovať, kým chvíľu nepočkám" bug (iOS).
+      tap(() => window.scrollTo({ top: 0 })),
       switchMap(slug => this.productsService.getProductWithVariations(slug).pipe(
         map(resp => resp?.data?.[0] ?? null),
         // SK fallback: niektoré produkty existujú len v SK (napr. knihy). Ak sa
@@ -1209,7 +1214,8 @@ this.cart.add(
 
     this.productsService.getFeaturedProducts().subscribe(list => this.featured = list);
 
-    window.scrollTo({ top: 0 });
+    // ✅ Scroll na vrch sa teraz robí v paramMap pipeline pri zmene slugu
+    // (synchronne), nie tu po načítaní dát – inak to na iOS šklblo späť hore.
 
     // ✅ FIX: NEROB listForDay / loadSessionsForDate tu (kazilo date z query paramu)
     this.updateIsFavorite();
