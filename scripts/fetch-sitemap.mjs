@@ -31,6 +31,16 @@ const STATIC_PAGES = [
   { path: '/kontakty', priority: '0.7', changefreq: 'monthly' },
 ];
 
+// Obsahové články do sitemapy (právne/kontaktné sú prerenderované, ale do
+// sitemapy ich nedávame – nízka SEO hodnota / duplicita s /kontakty).
+const ARTICLE_SITEMAP_SLUGS = [
+  'historia-majoliky',
+  'majolika-as',
+  'oz-slm',
+  'nove-vzory',
+  'majolika-na-akcii',
+];
+
 function urlBlock(loc, priority, changefreq) {
   return `  <url>\n    <loc>${loc}</loc>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
 }
@@ -53,6 +63,35 @@ async function getCategorySlugs() {
     const json = await res.json();
     for (const entry of json.data || []) {
       const slug = (entry?.attributes ?? entry)?.category_slug;
+      if (slug) slugs.push(slug);
+    }
+
+    const pageCount = json.meta?.pagination?.pageCount || 1;
+    if (page >= pageCount) break;
+    page++;
+  }
+
+  return slugs;
+}
+
+async function getAktualitySlugs() {
+  const slugs = [];
+  let page = 1;
+  const pageSize = 100;
+
+  while (true) {
+    const params = new URLSearchParams();
+    params.set('fields[0]', 'slug');
+    params.set('pagination[page]', String(page));
+    params.set('pagination[pageSize]', String(pageSize));
+    params.set('sort', 'publishedAt:desc');
+
+    const res = await fetch(`${STRAPI_BASE_URL}/api/aktuality?${params.toString()}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const json = await res.json();
+    for (const entry of json.data || []) {
+      const slug = (entry?.attributes ?? entry)?.slug;
       if (slug) slugs.push(slug);
     }
 
@@ -93,6 +132,28 @@ async function augment(xml) {
     console.log(`[sitemap] doplnených kategórií: ${slugs.length}`);
   } catch (err) {
     console.warn(`[sitemap] Kategórie sa nepodarilo načítať (${err.message}) – sitemapa bude bez nich.`);
+  }
+
+  // Obsahové články (pevná sada)
+  for (const slug of ARTICLE_SITEMAP_SLUGS) {
+    const loc = `${SITE_URL}/article/${slug}`;
+    if (existing.has(loc.replace(/\/+$/, ''))) continue;
+    existing.add(loc);
+    blocks.push(urlBlock(loc, '0.5', 'monthly'));
+  }
+
+  // Aktuality
+  try {
+    const slugs = await getAktualitySlugs();
+    for (const slug of slugs) {
+      const loc = `${SITE_URL}/aktuality/${slug}`;
+      if (existing.has(loc)) continue;
+      existing.add(loc);
+      blocks.push(urlBlock(loc, '0.6', 'weekly'));
+    }
+    console.log(`[sitemap] doplnených aktualít: ${slugs.length}`);
+  } catch (err) {
+    console.warn(`[sitemap] Aktuality sa nepodarilo načítať (${err.message}) – sitemapa bude bez nich.`);
   }
 
   if (!blocks.length) return xml;

@@ -43,6 +43,13 @@ function esc(value = '') {
     .replaceAll('>', '&gt;');
 }
 
+function stripHtml(value = '') {
+  return String(value)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function upsertHeadTag(html, pattern, tag) {
   if (pattern.test(html)) return html.replace(pattern, tag);
   return html.replace('</head>', `${tag}\n</head>`);
@@ -173,6 +180,64 @@ async function getCategories() {
   return all;
 }
 
+// ---- Články (pevná sada – list endpoint /articles je v CMS zablokovaný) ---
+// Slugy sú stabilné informačné stránky linkované v header/footer. Nové články
+// by sa sem museli doplniť ručne (CMS nedovoľuje vymenovať zoznam).
+const ARTICLE_SLUGS = [
+  'historia-majoliky',
+  'majolika-as',
+  'oz-slm',
+  'nove-vzory',
+  'majolika-na-akcii',
+  'informacie',
+  'vseobecne-obchodne-podmienky',
+  'ochrana-a-spracovanie-osobnych-udajov',
+];
+
+async function getArticle(slug) {
+  const res = await fetch(`${API_URL}/articles/${slug}?locale=sk`);
+  if (!res.ok) return null;
+  const json = await res.json();
+  const a = json?.data?.attributes ?? json?.data ?? null;
+  if (!a) return null;
+  return { slug, title: a.title || slug };
+}
+
+// ---- Aktuality (list endpoint funguje, dajú sa vymenovať) ------------------
+async function getAktuality() {
+  const all = [];
+  let page = 1;
+  const pageSize = 100;
+
+  while (true) {
+    const params = new URLSearchParams();
+    params.set('locale', 'sk');
+    params.set('fields[0]', 'title');
+    params.set('fields[1]', 'slug');
+    params.set('fields[2]', 'summary');
+    params.set('pagination[page]', String(page));
+    params.set('pagination[pageSize]', String(pageSize));
+    params.set('sort', 'publishedAt:desc');
+
+    const res = await fetch(`${API_URL}/aktuality?${params.toString()}`);
+    if (!res.ok) throw new Error(`Strapi aktuality failed: ${res.status} ${res.statusText}`);
+
+    const json = await res.json();
+    const data = (json.data || [])
+      .map((entry) => entry?.attributes ?? entry ?? null)
+      .filter((a) => a?.slug);
+
+    all.push(...data);
+
+    const pageCount = json.meta?.pagination?.pageCount || 1;
+    console.log(`Fetched aktuality page ${page}/${pageCount}: ${data.length}`);
+    if (page >= pageCount) break;
+    page++;
+  }
+
+  return all;
+}
+
 // ---- Beh ------------------------------------------------------------------
 for (const page of STATIC_PAGES) {
   writeRoute(page.route, page);
@@ -193,6 +258,51 @@ for (const cat of categories) {
   });
 }
 
+// Články
+let articleCount = 0;
+for (const slug of ARTICLE_SLUGS) {
+  try {
+    const art = await getArticle(slug);
+    if (!art) {
+      console.warn(`Článok preskočený (nenájdený): ${slug}`);
+      continue;
+    }
+    writeRoute(`/article/${slug}`, {
+      title: `${art.title} | Slovenská ľudová majolika Modra`,
+      description: `${art.title} – Slovenská ľudová majolika z Modry, ručne maľovaná keramika a tradičný modranský dekór.`,
+      url: `${SITE_URL}/article/${slug}`,
+      ogType: 'article',
+    });
+    articleCount++;
+  } catch (err) {
+    console.warn(`Článok zlyhal (${slug}): ${err.message}`);
+  }
+}
+
+// Aktuality
+let aktualityCount = 0;
+try {
+  const aktuality = await getAktuality();
+  const seenAkt = new Set();
+  for (const akt of aktuality) {
+    if (!akt.slug || seenAkt.has(akt.slug)) continue;
+    seenAkt.add(akt.slug);
+
+    const summary = stripHtml(akt.summary || '').slice(0, 300);
+    writeRoute(`/aktuality/${akt.slug}`, {
+      title: `${akt.title} | Aktuality – Slovenská ľudová majolika Modra`,
+      description:
+        summary ||
+        `${akt.title} – aktuality zo Slovenskej ľudovej majoliky v Modre.`,
+      url: `${SITE_URL}/aktuality/${akt.slug}`,
+      ogType: 'article',
+    });
+    aktualityCount++;
+  }
+} catch (err) {
+  console.warn(`Aktuality sa nepodarilo načítať (${err.message}) – prerender bez nich.`);
+}
+
 console.log(
-  `SEO prerender complete: ${STATIC_PAGES.length} statických stránok + ${seen.size} kategórií`
+  `SEO prerender complete: ${STATIC_PAGES.length} statických + ${seen.size} kategórií + ${articleCount} článkov + ${aktualityCount} aktualít`
 );
