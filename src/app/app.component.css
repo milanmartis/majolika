@@ -9,7 +9,9 @@ html, body{
 
 .content-container {
   position: relative; /* zabezpečí, že fixed/absolute pozície v routovaných komponentoch sa pri animácii budú renderovať správne */
-  overflow-x: hidden; /* skrýva horizontálne scrollovanie počas animácie */
+  /* `clip` namiesto `hidden`: `hidden` by z tohto obalu spravilo scroll-kontajner
+     (overflow-y:auto) a na iOS by brzdilo/lámalo zvislý scroll. */
+  overflow-x: clip;
 }
 
 /* Prípadne niečo ako: */

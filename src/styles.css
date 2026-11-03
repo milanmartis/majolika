@@ -32,9 +32,12 @@
   gap: .35rem;
 }
 
-html, body {     
+html, body {
   background: var(--color-primary);
-  overflow-x: hidden;     
+  /* ⚠️ `overflow-x: hidden` vynúti overflow-y:auto → z body/html sa stane
+     scroll-kontajner a iOS Safari potom „brzdí" momentum scroll a nedá sa
+     doscrollovať dole. `clip` oreže vodorovné preliatie bez scroll-kontajnera. */
+  overflow-x: clip;
   width: 100%;
 }
 
