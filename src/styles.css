@@ -4,6 +4,24 @@
 /* Typekit (Alegreya) je načítaný cez <link> v index.html – @import tu bol duplicitný
    a navyše serial render-blocking, preto odstránený. */
 
+/* ------------------------------------------------------------------
+   CLS fix: metricky zladený náhradný font k Alegreyi.
+   Alegreya (Typekit) sa načítava asynchrónne, takže na pomalých mobiloch
+   doskočí neskoro a text (h1/h2/odseky) preskočí z náhradného serifu na
+   Alegreyu = veľký layout shift (CrUX CLS ~0,85). Tento @font-face obalí
+   lokálny Times New Roman override deskriptormi vypočítanými z metrík
+   Alegreye (Capsize), takže náhradný font zaberá PRESNE to isté miesto.
+   Keď Alegreya doskočí, rozloženie sa nepohne.
+   Hodnoty: size-adjust 100.92%, ascent 100.67%, descent 34.18%. ------- */
+@font-face {
+  font-family: "Alegreya Fallback";
+  src: local("Times New Roman"), local("Times");
+  size-adjust: 100.92%;
+  ascent-override: 100.67%;
+  descent-override: 34.18%;
+  line-gap-override: 0%;
+}
+
 
 :root {
   --color-primary: #f0f0f0;   /* predvolená farba */
@@ -65,7 +83,7 @@ html, body {
 
 body {
   margin: 0;
-  font-family: "alegreya", serif;
+  font-family: "alegreya", "Alegreya Fallback", serif;
 
   /* background-image presunutý na .app-wrapper */
    background-repeat: no-repeat;
