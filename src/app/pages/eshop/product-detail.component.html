@@ -157,7 +157,7 @@
         <h4>Momentálne nie sú dostupné žiadne termíny.</h4>
       </div> -->
 <br>
-<div *ngIf="!isGiftVoucherProduct(product) && (sessions.length || (isExperienceProduct(product) && !sessions.length))" class="intro-text">
+<div *ngIf="sessions.length || (isExperienceProduct(product) && !sessions.length)" class="intro-text">
   {{ 'ESHOP.WORKSHOPANOTHERS' | translate }}
 
   <h3>
@@ -217,9 +217,7 @@
         </div>
       </div>
     
-      <!-- Košík: vždy pre darčekové poukazy (aj keď majú naviazané workshop termíny),
-           inak len keď produkt nemá termíny (sessions). -->
-      <div class="cart-row" *ngIf="sessions.length === 0 || isGiftVoucherProduct(product)">
+      <div class="cart-row" *ngIf="sessions.length === 0">
         <div class="qty-control">
           <button
           class="qty-btn"

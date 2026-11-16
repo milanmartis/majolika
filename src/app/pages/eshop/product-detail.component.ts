@@ -527,11 +527,6 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
 isGiftVoucherProduct(prod: Product | null): boolean {
   if (!prod) return false;
 
-  // Darčekový poukaz rozpoznáme buď podľa príznaku z CMS, alebo podľa kategórie.
-  // Príznak je dôležitý preto, lebo niektoré poukazy (napr. „na dielňu") majú
-  // v CMS naviazané workshop termíny (sessions) – tie by inak skryli košík.
-  if (prod.isGiftVoucher) return true;
-
   return (prod.categories ?? []).some(c =>
     c.category_slug === 'darcekove-poukazy'
   );
